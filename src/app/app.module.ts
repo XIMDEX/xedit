@@ -12,12 +12,16 @@ import { AppComponent } from './app.component';
 import { TaskbarComponent } from './components/taskbar/taskbar.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { FileService } from './services/file-service/file.service';
+import { ImageComponent } from './comp/image/image.component';
+import { Image2Component } from './comp/image2/image2.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TaskbarComponent,
-    EditorComponent
+    EditorComponent,
+    ImageComponent,
+    Image2Component
   ],
   imports: [
     BrowserModule,

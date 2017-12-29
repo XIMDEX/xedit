@@ -1,22 +1,21 @@
 import { FileService } from '../../services/file-service/file.service';
-import { Component, OnInit } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.scss']
+  styleUrls: ['./editor.component.scss'],
 })
 export class EditorComponent implements OnInit {
 
-  url: SafeResourceUrl;
+  content: string;
+  vContetn: string;
 
-  constructor(private _fileService: FileService, private sanitizer: DomSanitizer) { }
+  constructor(private _fileService: FileService) { }
 
   ngOnInit() {
-    this._fileService.currentMessage.subscribe(message =>
-      this.url = this.sanitizer.bypassSecurityTrustResourceUrl('data:text/html;charset=utf-8,' + message)
-    );
+    this._fileService.currentMessage.subscribe(message => this.content = message);
+    //TODO parser content and create directives in div#xedit
   }
 
 }

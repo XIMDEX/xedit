@@ -4,7 +4,8 @@ import { FileService } from '../../services/file-service/file.service';
 
 @Component({
   selector: 'app-taskbar',
-  templateUrl: './taskbar.component.html'
+  templateUrl: './taskbar.component.html',
+  styleUrls: ['./taskbar.component.scss'],
 })
 export class TaskbarComponent implements OnInit {
 

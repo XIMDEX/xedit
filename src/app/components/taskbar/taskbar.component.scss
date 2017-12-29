@@ -1,4 +1,6 @@
-#xedit-taskbar{
+@import './../../../variables';
+
+:host ::ng-deep nav{
     padding: 0;
     margin: 0;
     width: 100%;
