@@ -14,6 +14,7 @@ import { EditorComponent } from './components/editor/editor.component';
 import { FileService } from './services/file-service/file.service';
 import { ImageComponent } from './comp/image/image.component';
 import { Image2Component } from './comp/image2/image2.component';
+import { SafeHtmlPipe } from './pipes/inner-html/safe-html.pipe';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { Image2Component } from './comp/image2/image2.component';
     TaskbarComponent,
     EditorComponent,
     ImageComponent,
-    Image2Component
+    Image2Component,
+    SafeHtmlPipe
   ],
   imports: [
     BrowserModule,

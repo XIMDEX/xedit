@@ -2,6 +2,7 @@
   <ul>
     <li>
       <button (click)="openFile()">open</button>
+      <input type="file" name="open_html" id="open_html" (change)="onFileSelect($event)">
     </li>
     <li>
       <button>save</button>
