@@ -1,0 +1,6 @@
+@import '~sass/variables';
+
+:host {
+    flex-grow: 1;
+    background-color: $background-default-color;
+}

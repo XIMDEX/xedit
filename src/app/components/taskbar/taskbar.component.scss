@@ -1,11 +1,11 @@
-@import './../../../variables';
+@import '~sass/variables';
 
 :host ::ng-deep nav{
     padding: 0;
     margin: 0;
     width: 100%;
     height: $taskbar-height;
-    background-color: $background-navs-color;
+    background-color: $background-xedit-base-dark;
 
     > ul{
         padding: 0;

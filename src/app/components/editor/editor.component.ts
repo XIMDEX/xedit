@@ -1,4 +1,3 @@
-import { FileService } from '../../services/file-service/file.service';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 
 @Component({
@@ -8,14 +7,9 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 })
 export class EditorComponent implements OnInit {
 
-  content: string;
-  vContetn: string;
-
-  constructor(private _fileService: FileService) { }
+  constructor() { }
 
   ngOnInit() {
-    this._fileService.currentMessage.subscribe(message => this.content = message);
-    //TODO parser content and create directives in div#xedit
   }
 
 }
