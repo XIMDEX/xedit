@@ -1,5 +1,7 @@
 import { FileService } from '../../services/file-service/file.service';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { json2html } from 'html2json';
+import { File } from '../../models/file';
 
 @Component({
     selector: 'app-wysiwyg-view',
@@ -14,7 +16,7 @@ export class WysiwygViewComponent implements OnInit {
     constructor(private _fileService: FileService) { }
 
     ngOnInit() {
-        this._fileService.currentMessage.subscribe(message => this.content = message);
+        this._fileService.obsContent.subscribe(message => this.content = File.json2html(message));
         //TODO parser content and create directives in div#xedit
     }
 }

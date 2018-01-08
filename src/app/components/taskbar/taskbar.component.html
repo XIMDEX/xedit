@@ -1,17 +1,17 @@
 <nav id="xedit-taskbar" class="taskbar">
   <ul>
     <li>
-      <button (click)="openFile()">open</button>
-      <input type="file" name="open_html" id="open_html" (change)="onFileSelect($event)">
+      <button (click)="load()">Load</button>
+      <input style='position:absolute; left:-100px' type="file" name="open_html" id="open_html" (change)="onFileSelect($event)">
     </li>
     <li>
-      <button>save</button>
+      <button>Save</button>
     </li>
     <li>
       <button>preview</button>
     </li>
     <li>
-      <button>undo</button>
+      <button>Undo</button>
     </li>
   </ul>
 </nav>
