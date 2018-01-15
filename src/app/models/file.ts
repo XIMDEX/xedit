@@ -1,12 +1,34 @@
-import HTMLParser from 'html2json/lib/Pure-JavaScript-HTML5-Parser/htmlparser.js';
-import { UUID } from 'angular2-uuid';
 
-export class File {
+import { UUID } from 'angular2-uuid';
+import { History } from './history';
+import { HTMLParser } from 'core/htmlparser';
+import { Serializable } from './interfaces/Serializable';
+import { isNil } from 'ramda';
+
+export class File extends History {
     schema: JSON;
     content: JSON;
 
+    constructor(json = null) {
+        super();
+        if (!isNil(json)) {
+            this.createContent(json.nodes);
+            this.addState(this.content);
+        }
+    }
+
     /***************** PRIVATE METHODS **************************/
-    private static removeDOCTYPE = function (html) {
+    private createContent(nodes: JSON) {
+
+        Object.keys(nodes).forEach(property => {
+            nodes[property].content = File.html2json(nodes[property].content);
+        });
+
+        this.content = nodes;
+        return nodes;
+    }
+
+    private static removeDOCTYPE(html) {
         return html
             .replace(/<\?xml.*\?>\n/, '')
             .replace(/<!doctype.*\>\n/, '')
@@ -18,21 +40,23 @@ export class File {
     }
 
     /***************** STATIC METHODS **************************/
-    static html2json = function (html) {
+    static html2json = function (html, hasRootTag = true) {
         html = File.removeDOCTYPE(html);
         var bufArray = [];
         var results = {
             node: 'root',
-            child: [],
+            child: {},
         };
 
+        console.log(html);
+
         HTMLParser(html, {
-            start: function (tag, attrs, unary) {
+            start: function (tag, uuid, attrs, unary) {
                 // node for this element
                 var node = {
                     node: 'element',
                     tag: tag,
-                    uuid: UUID.UUID(),
+                    uuid: isNil(uuid) ? UUID.UUID() : uuid,
                     attr: null
                 };
                 if (attrs.length !== 0) {
@@ -70,7 +94,7 @@ export class File {
                     // add to parents
                     var parent = bufArray[0] || results;
                     if (parent.child === undefined) {
-                        parent.child = [];
+                        parent.child = {};
                     }
                     parent.child.push(node);
                 } else {
@@ -83,13 +107,13 @@ export class File {
                 if (node.tag !== tag) console.error('invalid state: mismatch end tag');
 
                 if (bufArray.length === 0) {
-                    results.child.push(node);
+                    results.child[node.uuid] = node;
                 } else {
                     var parent = bufArray[0];
                     if (parent.child === undefined) {
-                        parent.child = [];
+                        parent.child = {};
                     }
-                    parent.child.push(node);
+                    parent.child[node.uuid] = node;
                 }
             },
             chars: function (text) {
@@ -98,13 +122,13 @@ export class File {
                     text: text,
                 };
                 if (bufArray.length === 0) {
-                    results.child.push(node);
+                    //results.child.push(node);
                 } else {
                     var parent = bufArray[0];
                     if (parent.child === undefined) {
-                        parent.child = [];
+                        parent.child = {};
                     }
-                    parent.child.push(node);
+                    parent.child["text-" + Object.keys(parent.child).length] = node;
                 }
             },
             comment: function (text) {
@@ -119,7 +143,8 @@ export class File {
                 parent.child.push(node);
             },
         });
-        return results;
+
+        return hasRootTag ? results : results.child;
     };
 
     static json2html = function (json) {
@@ -128,8 +153,8 @@ export class File {
 
         var child = '';
         if (json.child) {
-            child = json.child.map(function (c) {
-                return File.json2html(c);
+            child = Object.keys(json.child).map(function (uuid) {
+                return File.json2html(json.child[uuid]);
             }).join('');
         }
 
@@ -150,7 +175,7 @@ export class File {
                 return '<' + json.tag + attr + '/>';
             }
 
-            var uuid = ' xe:id="' + json.uuid + '" '
+            var uuid = ' xe_uuid="' + json.uuid + '" '
 
             // non empty element
             var open = '<' + json.tag + uuid + attr + '>';
@@ -169,5 +194,10 @@ export class File {
         if (json.node === 'root') {
             return child;
         }
+    }
+
+    static addUuidToHtml = function (html) {
+        var json = this.html2json(html);
+        return this.json2html(json);
     }
 }

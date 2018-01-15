@@ -1,41 +1,35 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Image } from '../../models/image';
-import { html2json } from 'html2json';
 import { File } from '../../models/file';
 
 @Injectable()
 export class FileService {
 
-  private schema;
-  private content;
-
-  public obsScheme;
-  public obsContent;
+  private file;
+  public obsFile;
 
   private exampleMultiView = new BehaviorSubject<Image>(new Image());
   exampleMultiViewOb = this.exampleMultiView.asObservable();
 
   constructor() {
-    this.content = new BehaviorSubject<JSON>(html2json('<p>Ejemplo</p>'));
-    this.obsContent = this.content.asObservable();
-
-    this.schema = new BehaviorSubject<JSON>(null);
-    this.obsScheme = this.schema.asObservable();
+    this.file = new BehaviorSubject<File>(new File);
+    this.obsFile = this.file.asObservable();
   }
 
-  setFile(data: string, schema: JSON) {
+  setFile(data) {
+    var file = new File(data);
+    this.file.next(file);
+  }
 
-    if (data) {
-      // Convert html to JSON
-      var content = File.html2json(data);
-      this.content.next(content);
-    }
+  public lastStateFile = function () {
+    var file = this.file._value.lastState();
+    this.file.next(file);
+  }
 
-    if (schema)
-      this.schema.next(schema);
-
-    console.log(this.content);
+  public nextStateFile = function () {
+    var file = this.file._value.nextState();
+    this.file.next(file);
   }
 
   changeImage(data: Image) {

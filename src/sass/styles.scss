@@ -1,7 +1,23 @@
 @import '~bootstrap/dist/css/bootstrap.min.css';
 @import 'variables';
 
+html,
+body,
+body > app-root{
+    min-height: 100%;
+    height: 100%;
+}
+
+
+body > * > main{
+    min-height: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 body{
     padding: 0;
     margin: 0;
+    background: $background-default-color;
 }

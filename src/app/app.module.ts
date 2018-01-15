@@ -15,6 +15,8 @@ import { SafeHtmlPipe } from './pipes/inner-html/safe-html.pipe';
 import { ButtonsComponent } from './components/elements/buttons/buttons.component';
 import { PropertiesViewComponent } from './components/properties-view/properties-view.component';
 import { WysiwygViewComponent } from './components/wysiwyg-view/wysiwyg-view.component';
+import { FormViewComponent } from './components/form-view/form-view.component';
+import { StateService } from './services/state-service/state.service';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,8 @@ import { WysiwygViewComponent } from './components/wysiwyg-view/wysiwyg-view.com
     SafeHtmlPipe,
     ButtonsComponent,
     PropertiesViewComponent,
-    WysiwygViewComponent
+    WysiwygViewComponent,
+    FormViewComponent
   ],
   imports: [
     BrowserModule,
@@ -34,7 +37,7 @@ import { WysiwygViewComponent } from './components/wysiwyg-view/wysiwyg-view.com
     FormsModule,
     BrowserAnimationsModule
   ],
-  providers: [FileService],
+  providers: [FileService, StateService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,8 +1,11 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FileService } from '../../services/file-service/file.service';
 import { FileReaderEvent } from '../../interfaces/file-reader-event-target';
 import { files } from 'jasmine-core';
+import { File } from '../../models/file';
+import { equals } from 'ramda';
+import { equal } from 'assert';
 
 @Component({
   selector: 'app-taskbar',
@@ -11,12 +14,37 @@ import { files } from 'jasmine-core';
 })
 export class TaskbarComponent implements OnInit {
 
-  htmlFile: JSON;
+  file: File;
 
   constructor(private _fileService: FileService) { }
 
   ngOnInit() {
-    this._fileService.obsContent.subscribe(htmlFile => this.htmlFile = htmlFile);
+    this._fileService.obsFile.subscribe(obsFile => {
+      if (obsFile.getState()) {
+        this.file = obsFile;
+      }
+    });
+  }
+
+  undo() {
+    this._fileService.lastStateFile();
+  }
+
+
+  redo() {
+    this._fileService.nextStateFile();
+  }
+
+  show(component) {
+
+  }
+
+  nextAvailable() {
+    return this.file != null && this.file.hasNextState();
+  }
+
+  previousAvailable() {
+    return this.file != null && this.file.hasPreviousState();
   }
 
   load() {
@@ -31,18 +59,9 @@ export class TaskbarComponent implements OnInit {
       reader.readAsText(file, "UTF-8");
 
       reader.onload = (fileReaderEvent: FileReaderEvent) => {
-        var jsonFile = JSON.parse(fileReaderEvent.target.result);
-
-        if (file.name === 'content.json') {
-          this._fileService.setFile(jsonFile.result.content, null);
-        } else if (file.name === 'schema.json') {
-          this._fileService.setFile(null, jsonFile.result);
-        }
-
-        //this.htmlFile = jsonFile.result.content;
-        //console.log(this.htmlFile);
-
-        //this._fileService.setFile(this.htmlFile, this._fileService.obsContent);
+        var json = JSON.parse(fileReaderEvent.target.result);
+        var nodes = json.result;
+        this._fileService.setFile(nodes);
       }
 
       reader.onerror = (evt) => {

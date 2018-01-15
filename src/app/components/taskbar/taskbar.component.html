@@ -1,17 +1,35 @@
 <nav id="xedit-taskbar" class="taskbar">
   <ul>
     <li>
-      <button (click)="load()">Load</button>
+      <button class="btn btn-default" (click)="load()">
+        <span class="glyphicon glyphicon-open"></span>
+      </button>
       <input style='position:absolute; left:-100px' type="file" name="open_html" id="open_html" (change)="onFileSelect($event)">
     </li>
     <li>
-      <button>Save</button>
+      <button class="btn btn-default">
+        <span class="glyphicon glyphicon-floppy-disk"></span>
+      </button>
     </li>
     <li>
-      <button>preview</button>
+      <button class="btn btn-default" (click)="undo()" [disabled]="!previousAvailable()">
+        <span class="glyphicon glyphicon-arrow-left"></span>
+      </button>
     </li>
     <li>
-      <button>Undo</button>
+      <button class="btn btn-default" (click)="redo()" [disabled]="!nextAvailable()">
+        <span class="glyphicon glyphicon-arrow-right"></span>
+      </button>
+    </li>
+    <li>
+      <button class="btn btn-default" (click)="show('wysiwyg')">
+        wysiwyg
+      </button>
+    </li>
+    <li>
+      <button class="btn btn-default" (click)="show('form')">
+        form
+      </button>
     </li>
   </ul>
 </nav>

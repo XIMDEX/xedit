@@ -3,5 +3,6 @@
 :host {
     flex-grow: 1;
     max-width: 300px;
+    min-width: 300px;
     background-color: $background-xedit-alternative-light;
 }
