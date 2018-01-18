@@ -1,15 +1,14 @@
 import { TestBed, inject } from '@angular/core/testing';
-
-import { FileService } from './file.service';
+import { EditorService } from './editor.service';
 
 describe('FileService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [FileService]
+      providers: [EditorService]
     });
   });
 
-  it('should be created', inject([FileService], (service: FileService) => {
+  it('should be created', inject([EditorService], (service: EditorService) => {
     expect(service).toBeTruthy();
   }));
 });
