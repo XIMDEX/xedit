@@ -6,6 +6,7 @@ import { FormViewComponent } from '../form-view/form-view.component';
 import { equals } from 'ramda';
 import { File } from '../../models/file';
 import { isNil, clone, reduce } from 'ramda';
+import { StateService } from '../../services/state-service/state.service';
 
 @Component({
   selector: 'app-editor',
@@ -14,18 +15,19 @@ import { isNil, clone, reduce } from 'ramda';
 })
 export class EditorComponent implements OnInit {
 
-  @ViewChild(WysiwygViewComponent) wysiwygViewComponent;
-  @ViewChild(FormViewComponent) formViewComponent;
+  private currentView: string;
 
-  private view = 'form';
-
-  constructor() { }
+  constructor(private _stateService: StateService) { }
 
   ngOnInit() {
+    // Suscribe view state
+    this._stateService.getCurrentView().subscribe(currentView => {
+      this.currentView = currentView;
+    });
   }
 
   showComponent(view) {
-    return equals(view, this.view);
+    return equals(view, this.currentView);
   }
 
   /**

@@ -98,7 +98,7 @@ export class History {
     }
 
     /**
-     * 
+     * Added new state 
      */
     newState(state: any): void {
         this.addState(state);

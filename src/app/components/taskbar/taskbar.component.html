@@ -4,7 +4,7 @@
       <button class="btn btn-default" (click)="load()">
         <span class="glyphicon glyphicon-open"></span>
       </button>
-      <input style='position:absolute; left:-100px' type="file" name="open_html" id="open_html" (change)="onFileSelect($event)">
+      <input style='position:absolute; left:-1000px' type="file" name="open_html" id="open_html" (change)="onFileSelect($event)">
     </li>
     <li>
       <button class="btn btn-default">
@@ -22,12 +22,12 @@
       </button>
     </li>
     <li>
-      <button class="btn btn-default" (click)="show('wysiwyg')">
+      <button class="btn btn-default" (click)="showComponent('wysiwyg')" [disabled]="isDisabledComponent('wysiwyg')">
         wysiwyg
       </button>
     </li>
     <li>
-      <button class="btn btn-default" (click)="show('form')">
+      <button class="btn btn-default" (click)="showComponent('form')" [disabled]="isDisabledComponent('form')">
         form
       </button>
     </li>

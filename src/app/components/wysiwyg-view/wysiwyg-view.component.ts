@@ -1,17 +1,16 @@
-import { FileService } from '../../services/file-service/file.service';
 import { Component, OnInit, AfterViewInit, EventEmitter, OnDestroy, Input, Output, ElementRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { File } from '../../models/file';
 import { AfterViewChecked } from '@angular/core/src/metadata/lifecycle_hooks';
 import { EventListener } from '@angular/core/src/debug/debug_node';
 import { isNil, clone, reduce } from 'ramda';
+import { EditorComponent } from '../editor/editor.component';
 
 import 'tinymce';
 import 'tinymce/themes/modern';
 import 'tinymce/plugins/table';
 import 'tinymce/plugins/link';
-import { EditorComponent } from '../editor/editor.component';
-import { EditorComponent } from '../../../../../dev/src/app/editor/editor.component';
+import { EditorService } from '../../services/editor-service/editor.service';
 
 declare var tinymce: any;
 
@@ -21,38 +20,34 @@ declare var tinymce: any;
     styleUrls: ['./wysiwyg-view.component.scss']
 })
 
-export class WysiwygViewComponent implements OnInit, AfterViewChecked, OnDestroy {
+export class WysiwygViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @Input() elementId: String;
-    @Output() onEditorContentChange = new EventEmitter();
 
     private editor: any;
     private renderContent: string;
     private content: string;
-    private reload: boolean = false;
+    private currentNode: Array<any>;
 
-    constructor(private _fileService: FileService, private _elementRef: ElementRef) { }
+
+    constructor(private _editorService: EditorService, private _elementRef: ElementRef) { }
 
     /************* LIFE CYCLE *************/
     ngOnInit() {
-        this._fileService.obsFile.subscribe(message => {
+        this._editorService.getFile().subscribe(message => {
             if (message.getState()) {
                 this.content = message.getState()
                 // Parse content to html
                 this.renderContent = EditorComponent.parseContentToXedit(this.content);
-                this.reload = true;
             }
             console.log('WysiwygViewComponent', 'ngOnInit', this.content, this.renderContent);
         });
+
+        this._editorService.getCurrentNode().subscribe(currentNode => this.currentNode = currentNode);
     }
 
-    ngAfterViewChecked() {
-        // Only reload if file object has been modified
-        if (this.reload) {
-            this.reload = false;
-            this.reloadTinymce();
-            console.log('WysiwygViewComponent', 'ngAfterViewChecked', this.renderContent);
-        }
+    ngAfterViewInit() {
+        this.reloadTinymce();
     }
 
     ngOnDestroy() {
@@ -74,9 +69,8 @@ export class WysiwygViewComponent implements OnInit, AfterViewChecked, OnDestroy
             valid_elements: '*[xe_uuid]',
             setup: editor => {
                 this.editor = editor;
-                editor.on('keyup change', () => {
-                    const content = editor.getContent();
-                    this.onEditorContentChange.emit(content);
+                editor.on('NodeChange', (e) => {
+                    console.log(e);
                 });
                 editor.on('change', (evt: Event) => {
                     var contentTag = editor.bodyElement;
@@ -86,7 +80,7 @@ export class WysiwygViewComponent implements OnInit, AfterViewChecked, OnDestroy
                     let xeid = '';
                     for (let i = 0; i < contentTag.attributes.length; i++) {
                         if (contentTag.attributes[i].nodeName == 'xe_uuid') {
-                            xeid = contentTag.attributes[i].nodeValue
+                            xeid = contentTag.attributes[i].value
                             break;
                         }
                     }
@@ -101,7 +95,7 @@ export class WysiwygViewComponent implements OnInit, AfterViewChecked, OnDestroy
                     editContent.child = File.html2json(editor.getContent(), false)
 
                     // Save new state
-                    this._fileService.file._value.newState(elementContent);
+                    this._editorService.newStateFile(elementContent);
 
                 });
             }
@@ -123,7 +117,5 @@ export class WysiwygViewComponent implements OnInit, AfterViewChecked, OnDestroy
         this.renderContent = EditorComponent.parseContentToXedit(this.content);
         this.initTinymce();
     }
-
-
 
 }

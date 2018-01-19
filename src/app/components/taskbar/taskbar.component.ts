@@ -1,11 +1,12 @@
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FileService } from '../../services/file-service/file.service';
 import { FileReaderEvent } from '../../interfaces/file-reader-event-target';
 import { files } from 'jasmine-core';
 import { File } from '../../models/file';
-import { equals } from 'ramda';
+import { equals, contains } from 'ramda';
 import { equal } from 'assert';
+import { StateService } from '../../services/state-service/state.service';
+import { EditorService } from '../../services/editor-service/editor.service';
 
 @Component({
   selector: 'app-taskbar',
@@ -14,30 +15,51 @@ import { equal } from 'assert';
 })
 export class TaskbarComponent implements OnInit {
 
-  file: File;
+  private file: File;
+  private currentView: string = '';
+  private availableViews: Array<string> = [];
 
-  constructor(private _fileService: FileService) { }
+  constructor(private _editorService: EditorService, private _stateService: StateService) { }
 
+  /************************************ LIFE CYCLE *******************************************/
   ngOnInit() {
-    this._fileService.obsFile.subscribe(obsFile => {
+    this._editorService.getFile().subscribe(obsFile => {
       if (obsFile.getState()) {
         this.file = obsFile;
       }
     });
+
+    this._stateService.getCurrentView().subscribe(currentView => this.currentView = currentView);
+    this._stateService.getAvailabelViews().subscribe(availableViews => this.availableViews = availableViews);
   }
 
+  /********************************** END LIFE CYCLE *****************************************/
+
   undo() {
-    this._fileService.lastStateFile();
+    this._editorService.lastStateFile();
   }
 
 
   redo() {
-    this._fileService.nextStateFile();
+    this._editorService.nextStateFile();
   }
 
-  show(component) {
-
+  showComponent(component) {
+    this._stateService.setCurrentView(component);
   }
+
+  isShowedComponent(component): boolean {
+    return contains(component, this.availableViews);
+  }
+
+  isActivatedComponent(component): boolean {
+    return equals(this.currentView, component);
+  }
+
+  isDisabledComponent(component): boolean {
+    return this.isActivatedComponent(component) || !this.isShowedComponent(component);
+  }
+
 
   nextAvailable() {
     return this.file != null && this.file.hasNextState();
@@ -61,8 +83,11 @@ export class TaskbarComponent implements OnInit {
       reader.onload = (fileReaderEvent: FileReaderEvent) => {
         var json = JSON.parse(fileReaderEvent.target.result);
         var nodes = json.result;
-        this._fileService.setFile(nodes);
+        this._editorService.createFile(nodes);
       }
+
+
+      this._stateService.setAvailableViews(['wysiwyg', 'form']);
 
       reader.onerror = (evt) => {
         console.log('Error loading file');
