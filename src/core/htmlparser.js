@@ -206,7 +206,7 @@
                         arguments[3] ? arguments[3] :
                             arguments[4] ? arguments[4] :
                                 fillAttrs[name] ? name : "";
-                    if (name != 'xe_uuid')
+                    if (name != 'xe_uuid' && name != 'xe_id')
                         attrs.push({
                             name: name,
                             value: value,

@@ -41,7 +41,7 @@ export class EditorService {
    */
   createFile(data): void {
     var file = new File(data);
-    this.file.next(file);
+    this.setFile(file);
   }
 
   /**
@@ -56,7 +56,7 @@ export class EditorService {
    */
   lastStateFile(): void {
     var file = this.file.getValue().lastState();
-    this.file.next(file);
+    this.setFile(file);
   }
 
   /**
@@ -64,10 +64,7 @@ export class EditorService {
    */
   nextStateFile(): void {
     var file = this.file.getValue().nextState();
-    this.file.next(file);
+    this.setFile(file);
   }
 
-  /**
-   * 
-   */
 }

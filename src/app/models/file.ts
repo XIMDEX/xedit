@@ -40,7 +40,7 @@ export class File extends History {
     }
 
     /***************** STATIC METHODS **************************/
-    static html2json = function (html, hasRootTag = true) {
+    static html2json = function (html, hasRootTag = true, hasIds = false) {
         html = File.removeDOCTYPE(html);
         var bufArray = [];
         var results = {
@@ -147,14 +147,14 @@ export class File extends History {
         return hasRootTag ? results : results.child;
     };
 
-    static json2html = function (json) {
+    static json2html = function (json, showIds = true) {
         // Empty Elements - HTML 4.01
         var empty = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param', 'embed'];
 
         var child = '';
         if (json.child) {
             child = Object.keys(json.child).map(function (uuid) {
-                return File.json2html(json.child[uuid]);
+                return File.json2html(json.child[uuid], showIds);
             }).join('');
         }
 
@@ -175,7 +175,7 @@ export class File extends History {
                 return '<' + json.tag + attr + '/>';
             }
 
-            var uuid = ' xe_uuid="' + json.uuid + '" '
+            var uuid = showIds ? ' xe_uuid="' + json.uuid + '" ' : '';
 
             // non empty element
             var open = '<' + json.tag + uuid + attr + '>';
