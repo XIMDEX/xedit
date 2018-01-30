@@ -109,7 +109,8 @@ export class EditorService {
    * @param content Html content
    */
   save(node, content) {
-    var fileContent = this.file.getValue().getState().content
+    /** @todo Improve performance clone */
+    var fileContent = clone(this.file.getValue().getState().content)
     var uuidPath = null;
 
     if (is(String, node))
@@ -123,7 +124,6 @@ export class EditorService {
         root.content = File.html2json(root.content);
 
       //Modify file with new changes
-      var path = clone(uuidPath);
       var editContent = reduce(function (acc, value) {
         return acc.child[value];
       }, root.content, uuidPath);

@@ -26,7 +26,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     @ViewChild('xedit') xedit: ElementRef;
 
     private renderContent: string;
-    private subscribeFileState;
+    private subscribeFile;
 
     constructor(private _editorService: EditorService, private _elementRef: ElementRef) { }
 
@@ -36,7 +36,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.subscribeFileState.unsubscribe();
+        this.subscribeFile.unsubscribe();
     }
 
     /************************************** Private Methods **************************************/
@@ -47,10 +47,9 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     config() {
         this.renderContent = this.parseContentToWysiwygEditor(this._editorService.getFileValue().getState().getContent());
         // Suscribe to file changes
-        this.subscribeFileState = this._editorService.getFileState().subscribe(file => {
-            console.log(file)
+        this.subscribeFile = this._editorService.getFileState().subscribe(file => {
             // Parse content to html
-            this.renderContent = this.parseContentToWysiwygEditor(this._editorService.getFileValue().getState().getContent());
+            this.renderContent = this.parseContentToWysiwygEditor(file.getState().getContent());
         });
 
         // Suscribe to node change
@@ -70,9 +69,9 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     private parseContentToWysiwygEditor(content) {
         var renderContent = '';
         Object.keys(content).forEach(property => {
-            renderContent += "<xedit xe_id='" + property + "'>";
+            renderContent += "<" + XeditMapper.TAG_EDITOR + " xe_id='" + property + "'>";
             renderContent += is(String, content[property].content) ? content[property].content : File.json2html(content[property].content);
-            renderContent += "</xedit>";
+            renderContent += "</" + XeditMapper.TAG_EDITOR + ">";
         });
         return renderContent;
     }

@@ -42,7 +42,8 @@ export class PropertiesViewComponent implements OnInit {
     this._editorService.setFile(newFile);
 
     // Update current node
-    var node = PropertiesViewComponent.parseToNode(editContent, path);
+    var node = clone(this.currentNode);
+    node.setAttribute(property, evt.target.value);
     this._editorService.setCurrentNode(node);
     this._editorService.setCurrentNodeModify(node);
   }

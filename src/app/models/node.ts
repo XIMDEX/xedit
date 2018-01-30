@@ -1,5 +1,6 @@
 import { equals, isNil } from 'ramda';
 import { equal } from 'assert';
+import { XeditMapper } from './schema/xedit-mapper';
 
 export class Node {
 
@@ -58,7 +59,11 @@ export class Node {
     }
 
     setAttribute(name: string, value: Object): void {
-        if (!isNil(this.attributes[name]))
+        console.log("OK");
+        if (name == XeditMapper.TAG_IMAGE) {
+            this.attributes[name] = value;
+            this.attributes['src'] = 'http://ajlucena.com/ximdex-4/public_xmd/?action=filemapper&method=nodeFromExpresion&expresion=' + value;
+        } else if (!isNil(this.attributes[name]))
             this.attributes[name] = value;
     }
 
@@ -76,7 +81,9 @@ export class Node {
 
     getAvailableAttributes() {
         var attributes = [];
-        if (equals(this.getType(), Node.TYPE_IMAGE)) {
+        if (equals(this.getType(), Node.TYPE_IMAGE) && !isNil(this.getAttribute(XeditMapper.TAG_IMAGE))) {
+            attributes = [XeditMapper.TAG_IMAGE];
+        } else if (equals(this.getType(), Node.TYPE_IMAGE)) {
             attributes = ['src', 'alt', 'style'];
         } else {
             attributes = ['id', 'class', 'style'];

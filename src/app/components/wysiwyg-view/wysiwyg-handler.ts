@@ -9,6 +9,11 @@ import 'tinymce/plugins/image';
 import 'tinymce/plugins/link';
 import 'tinymce/plugins/paste'
 
+
+import Commands from './dam/api/Commands';
+import FilterContent from './dam/core/FilterContent';
+import Buttons from './dam/ui/Buttons';
+
 declare var tinymce: any;
 
 //DATEPICKER
@@ -39,11 +44,13 @@ export class WysiwygHandler {
      * Init tinymce editor and added events
      */
     static initTinymce(args) {
+        WysiwygHandler.addPlugins();
         tinymce.init({
             target: args.section,
             inline: true,
             branding: false,
-            plugins: ['link', 'table', 'image', 'paste'],
+            toolbar: "styleselect | link dam | bold italic underline |  aligncenter alignjustify  | bullist numlist outdent indent |fontsizeselect",
+            plugins: ['link', 'table', 'image', 'paste', 'dam'],
             skin_url: 'assets/skins/lightgray',
             valid_elements: '*[*]',
             setup: editor => {
@@ -55,7 +62,6 @@ export class WysiwygHandler {
                     args.service.setCurrentNode(currentNode);
                 });
                 editor.on('PastePreProcess', (e) => {
-
                     function replaceIndex(string, at, repl) {
                         var pos = -1;
                         return string.replace(/ xe_uuid=\"[^"]*\" */g, (match) => {
@@ -104,7 +110,14 @@ export class WysiwygHandler {
                 });
             }
         });
+    }
 
+    static addPlugins() {
+        tinymce.PluginManager.add('dam', function (editor) {
+            FilterContent.setup(editor);
+            Commands.register(editor);
+            Buttons.register(editor);
+        });
     }
 
     /**********************************     DATEPICKER  *******************************************/
