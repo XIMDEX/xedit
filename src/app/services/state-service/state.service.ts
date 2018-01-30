@@ -28,7 +28,7 @@ export class StateService {
     return this.availableViews.asObservable();
   }
 
-  setAvailableViews($availableViews): void {
-    this.availableViews.next($availableViews);
+  setAvailableViews(availableViews): void {
+    this.availableViews.next(availableViews);
   }
 }

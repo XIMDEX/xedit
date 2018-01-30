@@ -1,16 +1,1 @@
-<div id='xedit' [innerHTML]="renderContent | safeHtml" style="border: 1px solid #E3E3E3">
-</div>
-
-<!--<section class="editable">
-    Testing
-</section>
-<div id='xedit' [innerHTML]="content | safeHtml" style="border: 1px solid gray">
-</div>
-<h1> Prueba cambiar elemento node ID</h1>
-<ximdex:image nodeId="prueba"></ximdex:image>
-
-<h1>Prueba multiples vista para un mismo elemento</h1>
-<h4>Vista con imagen</h4>
-<ximdex:image uid='0'></ximdex:image>
-<h4>Vista simple url (Idea sería el html por ejemplo)</h4>
-<ximdex:image2 uid='0'></ximdex:image2>-->
+<div id='xedit' #xedit [innerHTML]="renderContent | safeHtml" (click)="onclick($event)"></div>

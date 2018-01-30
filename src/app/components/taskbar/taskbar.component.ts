@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FileReaderEvent } from '../../interfaces/file-reader-event-target';
 import { files } from 'jasmine-core';
 import { File } from '../../models/file';
-import { equals, contains } from 'ramda';
+import { equals, contains, isNil } from 'ramda';
 import { equal } from 'assert';
 import { StateService } from '../../services/state-service/state.service';
 import { EditorService } from '../../services/editor-service/editor.service';
@@ -24,9 +24,7 @@ export class TaskbarComponent implements OnInit {
   /************************************ LIFE CYCLE *******************************************/
   ngOnInit() {
     this._editorService.getFile().subscribe(obsFile => {
-      if (obsFile.getState()) {
-        this.file = obsFile;
-      }
+      this.file = obsFile;
     });
 
     this._stateService.getCurrentView().subscribe(currentView => this.currentView = currentView);

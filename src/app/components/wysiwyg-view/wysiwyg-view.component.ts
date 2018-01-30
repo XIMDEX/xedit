@@ -1,18 +1,19 @@
-import { Component, OnInit, AfterViewInit, EventEmitter, OnDestroy, Input, Output, ElementRef } from '@angular/core';
+import { Component, OnInit, EventEmitter, OnDestroy, Output, ElementRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { File } from '../../models/file';
 import { AfterViewChecked } from '@angular/core/src/metadata/lifecycle_hooks';
 import { EventListener } from '@angular/core/src/debug/debug_node';
-import { isNil, clone, reduce } from 'ramda';
+import { isNil, clone, reduce, path, equals, remove, is } from 'ramda';
 import { EditorComponent } from '../editor/editor.component';
-
-import 'tinymce';
-import 'tinymce/themes/modern';
-import 'tinymce/plugins/table';
-import 'tinymce/plugins/link';
 import { EditorService } from '../../services/editor-service/editor.service';
+import { Node } from '../../models/node';
+import { UUID } from 'angular2-uuid';
+import { XeditMapper } from '../../models/schema/xedit-mapper';
+import { ViewChild } from '@angular/core';
+import $ from "jquery";
 
-declare var tinymce: any;
+import { promise } from 'protractor';
+import { WysiwygHandler } from './wysiwyg-handler';
 
 @Component({
     selector: 'app-wysiwyg-view',
@@ -20,102 +21,101 @@ declare var tinymce: any;
     styleUrls: ['./wysiwyg-view.component.scss']
 })
 
-export class WysiwygViewComponent implements OnInit, AfterViewInit, OnDestroy {
+export class WysiwygViewComponent implements OnInit, OnDestroy {
 
-    @Input() elementId: String;
+    @ViewChild('xedit') xedit: ElementRef;
 
-    private editor: any;
     private renderContent: string;
-    private content: string;
-    private currentNode: Array<any>;
-
+    private subscribeFileState;
 
     constructor(private _editorService: EditorService, private _elementRef: ElementRef) { }
 
-    /************* LIFE CYCLE *************/
+    /************************************** Life Cycle **************************************/
     ngOnInit() {
-        this._editorService.getFile().subscribe(message => {
-            if (message.getState()) {
-                this.content = message.getState()
-                // Parse content to html
-                this.renderContent = EditorComponent.parseContentToXedit(this.content);
-            }
-            console.log('WysiwygViewComponent', 'ngOnInit', this.content, this.renderContent);
-        });
-
-        this._editorService.getCurrentNode().subscribe(currentNode => this.currentNode = currentNode);
-    }
-
-    ngAfterViewInit() {
-        this.reloadTinymce();
+        this.config();
     }
 
     ngOnDestroy() {
-        this.removeTinymce();
+        this.subscribeFileState.unsubscribe();
     }
 
-    /************* END LIFE CYCLE *************/
+    /************************************** Private Methods **************************************/
 
     /**
-     * Init tinymce editor and added events
+     * Config component
      */
-    initTinymce = function () {
-        tinymce.init({
-            selector: 'section.editable',
-            inline: true,
-            branding: false,
-            plugins: ['link', 'table'],
-            skin_url: 'assets/skins/lightgray',
-            valid_elements: '*[xe_uuid]',
-            setup: editor => {
-                this.editor = editor;
-                editor.on('NodeChange', (e) => {
-                    console.log(e);
-                });
-                editor.on('change', (evt: Event) => {
-                    var contentTag = editor.bodyElement;
-                    var element, uuidPath = null;
+    config() {
+        this.renderContent = this.parseContentToWysiwygEditor(this._editorService.getFileValue().getState().getContent());
+        // Suscribe to file changes
+        this.subscribeFileState = this._editorService.getFileState().subscribe(file => {
+            console.log(file)
+            // Parse content to html
+            this.renderContent = this.parseContentToWysiwygEditor(this._editorService.getFileValue().getState().getContent());
+        });
 
-                    // Get tag modified
-                    let xeid = '';
-                    for (let i = 0; i < contentTag.attributes.length; i++) {
-                        if (contentTag.attributes[i].nodeName == 'xe_uuid') {
-                            xeid = contentTag.attributes[i].value
-                            break;
-                        }
-                    }
-                    element = this._elementRef.nativeElement.querySelector('[xe_uuid="' + xeid + '"]');
-                    uuidPath = EditorComponent.getUuidPath(element);
-
-                    //Modify file with new changes
-                    var elementContent = clone(this.content);
-                    var editContent = reduce(function (acc, value) {
-                        return acc.child[value];
-                    }, elementContent[uuidPath.shift()].content, uuidPath);
-                    editContent.child = File.html2json(editor.getContent(), false)
-
-                    // Save new state
-                    this._editorService.newStateFile(elementContent);
-
-                });
-            }
+        // Suscribe to node change
+        this._editorService.getCurrentNodeModify().subscribe(currentNode => {
+            var element = this.xedit.nativeElement.querySelector('[xe_uuid="' + currentNode.getUuid() + '"]');
+            Object.keys(currentNode.getAttributes()).forEach(attribute => {
+                element.setAttribute(attribute, currentNode.getAttribute(attribute))
+            });
         });
     }
 
     /**
-     * Remove tinymce editor
-     */
-    removeTinymce = function () {
-        tinymce.remove(this.editor);
-    };
+    * Transform json content to html with xedit root tag
+    * 
+    * @param content 
+    */
+    private parseContentToWysiwygEditor(content) {
+        var renderContent = '';
+        Object.keys(content).forEach(property => {
+            renderContent += "<xedit xe_id='" + property + "'>";
+            renderContent += is(String, content[property].content) ? content[property].content : File.json2html(content[property].content);
+            renderContent += "</xedit>";
+        });
+        return renderContent;
+    }
+    /************************************** Public Methods **************************************/
+
+    onclick(evt) {
+
+        var currentNode = evt.target;
+        var section = this.getSection(currentNode);
+
+        if (section)
+            this.applyHandler(currentNode, section);
+    }
+
+    getSection(currentNode, rootTag = 'section') {
+        var section = null;
+
+        if (!isNil(currentNode) && currentNode.nodeName.toLowerCase() == rootTag)
+            section = currentNode;
+
+        return !isNil(section) || isNil(currentNode) || isNil(currentNode.parentNode) ?
+            section : this.getSection(currentNode.parentNode, rootTag)
+    }
+
+    applyHandler(currentNode, section) {
+        var sectionType = this.getAttributeValue(section.attributes, XeditMapper.TAG_SECTION_TYPE)
+
+        var args = { section: section, node: currentNode, service: this._editorService }
+        WysiwygHandler.executeHandler(sectionType, args);
+    }
 
     /**
-     * Reload tinymce editor
+     * 
      */
-    reloadTinymce = function () {
-        this.removeTinymce();
-        this.renderContent = EditorComponent.parseContentToXedit(this.content);
-        this.initTinymce();
+    getAttributeValue(attributes, name): any {
+        var value = null;
+        for (let i = 0; i < attributes.length; i++) {
+            if (attributes[i].nodeName == name) {
+                value = attributes[i].value
+                break;
+            }
+        }
+        return value;
     }
 
 }

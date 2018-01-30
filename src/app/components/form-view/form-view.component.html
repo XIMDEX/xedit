@@ -4,5 +4,6 @@
 
 <div *ngFor="let editorNode of editorNodes">
     <h3>{{editorNode.title}}</h3>
-    <ace-editor [text]=editorNode.renderContent [autoUpdateContent]=" false " style="height: 100px; width:100%; overflow: auto; "></ace-editor>
+    <ace-editor [text]=editorNode.renderContent id={{editorNode.id}} [durationBeforeCallback]=500 [autoUpdateContent]="false"
+        (textChanged)="onChange($event, editorNode.id)" style="height: 500px; width:100%; overflow: auto;"></ace-editor>
 </div>

@@ -3,19 +3,55 @@ import { UUID } from 'angular2-uuid';
 import { History } from './history';
 import { HTMLParser } from 'core/htmlparser';
 import { Serializable } from './interfaces/Serializable';
-import { isNil } from 'ramda';
+import { isNil, equals, is } from 'ramda';
+
+export class FileHistory {
+
+    static TYPE_JSON = 'json';
+    static TYPE_TEXT = 'text';
+
+    hash: string;
+    content: JSON;
+    type: string
+
+    //Constructor
+    constructor(content: any) {
+        this.hash = UUID.UUID();
+        this.content = content;
+        this.type = is(String, content) ? FileHistory.TYPE_TEXT : FileHistory.TYPE_JSON;
+    }
+
+    /***************** Getters and setters **************************/
+    getContent(): JSON {
+        return this.content;
+    }
+
+    setContent(content: JSON): void {
+        this.content = content;
+    }
+
+    getHash(): string {
+        return this.hash;
+    }
+
+    setHash(hash: string): void {
+        this.hash = hash;
+    }
+}
 
 export class File extends History {
+
     schema: JSON;
-    content: JSON;
 
     constructor(json = null) {
         super();
-        if (!isNil(json)) {
-            this.createContent(json.nodes);
-            this.addState(this.content);
-        }
+
+        if (isNil(json))
+            throw TypeError('Invalid arguments')
+
+        this.createContent(json.nodes);
     }
+
 
     /***************** PRIVATE METHODS **************************/
     private createContent(nodes: JSON) {
@@ -24,8 +60,7 @@ export class File extends History {
             nodes[property].content = File.html2json(nodes[property].content);
         });
 
-        this.content = nodes;
-        return nodes;
+        this.addState(new FileHistory(nodes));
     }
 
     private static removeDOCTYPE(html) {
@@ -39,6 +74,16 @@ export class File extends History {
         return '"' + v + '"';
     }
 
+    /***************** PUBLIC METHODS **************************/
+
+    /**
+     * Added new state 
+     */
+    newState(content: JSON): File {
+        super.newState(new FileHistory(content));
+        return this;
+    }
+
     /***************** STATIC METHODS **************************/
     static html2json = function (html, hasRootTag = true, hasIds = false) {
         html = File.removeDOCTYPE(html);
@@ -47,8 +92,6 @@ export class File extends History {
             node: 'root',
             child: {},
         };
-
-        console.log(html);
 
         HTMLParser(html, {
             start: function (tag, uuid, attrs, unary) {
@@ -96,7 +139,7 @@ export class File extends History {
                     if (parent.child === undefined) {
                         parent.child = {};
                     }
-                    parent.child.push(node);
+                    parent.child[node.uuid] = node;
                 } else {
                     bufArray.unshift(node);
                 }
@@ -122,7 +165,7 @@ export class File extends History {
                     text: text,
                 };
                 if (bufArray.length === 0) {
-                    //results.child.push(node);
+                    results.child["text-0"] = node;
                 } else {
                     var parent = bufArray[0];
                     if (parent.child === undefined) {
@@ -170,12 +213,12 @@ export class File extends History {
 
         if (json.node === 'element') {
             var tag = json.tag;
+            var uuid = showIds ? ' xe_uuid="' + json.uuid + '" ' : '';
+
             if (empty.indexOf(tag) > -1) {
                 // empty element
-                return '<' + json.tag + attr + '/>';
+                return '<' + json.tag + uuid + attr + '/>';
             }
-
-            var uuid = showIds ? ' xe_uuid="' + json.uuid + '" ' : '';
 
             // non empty element
             var open = '<' + json.tag + uuid + attr + '>';
@@ -196,8 +239,18 @@ export class File extends History {
         }
     }
 
-    static addUuidToHtml = function (html) {
-        var json = this.html2json(html);
-        return this.json2html(json);
+
+    /**
+     * Added uuid if attribute not exist
+     */
+    static addUuidIfAttributeNotExist(node): void {
+        var attributes = node.attributes;
+        var existProp = false;
+        Object.keys(attributes).forEach(prop => {
+            if (equals(attributes[prop].name, 'xe_uuid')) existProp = true;
+        })
+        if (!existProp)
+            node.setAttribute('xe_uuid', UUID.UUID())
     }
+
 }

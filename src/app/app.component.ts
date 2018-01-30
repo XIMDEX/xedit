@@ -10,10 +10,7 @@ import { EditorComponent } from '../../../x-edit/src/app/components/editor/edito
 })
 export class AppComponent {
 
-    @ViewChild(TaskbarComponent) taskbarComponent;
-    @ViewChild(EditorComponent) editorComponent;
-    @ViewChild(PropertiesViewComponent) propertiesViewComponent;
-
-
     title = 'app';
+
+
 }

@@ -1,10 +1,14 @@
 <div id="x-edit-properties-view">
-    <nav>
-        <ul>
-            <li>options</li>
-            <li>options</li>
-            <li>options</li>
-            <li>options</li>
+    View Properties
+    <nav *ngIf="currentNode != null">
+        <p> Tag: {{currentNode.name}}</p>
+        <h3>Properties</h3>
+        <ul *ngIf="currentNode.attributes != null">
+            <li *ngFor="let attribute of currentNode | keys">
+                <p>{{attribute.name}}</p>
+                <input type="text" name="{{attribute.name}}" value="{{attribute.value}}" (change)="changePropertyValue($event, attribute.name)"
+                />
+            </li>
         </ul>
     </nav>
 </div>

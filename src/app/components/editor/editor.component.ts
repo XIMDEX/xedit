@@ -3,10 +3,12 @@ import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { PropertiesViewComponent } from '../properties-view/properties-view.component';
 import { WysiwygViewComponent } from '../wysiwyg-view/wysiwyg-view.component';
 import { FormViewComponent } from '../form-view/form-view.component';
-import { equals } from 'ramda';
+import { equals, merge } from 'ramda';
 import { File } from '../../models/file';
 import { isNil, clone, reduce } from 'ramda';
 import { StateService } from '../../services/state-service/state.service';
+import validator from 'html-validator';
+import htmlTagValidator from 'html-tag-validator';
 
 @Component({
   selector: 'app-editor',
@@ -26,33 +28,74 @@ export class EditorComponent implements OnInit {
     });
   }
 
+  /**
+   * 
+   * @param view 
+   */
   showComponent(view) {
     return equals(view, this.currentView);
   }
 
   /**
-    * Transform json content to html with xedit root tag
-    * 
-    * @param content 
-    */
-  public static parseContentToXedit = function (content) {
-    var renderContent = '';
-    Object.keys(content).forEach(property => {
-      renderContent += "<xedit xe_id='" + property + "'>";
-      renderContent += File.json2html(content[property].content);
-      renderContent += "</xedit>";
+   * 
+   */
+  static executeIfvalidateHtmlTags(content, callback, errorCallback, options = {}) {
+    options = merge({
+      settings: {
+        format: 'html', // 'plain', 'html', or 'markdown' 
+      },
+      attributes: {
+        '_': {
+          mixed: /.*/
+        }
+      }
+    }, options);
+
+    htmlTagValidator(content, options, (err, ast) => {
+      if (err)
+        errorCallback()
+      else
+        callback()
     });
-    return renderContent;
   }
 
-  public static getUuidPath = function (element, rootTag = 'xedit', path = []) {
-    var parent = element.parentNode;
 
-    if (!isNil(element))
-      path.unshift(element.getAttribute('xe_uuid') || element.getAttribute('xe_id'))
+  /**
+   * @todo Check if validate html with w3c
+   */
+  static validateHtml() {
+    /* const options = {
+        data: content,
+        format: 'html5',
+        fragment: true,
+        validator: 'https://validator.w3.org/nu/',
+        ignore: [
+          'Error: Start tag seen without seeing a doctype first. Expected “<!DOCTYPE html>”.',
+          'Error: Element “head” is missing a required instance of child element “title”.',
+          'Error: Attribute “xe_uuid” not allowed on element “section” at this point',
+          'Error: Attribute “xe_uuid” not allowed on element “section” at this point.',
+          'Error: Attribute “xe_section” not allowed on element “section” at this point.',
+          'Error: Attribute “xe_uuid” not allowed on element “h1” at this point.',
+        ]
+      }
+      validator(options)
+        .then((data) => {
+          var newState = clone(this.content);
+          var json = File.html2json(content, false);
+          newState['s4sdf89'].content.child = json;
+          this._editorService.newState(newState);
+        })
+        .catch((error) => {
+          console.error(error)
+        })*/
+  }
 
-    return (element.nodeName.toLowerCase() == rootTag || isNil(parent)) ?
-      path : this.getUuidPath(parent, rootTag, path);
+
+  /**
+   * 
+   */
+  static checkIfContentChange(currentFile, file) {
+    return isNil(currentFile) || (!isNil(file) && currentFile.getState().getHash() != file.getState().getHash());
   }
 
 }

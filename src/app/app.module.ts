@@ -17,6 +17,8 @@ import { WysiwygViewComponent } from './components/wysiwyg-view/wysiwyg-view.com
 import { FormViewComponent } from './components/form-view/form-view.component';
 import { StateService } from './services/state-service/state.service';
 import { EditorService } from './services/editor-service/editor.service';
+import { DebugPipe } from './pipes/debug/debug.pipe';
+import { KeysPipe } from './pipes/keys/keys.pipe';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { EditorService } from './services/editor-service/editor.service';
     PropertiesViewComponent,
     WysiwygViewComponent,
     FormViewComponent,
-    SafeHtmlPipe
+    SafeHtmlPipe,
+    DebugPipe,
+    KeysPipe
   ],
   imports: [
     /* 3rd party components */

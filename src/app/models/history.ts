@@ -8,7 +8,7 @@ export class History {
     private states: Array<any>;
 
     // Contructor
-    constructor(initState: any = null, maxStates: number = 100) {
+    constructor(initState: any = null, maxStates: number = 50) {
         this.pos = 0;
         this.states = new Array;
         this.setMaxStates(maxStates);
@@ -62,8 +62,10 @@ export class History {
         if (this.countStates() > this.pos)
             this.states.splice(this.pos + 1, this.countStates());
 
-        if (this.checkMaxStates())
+        if (this.checkMaxStates()) {
             this.states.shift();
+            this.pos--;
+        }
 
         this.states.push(state);
     }
@@ -100,9 +102,11 @@ export class History {
     /**
      * Added new state 
      */
-    newState(state: any): void {
+    newState(state: any): Object {
         this.addState(state);
         this.pos++;
+
+        return this;
     }
 
     /**
