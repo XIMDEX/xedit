@@ -1,5 +1,4 @@
-import { equals, isNil } from 'ramda';
-import { equal } from 'assert';
+import { equals, isNil, contains } from 'ramda';
 import { XeditMapper } from './schema/xedit-mapper';
 
 export class Node {
@@ -50,7 +49,7 @@ export class Node {
         return this.attributes;
     }
 
-    getAttribute(name: string): any {
+    getAttribute(name: string, value: any = null): any {
         return isNil(this.attributes[name]) ? null : this.attributes[name];
     }
 
@@ -59,11 +58,10 @@ export class Node {
     }
 
     setAttribute(name: string, value: Object): void {
-        console.log("OK");
         if (name == XeditMapper.TAG_IMAGE) {
             this.attributes[name] = value;
             this.attributes['src'] = 'http://ajlucena.com/ximdex-4/public_xmd/?action=filemapper&method=nodeFromExpresion&expresion=' + value;
-        } else if (!isNil(this.attributes[name]))
+        } else if (contains(name, this.getAvailableAttributes()))
             this.attributes[name] = value;
     }
 
@@ -82,11 +80,11 @@ export class Node {
     getAvailableAttributes() {
         var attributes = [];
         if (equals(this.getType(), Node.TYPE_IMAGE) && !isNil(this.getAttribute(XeditMapper.TAG_IMAGE))) {
-            attributes = [XeditMapper.TAG_IMAGE];
+            attributes = [XeditMapper.TAG_IMAGE, 'width', 'height', 'xe_uuid'];
         } else if (equals(this.getType(), Node.TYPE_IMAGE)) {
-            attributes = ['src', 'alt', 'style'];
+            attributes = ['src', 'alt', 'style', 'xe_uuid'];
         } else {
-            attributes = ['id', 'class', 'style'];
+            attributes = ['id', 'class', 'style', 'xe_uuid'];
         }
         return attributes;
     }

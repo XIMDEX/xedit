@@ -8,34 +8,41 @@ import { clone, isNil, reduce, is } from 'ramda';
 import { Editor } from 'ng2-ace-editor/node_modules/brace';
 import { Subject } from 'rxjs/Subject';
 import { XeditMapper } from '../../models/schema/xedit-mapper';
+import { UUID } from 'angular2-uuid';
 
 @Injectable()
 export class EditorService {
 
   //Variables
   private file: BehaviorSubject<File>; // Change if do or redo only
-  private fileState: Subject<File>; // Current state content (Change if component change)
+  private fileState: BehaviorSubject<File>; // Current state content (Change if component change)
   private currentNode: Subject<Node>; // Current node
   private currentNodeModify: Subject<Node> // Change if node is modify
+  private loading: BehaviorSubject<boolean>;
 
   //Constructor
   constructor() {
     this.file = new BehaviorSubject<File>(null);
-    this.fileState = new Subject<File>();
+    this.fileState = new BehaviorSubject<File>(null);
     this.currentNode = new BehaviorSubject<Node>(null);
     this.currentNodeModify = new Subject<Node>();
+    this.loading = new BehaviorSubject<boolean>(false);
   }
 
   //************************************** Getters and setters **************************************/
   setFile(file): void {
     this.file.next(file);
+    this.fileState.next(file);
   }
 
+
   getFile(): Observable<File> {
+    this.file.next(this.fileState.getValue());
     return this.file.asObservable();
   }
 
   getFileValue(): File {
+    this.file.next(this.fileState.getValue());
     return this.file.getValue()
   }
 
@@ -64,6 +71,14 @@ export class EditorService {
     return this.currentNodeModify.asObservable();
   }
 
+  isLoading() {
+    return this.loading.asObservable();
+  }
+
+  setLoading(loading) {
+    this.loading.next(loading);
+  }
+
   /************************************** Public Methods **************************************/
 
   /**
@@ -85,10 +100,8 @@ export class EditorService {
     * Return to the previous state if it exists, otherwise it does not do anything
    */
   lastStateFile(): void {
-    var file = clone(this.file.getValue());
-    file.lastState();
+    var file = this.file.getValue().lastState();
     this.setFile(file);
-    this.setFileState(file);
   }
 
 
@@ -96,10 +109,8 @@ export class EditorService {
    * Go to the next state if it exists, otherwise it does not do anything
    */
   nextStateFile(): void {
-    var file = clone(this.file.getValue());
-    file.nextState();
+    var file = this.file.getValue().nextState();
     this.setFile(file);
-    this.setFileState(file);
   }
 
   /**
@@ -109,12 +120,17 @@ export class EditorService {
    * @param content Html content
    */
   save(node, content) {
+    var fileContent = this.fileState.getValue().getState().content;
+
+    // Save new state
+    var newFile = this.newStateFile(fileContent);
+
     /** @todo Improve performance clone */
-    var fileContent = clone(this.file.getValue().getState().content)
+    //var fileContent = clone(this.file.getValue().getState().content)
     var uuidPath = null;
 
     if (is(String, node))
-      fileContent[node].content = content;
+      fileContent[node].content = File.html2json(content);
     else {
       uuidPath = EditorService.getUuidPath(node);
 
@@ -130,10 +146,7 @@ export class EditorService {
       editContent.child = File.html2json(content, false)
     }
 
-    // Save new state
-    var newFile = this.newStateFile(fileContent);
-    this.setFile(newFile);
-
+    this.setFileState(newFile);
   }
 
 

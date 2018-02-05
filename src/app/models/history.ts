@@ -1,28 +1,36 @@
-import { isNil } from 'ramda'
+import { isNil, remove as r_remove } from 'ramda';
+import { UUID } from 'angular2-uuid';
 
 export class History {
 
     // Variables
     private maxStates: number;
     private pos: number;
-    private states: Array<any>;
+    private state: any;
+    private states: Array<string>;
 
     // Contructor
-    constructor(initState: any = null, maxStates: number = 50) {
+    constructor(initState: any, maxStates: number = 50) {
         this.pos = 0;
         this.states = new Array;
         this.setMaxStates(maxStates);
-        if (!isNil(initState))
-            this.addState(initState);
+        this.state = initState;
+        this.states = [];
+
+        // Clear sessionStorage
+        sessionStorage.clear();
+
+        //if (!isNil(initState))
+        //    this.addState(initState);
     }
 
     //************************************** Getters and setters **************************************/
     getState() {
-        return this.states[this.pos] || null
+        return this.state; //this.states[this.pos] || null
     }
 
-    setState(states: Array<any>) {
-        this.states = states;
+    setState(state: any) {
+        this.state = state;
     }
 
     getMaxStates() {
@@ -34,7 +42,6 @@ export class History {
             throw new TypeError('Invalid maxStates');
         this.maxStates = maxStates;
     }
-
 
     /************************************** Private Methods **************************************/
 
@@ -49,33 +56,77 @@ export class History {
      * Check if there are the maximun number of states (By default 100)
      */
     private checkMaxStates(): boolean {
-        return this.countStates() > this.maxStates;
+        return this.countStates() >= this.maxStates;
     }
-
-    /************************************** Public Methods **************************************/
 
     /**
      * Added a new state
      */
-    addState(state: any): void {
+    private addState(state: any): void {
 
-        if (this.countStates() > this.pos)
+        if (this.countStates() > this.pos) {
+            this.remove(r_remove(0, this.pos + 1, this.states));
             this.states.splice(this.pos + 1, this.countStates());
+        }
 
         if (this.checkMaxStates()) {
-            this.states.shift();
+            this.remove(this.states.shift());
             this.pos--;
         }
 
-        this.states.push(state);
+        if (!isNil(this.state))
+            this.save(this.state)
+
+        this.state = state;
     }
+
+    /**
+     * Save state in SessionStorage
+     */
+    private save(state: any) {
+        if (typeof (Storage) != "undefined") {
+            var stateId = UUID.UUID();
+            try {
+                sessionStorage.setItem(stateId, JSON.stringify(state));
+                this.states.push(stateId);
+            } catch (ex) {
+                console.error('This object can not support stringify');
+            }
+        } else {
+            console.error("History is not supported.");
+        }
+    }
+
+    /**
+     * Recovery state by key from SessionStorage
+     * 
+     * @param stateId 
+     */
+    protected recovery(stateId: string) {
+        return JSON.parse(sessionStorage.getItem(stateId));
+    }
+
+    /**
+     * Remove state from storage
+     */
+    private remove(keys) {
+        keys = (keys instanceof Array) ? keys : [keys];
+        keys.forEach(key => {
+            sessionStorage.removeItem(key);
+        });
+    }
+
+    /************************************** Public Methods **************************************/
+
 
     /**
      * Return to the previous state if it exists, otherwise it does not do anything
      */
     lastState(): any {
-        if (this.hasPreviousState())
+        if (this.hasPreviousState()) {
             this.pos--;
+            this.state = this.recovery(this.states[this.pos]);
+        }
 
         return this;
     }
@@ -84,8 +135,10 @@ export class History {
      * Go to the next state if it exists, otherwise it does not do anything
      */
     nextState(): any {
-        if (this.hasNextState())
+        if (this.hasNextState()) {
             this.pos++;
+            this.state = this.recovery(this.states[this.pos]);
+        }
 
         return this;
     }
@@ -95,6 +148,8 @@ export class History {
      */
     resetState(): any {
         this.pos = 0;
+        if (this.state.length > 0)
+            this.state = this.recovery(this.states[this.pos]);
 
         return this;
     }
@@ -122,4 +177,5 @@ export class History {
     hasPreviousState(): boolean {
         return this.pos > 0;
     }
+
 }
