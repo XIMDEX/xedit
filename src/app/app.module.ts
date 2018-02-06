@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { AceEditorModule } from 'ng2-ace-editor';
-
+import { LoadingModule } from 'ngx-loading';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -19,7 +19,6 @@ import { StateService } from './services/state-service/state.service';
 import { EditorService } from './services/editor-service/editor.service';
 import { DebugPipe } from './pipes/debug/debug.pipe';
 import { KeysPipe } from './pipes/keys/keys.pipe';
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -39,7 +38,8 @@ import { KeysPipe } from './pipes/keys/keys.pipe';
     AppRoutingModule,
     FormsModule,
     BrowserAnimationsModule,
-    AceEditorModule
+    AceEditorModule,
+    LoadingModule
   ],
   providers: [
     EditorService,

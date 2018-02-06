@@ -13,7 +13,7 @@ const getId = function (editor) {
 };
 
 const insert = function (editor, nodeId) {
-    const url = 'http://ajlucena.com/ximdex-4/public_xmd/?action=filemapper&method=nodeFromExpresion&expresion='//10146
+    const url = 'http://ajlucena.com/ximdex-4/public_xmd/?action=filemapper&method=nodeFromExpresion&expresion='//10135
     const selectedNode = editor.selection.getNode();
     const isDam = selectedNode.tagName === 'IMG' && editor.dom.getAttrib(selectedNode, XeditMapper.TAG_IMAGE) !== '';
     if (isDam) {

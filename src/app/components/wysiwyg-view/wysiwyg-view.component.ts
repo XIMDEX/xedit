@@ -12,8 +12,8 @@ import { XeditMapper } from '../../models/schema/xedit-mapper';
 import { ViewChild } from '@angular/core';
 import $ from "jquery";
 
-import { promise } from 'protractor';
 import { WysiwygHandler } from './wysiwyg-handler';
+import { equal } from 'assert';
 
 @Component({
     selector: 'app-wysiwyg-view',
@@ -27,16 +27,26 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
     private renderContent: string;
     private subscribeFile;
+    private subscribeCN;
+    public breadcrumb: Array<string> = [];
 
     constructor(private _editorService: EditorService, private _elementRef: ElementRef) { }
 
     /************************************** Life Cycle **************************************/
     ngOnInit() {
+        this._editorService.setLoading(true);
         this.config();
+        this._editorService.setLoading(false);
     }
 
     ngOnDestroy() {
         this.subscribeFile.unsubscribe();
+        this.subscribeCN.unsubscribe();
+        this._editorService.setCurrentNode(null);
+        this._editorService.setCurrentNodeModify(null);
+    }
+
+    ngAfterViewInit() {
     }
 
     /************************************** Private Methods **************************************/
@@ -45,16 +55,15 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
      * Config component
      */
     config() {
-        this.renderContent = this.parseContentToWysiwygEditor(this._editorService.getFileValue().getState().getContent());
         // Suscribe to file changes
-        this.subscribeFile = this._editorService.getFileState().subscribe(file => {
+        this.subscribeFile = this._editorService.getFile().subscribe(file => {
             // Parse content to html
             this.renderContent = this.parseContentToWysiwygEditor(file.getState().getContent());
         });
 
         // Suscribe to node change
-        this._editorService.getCurrentNodeModify().subscribe(currentNode => {
-            var element = this.xedit.nativeElement.querySelector('[xe_uuid="' + currentNode.getUuid() + '"]');
+        this.subscribeCN = this._editorService.getCurrentNodeModify().subscribe(currentNode => {
+            var element = this.xedit.nativeElement.querySelector('[' + XeditMapper.TAG_UUID + '="' + currentNode.getUuid() + '"]');
             Object.keys(currentNode.getAttributes()).forEach(attribute => {
                 element.setAttribute(attribute, currentNode.getAttribute(attribute))
             });
@@ -70,7 +79,8 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         var renderContent = '';
         Object.keys(content).forEach(property => {
             renderContent += "<" + XeditMapper.TAG_EDITOR + " xe_id='" + property + "'>";
-            renderContent += is(String, content[property].content) ? content[property].content : File.json2html(content[property].content);
+            renderContent += File.json2html((is(String, content[property].content) ?
+                File.html2json(content[property].content) : content[property].content));
             renderContent += "</" + XeditMapper.TAG_EDITOR + ">";
         });
         return renderContent;
@@ -81,6 +91,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
         var currentNode = evt.target;
         var section = this.getSection(currentNode);
+        this.breadcrumb = this.getBreadCrumb(currentNode);
 
         if (section)
             this.applyHandler(currentNode, section);
@@ -96,25 +107,26 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
             section : this.getSection(currentNode.parentNode, rootTag)
     }
 
+    getBreadCrumb(currentNode, rootTag = 'xedit', path = []) {
+        var section = null;
+        var key = null;
+
+        if (!isNil(currentNode) && !isNil(section = currentNode.getAttribute(XeditMapper.TAG_SECTION_TYPE)) &&
+            !isNil(key = currentNode.getAttribute(XeditMapper.TAG_UUID)))
+            path.unshift({ key: key, name: section })
+
+        return isNil(currentNode) || isNil(currentNode.parentNode) || equals(currentNode.nodeName.toLowerCase(), rootTag) ?
+            path : this.getBreadCrumb(currentNode.parentNode, rootTag, path);
+    }
+
     applyHandler(currentNode, section) {
-        var sectionType = this.getAttributeValue(section.attributes, XeditMapper.TAG_SECTION_TYPE)
+        var sectionType = section.getAttribute(XeditMapper.TAG_SECTION_TYPE);
 
         var args = { section: section, node: currentNode, service: this._editorService }
         WysiwygHandler.executeHandler(sectionType, args);
     }
 
-    /**
-     * 
-     */
-    getAttributeValue(attributes, name): any {
-        var value = null;
-        for (let i = 0; i < attributes.length; i++) {
-            if (attributes[i].nodeName == name) {
-                value = attributes[i].value
-                break;
-            }
-        }
-        return value;
+    changeSelection(key) {
+        console.log(key);
     }
-
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EditorService } from '../../services/editor-service/editor.service';
 import { File } from '../../models/file';
-import { reduce, clone, path } from 'ramda';
+import { reduce, clone, path, has } from 'ramda';
 import { Node } from '../../models/node';
 import { EditorComponent } from '../editor/editor.component';
 import { XeditMapper } from '../../models/schema/xedit-mapper';
@@ -19,9 +19,8 @@ export class PropertiesViewComponent implements OnInit {
   constructor(private _editorService: EditorService) { }
 
   ngOnInit() {
-    this._editorService.getFile().subscribe(file => {
-      if (EditorComponent.checkIfContentChange(this.file, file))
-        this.file = file;
+    this._editorService.getFileState().subscribe(file => {
+      this.file = file;
     });
     this._editorService.getCurrentNode().subscribe(currentNode => this.currentNode = currentNode);
   }
@@ -30,22 +29,26 @@ export class PropertiesViewComponent implements OnInit {
 
     //Modify file with new changes
     var uuidPath = clone(this.currentNode.getPath())
-    var elementContent = clone(this.file.getState().getContent());
+    var elementContent = this.file.getState().getContent();
     var editContent = reduce(function (acc, value) {
       return acc.child[value];
     }, elementContent[uuidPath.shift()].content, uuidPath);
+
+    const hasAttr = has('attr');
+
+    if (!hasAttr(editContent) || editContent["attr"] == null)
+      editContent["attr"] = [];
+
     editContent["attr"][property] = evt.target.value;
 
     // Save new state
     var newFile = this._editorService.newStateFile(elementContent);
-    this.file = clone(newFile);
-    this._editorService.setFile(newFile);
+    this._editorService.setFileState(newFile);
 
     // Update current node
-    var node = clone(this.currentNode);
-    node.setAttribute(property, evt.target.value);
-    this._editorService.setCurrentNode(node);
-    this._editorService.setCurrentNodeModify(node);
+    this.currentNode.setAttribute(property, evt.target.value);
+    this._editorService.setCurrentNode(this.currentNode);
+    this._editorService.setCurrentNodeModify(this.currentNode);
   }
 
 

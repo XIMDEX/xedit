@@ -1,10 +1,9 @@
 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FileReaderEvent } from '../../interfaces/file-reader-event-target';
-import { files } from 'jasmine-core';
 import { File } from '../../models/file';
+
 import { equals, contains, isNil } from 'ramda';
-import { equal } from 'assert';
 import { StateService } from '../../services/state-service/state.service';
 import { EditorService } from '../../services/editor-service/editor.service';
 
@@ -34,12 +33,16 @@ export class TaskbarComponent implements OnInit {
   /********************************** END LIFE CYCLE *****************************************/
 
   undo() {
+    this._editorService.setLoading(true);
     this._editorService.lastStateFile();
+    this._editorService.setLoading(false);
   }
 
 
   redo() {
+    this._editorService.setLoading(true);
     this._editorService.nextStateFile();
+    this._editorService.setLoading(false);
   }
 
   showComponent(component) {
@@ -91,7 +94,7 @@ export class TaskbarComponent implements OnInit {
       this._stateService.setAvailableViews(['wysiwyg', 'form']);
 
       reader.onerror = (evt) => {
-        console.log('Error loading file');
+        console.error('Error loading file');
       }
 
     }

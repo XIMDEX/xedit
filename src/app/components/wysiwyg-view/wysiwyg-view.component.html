@@ -1,1 +1,8 @@
+<div class="breadcrumb">
+    <ul>
+        <li *ngFor="let section of breadcrumb" (click)="changeSelection(section.key)">
+            {{ section.name }}
+        </li>
+    </ul>
+</div>
 <div id='xedit' #xedit [innerHTML]="renderContent | safeHtml" (click)="onclick($event)"></div>

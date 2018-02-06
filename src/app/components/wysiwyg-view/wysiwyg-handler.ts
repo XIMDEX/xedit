@@ -18,7 +18,6 @@ declare var tinymce: any;
 
 //DATEPICKER
 import "bootstrap-datepicker";
-import { clearTimeout } from "timers";
 import { isNil, equals } from 'ramda';
 import { File } from '../../models/file';
 import { EditorService } from "../../services/editor-service/editor.service";
@@ -44,72 +43,93 @@ export class WysiwygHandler {
      * Init tinymce editor and added events
      */
     static initTinymce(args) {
-        WysiwygHandler.addPlugins();
-        tinymce.init({
-            target: args.section,
-            inline: true,
-            branding: false,
-            toolbar: "styleselect | link dam | bold italic underline |  aligncenter alignjustify  | bullist numlist outdent indent |fontsizeselect",
-            plugins: ['link', 'table', 'image', 'paste', 'dam'],
-            skin_url: 'assets/skins/lightgray',
-            valid_elements: '*[*]',
-            setup: editor => {
-                editor.on('Nodechange', (e) => {
-                    var element = e.element;
-                    if (isNil(element.getAttribute(XeditMapper.TAG_UUID)))
-                        element.setAttribute(XeditMapper.TAG_UUID, UUID.UUID())
-                    var currentNode = EditorService.parseToNode(element);
-                    args.service.setCurrentNode(currentNode);
-                });
-                editor.on('PastePreProcess', (e) => {
-                    function replaceIndex(string, at, repl) {
-                        var pos = -1;
-                        return string.replace(/ xe_uuid=\"[^"]*\" */g, (match) => {
-                            pos++;
-                            if (pos === at) return repl;
-                            return match;
-                        });
-                    }
+        if (tinymce.activeEditor == null) {
+            WysiwygHandler.addPlugins();
+            tinymce.init({
+                max_chars: 30000,
+                target: args.section,
+                inline: true,
+                branding: false,
+                fixed_toolbar_container: '#toolbar',
+                toolbar: "styleselect | link dam | bold italic underline |  aligncenter alignjustify  | bullist numlist outdent indent |fontsizeselect",
+                plugins: ['link', 'table', 'image', 'paste', 'dam'],
+                skin_url: 'assets/skins/lightgray',
+                content_style: '.mce-content-body{ line-height: unset !important; } [xe_selected]{ outline: 1px solid green}',
+                valid_elements: '*[*]',
+                setup: editor => {
+                    var prevElement = null;
+                    editor.on('Nodechange', (e) => {
+                        if (!isNil(prevElement))
+                            prevElement.removeAttribute(XeditMapper.ATTR_SELECTED);
 
-                    var occurrences = e.content.match(/ xe_uuid=\"[^"]*\" */g).length;
-                    for (let i = 0; i < occurrences; i++) {
-                        e.content = replaceIndex(e.content, i, ' xe_uuid="' + UUID.UUID() + '" ')
-                    }
-                });
-                editor.on('change', (evt: Event) => {
-                    var contentTag = editor.bodyElement;
-                    var content = editor.getContent();
-                    args.service.save(contentTag, content);
-                });
-                editor.on('GetContent', (e) => {
-                    var node = e.target.selection.getNode();
-                    if (isNil(node.getAttribute(XeditMapper.TAG_UUID)))
-                        node.setAttribute(XeditMapper.TAG_UUID, UUID.UUID())
-                });
-                editor.on('init', (evt: Event) => {
-                    tinymce.execCommand('mceFocus', false, editor.id);
-                });
-                editor.on('blur', (e) => {
-                    new Promise(
-                        () => {
-                            const loop = window.setInterval(() => {
-                                try {
-                                    if (tinymce.activeEditor.id != editor.id || editor.isHidden()) {
-                                        window.clearInterval(loop);
-                                        tinymce.remove(editor);
-                                    } else {
-                                        editor.hide();
-                                    }
-                                } catch (e) {
-                                    window.clearInterval(loop);
-                                }
-                            }, 30);
+                        var element = e.element;
+                        element.setAttribute(XeditMapper.ATTR_SELECTED, '');
+                        prevElement = element;
 
+                        if (isNil(element.getAttribute(XeditMapper.TAG_UUID)))
+                            element.setAttribute(XeditMapper.TAG_UUID, UUID.UUID())
+                        var currentNode = EditorService.parseToNode(element);
+                        args.service.setCurrentNode(currentNode);
+                    });
+                    editor.on('PastePreProcess', (e) => {
+                        if (!isNil(prevElement))
+                            prevElement.removeAttribute(XeditMapper.ATTR_SELECTED);
+                        function replaceIndex(string, at, repl) {
+                            var pos = -1;
+                            return string.replace(/ xe_uuid=\"[^"]*\" */g, (match) => {
+                                pos++;
+                                if (pos === at) return repl;
+                                return match;
+                            });
                         }
-                    );
-                });
-            }
-        });
+
+                        var occurrences = e.content.match(/ xe_uuid=\"[^"]*\" */g);
+                        occurrences = occurrences != null ? occurrences.length : 0;
+                        for (let i = 0; i < occurrences; i++) {
+                            e.content = replaceIndex(e.content, i, ' xe_uuid="' + UUID.UUID() + '" ')
+                        }
+
+                        e.content = File.json2html(File.html2json(e.content));
+                    });
+                    editor.on('change', (evt: Event) => {
+                        var contentTag = editor.bodyElement;
+                        var content = editor.getContent();
+                        args.service.save(contentTag, content);
+                    });
+                    /*editor.on('GetContent', (e) => {
+                        var node = e.target.selection.getNode();
+                        if (isNil(node.getAttribute(XeditMapper.TAG_UUID)))
+                            node.setAttribute(XeditMapper.TAG_UUID, UUID.UUID())
+                    });*/
+                    editor.on('init', (evt: Event) => {
+                        tinymce.execCommand('mceFocus', false, editor.id);
+                    });
+                    editor.on('blur', (e) => {
+                        new Promise(
+                            () => {
+                                const loop = window.setInterval(() => {
+                                    try {
+                                        if (tinymce.activeEditor.id != editor.id || editor.isHidden()) {
+                                            window.clearInterval(loop);
+                                            tinymce.remove(editor);
+                                        } else {
+                                            editor.hide();
+                                        }
+                                    } catch (e) {
+                                        window.clearInterval(loop);
+                                    }
+                                }, 30);
+
+                            }
+                        );
+                    });
+                    editor.on('remove', (e) => {
+                        if (!isNil(prevElement))
+                            prevElement.removeAttribute(XeditMapper.ATTR_SELECTED);
+                    });
+                }
+            });
+        }
     }
 
     static addPlugins() {

@@ -10,32 +10,24 @@ export class FileHistory {
     static TYPE_JSON = 'json';
     static TYPE_TEXT = 'text';
 
-    hash: string;
-    content: JSON;
+    content: any;
     type: string
 
     //Constructor
-    constructor(content: any) {
-        this.hash = UUID.UUID();
-        this.content = content;
-        this.type = is(String, content) ? FileHistory.TYPE_TEXT : FileHistory.TYPE_JSON;
+    constructor(content: any = null) {
+        if (content != null) {
+            this.content = content;
+            this.type = is(String, content) ? FileHistory.TYPE_TEXT : FileHistory.TYPE_JSON;
+        }
     }
 
     /***************** Getters and setters **************************/
-    getContent(): JSON {
+    getContent(): any {
         return this.content;
     }
 
-    setContent(content: JSON): void {
+    setContent(content: any): void {
         this.content = content;
-    }
-
-    getHash(): string {
-        return this.hash;
-    }
-
-    setHash(hash: string): void {
-        this.hash = hash;
     }
 }
 
@@ -44,23 +36,21 @@ export class File extends History {
     schema: JSON;
 
     constructor(json = null) {
-        super();
+        super(File.createContent(json.nodes));
 
         if (isNil(json))
             throw TypeError('Invalid arguments')
-
-        this.createContent(json.nodes);
     }
 
 
     /***************** PRIVATE METHODS **************************/
-    private createContent(nodes: JSON) {
+    private static createContent(nodes: JSON) {
 
         Object.keys(nodes).forEach(property => {
             nodes[property].content = File.html2json(nodes[property].content);
         });
 
-        this.addState(new FileHistory(nodes));
+        return new FileHistory(nodes);
     }
 
     private static removeDOCTYPE(html) {
@@ -74,18 +64,28 @@ export class File extends History {
         return '"' + v + '"';
     }
 
+    protected recovery(stateId: string) {
+        return Object.assign(new FileHistory, super.recovery(stateId));
+    }
     /***************** PUBLIC METHODS **************************/
 
     /**
      * Added new state 
      */
-    newState(content: JSON): File {
+    newState(content: any): File {
         super.newState(new FileHistory(content));
         return this;
     }
 
     /***************** STATIC METHODS **************************/
-    static html2json = function (html, hasRootTag = true, hasIds = false) {
+
+    /**
+     * Parse html to json
+     * 
+     * @param html String with html
+     * @param hasRootTag If true then root tag will be added
+     */
+    static html2json = function (html, hasRootTag = true) {
         html = File.removeDOCTYPE(html);
         var bufArray = [];
         var results = {
@@ -190,6 +190,12 @@ export class File extends History {
         return hasRootTag ? results : results.child;
     };
 
+    /**
+     * Convert json to html
+     * 
+     * @param json Json object with content
+     * @param showIds If true added attribute id in tags
+     */
     static json2html = function (json, showIds = true) {
         // Empty Elements - HTML 4.01
         var empty = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param', 'embed'];
