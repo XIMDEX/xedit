@@ -1,17 +1,23 @@
 @import '~sass/variables';
 
 :host{
+    position: relative;
+    z-index: 10;
     display: flex;
     flex-direction: column;
+    box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.57);
 
     ::ng-deep{
         > nav{
+            position: relative;
+            z-index: 2;
             padding: 0;
             margin: 0;
             width: 100%;
             min-height: $taskbar-height;
             max-height: $taskbar-height;
             background-color: $green-dark;
+            box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.57);
 
             > ul{
                 padding: 0;
