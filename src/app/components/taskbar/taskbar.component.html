@@ -1,35 +1,29 @@
 <nav id="xedit-taskbar" class="taskbar">
   <ul>
-    <li>
-      <button class="btn btn-default" (click)="load()">
-        <span class="glyphicon glyphicon-open"></span>
-      </button>
+    <li (click)="load()">
+      <i class="fas fa-upload"></i>
       <input style='position:absolute; left:-1000px' type="file" name="open_html" id="open_html" (change)="onFileSelect($event)">
     </li>
     <li>
-      <button class="btn btn-default">
-        <span class="glyphicon glyphicon-floppy-disk"></span>
-      </button>
+      <i class="fas fa-save"></i>
     </li>
-    <li>
-      <button class="btn btn-default" (click)="undo()" [disabled]="!previousAvailable()">
-        <span class="glyphicon glyphicon-arrow-left"></span>
-      </button>
+    <li class="separator"></li>
+    <li (click)="undo()" [ngClass]="{disabled: !previousAvailable()}">
+      <i class="fas fa-undo"></i>
     </li>
-    <li>
-      <button class="btn btn-default" (click)="redo()" [disabled]="!nextAvailable()">
-        <span class="glyphicon glyphicon-arrow-right"></span>
-      </button>
-    </li>
-    <li>
-      <button class="btn btn-default" (click)="showComponent('wysiwyg')" [disabled]="isDisabledComponent('wysiwyg')">
-        wysiwyg
-      </button>
-    </li>
-    <li>
-      <button class="btn btn-default" (click)="showComponent('form')" [disabled]="isDisabledComponent('form')">
-        form
-      </button>
-    </li>
+    <li (click)="redo()" [ngClass]="{disabled: !nextAvailable()}">
+      <i class="fas fa-redo"></i>
+    </li>    
   </ul>
 </nav>
+<main *ngIf="hasMultiViews()">
+  <ul>
+    <li 
+      (click)="showComponent(view)" 
+      *ngFor="let view of availableViews"
+      [ngClass]="[isActivatedComponent(view)? 'selected' : '']"
+    >
+        {{view}}
+    </li>
+  </ul>
+</main>

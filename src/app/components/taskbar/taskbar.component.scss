@@ -1,21 +1,83 @@
 @import '~sass/variables';
 
 :host{
+    display: flex;
+    flex-direction: column;
+
     ::ng-deep{
-        nav{
+        > nav{
             padding: 0;
             margin: 0;
             width: 100%;
-            height: $taskbar-height;
-            background-color: $background-xedit-base-dark;
+            min-height: $taskbar-height;
+            max-height: $taskbar-height;
+            background-color: $green-dark;
 
             > ul{
                 padding: 0;
                 margin: 0;
                 list-style: none;
+                height: $taskbar-height;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                padding: 0 5px;
 
                 > li{
-                    float: left;
+                    margin: auto 5px auto 0;
+                    padding: 5px 10px;
+                    color: $white-dark;
+                    transition: color 0.3s ease-in-out;
+                    cursor: pointer;
+
+                    > i{
+                        font-size: 18px;
+                    }
+
+                    &.separator {
+                        padding: 0;
+                        height: $taskbar-height - 16px;
+                        width: 1px;
+                        margin: auto 0;
+                        background-color: $green-light;
+                    }
+
+                    &:hover{
+                        color: white;
+                    }
+
+                    &.disabled{
+                        cursor: not-allowed;
+                        color: $green-light;
+                    }
+                }
+            }
+        }
+
+        > main {
+            background-color: $white-light;
+
+            > ul {
+                display: flex;
+                list-style: none;
+                padding: 0;
+                margin: 0;
+
+                > li {
+                    padding: 5px 15px;
+                    border-bottom: 2px solid transparent;
+                    color: $white-darker;
+                    transition: color 0.3s ease-in-out, border-bottom-color 0.3s ease-in-out;
+                    cursor: pointer;
+
+                    &:hover {
+                        border-bottom-color: $green-light;
+                    }
+
+                    &.selected {
+                        border-bottom-color: $green-dark;
+                        color: $green-darker;
+                    }
                 }
             }
         }

@@ -58,6 +58,9 @@ export class TaskbarComponent implements OnInit {
     return this.isActivatedComponent(component) || !this.isShowedComponent(component);
   }
 
+  hasMultiViews(): boolean{
+    return this.availableViews.length > 1;
+  }
 
   nextAvailable() {
     return this.file != null && this.file.hasNextState();
