@@ -7,7 +7,6 @@ import {
     isNil,
     clone,
     reduce,
-    path,
     equals,
     remove,
     is,

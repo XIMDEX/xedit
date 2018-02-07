@@ -1,26 +1,32 @@
-<nav id="xedit-taskbar" class="taskbar">
-  <ul>
-    <li (click)="load()">
-      <i class="fas fa-upload"></i>
-      <input style='position:absolute; left:-1000px' type="file" name="open_html" id="open_html" (change)="onFileSelect($event)">
-    </li>
-    <li>
-      <i class="fas fa-save"></i>
-    </li>
-    <li class="separator"></li>
-    <li (click)="undo()" [ngClass]="{disabled: !previousAvailable()}">
-      <i class="fas fa-undo"></i>
-    </li>
-    <li (click)="redo()" [ngClass]="{disabled: !nextAvailable()}">
-      <i class="fas fa-redo"></i>
-    </li>
-  </ul>
-</nav>
-<main *ngIf="hasMultiViews()">
-  <ul>
-    <li (click)="showComponent(view)" *ngFor="let view of availableViews" [ngClass]="[isActivatedComponent(view)? 'selected' : '']">
-      {{ view }}
-    </li>
-  </ul>
-</main>
+<header (clickOutside)="closeMenu()">
+    <nav id="xedit-taskbar" class="taskbar">
+        <ul>
+            <li (click)="load()">
+                <i class="fas fa-upload"></i>
+                <input style='position:absolute; left:-1000px' type="file" name="open_html" id="open_html" (change)="onFileSelect($event)">
+            </li>
+            <li>
+                <i class="fas fa-save"></i>
+            </li>
+            <li class="separator"></li>
+            <li (click)="undo()" [ngClass]="{disabled: !previousAvailable()}">
+                <i class="fas fa-undo"></i>
+            </li>
+            <li (click)="redo()" [ngClass]="{disabled: !nextAvailable()}">
+                <i class="fas fa-redo"></i>
+            </li>
+        </ul>
+        <div class="action" (click)="toggleMenu()" *ngIf="hasMultiViews()">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+    <nav *ngIf="hasMultiViews()" class="views" #viewMenu>        
+        <ul class="menu">
+            <li (click)="showComponent(view)" *ngFor="let view of availableViews" [ngClass]="[isActivatedComponent(view)? 'selected' : '']">
+                {{ view }}
+            </li>
+        </ul>
+    </nav>
+</header>
+
 <div id='toolbar'></div>
