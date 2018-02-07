@@ -3,21 +3,24 @@
 :host{
     position: relative;
     z-index: 10;
-    box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.57);
 
-    ::ng-deep{
-        > nav{
+    > header{
+        background-color: $green-dark;
+        position: relative;
+
+        > nav.taskbar{
             position: relative;
+            display: flex;
             z-index: 2;
             padding: 0;
             margin: 0;
             width: 100%;
             min-height: $taskbar-height;
             max-height: $taskbar-height;
-            background-color: $green-dark;
             box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.57);
 
             > ul{
+                flex-grow: 2;
                 padding: 0;
                 margin: 0;
                 list-style: none;
@@ -56,19 +59,57 @@
                     }
                 }
             }
+
+            > .action {
+                margin: auto 5px auto 0;
+                padding: 5px 10px;
+                color: $white-dark;
+                cursor: pointer;
+                transition: color 0.3s ease-in-out;
+
+                > i{
+                    font-size: 20px;
+                }
+
+                &:hover{
+                    color: white;
+                }
+            } 
         }
 
-        > main {
-            background-color: $white-light;
+        > nav.views {
+            $height: 35px;
 
-            > ul {
+            height: 0;
+            width: 100%;
+            background-color: $white-dark;
+            box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.57);
+            transition: height 0.25s;
+
+            position: absolute;
+            top: $taskbar-height;
+            z-index: 1;
+
+            overflow: hidden;
+
+            &.opened {
+                height: $height;
+            }
+
+            > .menu {
+                position: absolute;
                 display: flex;
+                align-items: flex-end;
+                bottom: 0;
+                height: $height;
+                flex-direction: row;
                 list-style: none;
                 padding: 0;
                 margin: 0;
 
                 > li {
-                    padding: 5px 15px;
+                    margin: auto 0 0 0;
+                    padding: 0 15px 5px 15px;
                     border-bottom: 2px solid transparent;
                     color: $white-darker;
                     transition: color 0.3s ease-in-out, border-bottom-color 0.3s ease-in-out;
@@ -82,7 +123,7 @@
                         border-bottom-color: $green-dark;
                         color: $green-darker;
                     }
-                }
+                }                
             }
         }
     }

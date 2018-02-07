@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EditorService } from '../../services/editor-service/editor.service';
 import { File } from '../../models/file';
-import { reduce, clone, path, has } from 'ramda';
+import { reduce, clone, has } from 'ramda';
 import { Node } from '../../models/node';
 import { EditorComponent } from '../editor/editor.component';
 import { XeditMapper } from '../../models/schema/xedit-mapper';

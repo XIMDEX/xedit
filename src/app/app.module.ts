@@ -21,6 +21,8 @@ import { EditorService } from './services/editor-service/editor.service';
 import { DebugPipe } from './pipes/debug/debug.pipe';
 import { KeysPipe } from './pipes/keys/keys.pipe';
 import { ContextMenuComponent } from './components/context-menu/context-menu.component';
+import { ClickOutsideModule } from 'ng4-click-outside';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -43,7 +45,8 @@ import { ContextMenuComponent } from './components/context-menu/context-menu.com
     BrowserAnimationsModule,
     AceEditorModule,
     LoadingModule,
-    ContextMenuModule.forRoot()
+    ContextMenuModule.forRoot(),
+    ClickOutsideModule
   ],
   providers: [
     EditorService,
