@@ -13,7 +13,7 @@ import {
     is,
     props,
     has,
-    merge,
+    union,
     divide,
     hasIn
 } from 'ramda';
@@ -159,33 +159,50 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     }
 
     private updateContextMenuActions(element) {
-        const actions = this.getAvailableActions(element);
-        const contextMenuActions = [];
+
+        const { schema, schemaParent } = this.getSchemas(element);
+        const section = this.getSection(element);
+
+        const actions = this.getAvailableActions(schema, schemaParent);
+        let contextMenuActions = [];
+        const contextMenuActionsChild = [];
+        const contextMenuActionsSiblings = [];
 
         // TAG
         contextMenuActions.push(this.createAction((i) => actions.name, null, true, false, (i) => false));
         contextMenuActions.push(this.createAction(null, null, true, true));
 
+        const clickFunc = (currentNode: any, afterNode: any, strTemplate: string) => {
+            const template = this.createElementFromHTML(strTemplate);
+            currentNode.insertBefore(template, afterNode)
+        }
+
         // Childs
         actions.childs.forEach(action => {
-            contextMenuActions.push(
-                this.createAction((i) => 'Añadir hijo ' + action.name,
-                    (evt) => element.insertBefore(this.createElementFromHTML(action.template), element.childNodes[0]), true)
-            );
+            if (hasIn('template' in action) && !isNil(action.template)) {
+                contextMenuActionsChild.push(
+                    this.createAction((i) => 'Añadir hijo ' + action.name,
+                        (evt) => clickFunc(section, section.childNodes[section.childNodes.length], action.template), true)
+                );
+            }
         });
-
-        // Divider
-        if (actions.childs.length > 0 && actions.siblings.length > 0) {
-            contextMenuActions.push(this.createAction(null, null, true, true));
-        }
 
         // Siblings
         actions.siblings.forEach(action => {
-            contextMenuActions.push(
-                this.createAction((i) => 'Añadir hermano ' + action.name,
-                    (evt) => element.parentNode.insertBefore(action.template, element.nextSibling), true)
-            );
+            if (hasIn('template' in action) && !isNil(action.template)) {
+                contextMenuActionsSiblings.push(
+                    this.createAction((i) => 'Añadir hermano ' + action.name,
+                        (evt) => clickFunc(section.parentNode, section.nextSibling, action.template), true)
+                );
+            }
         });
+
+        contextMenuActions = union(contextMenuActions, contextMenuActionsChild);
+        // Divider
+        if (contextMenuActionsChild.length > 0 && contextMenuActionsSiblings.length > 0) {
+            contextMenuActions.push(this.createAction(null, null, true, true));
+        }
+        contextMenuActions = union(contextMenuActions, contextMenuActionsSiblings);
         // this.contextMenuActions = [
         //    this.createAction((i) => `Say hi!`, (evt) => console.log(this.getSection(element)), true),
         /* {
@@ -223,23 +240,12 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
 
 
-    getAvailableActions(element: Element) {
+    getAvailableActions(section, parent) {
         const actions = {
             name: null,
             childs: [],
             siblings: [],
         };
-        /** @todo Corregir obtener ruta */
-        const sectionPath = this.getBreadCrumb(element).map(ele => props(['name'], ele));
-        sectionPath.unshift(EditorService.getUuidPath(element, XeditMapper.TAG_EDITOR, [], true)[0]);
-        let section = this._editorService.getFileStateValue().getSchema(sectionPath.shift());
-        let parent = null;
-
-        // Get schema
-        section = reduce(function (sect, value) {
-            parent = sect;
-            return sect.sections[value];
-        }, section, sectionPath);
 
         actions.name = this.getSectionLang(section, 'es');
 
@@ -270,6 +276,33 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         return actions;
     }
 
+    /**
+     * Get schema by specific DOM element
+     *
+     * @param element
+     */
+    getSchemas(element: Element) {
+        /** @todo Corregir obtener ruta */
+        const sectionPath = this.getBreadCrumb(element).map(ele => props(['name'], ele));
+        sectionPath.unshift(EditorService.getUuidPath(element, XeditMapper.TAG_EDITOR, [], true)[0]);
+        let schema = this._editorService.getFileStateValue().getSchema(sectionPath.shift());
+        let schemaParent = null;
+
+        // Get schema
+        schema = reduce(function (sect, value) {
+            schemaParent = sect;
+            return sect.sections[value];
+        }, schema, sectionPath);
+
+        return { schema, schemaParent };
+    }
+
+    /**
+     * Get section name according to the language
+     *
+     * @param section
+     * @param lang
+     */
     getSectionLang(section, lang) {
         let name = section.name;
         if (hasIn('lang', section) && is(Object, section.lang) && hasIn(lang, section.lang)) {
@@ -279,6 +312,11 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     }
 
 
+    /**
+     * Get section template
+     *
+     * @param section
+     */
     getSectionTemplate(section) {
         let template = null;
         if (hasIn('template', section) && is(String, section.template)) {
@@ -287,6 +325,11 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         return template;
     }
 
+    /**
+     * Create DOM element from string
+     *
+     * @param htmlString
+     */
     createElementFromHTML(htmlString) {
         const div = document.createElement('div');
         div.innerHTML = htmlString.trim();
