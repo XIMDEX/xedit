@@ -29,20 +29,20 @@ export class EditorComponent implements OnInit {
   }
 
   /**
-   * 
-   * @param view 
+   *
+   * @param view
    */
   showComponent(view) {
     return equals(view, this.currentView);
   }
 
   /**
-   * 
+   *
    */
   static executeIfvalidateHtmlTags(content, callback, errorCallback, options = {}) {
     options = merge({
       settings: {
-        format: 'html', // 'plain', 'html', or 'markdown' 
+        format: 'html', // 'plain', 'html', or 'markdown'
       },
       attributes: {
         '_': {
@@ -52,10 +52,11 @@ export class EditorComponent implements OnInit {
     }, options);
 
     htmlTagValidator(content, options, (err, ast) => {
-      if (err)
-        errorCallback()
-      else
-        callback()
+      if (err) {
+        errorCallback();
+      } else {
+        callback();
+      }
     });
   }
 
@@ -92,10 +93,10 @@ export class EditorComponent implements OnInit {
 
 
   /**
-   * 
+   *
    */
   static checkIfContentChange(currentFile, file) {
-    return isNil(currentFile) || (!isNil(file) && currentFile.getState().getHash() != file.getState().getHash());
+    return isNil(currentFile) || (!isNil(file) && currentFile.getState().getHash() !== file.getState().getHash());
   }
 
 }

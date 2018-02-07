@@ -27,22 +27,23 @@ export class PropertiesViewComponent implements OnInit {
 
   changePropertyValue(evt, property) {
 
-    //Modify file with new changes
-    var uuidPath = clone(this.currentNode.getPath())
-    var elementContent = this.file.getState().getContent();
-    var editContent = reduce(function (acc, value) {
+    // Modify file with new changes
+    const uuidPath = clone(this.currentNode.getPath());
+    const elementContent = this.file.getState().getContent();
+    const editContent = reduce(function (acc, value) {
       return acc.child[value];
     }, elementContent[uuidPath.shift()].content, uuidPath);
 
     const hasAttr = has('attr');
 
-    if (!hasAttr(editContent) || editContent["attr"] == null)
-      editContent["attr"] = [];
+    if (!hasAttr(editContent) || editContent['attr'] == null) {
+      editContent['attr'] = [];
+    }
 
-    editContent["attr"][property] = evt.target.value;
+    editContent['attr'][property] = evt.target.value;
 
     // Save new state
-    var newFile = this._editorService.newStateFile(elementContent);
+    const newFile = this._editorService.newStateFile(elementContent);
     this._editorService.setFileState(newFile);
 
     // Update current node
@@ -58,16 +59,16 @@ export class PropertiesViewComponent implements OnInit {
   * @param element JsonNode
   * @param path Uuid path
   */
-  static parseToNode(element, path) {
-    var title = element.tag
-    var attributes = element.attr;
-    var node = null;
-    var uuid = element.uuid;
+  static parseToNode(element: any, path: Array<string>) {
+    const title = element.tag;
+    const attributes = element.attr;
+    let node = null;
+    const uuid = element.uuid;
 
     try {
       node = new Node(uuid, title, path, attributes);
     } catch (e) {
-      console.error("Invalid node");
+      console.error('Invalid node');
     }
     return node;
   }

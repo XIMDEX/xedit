@@ -7,16 +7,17 @@ export class Node {
     static TYPE_VIDEO = 'video';
     static TYPE_OTHER = 'video';
 
-    //Variables
+    // Variables
     private uuid: string;
     private name: string;
     private attributes: Object;
     private path: Array<string>;
 
-    //Constructor
+    // Constructor
     constructor(uuid: string, name: string, path: Array<string>, attributes: Object = {}) {
-        if (isNil(path) || isNil(uuid) || isNil(name))
+        if (isNil(path) || isNil(uuid) || isNil(name)) {
             throw new TypeError('Invalid arguments');
+        }
 
         this.uuid = uuid;
         this.name = name;
@@ -24,7 +25,7 @@ export class Node {
         this.attributes = attributes;
     }
 
-    //************************************** Getters and setters **************************************/
+    // ************************************** Getters and setters **************************************/
     getUuid(): string {
         return this.uuid;
     }
@@ -58,17 +59,19 @@ export class Node {
     }
 
     setAttribute(name: string, value: Object): void {
-        if (name == XeditMapper.TAG_IMAGE) {
+        if (name === XeditMapper.TAG_IMAGE) {
             this.attributes[name] = value;
-            this.attributes['src'] = 'http://ajlucena.com/ximdex-4/public_xmd/?action=filemapper&method=nodeFromExpresion&expresion=' + value;
-        } else if (contains(name, this.getAvailableAttributes()))
+            this.attributes['src'] = 'http://ajlucena.com/ximdex-4/public_xmd/?action=filemapper&method=nodeFromExpresion&expresion='
+                + value;
+        } else if (contains(name, this.getAvailableAttributes())) {
             this.attributes[name] = value;
+        }
     }
 
     /***************** PUBLIC METHODS **************************/
 
     getType() {
-        var type = Node.TYPE_OTHER;
+        let type = Node.TYPE_OTHER;
         if (equals('img', this.name.toLowerCase())) {
             type = Node.TYPE_IMAGE;
         } else if (equals('video', this.name.toLowerCase())) {
@@ -78,7 +81,7 @@ export class Node {
     }
 
     getAvailableAttributes() {
-        var attributes = [];
+        let attributes = [];
         if (equals(this.getType(), Node.TYPE_IMAGE) && !isNil(this.getAttribute(XeditMapper.TAG_IMAGE))) {
             attributes = [XeditMapper.TAG_IMAGE, 'width', 'height', 'xe_uuid'];
         } else if (equals(this.getType(), Node.TYPE_IMAGE)) {

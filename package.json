@@ -13,6 +13,7 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^5.1.0",
+    "@angular/cdk": "^2.0.0-beta.12",
     "@angular/common": "^5.0.0",
     "@angular/compiler": "^5.0.0",
     "@angular/core": "^5.0.0",
@@ -21,6 +22,7 @@
     "@angular/platform-browser": "^5.0.0",
     "@angular/platform-browser-dynamic": "^5.0.0",
     "@angular/router": "^5.0.0",
+    "angular2-contextmenu": "^0.8.2",
     "angular2-uuid": "^1.1.1",
     "bootstrap": "^3.3.7",
     "bootstrap-datepicker": "^1.7.1",
@@ -33,6 +35,7 @@
     "jquery-datetimepicker": "^2.5.17",
     "ng2-ace-editor": "^0.3.4",
     "ngx-bootstrap": "^2.0.0-rc.0",
+    "ngx-contextmenu": "^4.1.2",
     "ngx-loading": "^1.0.14",
     "pretty": "^2.0.0",
     "ramda": "^0.25.0",

@@ -1,12 +1,12 @@
 import { EditorComponent } from '../editor/editor.component';
-import { Component, ViewChildren, AfterViewInit, OnInit, QueryList } from '@angular/core';
+import { Component, ViewChildren, AfterViewInit, OnInit, QueryList, OnDestroy } from '@angular/core';
 import pretty from 'pretty';
 import { clone, merge, isNil, is } from 'ramda';
-import { File } from '../../models/file'
+import { File } from '../../models/file';
 import { AceEditorComponent } from 'ng2-ace-editor/src/component';
 import { StateService } from '../../services/state-service/state.service';
 import { EditorService } from '../../services/editor-service/editor.service';
-import { debounceTime } from 'rxjs/operators'
+import { debounceTime } from 'rxjs/operators';
 
 import 'brace/index';
 import 'brace/theme/dreamweaver';
@@ -15,7 +15,7 @@ import 'brace/snippets/html';
 import 'brace/ext/language_tools';
 import 'brace/ext/searchbox';
 
-declare var ace: any;
+declare let ace: any;
 
 
 @Component({
@@ -23,15 +23,18 @@ declare var ace: any;
   templateUrl: './form-view.component.html',
   styleUrls: ['./form-view.component.scss']
 })
-export class FormViewComponent implements OnInit, AfterViewInit {
+export class FormViewComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(AceEditorComponent) editors: QueryList<AceEditorComponent>;
 
   private editorNodes: Array<any> = null;
-  private reload: boolean = false;
-  private isHtmlValid: boolean = true;
+  private reload: boolean;
+  private isHtmlValid: boolean;
   private subscribeFile;
 
-  constructor(private _editorService: EditorService, private _stateService: StateService) { }
+  constructor(private _editorService: EditorService, private _stateService: StateService) {
+    this.reload = false;
+    this.isHtmlValid = true;
+  }
 
   /************* LIFE CYCLE *************/
   ngOnInit() {
@@ -42,7 +45,7 @@ export class FormViewComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.initEditor();
-    this.editors.changes.subscribe(() => { this.initEditor() });
+    this.editors.changes.subscribe(() => { this.initEditor(); });
   }
 
   ngOnDestroy() {
@@ -59,11 +62,11 @@ export class FormViewComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * 
-   * @param content 
+   *
+   * @param content
    */
   private parseToHtmlToEditors(content) {
-    var editorNodes = [];
+    const editorNodes = [];
 
     // Clean editors if exist
     if (!isNil(this.editors)) {
@@ -73,7 +76,7 @@ export class FormViewComponent implements OnInit, AfterViewInit {
     }
 
     Object.keys(content).forEach(property => {
-      var node = content[property];
+      const node = content[property];
       editorNodes.push({
         'id': property,
         'title': node.title,
@@ -87,8 +90,8 @@ export class FormViewComponent implements OnInit, AfterViewInit {
 
   initEditor() {
     this.editors.forEach((editor, i) => {
-      var _editor = editor.getEditor();
-      var session = _editor.getSession();
+      const _editor = editor.getEditor();
+      const session = _editor.getSession();
 
       this.editorNodes[i].editor = _editor;
 
@@ -97,19 +100,19 @@ export class FormViewComponent implements OnInit, AfterViewInit {
         enableSnippets: true,
         enableLiveAutocompletion: false
       });
-      //session.setOption("minLines", 2);
+      // session.setOption('minLines', 2);
 
-      _editor.commands.addCommand({
-        name: "showOtherCompletions",
-        bindKey: "Ctrl-.",
+      /*_editor.commands.addCommand({
+        name: 'showOtherCompletions',
+        bindKey: 'Ctrl-.',
         exec: function (editor) {
         }
-      });
+      });*/
 
       /*session.selection.on('changeSelection', function (e) {
-        var selectionRange = _editor.getSelectionRange();
-        var startLine = selectionRange.start.row;
-        var endLine = selectionRange.end.row;
+        let selectionRange = _editor.getSelectionRange();
+        let startLine = selectionRange.start.row;
+        let endLine = selectionRange.end.row;
       });*/
 
       /* _editor.on('blur', () => {
@@ -122,16 +125,15 @@ export class FormViewComponent implements OnInit, AfterViewInit {
             clearTimeout(editor.timeoutSaving);
           }
 
-          editor.timeoutSaving = setTimeout(e => {
-            this._editorService.save(_editor.container.id, _editor.getValue())
+          editor.timeoutSaving = setTimeout(() => {
+            this._editorService.save(_editor.container.id, _editor.getValue());
             editor.timeoutSaving = null;
           }, editor._durationBeforeCallback);
 
-          /*var content = _editor.getValue();
- 
-          var options = {
+          /*let content = _editor.getValue();
+          let options = {
             settings: {
-              format: 'html', // 'plain', 'html', or 'markdown' 
+              format: 'html', // 'plain', 'html', or 'markdown'
             },
             attributes: {
               '_': {
@@ -139,11 +141,10 @@ export class FormViewComponent implements OnInit, AfterViewInit {
               }
             }
           };
- 
           EditorComponent.executeIfvalidateHtmlTags(content,
             _ => {
-              var newState = clone(this.file.getState().getContent());
-              var json = File.html2json(content, false);
+              let newState = clone(this.file.getState().getContent());
+              let json = File.html2json(content, false);
               newState[_editor.container.id].content.child = json;
               this.isHtmlValid = true;
               this._editorService.newStateFile(newState);
@@ -157,5 +158,4 @@ export class FormViewComponent implements OnInit, AfterViewInit {
       });
     });
   }
-
 }

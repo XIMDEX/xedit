@@ -7,6 +7,7 @@ import { LoadingModule } from 'ngx-loading';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ContextMenuModule } from 'ngx-contextmenu';
 
 import { TaskbarComponent } from './components/taskbar/taskbar.component';
 import { EditorComponent } from './components/editor/editor.component';
@@ -19,6 +20,7 @@ import { StateService } from './services/state-service/state.service';
 import { EditorService } from './services/editor-service/editor.service';
 import { DebugPipe } from './pipes/debug/debug.pipe';
 import { KeysPipe } from './pipes/keys/keys.pipe';
+import { ContextMenuComponent } from './components/context-menu/context-menu.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,7 +32,8 @@ import { KeysPipe } from './pipes/keys/keys.pipe';
     FormViewComponent,
     SafeHtmlPipe,
     DebugPipe,
-    KeysPipe
+    KeysPipe,
+    ContextMenuComponent
   ],
   imports: [
     /* 3rd party components */
@@ -39,7 +42,8 @@ import { KeysPipe } from './pipes/keys/keys.pipe';
     FormsModule,
     BrowserAnimationsModule,
     AceEditorModule,
-    LoadingModule
+    LoadingModule,
+    ContextMenuModule.forRoot()
   ],
   providers: [
     EditorService,

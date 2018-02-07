@@ -12,6 +12,6 @@ export class XeditMapper {
     static TAG_IMAGE = 'xe_img';
 
     // UTILS
-    static ATTR_SELECTED = 'xe_selected'
+    static ATTR_SELECTED = 'xe_selected';
 
 }

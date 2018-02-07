@@ -15,10 +15,12 @@ import { EditorService } from '../../services/editor-service/editor.service';
 export class TaskbarComponent implements OnInit {
 
   private file: File;
-  private currentView: string = '';
+  private currentView: string;
   private availableViews: Array<string> = [];
 
-  constructor(private _editorService: EditorService, private _stateService: StateService) { }
+  constructor(private _editorService: EditorService, private _stateService: StateService) {
+    this.currentView = '';
+  }
 
   /************************************ LIFE CYCLE *******************************************/
   ngOnInit() {
@@ -61,7 +63,7 @@ export class TaskbarComponent implements OnInit {
     return this.isActivatedComponent(component) || !this.isShowedComponent(component);
   }
 
-  hasMultiViews(): boolean{
+  hasMultiViews(): boolean {
     return this.availableViews.length > 1;
   }
 
@@ -74,7 +76,7 @@ export class TaskbarComponent implements OnInit {
   }
 
   load() {
-    (<HTMLInputElement>document.getElementById('open_html')).value = ""
+    (<HTMLInputElement>document.getElementById('open_html')).value = '';
     document.getElementById('open_html').click();
   }
 
@@ -82,21 +84,19 @@ export class TaskbarComponent implements OnInit {
     const file = event.target.files[0];
     if (file.type === 'application/json') {
       const reader: FileReader = new FileReader();
-      reader.readAsText(file, "UTF-8");
+      reader.readAsText(file, 'UTF-8');
 
       reader.onload = (fileReaderEvent: FileReaderEvent) => {
-        var json = JSON.parse(fileReaderEvent.target.result);
-        var nodes = json.result;
+        const json = JSON.parse(fileReaderEvent.target.result);
+        const nodes = json.result;
         this._editorService.createFile(nodes);
-      }
-
+      };
 
       this._stateService.setAvailableViews(['wysiwyg', 'form']);
 
       reader.onerror = (evt) => {
         console.error('Error loading file');
-      }
-
+      };
     }
   }
 

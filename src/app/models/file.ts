@@ -3,7 +3,7 @@ import { UUID } from 'angular2-uuid';
 import { History } from './history';
 import { HTMLParser } from 'core/htmlparser';
 import { Serializable } from './interfaces/Serializable';
-import { isNil, equals, is } from 'ramda';
+import { isNil, equals, is, reduce } from 'ramda';
 
 export class FileHistory {
 
@@ -11,9 +11,9 @@ export class FileHistory {
     static TYPE_TEXT = 'text';
 
     content: any;
-    type: string
+    type: string;
 
-    //Constructor
+    // Constructor
     constructor(content: any = null) {
         if (content != null) {
             this.content = content;
@@ -33,17 +33,50 @@ export class FileHistory {
 
 export class File extends History {
 
-    schema: JSON;
-
+    private schemas: Object;
     constructor(json = null) {
-        super(File.createContent(json.nodes));
 
-        if (isNil(json))
-            throw TypeError('Invalid arguments')
+        if (isNil(json)) {
+            throw TypeError('Invalid arguments');
+        }
+
+        super(File.createContent(json.nodes));
+        this.schemas = {};
+
+        if (!isNil(json.nodes)) {
+            Object.keys(json.nodes).forEach(nodeKey => {
+                this.schemas[nodeKey] = json.nodes[nodeKey].schema;
+            });
+        }
     }
 
 
-    /***************** PRIVATE METHODS **************************/
+    /**************** Getters and setter ************************/
+    getSchemas() {
+        return this.schemas;
+    }
+
+    getSchema(nodeKey) {
+        return this.schemas[nodeKey];
+    }
+
+    /***************** PUBLIC METHODS **************************/
+
+    /**
+     * Added new state
+     */
+    newState(content: any): File {
+        super.newState(new FileHistory(content));
+        return this;
+    }
+
+
+    recovery(stateId: string) {
+        return Object.assign(new FileHistory, super.recovery(stateId));
+    }
+
+    /***************** STATIC METHODS **************************/
+
     private static createContent(nodes: JSON) {
 
         Object.keys(nodes).forEach(property => {
@@ -60,35 +93,20 @@ export class File extends History {
             .replace(/<!DOCTYPE.*\>\n/, '');
     }
 
-    private static q = function (v) {
+    private static q(v) {
         return '"' + v + '"';
     }
 
-    protected recovery(stateId: string) {
-        return Object.assign(new FileHistory, super.recovery(stateId));
-    }
-    /***************** PUBLIC METHODS **************************/
-
-    /**
-     * Added new state 
-     */
-    newState(content: any): File {
-        super.newState(new FileHistory(content));
-        return this;
-    }
-
-    /***************** STATIC METHODS **************************/
-
     /**
      * Parse html to json
-     * 
+     *
      * @param html String with html
      * @param hasRootTag If true then root tag will be added
      */
-    static html2json = function (html, hasRootTag = true) {
+    static html2json(html, hasRootTag = true) {
         html = File.removeDOCTYPE(html);
-        var bufArray = [];
-        var results = {
+        const bufArray = [];
+        const results = {
             node: 'root',
             child: {},
         };
@@ -96,7 +114,7 @@ export class File extends History {
         HTMLParser(html, {
             start: function (tag, uuid, attrs, unary) {
                 // node for this element
-                var node = {
+                const node = {
                     node: 'element',
                     tag: tag,
                     uuid: isNil(uuid) ? UUID.UUID() : uuid,
@@ -104,8 +122,8 @@ export class File extends History {
                 };
                 if (attrs.length !== 0) {
                     node.attr = attrs.reduce(function (pre, attr) {
-                        var name = attr.name;
-                        var value = attr.value;
+                        const name = attr.name;
+                        let value = attr.value;
 
                         // has multi attibutes
                         // make it array of attribute
@@ -135,7 +153,7 @@ export class File extends History {
                     // if this tag dosen't have end tag
                     // like <img src="hoge.png"/>
                     // add to parents
-                    var parent = bufArray[0] || results;
+                    const parent = bufArray[0] || results;
                     if (parent.child === undefined) {
                         parent.child = {};
                     }
@@ -146,13 +164,15 @@ export class File extends History {
             },
             end: function (tag) {
                 // merge into parent tag
-                var node = bufArray.shift();
-                if (node.tag !== tag) console.error('invalid state: mismatch end tag');
+                const node = bufArray.shift();
+                if (node.tag !== tag) {
+                    console.error('invalid state: mismatch end tag');
+                }
 
                 if (bufArray.length === 0) {
                     results.child[node.uuid] = node;
                 } else {
-                    var parent = bufArray[0];
+                    const parent = bufArray[0];
                     if (parent.child === undefined) {
                         parent.child = {};
                     }
@@ -160,26 +180,26 @@ export class File extends History {
                 }
             },
             chars: function (text) {
-                var node = {
+                const node = {
                     node: 'text',
                     text: text,
                 };
                 if (bufArray.length === 0) {
-                    results.child["text-0"] = node;
+                    results.child['text-0'] = node;
                 } else {
-                    var parent = bufArray[0];
+                    const parent = bufArray[0];
                     if (parent.child === undefined) {
                         parent.child = {};
                     }
-                    parent.child["text-" + Object.keys(parent.child).length] = node;
+                    parent.child['text-' + Object.keys(parent.child).length] = node;
                 }
             },
             comment: function (text) {
-                var node = {
+                const node = {
                     node: 'comment',
                     text: text,
                 };
-                var parent = bufArray[0];
+                const parent = bufArray[0];
                 if (parent.child === undefined) {
                     parent.child = [];
                 }
@@ -188,38 +208,42 @@ export class File extends History {
         });
 
         return hasRootTag ? results : results.child;
-    };
+    }
 
     /**
      * Convert json to html
-     * 
+     *
      * @param json Json object with content
      * @param showIds If true added attribute id in tags
      */
-    static json2html = function (json, showIds = true) {
+    static json2html(json, showIds = true) {
         // Empty Elements - HTML 4.01
-        var empty = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param', 'embed'];
+        const empty = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param', 'embed'];
 
-        var child = '';
+        let child = '';
         if (json.child) {
-            child = Object.keys(json.child).map(function (uuid) {
+            child = Object.keys(json.child).map(function (uuid: string) {
                 return File.json2html(json.child[uuid], showIds);
             }).join('');
         }
 
-        var attr = '';
+        let attr = '';
         if (json.attr) {
             attr = Object.keys(json.attr).map(function (key) {
-                var value = json.attr[key];
-                if (Array.isArray(value)) value = value.join(' ');
+                let value = json.attr[key];
+                if (Array.isArray(value)) {
+                    value = value.join(' ');
+                }
                 return key + '=' + File.q(value);
             }).join(' ');
-            if (attr !== '') attr = ' ' + attr;
+            if (attr !== '') {
+                attr = ' ' + attr;
+            }
         }
 
         if (json.node === 'element') {
-            var tag = json.tag;
-            var uuid = showIds ? ' xe_uuid="' + json.uuid + '" ' : '';
+            const tag = json.tag;
+            const uuid = showIds ? ' xe_uuid="' + json.uuid + '" ' : '';
 
             if (empty.indexOf(tag) > -1) {
                 // empty element
@@ -227,8 +251,8 @@ export class File extends History {
             }
 
             // non empty element
-            var open = '<' + json.tag + uuid + attr + '>';
-            var close = '</' + json.tag + '>';
+            const open = '<' + json.tag + uuid + attr + '>';
+            const close = '</' + json.tag + '>';
             return open + child + close;
         }
 
@@ -245,18 +269,20 @@ export class File extends History {
         }
     }
 
-
     /**
      * Added uuid if attribute not exist
      */
     static addUuidIfAttributeNotExist(node): void {
-        var attributes = node.attributes;
-        var existProp = false;
+        const attributes = node.attributes;
+        let existProp = false;
         Object.keys(attributes).forEach(prop => {
-            if (equals(attributes[prop].name, 'xe_uuid')) existProp = true;
-        })
-        if (!existProp)
-            node.setAttribute('xe_uuid', UUID.UUID())
+            if (equals(attributes[prop].name, 'xe_uuid')) {
+                existProp = true;
+            }
+        });
+        if (!existProp) {
+            node.setAttribute('xe_uuid', UUID.UUID());
+        }
     }
 
 }

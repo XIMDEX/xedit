@@ -4,7 +4,7 @@ import { XeditMapper } from '../../../../models/schema/xedit-mapper';
  */
 const isValidNodeId = function (nodeId) {
     return true;
-}
+};
 
 const getId = function (editor) {
     const selectedNode = editor.selection.getNode();
@@ -13,12 +13,12 @@ const getId = function (editor) {
 };
 
 const insert = function (editor, nodeId) {
-    const url = 'http://ajlucena.com/ximdex-4/public_xmd/?action=filemapper&method=nodeFromExpresion&expresion='//10135
+    const url = 'http://ajlucena.com/ximdex-4/public_xmd/?action=filemapper&method=nodeFromExpresion&expresion='; // 10135
     const selectedNode = editor.selection.getNode();
     const isDam = selectedNode.tagName === 'IMG' && editor.dom.getAttrib(selectedNode, XeditMapper.TAG_IMAGE) !== '';
     if (isDam) {
-        selectedNode.setAttribute(XeditMapper.TAG_IMAGE, nodeId)
-        selectedNode.setAttribute('src', url + nodeId)
+        selectedNode.setAttribute(XeditMapper.TAG_IMAGE, nodeId);
+        selectedNode.setAttribute('src', url + nodeId);
     } else {
         editor.focus();
         editor.selection.collapse(true);

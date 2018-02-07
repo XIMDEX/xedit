@@ -5,17 +5,17 @@ import { Observable } from 'rxjs/Observable';
 @Injectable()
 export class StateService {
 
-  //Variables
+  // Variables
   private currentView: BehaviorSubject<string>;
   private availableViews: BehaviorSubject<Array<string>>;
 
-  //Constructor
+  // Constructor
   constructor() {
     this.currentView = new BehaviorSubject<string>('');
     this.availableViews = new BehaviorSubject<Array<string>>([]);
   }
 
-  //************************************** Getters and setters **************************************/
+  // ************************************** Getters and setters **************************************/
   getCurrentView(): Observable<string> {
     return this.currentView.asObservable();
   }

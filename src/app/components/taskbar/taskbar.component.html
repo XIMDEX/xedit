@@ -13,19 +13,14 @@
     </li>
     <li (click)="redo()" [ngClass]="{disabled: !nextAvailable()}">
       <i class="fas fa-redo"></i>
-    </li>    
+    </li>
   </ul>
 </nav>
 <main *ngIf="hasMultiViews()">
   <ul>
-    <li 
-      (click)="showComponent(view)" 
-      *ngFor="let view of availableViews"
-      [ngClass]="[isActivatedComponent(view)? 'selected' : '']"
-    >
-        {{view}}
+    <li (click)="showComponent(view)" *ngFor="let view of availableViews" [ngClass]="[isActivatedComponent(view)? 'selected' : '']">
+      {{ view }}
     </li>
   </ul>
 </main>
-
 <div id='toolbar'></div>

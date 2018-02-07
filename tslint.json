@@ -39,8 +39,8 @@
         "order": [
           "static-field",
           "instance-field",
-          "static-method",
-          "instance-method"
+          "instance-method",
+          "static-method"
         ]
       }
     ],
@@ -130,7 +130,10 @@
       "app",
       "kebab-case"
     ],
-    "angular-whitespace": [true, "check-interpolation"],
+    "angular-whitespace": [
+      true,
+      "check-interpolation"
+    ],
     "no-output-on-prefix": true,
     "use-input-property-decorator": true,
     "use-output-property-decorator": true,

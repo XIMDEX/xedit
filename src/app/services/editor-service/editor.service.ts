@@ -4,7 +4,7 @@ import { Image } from '../../models/image';
 import { File } from '../../models/file';
 import { Observable } from 'rxjs/Observable';
 import { Node } from '../../models/node';
-import { clone, isNil, reduce, is } from 'ramda';
+import { clone, isNil, reduce, is, contains } from 'ramda';
 import { Editor } from 'ng2-ace-editor/node_modules/brace';
 import { Subject } from 'rxjs/Subject';
 import { XeditMapper } from '../../models/schema/xedit-mapper';
@@ -13,14 +13,14 @@ import { UUID } from 'angular2-uuid';
 @Injectable()
 export class EditorService {
 
-  //Variables
+  // variables
   private file: BehaviorSubject<File>; // Change if do or redo only
   private fileState: BehaviorSubject<File>; // Current state content (Change if component change)
   private currentNode: Subject<Node>; // Current node
-  private currentNodeModify: Subject<Node> // Change if node is modify
+  private currentNodeModify: Subject<Node>; // Change if node is modify
   private loading: BehaviorSubject<boolean>;
 
-  //Constructor
+  // Constructor
   constructor() {
     this.file = new BehaviorSubject<File>(null);
     this.fileState = new BehaviorSubject<File>(null);
@@ -29,7 +29,7 @@ export class EditorService {
     this.loading = new BehaviorSubject<boolean>(false);
   }
 
-  //************************************** Getters and setters **************************************/
+  // ************************************** Getters and setters **************************************/
   setFile(file): void {
     this.file.next(file);
     this.fileState.next(file);
@@ -43,7 +43,7 @@ export class EditorService {
 
   getFileValue(): File {
     this.file.next(this.fileState.getValue());
-    return this.file.getValue()
+    return this.file.getValue();
   }
 
   setFileState(file): void {
@@ -52,6 +52,10 @@ export class EditorService {
 
   getFileState(): Observable<File> {
     return this.fileState.asObservable();
+  }
+
+  getFileStateValue(): File {
+    return this.fileState.getValue();
   }
 
   setCurrentNode(node): void {
@@ -85,12 +89,11 @@ export class EditorService {
    * Create file from data nodes
    */
   createFile(data): void {
-    var file = new File(data);
-    this.setFile(file);
+    this.setFile(new File(data));
   }
 
   /**
-   * Added new state 
+   * Added new state
    */
   newStateFile(state): File {
     return this.file.getValue().newState(state);
@@ -100,8 +103,7 @@ export class EditorService {
     * Return to the previous state if it exists, otherwise it does not do anything
    */
   lastStateFile(): void {
-    var file = this.file.getValue().lastState();
-    this.setFile(file);
+    this.setFile(this.file.getValue().lastState());
   }
 
 
@@ -109,41 +111,41 @@ export class EditorService {
    * Go to the next state if it exists, otherwise it does not do anything
    */
   nextStateFile(): void {
-    var file = this.file.getValue().nextState();
-    this.setFile(file);
+    this.setFile(this.file.getValue().nextState());
   }
 
   /**
    * Save content into document
-   * 
+   *
    * @param node DomNode
    * @param content Html content
    */
   save(node, content) {
-    var fileContent = this.fileState.getValue().getState().content;
+    const fileContent = this.fileState.getValue().getState().content;
 
     // Save new state
-    var newFile = this.newStateFile(fileContent);
+    const newFile = this.newStateFile(fileContent);
 
     /** @todo Improve performance clone */
-    //var fileContent = clone(this.file.getValue().getState().content)
-    var uuidPath = null;
+    // let fileContent = clone(this.file.getValue().getState().content)
+    let uuidPath = null;
 
-    if (is(String, node))
+    if (is(String, node)) {
       fileContent[node].content = File.html2json(content);
-    else {
+    } else {
       uuidPath = EditorService.getUuidPath(node);
 
-      var root = fileContent[uuidPath.shift()];
+      const root = fileContent[uuidPath.shift()];
 
-      if (is(String, root.content))
+      if (is(String, root.content)) {
         root.content = File.html2json(root.content);
+      }
 
-      //Modify file with new changes
-      var editContent = reduce(function (acc, value) {
+      // Modify file with new changes
+      const editContent = reduce(function (acc, value) {
         return acc.child[value];
       }, root.content, uuidPath);
-      editContent.child = File.html2json(content, false)
+      editContent.child = File.html2json(content, false);
     }
 
     this.setFileState(newFile);
@@ -157,21 +159,21 @@ export class EditorService {
   * @param path Uuid path
   */
   static parseToNode(element) {
-    var title = element.tagName
-    var styles = [];
-    var attributes = {};
-    var node = null;
-    var path = EditorService.getUuidPath(element);
-    var uuid = element.getAttribute(XeditMapper.TAG_UUID);
+    const title = element.tagName;
+    const styles = [];
+    const attributes = {};
+    let node = null;
+    const path = EditorService.getUuidPath(element);
+    const uuid = element.getAttribute(XeditMapper.TAG_UUID);
 
     Object.keys(element.attributes).forEach(key => {
-      attributes[element.attributes[key].name] = element.attributes[key].value
+      attributes[element.attributes[key].name] = element.attributes[key].value;
     });
 
     try {
       node = new Node(uuid, title, path, attributes);
     } catch (e) {
-      console.error("Invalid node");
+      console.error('Invalid node');
     }
     return node;
   }
@@ -179,13 +181,14 @@ export class EditorService {
   /**
    * Calculate uuid path to xedit node
    */
-  public static getUuidPath = function (element, rootTag = 'xedit', path = []) {
-    var parent = element.parentNode;
+  static getUuidPath(element, rootTag = XeditMapper.TAG_EDITOR, path = [], onlySections = false) {
+    const parent = element.parentNode;
 
-    if (!isNil(element))
-      path.unshift(element.getAttribute('xe_uuid') || element.getAttribute('xe_id'))
+    if (!isNil(element) && (!onlySections || element.hasAttribute(XeditMapper.TAG_SECTION_TYPE))) {
+      path.unshift(element.getAttribute(XeditMapper.TAG_UUID));
+    }
 
-    return (element.nodeName.toLowerCase() == rootTag || isNil(parent)) ?
+    return (element.nodeName.toLowerCase() === rootTag || isNil(parent)) ?
       path : this.getUuidPath(parent, rootTag, path);
   }
 

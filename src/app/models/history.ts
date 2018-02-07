@@ -20,13 +20,13 @@ export class History {
         // Clear sessionStorage
         sessionStorage.clear();
 
-        //if (!isNil(initState))
+        // if (!isNil(initState))
         //    this.addState(initState);
     }
 
-    //************************************** Getters and setters **************************************/
+    // ************************************** Getters and setters **************************************/
     getState() {
-        return this.state; //this.states[this.pos] || null
+        return this.state; // this.states[this.pos] || null
     }
 
     setState(state: any) {
@@ -38,8 +38,9 @@ export class History {
     }
 
     setMaxStates(maxStates: number) {
-        if (maxStates <= 0 && !Number.isInteger(maxStates))
+        if (maxStates <= 0 && !Number.isInteger(maxStates)) {
             throw new TypeError('Invalid maxStates');
+        }
         this.maxStates = maxStates;
     }
 
@@ -74,8 +75,9 @@ export class History {
             this.pos--;
         }
 
-        if (!isNil(this.state))
-            this.save(this.state)
+        if (!isNil(this.state)) {
+            this.save(this.state);
+        }
 
         this.state = state;
     }
@@ -84,8 +86,8 @@ export class History {
      * Save state in SessionStorage
      */
     private save(state: any) {
-        if (typeof (Storage) != "undefined") {
-            var stateId = UUID.UUID();
+        if (typeof (Storage) !== 'undefined') {
+            const stateId = UUID.UUID();
             try {
                 sessionStorage.setItem(stateId, JSON.stringify(state));
                 this.states.push(stateId);
@@ -93,14 +95,14 @@ export class History {
                 console.error('This object can not support stringify');
             }
         } else {
-            console.error("History is not supported.");
+            console.error('History is not supported.');
         }
     }
 
     /**
      * Recovery state by key from SessionStorage
-     * 
-     * @param stateId 
+     *
+     * @param stateId
      */
     protected recovery(stateId: string) {
         return JSON.parse(sessionStorage.getItem(stateId));
@@ -148,14 +150,14 @@ export class History {
      */
     resetState(): any {
         this.pos = 0;
-        if (this.state.length > 0)
+        if (this.state.length > 0) {
             this.state = this.recovery(this.states[this.pos]);
-
+        }
         return this;
     }
 
     /**
-     * Added new state 
+     * Added new state
      */
     newState(state: any): Object {
         this.addState(state);
