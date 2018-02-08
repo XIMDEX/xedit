@@ -64,7 +64,6 @@ export class WysiwygHandler {
                 content_style: '.mce-content-body{ line-height: unset !important; }  .mce-content-focus{ outline: inherit !important; }',
                 valid_elements: '*[*]',
                 setup: editor => {
-                    let prevElement = null;
                     editor.on('Nodechange', (e) => {
                         const element = e.element;
                         if (isNil(element.getAttribute(XeditMapper.TAG_UUID))) {
@@ -72,8 +71,9 @@ export class WysiwygHandler {
                         }
 
                         if (!isNil(args.node) && !equals(args.node.getAttribute(XeditMapper.TAG_UUID),
-                            element.getAttribute(XeditMapper.TAG_UUID)))
+                            element.getAttribute(XeditMapper.TAG_UUID))) {
                             args.service.setCurrentNode(EditorService.parseToNode(element));
+                        }
 
                     });
                     editor.on('PastePreProcess', (e) => {
@@ -109,7 +109,7 @@ export class WysiwygHandler {
                             () => {
                                 const loop = window.setInterval(() => {
                                     try {
-                                        if (tinymce.activeEditor.id != editor.id || editor.isHidden()) {
+                                        if (tinymce.activeEditor.id !== editor.id || editor.isHidden()) {
                                             window.clearInterval(loop);
                                             tinymce.remove(editor);
                                         } else {

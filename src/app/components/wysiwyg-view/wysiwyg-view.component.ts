@@ -39,7 +39,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
     @ViewChild('xedit') xedit: ElementRef;
     @ViewChild('myContextMenu') public basicMenu: ContextMenuComponent;
-    @Output() onSelect: EventEmitter<string> = new EventEmitter();
+    @Output() selectNode: EventEmitter<string> = new EventEmitter();
 
     private renderContent: string;
     private subscribeFile;
@@ -110,11 +110,10 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     /************************************** Public Methods **************************************/
     onclick(evt) {
         this.changeSelection(evt.target.getAttribute(XeditMapper.TAG_UUID));
-        this._editorService.setCurrentNode(EditorService.parseToNode(evt.target));
     }
 
     changeSelection(elementKey) {
-        this.onSelect.emit(elementKey);
+        this.selectNode.emit(elementKey);
     }
 
     setSelection(curretNode) {
@@ -180,8 +179,8 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
         const clickFunc = (currentNode: any, afterNode: any, strTemplate: string) => {
             const template = this.createElementFromHTML(strTemplate);
-            currentNode.insertBefore(template, afterNode)
-        }
+            currentNode.insertBefore(template, afterNode);
+        };
 
         // Childs
         actions.childs.forEach(action => {

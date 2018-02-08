@@ -163,7 +163,7 @@ export class EditorService {
     const styles = [];
     const attributes = {};
     let node = null;
-    let section = EditorService.getSection(element);
+    const section = EditorService.getSection(element);
     const path = EditorService.getUuidPath(element);
     const uuid = element.getAttribute(XeditMapper.TAG_UUID);
 

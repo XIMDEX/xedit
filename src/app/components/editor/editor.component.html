@@ -1,5 +1,5 @@
 <!-- WYSIWYG VIEW -->
-<app-wysiwyg-view (onEditorKeyup)="keyupHandlerFunction($event)" (onSelect)="setCurrentNode($event)" *ngIf="showComponent('wysiwyg')">
+<app-wysiwyg-view (onEditorKeyup)="keyupHandlerFunction($event)" (selectNode)="setCurrentNode($event)" *ngIf="showComponent('wysiwyg')">
 </app-wysiwyg-view>
 <!-- END WYSIWYG VIEW -->
 
@@ -8,5 +8,5 @@
 <!-- END FORM VIEW -->
 
 <!-- BREADCRUMBS -->
-<app-breadcrumb (onSelect)="setCurrentNode($event)"></app-breadcrumb>
+<app-breadcrumb (selectNode)="setCurrentNode($event)"></app-breadcrumb>
 <!-- END BREADCRUMBS -->

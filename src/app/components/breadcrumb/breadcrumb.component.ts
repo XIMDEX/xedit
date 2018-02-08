@@ -10,7 +10,7 @@ import { XeditMapper } from '../../models/schema/xedit-mapper';
 })
 export class BreadcrumbComponent implements OnInit {
 
-    @Output() onSelect: EventEmitter<string> = new EventEmitter();
+    @Output() selectNode: EventEmitter<string> = new EventEmitter();
 
     public breadcrumb: Array<Object> = [];
     private currentNode: any;
@@ -18,8 +18,9 @@ export class BreadcrumbComponent implements OnInit {
 
     ngOnInit() {
         this._editorService.getCurrentNode().subscribe(currentNode => {
-            if (!isNil(currentNode))
+            if (!isNil(currentNode)) {
                 this.breadcrumb = this.getBreadCrumb(currentNode.getSection());
+            }
         });
     }
 
@@ -37,7 +38,7 @@ export class BreadcrumbComponent implements OnInit {
     }
 
     changeSelection(elementKey) {
-        this.onSelect.emit(elementKey);
+        this.selectNode.emit(elementKey);
     }
 
 }
