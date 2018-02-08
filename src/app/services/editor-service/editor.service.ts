@@ -163,6 +163,7 @@ export class EditorService {
     const styles = [];
     const attributes = {};
     let node = null;
+    let section = EditorService.getSection(element);
     const path = EditorService.getUuidPath(element);
     const uuid = element.getAttribute(XeditMapper.TAG_UUID);
 
@@ -171,11 +172,22 @@ export class EditorService {
     });
 
     try {
-      node = new Node(uuid, element, title, path, attributes);
+      node = new Node(uuid, element, section, title, path, attributes);
     } catch (e) {
       console.error('Invalid node');
     }
     return node;
+  }
+
+  static getSection(currentNode, attribute = XeditMapper.TAG_SECTION_TYPE) {
+    let section = null;
+
+    if (!isNil(currentNode) && currentNode.hasAttribute(attribute)) {
+      section = currentNode;
+    }
+
+    return !isNil(section) || isNil(currentNode) || isNil(currentNode.parentNode) ?
+      section : EditorService.getSection(currentNode.parentNode, attribute);
   }
 
   /**

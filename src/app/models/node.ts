@@ -11,11 +11,12 @@ export class Node {
     private uuid: string;
     private name: string;
     private target: any;
+    private section: any;
     private attributes: Object;
     private path: Array<string>;
 
     // Constructor
-    constructor(uuid: string, target: any, name: string, path: Array<string>, attributes: Object = {}) {
+    constructor(uuid: string, target: any, section: any, name: string, path: Array<string>, attributes: Object = {}) {
         if (isNil(path) || isNil(uuid) || isNil(name)) {
             throw new TypeError('Invalid arguments');
         }
@@ -23,6 +24,7 @@ export class Node {
         this.uuid = uuid;
         this.name = name;
         this.target = target;
+        this.section = section;
         this.path = path;
         this.attributes = attributes;
     }
@@ -46,6 +48,14 @@ export class Node {
 
     setTarget(target: any): void {
         this.target = target;
+    }
+
+    getSection(): any {
+        return this.section;
+    }
+
+    setSection(section: any): void {
+        this.section = section;
     }
 
     getPath(): Array<string> {

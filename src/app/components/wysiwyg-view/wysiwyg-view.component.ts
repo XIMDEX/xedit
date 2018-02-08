@@ -87,7 +87,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
         this._editorService.getCurrentNode().subscribe(currentNode => {
             if (!isNil(currentNode)) {
-                this.setSelection(currentNode.getTarget());
+                this.setSelection(currentNode);
             }
         });
     }
@@ -112,17 +112,6 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         this._editorService.setCurrentNode(EditorService.parseToNode(evt.target));
     }
 
-    getSection(currentNode, attribute = XeditMapper.TAG_SECTION_TYPE) {
-        let section = null;
-
-        if (!isNil(currentNode) && currentNode.hasAttribute(attribute)) {
-            section = currentNode;
-        }
-
-        return !isNil(section) || isNil(currentNode) || isNil(currentNode.parentNode) ?
-            section : this.getSection(currentNode.parentNode, attribute);
-    }
-
     getBreadCrumb(currentNode, rootTag = 'xedit', path: Array<Object> = []) {
         let section = null;
         let key = null;
@@ -136,7 +125,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
             path : this.getBreadCrumb(currentNode.parentNode, rootTag, path);
     }
 
-    setSelection(target) {
+    setSelection(curretNode) {
         if (!isNil(this.currentSection)) {
             this.currentSection.removeAttribute(XeditMapper.ATTR_SELECTED);
         }
@@ -145,8 +134,8 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
             this.currentTarget.removeAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED);
         }
 
-        this.currentTarget = target;
-        this.currentSection = this.getSection(this.currentTarget);
+        this.currentTarget = curretNode.getTarget();
+        this.currentSection = curretNode.getSection();
 
         // Add selected class
         const { schema } = this.getSchemas(this.currentSection);
@@ -188,7 +177,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     private updateContextMenuActions(element) {
 
         const { schema, schemaParent } = this.getSchemas(element);
-        const section = this.getSection(element);
+        const section = EditorService.getSection(element);
 
         const actions = this.getAvailableActions(schema, schemaParent);
         let contextMenuActions = [];
