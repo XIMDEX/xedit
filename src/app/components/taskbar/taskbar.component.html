@@ -15,12 +15,18 @@
             <li (click)="redo()" [ngClass]="{disabled: !nextAvailable()}">
                 <i class="fas fa-redo"></i>
             </li>
+            <li>
+                <i class="fas fa-separator"></i>
+            </li>
+            <li>
+                <div id='toolbar'></div>
+            </li>
         </ul>
         <div class="action" (click)="toggleMenu()" *ngIf="hasMultiViews()">
             <i class="fas fa-bars"></i>
         </div>
     </nav>
-    <nav *ngIf="hasMultiViews()" class="views" #viewMenu>        
+    <nav *ngIf="hasMultiViews()" class="views" #viewMenu>
         <ul class="menu">
             <li (click)="showComponent(view)" *ngFor="let view of availableViews" [ngClass]="[isActivatedComponent(view)? 'selected' : '']">
                 {{ view }}
@@ -28,5 +34,3 @@
         </ul>
     </nav>
 </header>
-
-<div id='toolbar'></div>

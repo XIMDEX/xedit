@@ -1,12 +1,4 @@
-<div class="breadcrumb">
-    <ul>
-        <li *ngFor="let section of breadcrumb" (click)="changeSelection(section.key)">
-            {{ section.name }}
-        </li>
-    </ul>
-</div>
 <div #xedit [innerHTML]="renderContent | safeHtml" (click)="onclick($event)" (contextmenu)="onContextMenu($event, item)"></div>
-
 <context-menu #myContextMenu>
     <ng-template *ngFor="let action of contextMenuActions" contextMenuItem let-item [visible]="action.visible" [enabled]="action.enabled"
         [divider]="action.divider" (execute)="action.click()">

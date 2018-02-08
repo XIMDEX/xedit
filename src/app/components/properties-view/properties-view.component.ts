@@ -7,70 +7,48 @@ import { EditorComponent } from '../editor/editor.component';
 import { XeditMapper } from '../../models/schema/xedit-mapper';
 
 @Component({
-  selector: 'app-properties-view',
-  templateUrl: './properties-view.component.html',
-  styleUrls: ['./properties-view.component.scss']
+    selector: 'app-properties-view',
+    templateUrl: './properties-view.component.html',
+    styleUrls: ['./properties-view.component.scss']
 })
 export class PropertiesViewComponent implements OnInit {
 
-  private currentNode: Node;
-  private file: File;
+    private currentNode: Node;
+    private file: File;
 
-  constructor(private _editorService: EditorService) { }
+    constructor(private _editorService: EditorService) { }
 
-  ngOnInit() {
-    this._editorService.getFileState().subscribe(file => {
-      this.file = file;
-    });
-    this._editorService.getCurrentNode().subscribe(currentNode => this.currentNode = currentNode);
-  }
-
-  changePropertyValue(evt, property) {
-
-    // Modify file with new changes
-    const uuidPath = clone(this.currentNode.getPath());
-    const elementContent = this.file.getState().getContent();
-    const editContent = reduce(function (acc, value) {
-      return acc.child[value];
-    }, elementContent[uuidPath.shift()].content, uuidPath);
-
-    const hasAttr = has('attr');
-
-    if (!hasAttr(editContent) || editContent['attr'] == null) {
-      editContent['attr'] = [];
+    ngOnInit() {
+        this._editorService.getFileState().subscribe(file => {
+            this.file = file;
+        });
+        this._editorService.getCurrentNode().subscribe(currentNode => this.currentNode = currentNode);
     }
 
-    editContent['attr'][property] = evt.target.value;
+    changePropertyValue(evt, property) {
 
-    // Save new state
-    const newFile = this._editorService.newStateFile(elementContent);
-    this._editorService.setFileState(newFile);
+        // Modify file with new changes
+        const uuidPath = clone(this.currentNode.getPath());
+        const elementContent = this.file.getState().getContent();
+        const editContent = reduce(function (acc, value) {
+            return acc.child[value];
+        }, elementContent[uuidPath.shift()].content, uuidPath);
 
-    // Update current node
-    this.currentNode.setAttribute(property, evt.target.value);
-    this._editorService.setCurrentNode(this.currentNode);
-    this._editorService.setCurrentNodeModify(this.currentNode);
-  }
+        const hasAttr = has('attr');
 
+        if (!hasAttr(editContent) || editContent['attr'] == null) {
+            editContent['attr'] = [];
+        }
 
-  /**
-  * Parse JsonNode to EditorNode
-  *
-  * @param element JsonNode
-  * @param path Uuid path
-  */
-  static parseToNode(element: any, path: Array<string>) {
-    const title = element.tag;
-    const attributes = element.attr;
-    let node = null;
-    const uuid = element.uuid;
+        editContent['attr'][property] = evt.target.value;
 
-    try {
-      node = new Node(uuid, title, path, attributes);
-    } catch (e) {
-      console.error('Invalid node');
+        // Save new state
+        const newFile = this._editorService.newStateFile(elementContent);
+        this._editorService.setFileState(newFile);
+
+        // Update current node
+        this.currentNode.setAttribute(property, evt.target.value);
+        this._editorService.setCurrentNode(this.currentNode);
+        this._editorService.setCurrentNodeModify(this.currentNode);
     }
-    return node;
-  }
-
 }

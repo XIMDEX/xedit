@@ -9,6 +9,9 @@ import { isNil, clone, reduce } from 'ramda';
 import { StateService } from '../../services/state-service/state.service';
 import validator from 'html-validator';
 import htmlTagValidator from 'html-tag-validator';
+import { EditorService } from '../../services/editor-service/editor.service';
+import { ElementRef } from '@angular/core';
+import { XeditMapper } from '../../models/schema/xedit-mapper';
 
 @Component({
   selector: 'app-editor',
@@ -19,7 +22,7 @@ export class EditorComponent implements OnInit {
 
   private currentView: string;
 
-  constructor(private _stateService: StateService) { }
+  constructor(private _stateService: StateService, private _editorService: EditorService, private _elementRef: ElementRef) { }
 
   ngOnInit() {
     // Suscribe view state
@@ -28,6 +31,9 @@ export class EditorComponent implements OnInit {
     });
   }
 
+  setCurrentNode(uuid: string) {
+    this._editorService.setCurrentNode(EditorService.parseToNode(this._elementRef.nativeElement.querySelector(`[${XeditMapper.TAG_UUID}='${uuid}']`)));
+  }
   /**
    *
    * @param view

@@ -22,6 +22,7 @@ import { DebugPipe } from './pipes/debug/debug.pipe';
 import { KeysPipe } from './pipes/keys/keys.pipe';
 import { ContextMenuComponent } from './components/context-menu/context-menu.component';
 import { ClickOutsideModule } from 'ng4-click-outside';
+import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { ClickOutsideModule } from 'ng4-click-outside';
     SafeHtmlPipe,
     DebugPipe,
     KeysPipe,
-    ContextMenuComponent
+    ContextMenuComponent,
+    BreadcrumbComponent
   ],
   imports: [
     /* 3rd party components */

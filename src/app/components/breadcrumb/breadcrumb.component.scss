@@ -1,0 +1,16 @@
+:host {    
+    > #xe-breadcrumb {
+        > ul {
+            display: flex;
+            flex-direction: row;
+            align-content: center;
+            list-style: none;
+            padding: 5px 0;
+            margin: 0;
+
+            > li {
+                margin: auto 5px;
+            }
+        }
+    }
+}

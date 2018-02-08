@@ -1,0 +1,7 @@
+<div id="xe-breadcrumb">
+    <ul>
+        <li *ngFor="let section of breadcrumb" (click)="changeSelection(section.key)">
+            {{ section.name }}
+        </li>
+    </ul>
+</div>

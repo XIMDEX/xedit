@@ -39,11 +39,11 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
     @ViewChild('xedit') xedit: ElementRef;
     @ViewChild('myContextMenu') public basicMenu: ContextMenuComponent;
+    @Output() onSelect: EventEmitter<string> = new EventEmitter();
 
     private renderContent: string;
     private subscribeFile;
     private subscribeCN;
-    public breadcrumb: Array<string> = [];
     public contextMenuActions: Array<any> = [];
     private currentSection: any;
     private currentTarget: any;
@@ -109,20 +109,12 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     }
     /************************************** Public Methods **************************************/
     onclick(evt) {
+        this.changeSelection(evt.target.getAttribute(XeditMapper.TAG_UUID));
         this._editorService.setCurrentNode(EditorService.parseToNode(evt.target));
     }
 
-    getBreadCrumb(currentNode, rootTag = 'xedit', path: Array<Object> = []) {
-        let section = null;
-        let key = null;
-
-        if (!isNil(currentNode) && !isNil(section = currentNode.getAttribute(XeditMapper.TAG_SECTION_TYPE)) &&
-            !isNil(key = currentNode.getAttribute(XeditMapper.TAG_UUID))) {
-            path.unshift({ key: key, name: section });
-        }
-
-        return isNil(currentNode) || isNil(currentNode.parentNode) || equals(currentNode.nodeName.toLowerCase(), rootTag) ?
-            path : this.getBreadCrumb(currentNode.parentNode, rootTag, path);
+    changeSelection(elementKey) {
+        this.onSelect.emit(elementKey);
     }
 
     setSelection(curretNode) {
@@ -144,8 +136,6 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
         // Add selected class
         this.currentTarget.setAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED, this.currentTarget.nodeName);
-
-        this.breadcrumb = this.getBreadCrumb(this.currentTarget);
 
         if (!isNil(this.currentSection)) {
             this.applyHandler(this.currentTarget, this.currentSection);
@@ -280,7 +270,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
      */
     getSchemas(element: Element) {
         /** @todo Corregir obtener ruta */
-        const sectionPath = this.getBreadCrumb(element).map(ele => props(['name'], ele));
+        const sectionPath = this.getSectionPath(element).map(ele => props(['name'], ele));
         sectionPath.unshift(EditorService.getUuidPath(element, XeditMapper.TAG_EDITOR, [], true)[0]);
         let schema = this._editorService.getFileStateValue().getSchema(sectionPath.shift());
         let schemaParent = null;
@@ -293,6 +283,20 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
         return { schema, schemaParent };
     }
+
+    getSectionPath(currentNode, rootTag = 'xedit', path: Array<Object> = []) {
+        let section = null;
+        let key = null;
+
+        if (!isNil(currentNode) && !isNil(section = currentNode.getAttribute(XeditMapper.TAG_SECTION_TYPE)) &&
+            !isNil(key = currentNode.getAttribute(XeditMapper.TAG_UUID))) {
+            path.unshift({ key: key, name: section });
+        }
+
+        return isNil(currentNode) || isNil(currentNode.parentNode) || equals(currentNode.nodeName.toLowerCase(), rootTag) ?
+            path : this.getSectionPath(currentNode.parentNode, rootTag, path);
+    }
+
 
     /**
      * Get section name according to the language
