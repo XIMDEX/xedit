@@ -171,7 +171,7 @@ export class EditorService {
     });
 
     try {
-      node = new Node(uuid, title, path, attributes);
+      node = new Node(uuid, element, title, path, attributes);
     } catch (e) {
       console.error('Invalid node');
     }

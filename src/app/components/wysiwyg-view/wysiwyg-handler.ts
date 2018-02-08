@@ -40,6 +40,12 @@ export class WysiwygHandler {
     /**********************************     TINYMCE  *******************************************/
 
     /**
+     * Clear tinymce
+     */
+    static clearTinymce() {
+        tinymce.remove();
+    }
+    /**
      * Init tinymce editor and added events
      */
     static initTinymce(args) {
@@ -55,28 +61,22 @@ export class WysiwygHandler {
                     ' bullist numlist outdent indent |fontsizeselect',
                 plugins: ['link', 'table', 'image', 'paste', 'dam'],
                 skin_url: 'assets/skins/lightgray',
-                content_style: '.mce-content-body{ line-height: unset !important; } [xe_selected]{ outline: 1px solid green}',
+                content_style: '.mce-content-body{ line-height: unset !important; }  .mce-content-focus{ outline: inherit !important; }',
                 valid_elements: '*[*]',
                 setup: editor => {
                     let prevElement = null;
                     editor.on('Nodechange', (e) => {
-                        if (!isNil(prevElement)) {
-                            prevElement.removeAttribute(XeditMapper.ATTR_SELECTED);
-                        }
                         const element = e.element;
-                        element.setAttribute(XeditMapper.ATTR_SELECTED, '');
-                        prevElement = element;
-
                         if (isNil(element.getAttribute(XeditMapper.TAG_UUID))) {
                             element.setAttribute(XeditMapper.TAG_UUID, UUID.UUID());
                         }
-                        const currentNode = EditorService.parseToNode(element);
-                        args.service.setCurrentNode(currentNode);
+
+                        if (!isNil(args.node) && !equals(args.node.getAttribute(XeditMapper.TAG_UUID),
+                            element.getAttribute(XeditMapper.TAG_UUID)))
+                            args.service.setCurrentNode(EditorService.parseToNode(element));
+
                     });
                     editor.on('PastePreProcess', (e) => {
-                        if (!isNil(prevElement)) {
-                            prevElement.removeAttribute(XeditMapper.ATTR_SELECTED);
-                        }
                         function replaceIndex(string, at, repl) {
                             let pos = -1;
                             return string.replace(/ xe_uuid=\"[^"]*\" */g, (match) => {
@@ -101,16 +101,11 @@ export class WysiwygHandler {
                         const content = editor.getContent();
                         args.service.save(contentTag, content);
                     });
-                    /*editor.on('GetContent', (e) => {
-                        let node = e.target.selection.getNode();
-                        if (isNil(node.getAttribute(XeditMapper.TAG_UUID)))
-                            node.setAttribute(XeditMapper.TAG_UUID, UUID.UUID())
-                    });*/
                     editor.on('init', (evt: Event) => {
                         tinymce.execCommand('mceFocus', false, editor.id);
                     });
                     editor.on('blur', (e) => {
-                        /*new Promise(
+                        new Promise(
                             () => {
                                 const loop = window.setInterval(() => {
                                     try {
@@ -126,12 +121,7 @@ export class WysiwygHandler {
                                 }, 30);
 
                             }
-                        );*/
-                    });
-                    editor.on('remove', (e) => {
-                        if (!isNil(prevElement)) {
-                            prevElement.removeAttribute(XeditMapper.ATTR_SELECTED);
-                        }
+                        );
                     });
                 }
             });

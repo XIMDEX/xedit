@@ -3,7 +3,8 @@ import { UUID } from 'angular2-uuid';
 import { History } from './history';
 import { HTMLParser } from 'core/htmlparser';
 import { Serializable } from './interfaces/Serializable';
-import { isNil, equals, is, reduce } from 'ramda';
+import { isNil, equals, is, reduce, contains } from 'ramda';
+import { XeditMapper } from './schema/xedit-mapper';
 
 export class FileHistory {
 
@@ -104,6 +105,7 @@ export class File extends History {
      * @param hasRootTag If true then root tag will be added
      */
     static html2json(html, hasRootTag = true) {
+        const requiredXeditAttributes = [XeditMapper.TAG_SECTION_TYPE];
         html = File.removeDOCTYPE(html);
         const bufArray = [];
         const results = {
@@ -121,33 +123,36 @@ export class File extends History {
                     attr: null
                 };
                 if (attrs.length !== 0) {
-                    node.attr = attrs.reduce(function (pre, attr) {
-                        const name = attr.name;
-                        let value = attr.value;
+                    node.attr = attrs
+                        // filter xe_* attributes except if its are required
+                        .filter((attr) => isNil(attr.name.match('xe_')) || contains(attr.name, requiredXeditAttributes))
+                        .reduce(function (pre, attr) {
+                            const name = attr.name;
+                            let value = attr.value;
 
-                        // has multi attibutes
-                        // make it array of attribute
-                        if (value.match(/ /)) {
-                            value = value.split(' ');
-                        }
-
-                        // if attr already exists
-                        // merge it
-                        if (pre[name]) {
-                            if (Array.isArray(pre[name])) {
-                                // already array, push to last
-                                pre[name].push(value);
-                            } else {
-                                // single value, make it array
-                                pre[name] = [pre[name], value];
+                            // has multi attibutes
+                            // make it array of attribute
+                            if (value.match(/ /)) {
+                                value = value.split(' ');
                             }
-                        } else {
-                            // not exist, put it
-                            pre[name] = value;
-                        }
 
-                        return pre;
-                    }, {});
+                            // if attr already exists
+                            // merge it
+                            if (pre[name]) {
+                                if (Array.isArray(pre[name])) {
+                                    // already array, push to last
+                                    pre[name].push(value);
+                                } else {
+                                    // single value, make it array
+                                    pre[name] = [pre[name], value];
+                                }
+                            } else {
+                                // not exist, put it
+                                pre[name] = value;
+                            }
+
+                            return pre;
+                        }, {});
                 }
                 if (unary) {
                     // if this tag dosen't have end tag

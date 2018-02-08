@@ -21,3 +21,20 @@ body{
     margin: 0;
     background: $background-default-color;
 }
+
+[xe_selected]{
+    outline: 2px dotted #333 !important;
+}
+
+[xe_w_selected]{
+    outline: 1px solid green !important;
+}
+
+[xe_selected]::before {
+    content: attr(xe_selected);
+    float: right;
+    margin-top: -20px;
+    background: green;
+    padding: 0 10px;
+    color: white;
+}

@@ -13,5 +13,6 @@ export class XeditMapper {
 
     // UTILS
     static ATTR_SELECTED = 'xe_selected';
+    static ATTR_WYSIWYG_SELECTED = 'xe_w_selected';
 
 }

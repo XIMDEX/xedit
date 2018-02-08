@@ -45,6 +45,8 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     private subscribeCN;
     public breadcrumb: Array<string> = [];
     public contextMenuActions: Array<any> = [];
+    private currentSection: any;
+    private currentTarget: any;
 
     constructor(private _editorService: EditorService, private contextMenuService: ContextMenuService, private _elementRef: ElementRef) { }
 
@@ -60,6 +62,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         this.subscribeCN.unsubscribe();
         this._editorService.setCurrentNode(null);
         this._editorService.setCurrentNodeModify(null);
+        WysiwygHandler.clearTinymce();
     }
 
     /************************************** Private Methods **************************************/
@@ -81,6 +84,12 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
                 element.setAttribute(attribute, currentNode.getAttribute(attribute));
             });
         });
+
+        this._editorService.getCurrentNode().subscribe(currentNode => {
+            if (!isNil(currentNode)) {
+                this.setSelection(currentNode.getTarget());
+            }
+        });
     }
 
     /**
@@ -99,16 +108,8 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         return renderContent;
     }
     /************************************** Public Methods **************************************/
-
     onclick(evt) {
-
-        const currentNode = evt.target;
-        const section = this.getSection(currentNode);
-        this.breadcrumb = this.getBreadCrumb(currentNode);
-
-        if (section) {
-            this.applyHandler(currentNode, section);
-        }
+        this._editorService.setCurrentNode(EditorService.parseToNode(evt.target));
     }
 
     getSection(currentNode, attribute = XeditMapper.TAG_SECTION_TYPE) {
@@ -133,6 +134,33 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
         return isNil(currentNode) || isNil(currentNode.parentNode) || equals(currentNode.nodeName.toLowerCase(), rootTag) ?
             path : this.getBreadCrumb(currentNode.parentNode, rootTag, path);
+    }
+
+    setSelection(target) {
+        if (!isNil(this.currentSection)) {
+            this.currentSection.removeAttribute(XeditMapper.ATTR_SELECTED);
+        }
+
+        if (!isNil(this.currentTarget)) {
+            this.currentTarget.removeAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED);
+        }
+
+        this.currentTarget = target;
+        this.currentSection = this.getSection(this.currentTarget);
+
+        // Add selected class
+        const { schema } = this.getSchemas(this.currentSection);
+        const name = this.getSectionLang(schema, 'es');
+        this.currentSection.setAttribute(XeditMapper.ATTR_SELECTED, name);
+
+        // Add selected class
+        this.currentTarget.setAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED, this.currentTarget.nodeName);
+
+        this.breadcrumb = this.getBreadCrumb(this.currentTarget);
+
+        if (!isNil(this.currentSection)) {
+            this.applyHandler(this.currentTarget, this.currentSection);
+        }
     }
 
     applyHandler(currentNode, section) {
@@ -202,25 +230,6 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
             contextMenuActions.push(this.createAction(null, null, true, true));
         }
         contextMenuActions = union(contextMenuActions, contextMenuActionsSiblings);
-        // this.contextMenuActions = [
-        //    this.createAction((i) => `Say hi!`, (evt) => console.log(this.getSection(element)), true),
-        /* {
-            html: (i) => `Say hi!`,
-            click: (evt) => { console.log(this.getSection(evt)) },
-            enabled: () => true,
-            visible: () => true,
-        },
-        {
-            divider: true,
-            visible: true,
-        },*/
-        /* {
-            html: (item) => `Something else`,
-            click: (item) => alert('Or not...'),
-            enabled: (item) => false,
-            visible: (item) => item.type === 'type1',
-        },*/
-        // ];
 
         this.contextMenuActions = contextMenuActions;
     }

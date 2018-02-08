@@ -10,17 +10,19 @@ export class Node {
     // Variables
     private uuid: string;
     private name: string;
+    private target: any;
     private attributes: Object;
     private path: Array<string>;
 
     // Constructor
-    constructor(uuid: string, name: string, path: Array<string>, attributes: Object = {}) {
+    constructor(uuid: string, target: any, name: string, path: Array<string>, attributes: Object = {}) {
         if (isNil(path) || isNil(uuid) || isNil(name)) {
             throw new TypeError('Invalid arguments');
         }
 
         this.uuid = uuid;
         this.name = name;
+        this.target = target;
         this.path = path;
         this.attributes = attributes;
     }
@@ -36,6 +38,14 @@ export class Node {
 
     setName(name: string): void {
         this.name = name;
+    }
+
+    getTarget(): any {
+        return this.target;
+    }
+
+    setTarget(target: any): void {
+        this.target = target;
     }
 
     getPath(): Array<string> {
