@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Image } from '../../models/image';
 import { File } from '../../models/file';
 import { Observable } from 'rxjs/Observable';
 import { Node } from '../../models/node';
@@ -9,6 +8,7 @@ import { Editor } from 'ng2-ace-editor/node_modules/brace';
 import { Subject } from 'rxjs/Subject';
 import { XeditMapper } from '../../models/schema/xedit-mapper';
 import { UUID } from 'angular2-uuid';
+import { Converters } from '../../../utils/converters';
 
 @Injectable()
 export class EditorService {
@@ -131,21 +131,21 @@ export class EditorService {
     let uuidPath = null;
 
     if (is(String, node)) {
-      fileContent[node].content = File.html2json(content);
+      fileContent[node].content = Converters.html2json(content);
     } else {
       uuidPath = EditorService.getUuidPath(node);
 
       const root = fileContent[uuidPath.shift()];
 
       if (is(String, root.content)) {
-        root.content = File.html2json(root.content);
+        root.content = Converters.html2json(root.content);
       }
 
       // Modify file with new changes
       const editContent = reduce(function (acc, value) {
         return acc.child[value];
       }, root.content, uuidPath);
-      editContent.child = File.html2json(content, false);
+      editContent.child = Converters.html2json(content, false);
     }
 
     this.setFileState(newFile);

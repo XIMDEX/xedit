@@ -27,6 +27,7 @@ import $ from 'jquery';
 import { WysiwygHandler } from './wysiwyg-handler';
 import { equal } from 'assert';
 import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
+import { Converters } from '../../../utils/converters';
 import { Element } from '@angular/compiler';
 
 @Component({
@@ -101,8 +102,8 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         let renderContent = '';
         Object.keys(content).forEach(property => {
             renderContent += '<' + XeditMapper.TAG_EDITOR + ' ' + XeditMapper.TAG_UUID + '="' + property + '">';
-            renderContent += File.json2html((is(String, content[property].content) ?
-                File.html2json(content[property].content) : content[property].content));
+            renderContent += Converters.json2html((is(String, content[property].content) ?
+                Converters.html2json(content[property].content) : content[property].content));
             renderContent += '</' + XeditMapper.TAG_EDITOR + '>';
         });
         return renderContent;
@@ -180,6 +181,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         const clickFunc = (currentNode: any, afterNode: any, strTemplate: string) => {
             const template = this.createElementFromHTML(strTemplate);
             currentNode.insertBefore(template, afterNode);
+            this.addChildNode(EditorService.getUuidPath(currentNode), template);
         };
 
         // Childs
@@ -212,6 +214,33 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         this.contextMenuActions = contextMenuActions;
     }
 
+
+    addChildNode(path, newNode) {
+
+        // Modify file with new changes
+        const uuidPath = path;
+        const elementContent = this._editorService.getFileStateValue().getState().getContent();
+        const editContent = reduce(function (acc, value) {
+            return acc.child[value];
+        }, elementContent[uuidPath.shift()].content, uuidPath);
+
+        const hasAttr = has('attr');
+
+        if (!hasAttr(editContent) || editContent['attr'] == null) {
+            editContent['attr'] = [];
+        }
+
+        /*editContent['attr'][property] = evt.target.value;
+
+        // Save new state
+        const newFile = this._editorService.newStateFile(elementContent);
+        this._editorService.setFileState(newFile);
+
+        // Update current node
+        this.currentNode.setAttribute(property, evt.target.value);
+        this._editorService.setCurrentNode(this.currentNode);
+        this._editorService.setCurrentNodeModify(this.currentNode);*/
+    }
 
 
     private createAction(html, click, visible, divider = false, enabled = (item) => true) {
@@ -320,7 +349,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     getSectionTemplate(section) {
         let template = null;
         if (hasIn('template', section) && is(String, section.template)) {
-            template = File.json2html(File.html2json(section.template));
+            template = Converters.json2html(Converters.html2json(section.template));
         }
         return template;
     }

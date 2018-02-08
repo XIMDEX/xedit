@@ -23,6 +23,7 @@ import { File } from '../../models/file';
 import { EditorService } from '../../services/editor-service/editor.service';
 import { WysiwygViewComponent } from './wysiwyg-view.component';
 import { XeditMapper } from '../../models/schema/xedit-mapper';
+import { Converters } from '../../../utils/converters';
 
 
 export class WysiwygHandler {
@@ -94,7 +95,7 @@ export class WysiwygHandler {
                             e.content = replaceIndex(e.content, i, ' xe_uuid="' + UUID.UUID() + '" ');
                         }
 
-                        e.content = File.json2html(File.html2json(e.content));
+                        e.content = Converters.json2html(Converters.html2json(e.content));
                     });
                     editor.on('change', (evt: Event) => {
                         const contentTag = editor.bodyElement;
@@ -105,7 +106,7 @@ export class WysiwygHandler {
                         tinymce.execCommand('mceFocus', false, editor.id);
                     });
                     editor.on('blur', (e) => {
-                        new Promise(
+                        const promise = new Promise(
                             () => {
                                 const loop = window.setInterval(() => {
                                     try {

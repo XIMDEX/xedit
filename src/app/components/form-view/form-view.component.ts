@@ -14,6 +14,7 @@ import 'brace/mode/html';
 import 'brace/snippets/html';
 import 'brace/ext/language_tools';
 import 'brace/ext/searchbox';
+import { Converters } from '../../../utils/converters';
 
 declare let ace: any;
 
@@ -80,7 +81,7 @@ export class FormViewComponent implements OnInit, AfterViewInit, OnDestroy {
       editorNodes.push({
         'id': property,
         'title': node.title,
-        'renderContent': is(String, node.content) ? node.content : pretty(File.json2html(node.content, false)),
+        'renderContent': is(String, node.content) ? node.content : pretty(Converters.json2html(node.content, false)),
         'editor': null
       });
     });

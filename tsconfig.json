@@ -16,8 +16,8 @@
       "dom"
     ],
     "paths": {
-      "@core/*": [
-        "core/*"
+      "@utils/*": [
+        "utils/*"
       ]
     }
   }

@@ -1,101 +1,15 @@
-
+import { XeditMapper } from '../app/models/schema/xedit-mapper';
+import { isNil, contains } from 'ramda';
 import { UUID } from 'angular2-uuid';
-import { History } from './history';
 import { HTMLParser } from '@utils/htmlparser';
-import { Serializable } from './interfaces/Serializable';
-import { isNil, equals, is, reduce, contains } from 'ramda';
-import { XeditMapper } from './schema/xedit-mapper';
-
-export class FileHistory {
-
-    static TYPE_JSON = 'json';
-    static TYPE_TEXT = 'text';
-
-    content: any;
-    type: string;
-
-    // Constructor
-    constructor(content: any = null) {
-        if (content != null) {
-            this.content = content;
-            this.type = is(String, content) ? FileHistory.TYPE_TEXT : FileHistory.TYPE_JSON;
-        }
-    }
-
-    /***************** Getters and setters **************************/
-    getContent(): any {
-        return this.content;
-    }
-
-    setContent(content: any): void {
-        this.content = content;
-    }
-}
-
-export class File extends History {
-
-    private schemas: Object;
-    constructor(json = null) {
-
-        if (isNil(json)) {
-            throw TypeError('Invalid arguments');
-        }
-
-        super(File.createContent(json.nodes));
-        this.schemas = {};
-
-        if (!isNil(json.nodes)) {
-            Object.keys(json.nodes).forEach(nodeKey => {
-                this.schemas[nodeKey] = json.nodes[nodeKey].schema;
-            });
-        }
-    }
 
 
-    /**************** Getters and setter ************************/
-    getSchemas() {
-        return this.schemas;
-    }
-
-    getSchema(nodeKey) {
-        return this.schemas[nodeKey];
-    }
-
-    /***************** PUBLIC METHODS **************************/
-
-    /**
-     * Added new state
-     */
-    newState(content: any): File {
-        super.newState(new FileHistory(content));
-        return this;
-    }
-
-
-    recovery(stateId: string) {
-        return Object.assign(new FileHistory, super.recovery(stateId));
-    }
-
-    /***************** STATIC METHODS **************************/
-
-    private static createContent(nodes: JSON) {
-
-        Object.keys(nodes).forEach(property => {
-            nodes[property].content = File.html2json(nodes[property].content);
-        });
-
-        return new FileHistory(nodes);
-    }
-
+export class Converters {
     private static removeDOCTYPE(html) {
         return html
             .replace(/<\?xml.*\?>\n/, '')
             .replace(/<!doctype.*\>\n/, '')
             .replace(/<!DOCTYPE.*\>\n/, '');
-    }
-
-    private static q(v) {
-        return '"' + v + '"';
     }
 
     /**
@@ -106,7 +20,7 @@ export class File extends History {
      */
     static html2json(html, hasRootTag = true) {
         const requiredXeditAttributes = [XeditMapper.TAG_SECTION_TYPE];
-        html = File.removeDOCTYPE(html);
+        html = Converters.removeDOCTYPE(html);
         const bufArray = [];
         const results = {
             node: 'root',
@@ -228,7 +142,7 @@ export class File extends History {
         let child = '';
         if (json.child) {
             child = Object.keys(json.child).map(function (uuid: string) {
-                return File.json2html(json.child[uuid], showIds);
+                return Converters.json2html(json.child[uuid], showIds);
             }).join('');
         }
 
@@ -239,7 +153,7 @@ export class File extends History {
                 if (Array.isArray(value)) {
                     value = value.join(' ');
                 }
-                return key + '=' + File.q(value);
+                return `${key} = "${value}"`;
             }).join(' ');
             if (attr !== '') {
                 attr = ' ' + attr;
@@ -248,7 +162,7 @@ export class File extends History {
 
         if (json.node === 'element') {
             const tag = json.tag;
-            const uuid = showIds ? ' xe_uuid="' + json.uuid + '" ' : '';
+            const uuid = showIds ? ` ${XeditMapper.TAG_UUID} = "${json.uuid}"` : '';
 
             if (empty.indexOf(tag) > -1) {
                 // empty element
@@ -273,21 +187,4 @@ export class File extends History {
             return child;
         }
     }
-
-    /**
-     * Added uuid if attribute not exist
-     */
-    static addUuidIfAttributeNotExist(node): void {
-        const attributes = node.attributes;
-        let existProp = false;
-        Object.keys(attributes).forEach(prop => {
-            if (equals(attributes[prop].name, 'xe_uuid')) {
-                existProp = true;
-            }
-        });
-        if (!existProp) {
-            node.setAttribute('xe_uuid', UUID.UUID());
-        }
-    }
-
 }

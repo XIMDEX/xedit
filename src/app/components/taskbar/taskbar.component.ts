@@ -6,7 +6,7 @@ import { File } from '../../models/file';
 import { equals, contains, isNil, indexOf, remove } from 'ramda';
 import { StateService } from '../../services/state-service/state.service';
 import { EditorService } from '../../services/editor-service/editor.service';
-import { DOM } from '@core/dom';
+import { DOM } from '../../models/dom';
 
 @Component({
   selector: 'app-taskbar',
