@@ -29,6 +29,7 @@ import { equal } from 'assert';
 import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
 import { Converters } from '../../../utils/converters';
 import { Element } from '@angular/compiler';
+import { DOM } from '../../models/dom';
 
 @Component({
     selector: 'app-wysiwyg-view',
@@ -187,9 +188,8 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         contextMenuActions.push(this.createAction(null, null, true, true));
 
         const clickFunc = (currentNode: any, afterNode: any, strTemplate: string) => {
-            const template = this.createElementFromHTML(strTemplate);
+            const template = DOM.creteElement(strTemplate);
             currentNode.insertBefore(template, afterNode);
-
         };
 
         // Childs
@@ -300,18 +300,5 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         }
 
         return actions;
-    }
-
-    /**
-     * Create DOM element from string
-     *
-     * @param htmlString
-     */
-    createElementFromHTML(htmlString) {
-        const div = document.createElement('div');
-        div.innerHTML = htmlString.trim();
-
-        // Change this to div.childNodes to support multiple top-level nodes
-        return div.firstChild;
     }
 }

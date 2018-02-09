@@ -77,14 +77,20 @@ export class DOM {
 
     /***************** STATIC METHODS **************************/
 
-    public static element(selector: ElementRef | string): DOM | undefined {
-        let element = undefined
+    public static element(selector: ElementRef | string): DOM {
+        let element;
         if (selector instanceof ElementRef) {
             element = selector.nativeElement;
         } else {
             element = new ElementRef(document.body).nativeElement.querySelector(selector);
         }
         return new DOM(element);
+    }
+
+    public static creteElement(htmlString: string): Node {
+        const div = document.createElement('div');
+        div.innerHTML = htmlString.trim();
+        return div.firstChild;
     }
 
     // TODO Clean
