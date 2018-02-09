@@ -30,8 +30,10 @@ export class Node {
         this.name = target.tagName;
         this.target = target;
         this.section = Node.getContainer(this.target);
-        this.uuidSectionsPath = Node.getContextPath(this.target);
-        this.sectionsPath = Node.getContextPath(this.target, XeditMapper.TAG_EDITOR, XeditMapper.TAG_SECTION_TYPE, [], true);
+        this.uuidSectionsPath = Node.getContextPath(this.target, XeditMapper.TAG_EDITOR, XeditMapper.TAG_UUID,
+            XeditMapper.TAG_UUID, [], false, true);
+        this.sectionsPath = Node.getContextPath(this.target, XeditMapper.TAG_EDITOR,
+            XeditMapper.TAG_SECTION_TYPE, XeditMapper.TAG_SECTION_TYPE, [], true);
         this.areaId = this.uuidSectionsPath.shift();
         this.attributes = attributes;
 
@@ -75,6 +77,11 @@ export class Node {
 
     getPath(): Array<string> {
         return this.uuidSectionsPath;
+    }
+
+
+    getSectionsPath(): Array<string> {
+        return this.sectionsPath;
     }
 
     getAttributes(): Object {
@@ -142,7 +149,6 @@ export class Node {
         return attributes;
     }
 
-
     /*********************** STATIC METHODS ***************************************/
     static getContainer(element, attribute = XeditMapper.TAG_SECTION_TYPE) {
         let container = null;
@@ -158,15 +164,17 @@ export class Node {
     /**
      * Calculate uuid path to xedit node
      */
-    static getContextPath(element, rootTag = XeditMapper.TAG_EDITOR, attribute = XeditMapper.TAG_UUID, path = [], onlyAttribute = false) {
+    static getContextPath(element, rootTag = XeditMapper.TAG_EDITOR, hasAttribute = XeditMapper.TAG_UUID,
+        attribute = XeditMapper.TAG_UUID, path = [], onlyAttribute = false, rootTagIncluded = false) {
         const parent = element.parentNode;
 
-        if (!isNil(element) && (!onlyAttribute || element.hasAttribute(attribute))) {
+        if (!isNil(element) && (!onlyAttribute || element.hasAttribute(hasAttribute)) &&
+            (element.nodeName.toLowerCase() !== rootTag) || rootTagIncluded) {
             path.unshift(element.getAttribute(attribute));
         }
 
         return (element.nodeName.toLowerCase() === rootTag || isNil(parent)) ?
-            path : this.getContextPath(parent, rootTag, attribute, path, onlyAttribute);
+            path : this.getContextPath(parent, rootTag, hasAttribute, attribute, path, onlyAttribute, rootTagIncluded);
     }
 
 

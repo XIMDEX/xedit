@@ -1,0 +1,114 @@
+{
+	"code": 200,
+	"result": {
+		"nodes": {
+			"s4sdf89": {
+				"title": "Body",
+				"content": "<section xe_section='main'><section xe_section='date'>27/10/2017</section><section id='body2' xe_section='body'><h1 id='red2' class=\"ejemplo\" style=\"color:red\"> Prueba cambiar elemento node ID</h1></section><section xe_section='body'><h1 id='red' class=\"ejemplo\" style=\"color:red\"> Prueba cambiar elemento node ID</h1></section></section>",
+				"schema": {
+					"sections": {
+						"main": {
+							"name": "Main",
+							"cardinality": {
+								"min": 1,
+								"max": 1
+							},
+							"lang": {
+								"es": "Principal",
+								"en": "Fecha"
+							},
+							"sections": {
+								"date": {
+									"name": "Date",
+									"editable": true,
+									"type": "time",
+									"cardinality": {
+										"min": 1,
+										"max": 1
+									},
+									"lang": {
+										"es": "Fecha",
+										"en": "Date"
+									},
+									"template": "<section xe_section='date'>00/00/0000</section>"
+								},
+								"title": {
+									"name": "Title",
+									"type": "text",
+									"cardinality": {
+										"min": 1,
+										"max": 1
+									},
+									"lang": {
+										"es": "Título",
+										"en": "Title"
+									},
+									"tag": {
+										"mode": "exclude",
+										"elements": [
+											"p",
+											"a"
+										]
+									},
+									"style": {
+										"allowed": [
+											"negrita",
+											"cursiva"
+										],
+										"mode": "exclude",
+										"elements": [
+											{
+												"img": [
+													"negrita",
+													"cursiva"
+												]
+											}
+										]
+									}
+								},
+								"opening_line": {
+									"name": "Opening line",
+									"type": "text",
+									"cardinality": 1,
+									"lang": {
+										"es": "Entradilla",
+										"en": "Opening line"
+									}
+								},
+								"creation_date": {
+									"name": "Creation date",
+									"type": "date",
+									"cardinality": 1,
+									"lang": {
+										"es": "Fecha de creación",
+										"en": "Creation date"
+									}
+								},
+								"body": {
+									"name": "Body",
+									"editable": true,
+									"type": "html",
+									"cardinality": {
+										"min": 1,
+										"max": 1
+									},
+									"lang": {
+										"es": "Cuerpo",
+										"en": "Body"
+									}
+								}
+							}
+						}
+					}
+				},
+				"attributes": {
+					"lang": "es",
+					"canales": [
+						"php",
+						"html"
+					]
+				}
+			}
+		}
+	}
+}

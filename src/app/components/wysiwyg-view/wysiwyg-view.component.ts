@@ -48,8 +48,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     private subscribeCN;
     private subscribeCNM;
     public contextMenuActions: Array<any> = [];
-    private currentSection: any;
-    private currentTarget: any;
+    private currentNode: Node;
 
     constructor(private _editorService: EditorService, private contextMenuService: ContextMenuService, private _elementRef: ElementRef) { }
 
@@ -114,12 +113,12 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
 
     private clearAttributes() {
-        if (!isNil(this.currentSection)) {
-            this.currentSection.removeAttribute(XeditMapper.ATTR_SELECTED);
+        if (!isNil(this.currentNode.getSection())) {
+            this.currentNode.getSection().removeAttribute(XeditMapper.ATTR_SELECTED);
         }
 
-        if (!isNil(this.currentTarget)) {
-            this.currentTarget.removeAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED);
+        if (!isNil(this.currentNode.getTarget())) {
+            this.currentNode.getTarget().removeAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED);
         }
     }
 
@@ -134,20 +133,21 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
     setSelection(curretNode) {
 
-        this.clearAttributes();
+        if (!isNil(this.currentNode)) {
+            this.clearAttributes();
+        }
 
-        this.currentTarget = curretNode.getTarget();
-        this.currentSection = curretNode.getSection();
+        this.currentNode = curretNode;
 
         // Add selected class
         const name = Node.getSectionLang(curretNode.getSchema(), 'es');
-        this.currentSection.setAttribute(XeditMapper.ATTR_SELECTED, name);
+        this.currentNode.getSection().setAttribute(XeditMapper.ATTR_SELECTED, name);
 
         // Add selected class
-        this.currentTarget.setAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED, this.currentTarget.nodeName);
+        this.currentNode.getTarget().setAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED, this.currentNode.getTarget().nodeName);
 
-        if (!isNil(this.currentSection)) {
-            this.applyHandler(this.currentTarget, this.currentSection);
+        if (!isNil(this.currentNode.getSection())) {
+            this.applyHandler(this.currentNode.getTarget(), this.currentNode.getSection());
         }
     }
 
@@ -176,7 +176,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
     private updateContextMenuActions(element) {
 
-        const node = EditorService.parseToNode(element, this._editorService.getFileValue().getSchemas());
+        const node = EditorService.parseToNode(element, this._editorService.getFileStateValue().getSchemas());
 
         const actions = this.getAvailableActions(node.getSchema(), node.getSchemaParent());
         let contextMenuActions = [];
@@ -187,9 +187,11 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         contextMenuActions.push(this.createAction((i) => actions.name, null, true, false, (i) => false));
         contextMenuActions.push(this.createAction(null, null, true, true));
 
-        const clickFunc = (currentNode: any, afterNode: any, strTemplate: string) => {
-            const template = DOM.creteElement(strTemplate);
-            currentNode.insertBefore(template, afterNode);
+        const clickFunc = (currentNode: any, afterNode: any, strTemplate: string, child = false) => {
+            const nodeTemplate = Converters.html2json(strTemplate, false);
+            const domTemplate = DOM.creteElement(Converters.json2html(Converters.addWrapJson(nodeTemplate)));
+            currentNode.insertBefore(domTemplate, afterNode);
+            this._editorService.addNodeToArea(node, nodeTemplate, child);
         };
 
         // Childs
@@ -199,7 +201,9 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
                     this.createAction((i) => 'Añadir hijo ' + action.name,
                         (evt) => clickFunc(
                             node.getSection(),
-                            node.getSection().childNodes[node.getSection().childNodes.length], action.template
+                            node.getSection().childNodes[node.getSection().childNodes.length],
+                            action.template,
+                            true
                         ), true)
                 );
             }
@@ -210,7 +214,11 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
             if (hasIn('template' in action) && !isNil(action.template)) {
                 contextMenuActionsSiblings.push(
                     this.createAction((i) => 'Añadir hermano ' + action.name,
-                        (evt) => clickFunc(node.getSection().parentNode, node.getSection().nextSibling, action.template), true)
+                        (evt) => clickFunc(
+                            node.getSection().parentNode,
+                            node.getSection().nextSibling,
+                            action.template
+                        ), true)
                 );
             }
         });
@@ -224,35 +232,6 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
         this.contextMenuActions = contextMenuActions;
     }
-
-
-    addChildNode(path, newNode) {
-
-        // Modify file with new changes
-        const uuidPath = path;
-        const elementContent = this._editorService.getFileStateValue().getState().getContent();
-        const editContent = reduce(function (acc, value) {
-            return acc.child[value];
-        }, elementContent[uuidPath.shift()].content, uuidPath);
-
-        const hasAttr = has('attr');
-
-        if (!hasAttr(editContent) || editContent['attr'] == null) {
-            editContent['attr'] = [];
-        }
-
-        /*editContent['attr'][property] = evt.target.value;
-
-        // Save new state
-        const newFile = this._editorService.newStateFile(elementContent);
-        this._editorService.setFileState(newFile);
-
-        // Update current node
-        this.currentNode.setAttribute(property, evt.target.value);
-        this._editorService.setCurrentNode(this.currentNode);
-        this._editorService.setCurrentNodeModify(this.currentNode);*/
-    }
-
 
     private createAction(html, click, visible, divider = false, enabled = (item) => true) {
         return {

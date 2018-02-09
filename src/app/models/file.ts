@@ -6,6 +6,7 @@ import { Serializable } from './interfaces/Serializable';
 import { isNil, equals, is, reduce, contains } from 'ramda';
 import { XeditMapper } from './schema/xedit-mapper';
 import { Converters } from '../../utils/converters';
+import { Node } from './node';
 
 export class FileHistory {
 
@@ -72,8 +73,12 @@ export class File extends History {
         return this;
     }
 
-
-    recovery(stateId: string) {
+    /**
+     * Recovery specific state
+     *
+     * @param stateId 
+     */
+    recovery(stateId: string): FileHistory {
         return Object.assign(new FileHistory, super.recovery(stateId));
     }
 

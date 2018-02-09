@@ -13,6 +13,15 @@ export class Converters {
     }
 
     /**
+     * Added root wrap to json
+     */
+    static addWrapJson(json) {
+        return {
+            node: 'root',
+            child: json
+        }
+    }
+    /**
      * Parse html to json
      *
      * @param html String with html
@@ -136,6 +145,7 @@ export class Converters {
      * @param showIds If true added attribute id in tags
      */
     static json2html(json, showIds = true) {
+
         // Empty Elements - HTML 4.01
         const empty = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param', 'embed'];
 
@@ -173,17 +183,11 @@ export class Converters {
             const open = '<' + json.tag + uuid + attr + '>';
             const close = '</' + json.tag + '>';
             return open + child + close;
-        }
-
-        if (json.node === 'text') {
+        } else if (json.node === 'text') {
             return json.text;
-        }
-
-        if (json.node === 'comment') {
+        } else if (json.node === 'comment') {
             return '<!--' + json.text + '-->';
-        }
-
-        if (json.node === 'root') {
+        } else if (json.node === 'root') {
             return child;
         }
     }

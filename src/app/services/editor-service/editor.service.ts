@@ -9,6 +9,7 @@ import { Subject } from 'rxjs/Subject';
 import { XeditMapper } from '../../models/schema/xedit-mapper';
 import { UUID } from 'angular2-uuid';
 import { Converters } from '../../../utils/converters';
+import object from '../../../assets/skins/lightgray/img/object.gif';
 
 @Injectable()
 export class EditorService {
@@ -149,6 +150,45 @@ export class EditorService {
         }
 
         this.setFileState(newFile);
+    }
+
+
+
+    /**
+     * Add child or sibling node to area
+     *
+     * @param node
+     * @param target
+     * @param child
+     */
+    addNodeToArea(node: Node, newNode, child: boolean = false) {
+
+        let file = this.newStateFile(this.fileState.getValue().getState().content);
+        const section = node.getSection()
+
+        const sectionPath = child ? Node.getContextPath(section) : Node.getContextPath(section.parentNode);
+
+        const fileNode = reduce(function (node, value) {
+            return node.child[value];
+        }, file.getState().getContent()[node.getAreaId()].content, sectionPath);
+
+        if (!child) {
+            const idChild = section.getAttribute(XeditMapper.TAG_UUID);
+            const nodeKey = Object.keys(newNode)[0];
+            fileNode.child = reduce(function (object, nodeId) {
+                const nodeValue = fileNode.child[nodeId];
+                object[nodeId] = nodeValue;
+                if (nodeId === idChild) {
+                    object[nodeKey] = newNode[nodeKey];
+                }
+                return object;
+            }, {}, Object.keys(fileNode.child))
+        } else {
+            const nodeKey = Object.keys(newNode)[0];
+            fileNode.child[nodeKey] = newNode[nodeKey];
+        }
+
+        this.setFileState(file)
     }
 
 
