@@ -1,10 +1,93 @@
-import { indexOf, remove } from 'ramda';
+import { indexOf, remove, is } from 'ramda';
 import { ElementRef } from '@angular/core';
 
 export class DOM {
 
-    constructor() { }
+    protected target: HTMLElement;
+    private classes: Array<string>;
 
+    constructor(target: HTMLElement) {
+        this.target = target;
+        this.classes = target.className.split(' ');
+    }
+
+    /********************* SETER AND GETERS *********************/
+
+    public setTarget(target: HTMLElement) {
+        this.target = target;
+    }
+
+    public getTarget(): HTMLElement {
+        return this.target;
+    }
+
+    /********************** PUBLIC METHODS **********************/
+
+    public addClass(className: string) {
+        const { index, exists } = this.classExists(className);
+        if (!exists) {
+            this.insertClass(className);
+        }
+        this.storeAttr('class', this.classes);
+    }
+
+    public removeClass(className: string) {
+        const { index, exists } = this.classExists(className);
+        if (exists) {
+            this.deleteClass(index, className);
+        }
+        this.storeAttr('class', this.classes);
+    }
+
+    public toggleClass(className: string) {
+        const { index, exists } = this.classExists(className);
+        if (exists) {
+            this.removeClass(className);
+        } else {
+            this.addClass(className);
+        }
+        this.storeAttr('class', this.classes);
+    }
+
+    /********************* PRIVATE METHODS *********************/
+
+    private storeAttr(attr: string, value: string | Array<string>) {
+        if (Array.isArray(value)) {
+            value = value.join(' ');
+        }
+
+        this.target.setAttribute('class', String(value));
+    }
+
+    private classExists(className: string) {
+        const index = indexOf(className, this.classes);
+        const exists = index >= 0;
+        return { index, exists };
+    }
+
+    private insertClass(className: string) {
+        this.classes.push(className);
+    }
+
+    private deleteClass(index: number, className: string) {
+        if (index >= 0) {
+            this.classes.splice(index, 1);
+        }
+    }
+
+    /***************** STATIC METHODS **************************/
+
+    public static element(selector: ElementRef | string): DOM | undefined {
+        let element = undefined
+        if (selector instanceof ElementRef) {
+            element = selector.nativeElement;
+        } else {
+            element = new ElementRef(document.body).nativeElement.querySelector(selector);
+        }
+        return new DOM(element);
+    }
+
+    // TODO Clean
     private static setClass(classes: Array<string>, className: string) {
         classes.push(className);
     }
