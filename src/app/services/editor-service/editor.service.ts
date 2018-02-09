@@ -178,17 +178,18 @@ export class EditorService {
     return node;
   }
 
+  /*
   * Calculate uuid path to xedit node
   */
   static getUuidPath(element, rootTag = XeditMapper.TAG_EDITOR, path = [], onlySections = false) {
-  const parent = element.parentNode;
+    const parent = element.parentNode;
 
-  if (!isNil(element) && (!onlySections || element.hasAttribute(XeditMapper.TAG_SECTION_TYPE))) {
-    path.unshift(element.getAttribute(XeditMapper.TAG_UUID));
+    if (!isNil(element) && (!onlySections || element.hasAttribute(XeditMapper.TAG_SECTION_TYPE))) {
+      path.unshift(element.getAttribute(XeditMapper.TAG_UUID));
+    }
+
+    return (element.nodeName.toLowerCase() === rootTag || isNil(parent)) ?
+      path : this.getUuidPath(parent, rootTag, path);
   }
-
-  return (element.nodeName.toLowerCase() === rootTag || isNil(parent)) ?
-    path : this.getUuidPath(parent, rootTag, path);
-}
 
 }
