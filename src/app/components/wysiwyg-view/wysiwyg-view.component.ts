@@ -189,8 +189,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
         const clickFunc = (currentNode: any, afterNode: any, strTemplate: string, child = false) => {
             const nodeTemplate = Converters.html2json(strTemplate, false);
-            const domTemplate = DOM.creteElement(Converters.json2html(Converters.addWrapJson(nodeTemplate)));
-            currentNode.insertBefore(domTemplate, afterNode);
+            DOM.element(currentNode).insertNode(Converters.json2html(Converters.addWrapJson(nodeTemplate)), afterNode, true);
             this._editorService.addNodeToArea(node, nodeTemplate, child);
         };
 

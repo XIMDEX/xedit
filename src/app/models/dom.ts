@@ -1,4 +1,4 @@
-import { indexOf, remove, is } from 'ramda';
+import { indexOf, remove, hasIn } from 'ramda';
 import { ElementRef } from '@angular/core';
 
 export class DOM {
@@ -49,14 +49,40 @@ export class DOM {
         this.storeAttr('class', this.classes);
     }
 
+    public setAttr(attr: string, value: string | Array<string>) {
+        this.storeAttr(attr, value);
+    }
+
+    public insertNode(htmlString: string, siblingNode: HTMLElement, before: boolean = false) {
+        const element = DOM.creteElement(htmlString);
+        // if (!before) {
+        //     this.target.insertBefore(element, siblingNode);
+        // }
+        this.target.insertBefore(element, siblingNode);
+    }
+
     /********************* PRIVATE METHODS *********************/
 
     private storeAttr(attr: string, value: string | Array<string>) {
         if (Array.isArray(value)) {
-            value = value.join(' ');
+            value = value.join(this.joinAttrTypes(attr));
         }
 
-        this.target.setAttribute('class', String(value));
+        this.target.setAttribute(attr, String(value));
+    }
+
+    private joinAttrTypes(attr: string): string {
+        const attributtes = {
+            'class': ' ',
+            'style': '; ',
+            'default': ' '
+        }
+
+        if (hasIn(attr, attributtes)) {
+            return attributtes[attr];
+        }
+
+        return attributtes.default;
     }
 
     private classExists(className: string) {
@@ -77,10 +103,12 @@ export class DOM {
 
     /***************** STATIC METHODS **************************/
 
-    public static element(selector: ElementRef | string): DOM {
+    public static element(selector: ElementRef | HTMLElement | string): DOM {
         let element;
         if (selector instanceof ElementRef) {
             element = selector.nativeElement;
+        } else if (selector instanceof HTMLElement) {
+            element = selector;
         } else {
             element = new ElementRef(document.body).nativeElement.querySelector(selector);
         }
