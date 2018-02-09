@@ -73,7 +73,7 @@ export class WysiwygHandler {
 
                         if (!isNil(args.node) && !equals(args.node.getAttribute(XeditMapper.TAG_UUID),
                             element.getAttribute(XeditMapper.TAG_UUID))) {
-                            args.service.setCurrentNode(EditorService.parseToNode(element));
+                            args.service.setCurrentNode(EditorService.parseToNode(element, args.service.getSchemas()));
                         }
 
                     });

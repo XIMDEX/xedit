@@ -1,5 +1,6 @@
-import { equals, isNil, contains } from 'ramda';
+import { equals, isNil, contains, props, reduce, hasIn, is } from 'ramda';
 import { XeditMapper } from './schema/xedit-mapper';
+import { Converters } from '../../utils/converters';
 
 export class Node {
 
@@ -8,38 +9,40 @@ export class Node {
     static TYPE_OTHER = 'video';
 
     // Variables
+    private areaId;
     private uuid: string;
+    private target: HTMLElement;
+    private schema: any;
+    private schemaParent: any;
     private name: string;
-    private target: any;
     private section: any;
     private attributes: Object;
-    private path: Array<string>;
+    private uuidSectionsPath: Array<string>;
+    private sectionsPath: Array<string>;
 
     // Constructor
-    constructor(uuid: string, target: any, section: any, name: string, path: Array<string>, attributes: Object = {}) {
-        if (isNil(path) || isNil(uuid) || isNil(name)) {
+    constructor(uuid: string, target: any, schemas: any, attributes: Object = {}) {
+        if (isNil(uuid) || isNil(name)) {
             throw new TypeError('Invalid arguments');
         }
 
         this.uuid = uuid;
-        this.name = name;
+        this.name = target.tagName;
         this.target = target;
-        this.section = section;
-        this.path = path;
+        this.section = Node.getContainer(this.target);
+        this.uuidSectionsPath = Node.getContextPath(this.target);
+        this.sectionsPath = Node.getContextPath(this.target, XeditMapper.TAG_EDITOR, XeditMapper.TAG_SECTION_TYPE, [], true);
+        this.areaId = this.uuidSectionsPath.shift();
         this.attributes = attributes;
+
+        const { schema, schemaParent } = this.getSchemas(schemas);
+        this.schema = schema;
+        this.schemaParent = schemaParent;
     }
 
     // ************************************** Getters and setters **************************************/
     getUuid(): string {
         return this.uuid;
-    }
-
-    getName(): string {
-        return this.name;
-    }
-
-    setName(name: string): void {
-        this.name = name;
     }
 
     getTarget(): any {
@@ -50,20 +53,28 @@ export class Node {
         this.target = target;
     }
 
+    getName(): string {
+        return this.name;
+    }
+
+    getAreaId(): string {
+        return this.areaId;
+    }
+
+    getSchema(): string {
+        return this.schema;
+    }
+
+    getSchemaParent(): string {
+        return this.schemaParent;
+    }
+
     getSection(): any {
         return this.section;
     }
 
-    setSection(section: any): void {
-        this.section = section;
-    }
-
     getPath(): Array<string> {
-        return this.path;
-    }
-
-    setPath(path: Array<string>): void {
-        this.path = path;
+        return this.uuidSectionsPath;
     }
 
     getAttributes(): Object {
@@ -87,8 +98,27 @@ export class Node {
             this.attributes[name] = value;
         }
     }
+    /********************* PRIVATE METHODS *********************/
+    /**
+     * Get schema and parent schema by specific DOM element
+     *
+     * @param element
+     */
+    private getSchemas(schemas) {
+        /** @todo Corregir obtener ruta */
 
-    /***************** PUBLIC METHODS **************************/
+        let schema = schemas[this.areaId];
+        let schemaParent = null;
+
+        // Get schema
+        schema = reduce(function (sect, value) {
+            schemaParent = sect;
+            return sect.sections[value];
+        }, schema, this.sectionsPath);
+
+        return { schema, schemaParent };
+    }
+    /********************** PUBLIC METHODS *********************/
 
     getType() {
         let type = Node.TYPE_OTHER;
@@ -110,5 +140,62 @@ export class Node {
             attributes = ['id', 'class', 'style', 'xe_uuid'];
         }
         return attributes;
+    }
+
+
+    /*********************** STATIC METHODS ***************************************/
+    static getContainer(element, attribute = XeditMapper.TAG_SECTION_TYPE) {
+        let container = null;
+
+        if (!isNil(element) && element.hasAttribute(attribute)) {
+            container = element;
+        }
+
+        return !isNil(container) || isNil(element) || isNil(element.parentNode) ?
+            container : Node.getContainer(element.parentNode, attribute);
+    }
+
+    /**
+     * Calculate uuid path to xedit node
+     */
+    static getContextPath(element, rootTag = XeditMapper.TAG_EDITOR, attribute = XeditMapper.TAG_UUID, path = [], onlyAttribute = false) {
+        const parent = element.parentNode;
+
+        if (!isNil(element) && (!onlyAttribute || element.hasAttribute(attribute))) {
+            path.unshift(element.getAttribute(attribute));
+        }
+
+        return (element.nodeName.toLowerCase() === rootTag || isNil(parent)) ?
+            path : this.getContextPath(parent, rootTag, attribute, path, onlyAttribute);
+    }
+
+
+
+    /**
+     * Get section name according to the language
+     *
+     * @param section
+     * @param lang
+     */
+    static getSectionLang(section, lang) {
+        let name = section.name;
+        if (hasIn('lang', section) && is(Object, section.lang) && hasIn(lang, section.lang)) {
+            name = section.lang[lang];
+        }
+        return name;
+    }
+
+
+    /**
+     * Get section template
+     *
+     * @param section
+     */
+    static getSectionTemplate(section) {
+        let template = null;
+        if (hasIn('template', section) && is(String, section.template)) {
+            template = Converters.json2html(Converters.html2json(section.template));
+        }
+        return template;
     }
 }

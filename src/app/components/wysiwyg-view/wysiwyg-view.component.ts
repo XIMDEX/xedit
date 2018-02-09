@@ -45,6 +45,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     private renderContent: string;
     private subscribeFile;
     private subscribeCN;
+    private subscribeCNM;
     public contextMenuActions: Array<any> = [];
     private currentSection: any;
     private currentTarget: any;
@@ -61,6 +62,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.subscribeFile.unsubscribe();
         this.subscribeCN.unsubscribe();
+        this.subscribeCNM.unsubscribe();
         this._editorService.setCurrentNode(null);
         this._editorService.setCurrentNodeModify(null);
         WysiwygHandler.clearTinymce();
@@ -79,14 +81,14 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         });
 
         // Suscribe to node change
-        this.subscribeCN = this._editorService.getCurrentNodeModify().subscribe(currentNode => {
+        this.subscribeCNM = this._editorService.getCurrentNodeModify().subscribe(currentNode => {
             const element = this.xedit.nativeElement.querySelector('[' + XeditMapper.TAG_UUID + '="' + currentNode.getUuid() + '"]');
             Object.keys(currentNode.getAttributes()).forEach(attribute => {
                 element.setAttribute(attribute, currentNode.getAttribute(attribute));
             });
         });
 
-        this._editorService.getCurrentNode().subscribe(currentNode => {
+        this.subscribeCN = this._editorService.getCurrentNode().subscribe(currentNode => {
             if (!isNil(currentNode)) {
                 this.setSelection(currentNode);
             }
@@ -108,6 +110,18 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         });
         return renderContent;
     }
+
+
+    private clearAttributes() {
+        if (!isNil(this.currentSection)) {
+            this.currentSection.removeAttribute(XeditMapper.ATTR_SELECTED);
+        }
+
+        if (!isNil(this.currentTarget)) {
+            this.currentTarget.removeAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED);
+        }
+    }
+
     /************************************** Public Methods **************************************/
     onclick(evt) {
         this.changeSelection(evt.target.getAttribute(XeditMapper.TAG_UUID));
@@ -118,20 +132,14 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     }
 
     setSelection(curretNode) {
-        if (!isNil(this.currentSection)) {
-            this.currentSection.removeAttribute(XeditMapper.ATTR_SELECTED);
-        }
 
-        if (!isNil(this.currentTarget)) {
-            this.currentTarget.removeAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED);
-        }
+        this.clearAttributes();
 
         this.currentTarget = curretNode.getTarget();
         this.currentSection = curretNode.getSection();
 
         // Add selected class
-        const { schema } = this.getSchemas(this.currentSection);
-        const name = this.getSectionLang(schema, 'es');
+        const name = Node.getSectionLang(curretNode.getSchema(), 'es');
         this.currentSection.setAttribute(XeditMapper.ATTR_SELECTED, name);
 
         // Add selected class
@@ -141,6 +149,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
             this.applyHandler(this.currentTarget, this.currentSection);
         }
     }
+
 
     applyHandler(currentNode, section) {
         const sectionType = section.getAttribute(XeditMapper.TAG_SECTION_TYPE);
@@ -166,10 +175,9 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
     private updateContextMenuActions(element) {
 
-        const { schema, schemaParent } = this.getSchemas(element);
-        const section = EditorService.getSection(element);
+        const node = EditorService.parseToNode(element, this._editorService.getFileValue().getSchemas());
 
-        const actions = this.getAvailableActions(schema, schemaParent);
+        const actions = this.getAvailableActions(node.getSchema(), node.getSchemaParent());
         let contextMenuActions = [];
         const contextMenuActionsChild = [];
         const contextMenuActionsSiblings = [];
@@ -181,7 +189,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         const clickFunc = (currentNode: any, afterNode: any, strTemplate: string) => {
             const template = this.createElementFromHTML(strTemplate);
             currentNode.insertBefore(template, afterNode);
-            this.addChildNode(EditorService.getUuidPath(currentNode), template);
+
         };
 
         // Childs
@@ -189,7 +197,10 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
             if (hasIn('template' in action) && !isNil(action.template)) {
                 contextMenuActionsChild.push(
                     this.createAction((i) => 'Añadir hijo ' + action.name,
-                        (evt) => clickFunc(section, section.childNodes[section.childNodes.length], action.template), true)
+                        (evt) => clickFunc(
+                            node.getSection(),
+                            node.getSection().childNodes[node.getSection().childNodes.length], action.template
+                        ), true)
                 );
             }
         });
@@ -199,7 +210,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
             if (hasIn('template' in action) && !isNil(action.template)) {
                 contextMenuActionsSiblings.push(
                     this.createAction((i) => 'Añadir hermano ' + action.name,
-                        (evt) => clickFunc(section.parentNode, section.nextSibling, action.template), true)
+                        (evt) => clickFunc(node.getSection().parentNode, node.getSection().nextSibling, action.template), true)
                 );
             }
         });
@@ -262,15 +273,15 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
             siblings: [],
         };
 
-        actions.name = this.getSectionLang(section, 'es');
+        actions.name = Node.getSectionLang(section, 'es');
 
         // Get childs
         if (hasIn('sections', section) && !isNil(section.sections)) {
             for (const key in section.sections) {
                 if (hasIn(key, section.sections)) {
                     actions.childs.push({
-                        name: this.getSectionLang(section.sections[key], 'es'),
-                        template: this.getSectionTemplate(section.sections[key])
+                        name: Node.getSectionLang(section.sections[key], 'es'),
+                        template: Node.getSectionTemplate(section.sections[key])
                     });
                 }
             }
@@ -281,77 +292,14 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
             for (const key in parent.sections) {
                 if (hasIn(key, parent.sections)) {
                     actions.siblings.push({
-                        name: this.getSectionLang(parent.sections[key], 'es'),
-                        template: this.getSectionTemplate(parent.sections[key])
+                        name: Node.getSectionLang(parent.sections[key], 'es'),
+                        template: Node.getSectionTemplate(parent.sections[key])
                     });
                 }
             }
         }
 
         return actions;
-    }
-
-    /**
-     * Get schema by specific DOM element
-     *
-     * @param element
-     */
-    getSchemas(element: Element) {
-        /** @todo Corregir obtener ruta */
-        const sectionPath = this.getSectionPath(element).map(ele => props(['name'], ele));
-        sectionPath.unshift(EditorService.getUuidPath(element, XeditMapper.TAG_EDITOR, [], true)[0]);
-        let schema = this._editorService.getFileStateValue().getSchema(sectionPath.shift());
-        let schemaParent = null;
-
-        // Get schema
-        schema = reduce(function (sect, value) {
-            schemaParent = sect;
-            return sect.sections[value];
-        }, schema, sectionPath);
-
-        return { schema, schemaParent };
-    }
-
-    getSectionPath(currentNode, rootTag = 'xedit', path: Array<Object> = []) {
-        let section = null;
-        let key = null;
-
-        if (!isNil(currentNode) && !isNil(section = currentNode.getAttribute(XeditMapper.TAG_SECTION_TYPE)) &&
-            !isNil(key = currentNode.getAttribute(XeditMapper.TAG_UUID))) {
-            path.unshift({ key: key, name: section });
-        }
-
-        return isNil(currentNode) || isNil(currentNode.parentNode) || equals(currentNode.nodeName.toLowerCase(), rootTag) ?
-            path : this.getSectionPath(currentNode.parentNode, rootTag, path);
-    }
-
-
-    /**
-     * Get section name according to the language
-     *
-     * @param section
-     * @param lang
-     */
-    getSectionLang(section, lang) {
-        let name = section.name;
-        if (hasIn('lang', section) && is(Object, section.lang) && hasIn(lang, section.lang)) {
-            name = section.lang[lang];
-        }
-        return name;
-    }
-
-
-    /**
-     * Get section template
-     *
-     * @param section
-     */
-    getSectionTemplate(section) {
-        let template = null;
-        if (hasIn('template', section) && is(String, section.template)) {
-            template = Converters.json2html(Converters.html2json(section.template));
-        }
-        return template;
     }
 
     /**

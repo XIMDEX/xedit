@@ -28,11 +28,10 @@ export class PropertiesViewComponent implements OnInit {
     changePropertyValue(evt, property) {
 
         // Modify file with new changes
-        const uuidPath = clone(this.currentNode.getPath());
         const elementContent = this.file.getState().getContent();
         const editContent = reduce(function (acc, value) {
             return acc.child[value];
-        }, elementContent[uuidPath.shift()].content, uuidPath);
+        }, elementContent[this.currentNode.getAreaId()].content, this.currentNode.getPath());
 
         const hasAttr = has('attr');
 

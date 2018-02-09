@@ -3,6 +3,8 @@ import { ElementRef } from '@angular/core';
 
 export class DOM {
 
+    constructor() { }
+
     private static setClass(classes: Array<string>, className: string) {
         classes.push(className);
     }
@@ -15,18 +17,18 @@ export class DOM {
     }
 
     static getClass(element: ElementRef): Array<string> {
-        return  element.nativeElement.className.split(' ');
+        return element.nativeElement.className.split(' ');
     }
 
     static existClass(element: ElementRef, className: string) {
         const classes = DOM.getClass(element);
         const index = indexOf(className, classes);
         const exist = index >= 0;
-        return {classes, index, exist};
+        return { classes, index, exist };
     }
 
     static addClass(element: ElementRef, className: string): ElementRef {
-        const {classes, index, exist} = DOM.existClass(element, className);
+        const { classes, index, exist } = DOM.existClass(element, className);
         if (!exist) {
             DOM.setClass(classes, className);
             element.nativeElement.setAttribute('class', classes.join(' '));
@@ -35,7 +37,7 @@ export class DOM {
     }
 
     static removeClass(element: ElementRef, className: string): ElementRef {
-        const {classes, index, exist} = DOM.existClass(element, className);
+        const { classes, index, exist } = DOM.existClass(element, className);
         if (exist) {
             DOM.deleteClass(classes, className);
             element.nativeElement.setAttribute('class', classes.join(' '));
@@ -44,7 +46,7 @@ export class DOM {
     }
 
     static toggleClass(element: ElementRef, className: string): ElementRef {
-        const {classes, index, exist} = DOM.existClass(element, className);
+        const { classes, index, exist } = DOM.existClass(element, className);
         if (exist) {
             DOM.deleteClass(classes, className);
         } else {

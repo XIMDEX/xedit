@@ -158,13 +158,12 @@ export class EditorService {
   * @param element DomNode
   * @param path Uuid path
   */
-  static parseToNode(element) {
-    const title = element.tagName;
+  static parseToNode(element, schemas) {
+
     const styles = [];
     const attributes = {};
     let node = null;
-    const section = EditorService.getSection(element);
-    const path = EditorService.getUuidPath(element);
+
     const uuid = element.getAttribute(XeditMapper.TAG_UUID);
 
     Object.keys(element.attributes).forEach(key => {
@@ -172,36 +171,24 @@ export class EditorService {
     });
 
     try {
-      node = new Node(uuid, element, section, title, path, attributes);
+      node = new Node(uuid, element, schemas, attributes);
     } catch (e) {
       console.error('Invalid node');
     }
     return node;
   }
 
-  static getSection(currentNode, attribute = XeditMapper.TAG_SECTION_TYPE) {
-    let section = null;
-
-    if (!isNil(currentNode) && currentNode.hasAttribute(attribute)) {
-      section = currentNode;
-    }
-
-    return !isNil(section) || isNil(currentNode) || isNil(currentNode.parentNode) ?
-      section : EditorService.getSection(currentNode.parentNode, attribute);
-  }
-
-  /**
-   * Calculate uuid path to xedit node
-   */
+  * Calculate uuid path to xedit node
+  */
   static getUuidPath(element, rootTag = XeditMapper.TAG_EDITOR, path = [], onlySections = false) {
-    const parent = element.parentNode;
+  const parent = element.parentNode;
 
-    if (!isNil(element) && (!onlySections || element.hasAttribute(XeditMapper.TAG_SECTION_TYPE))) {
-      path.unshift(element.getAttribute(XeditMapper.TAG_UUID));
-    }
-
-    return (element.nodeName.toLowerCase() === rootTag || isNil(parent)) ?
-      path : this.getUuidPath(parent, rootTag, path);
+  if (!isNil(element) && (!onlySections || element.hasAttribute(XeditMapper.TAG_SECTION_TYPE))) {
+    path.unshift(element.getAttribute(XeditMapper.TAG_UUID));
   }
+
+  return (element.nodeName.toLowerCase() === rootTag || isNil(parent)) ?
+    path : this.getUuidPath(parent, rootTag, path);
+}
 
 }
