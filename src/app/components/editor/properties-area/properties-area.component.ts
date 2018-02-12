@@ -12,11 +12,15 @@ export class PropertiesAreaComponent implements OnInit {
         'global'
     ];
 
-    protected selectedView: string = 'global';
+    protected selectedView: string = 'local';
 
     constructor() { }
 
     ngOnInit() {
+    }
+
+    private changeView(viewName: string) {
+        this.selectedView = viewName;
     }
 
 }

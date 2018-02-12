@@ -13,7 +13,7 @@ import { TaskbarComponent } from './components/taskbar/taskbar.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { SafeHtmlPipe } from './pipes/inner-html/safe-html.pipe';
 import { ButtonsComponent } from './components/elements/buttons/buttons.component';
-import { PropertiesViewComponent } from './components/properties-view/properties-view.component';
+import { PropertiesLocalViewComponent } from './components/editor/properties-area/properties-local-view/properties-local-view.component';
 import { WysiwygViewComponent } from './components/wysiwyg-view/wysiwyg-view.component';
 import { TextViewComponent } from './components/text-view/text-view.component';
 import { StateService } from './services/state-service/state.service';
@@ -31,7 +31,7 @@ import { PropertiesAreaComponent } from './components/editor/properties-area/pro
     TaskbarComponent,
     EditorComponent,
     ButtonsComponent,
-    PropertiesViewComponent,
+    PropertiesLocalViewComponent,
     WysiwygViewComponent,
     TextViewComponent,
     SafeHtmlPipe,

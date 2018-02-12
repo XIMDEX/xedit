@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PropertiesViewComponent } from './properties-view.component';
+import { PropertiesLocalViewComponent } from './properties-local-view.component';
 
 describe('PropertiesViewComponent', () => {
-  let component: PropertiesViewComponent;
-  let fixture: ComponentFixture<PropertiesViewComponent>;
+  let component: PropertiesLocalViewComponent;
+  let fixture: ComponentFixture<PropertiesLocalViewComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PropertiesViewComponent ]
+      declarations: [PropertiesLocalViewComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PropertiesViewComponent);
+    fixture = TestBed.createComponent(PropertiesLocalViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

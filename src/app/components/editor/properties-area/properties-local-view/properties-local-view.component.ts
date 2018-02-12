@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { EditorService } from '../../services/editor-service/editor.service';
-import { File } from '../../models/file';
+import { EditorService } from '../../../../services/editor-service/editor.service';
+import { File } from '../../../../models/file';
 import { reduce, clone, has } from 'ramda';
-import { Node } from '../../models/node';
-import { EditorComponent } from '../editor/editor.component';
-import { XeditMapper } from '../../models/schema/xedit-mapper';
+import { Node } from '../../../../models/node';
+import { EditorComponent } from '../../../editor/editor.component';
+import { XeditMapper } from '../../../../models/schema/xedit-mapper';
 
 @Component({
-    selector: 'app-properties-view',
-    templateUrl: './properties-view.component.html',
-    styleUrls: ['./properties-view.component.scss']
+    selector: 'app-properties-local',
+    templateUrl: './properties-local-view.component.html',
+    styleUrls: ['./properties-local-view.component.scss']
 })
-export class PropertiesViewComponent implements OnInit {
+export class PropertiesLocalViewComponent implements OnInit {
 
     private currentNode: Node;
     private file: File;
