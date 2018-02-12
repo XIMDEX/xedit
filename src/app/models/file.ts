@@ -1,12 +1,12 @@
-
 import { UUID } from 'angular2-uuid';
 import { History } from './history';
 import { HTMLParser } from '@utils/htmlparser';
 import { Serializable } from './interfaces/Serializable';
 import { isNil, equals, is, reduce, contains } from 'ramda';
-import { XeditMapper } from './schema/xedit-mapper';
-import { Converters } from '../../utils/converters';
-import { Node } from './node';
+
+import { XeditMapper } from '@models/schema/xedit-mapper';
+import { Converters } from '@utils/converters';
+import { Node } from '@models/node';
 
 export class FileHistory {
 
@@ -76,14 +76,13 @@ export class File extends History {
     /**
      * Recovery specific state
      *
-     * @param stateId 
+     * @param stateId
      */
     recovery(stateId: string): void {
         return super.recovery(stateId).then((value) => {
             this.setState(Object.assign(new FileHistory, value));
             return this;
         });
-        //return Object.assign(new FileHistory, super.recovery(stateId));
     }
 
     /***************** STATIC METHODS **************************/

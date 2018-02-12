@@ -18,6 +18,18 @@
     "paths": {
       "@utils/*": [
         "utils/*"
+      ],
+      "@models/*": [
+        "app/models/*"
+      ],
+      "@services/*": [
+        "app/services/*"
+      ],
+      "@components/*": [
+        "app/components/*"
+      ],
+      "@pipes/*": [
+        "app/pipes/*"
       ]
     }
   }

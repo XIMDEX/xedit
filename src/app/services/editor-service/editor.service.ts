@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { File } from '../../models/file';
 import { Observable } from 'rxjs/Observable';
-import { Node } from '../../models/node';
 import { clone, isNil, reduce, is, contains } from 'ramda';
 import { Editor } from 'ng2-ace-editor/node_modules/brace';
 import { Subject } from 'rxjs/Subject';
-import { XeditMapper } from '../../models/schema/xedit-mapper';
 import { UUID } from 'angular2-uuid';
-import { Converters } from '../../../utils/converters';
+
+import { File } from '@models/file';
+import { Node } from '@models/node';
+import { XeditMapper } from '@models/schema/xedit-mapper';
+import { Converters } from '@utils/converters';
 
 @Injectable()
 export class EditorService {

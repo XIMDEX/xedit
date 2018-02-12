@@ -1,12 +1,12 @@
-import { EditorComponent } from '../editor/editor.component';
 import { Component, ViewChildren, AfterViewInit, OnInit, QueryList, OnDestroy } from '@angular/core';
 import pretty from 'pretty';
-import { clone, merge, isNil, is } from 'ramda';
-import { File } from '../../models/file';
+import { isNil, is } from 'ramda';
 import { AceEditorComponent } from 'ng2-ace-editor/src/component';
-import { StateService } from '../../services/state-service/state.service';
-import { EditorService } from '../../services/editor-service/editor.service';
-import { debounceTime } from 'rxjs/operators';
+
+import { File } from '@models/file';
+import { StateService } from '@services/state-service/state.service';
+import { EditorService } from '@services/editor-service/editor.service';
+import { Converters } from '@utils/converters';
 
 import 'brace/index';
 import 'brace/theme/dreamweaver';
@@ -14,7 +14,6 @@ import 'brace/mode/html';
 import 'brace/snippets/html';
 import 'brace/ext/language_tools';
 import 'brace/ext/searchbox';
-import { Converters } from '../../../utils/converters';
 
 declare let ace: any;
 
@@ -116,9 +115,6 @@ export class TextViewComponent implements OnInit, AfterViewInit, OnDestroy {
         let endLine = selectionRange.end.row;
       });*/
 
-      /* _editor.on('blur', () => {
-         this._editorService.save(_editor.container.id, _editor.getValue())
-       });*/
       session.on('change', (e) => {
         if (_editor.curOp && _editor.curOp.command.name) { // Only if is user trigger event
 

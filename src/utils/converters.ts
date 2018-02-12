@@ -1,6 +1,7 @@
-import { XeditMapper } from '../app/models/schema/xedit-mapper';
 import { isNil, contains } from 'ramda';
 import { UUID } from 'angular2-uuid';
+
+import { XeditMapper } from '@models/schema/xedit-mapper';
 import { HTMLParser } from '@utils/htmlparser';
 
 

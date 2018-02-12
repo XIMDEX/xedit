@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Node } from '../../models/node';
+
+import { Node } from '@models/node';
 
 @Pipe({
   name: 'keys'

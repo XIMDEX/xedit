@@ -1,4 +1,4 @@
-import { XeditMapper } from '../../../../models/schema/xedit-mapper';
+import { XeditMapper } from '@models/schema/xedit-mapper';
 /**
  * Dam.js
  */

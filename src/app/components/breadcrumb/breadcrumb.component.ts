@@ -1,7 +1,8 @@
-import { EditorService } from '../../services/editor-service/editor.service';
-import { isNil, equals } from 'ramda';
 import { Component, OnInit, ElementRef, Output, EventEmitter } from '@angular/core';
-import { XeditMapper } from '../../models/schema/xedit-mapper';
+import { isNil, equals } from 'ramda';
+
+import { XeditMapper } from '@models/schema/xedit-mapper';
+import { EditorService } from '@services/editor-service/editor.service';
 
 @Component({
     selector: 'app-breadcrumb',

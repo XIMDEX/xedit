@@ -1,35 +1,15 @@
-import { Component, OnInit, EventEmitter, OnDestroy, Output, ElementRef } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { File } from '../../models/file';
-import { AfterViewChecked } from '@angular/core/src/metadata/lifecycle_hooks';
-import { EventListener } from '@angular/core/src/debug/debug_node';
-import {
-    isNil,
-    clone,
-    reduce,
-    equals,
-    remove,
-    is,
-    props,
-    has,
-    union,
-    divide,
-    hasIn
-} from 'ramda';
-import { EditorComponent } from '../editor/editor.component';
-import { EditorService } from '../../services/editor-service/editor.service';
-import { Node } from '../../models/node';
+import { Component, OnInit, EventEmitter, OnDestroy, Output, ElementRef, ViewChild } from '@angular/core';
 import { UUID } from 'angular2-uuid';
-import { XeditMapper } from '../../models/schema/xedit-mapper';
-import { ViewChild } from '@angular/core';
-import $ from 'jquery';
-
-import { WysiwygHandler } from './wysiwyg-handler';
-import { equal } from 'assert';
 import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
-import { Converters } from '../../../utils/converters';
-import { Element } from '@angular/compiler';
-import { DOM } from '../../models/dom';
+import { isNil, reduce, equals, is, props, has, union, hasIn } from 'ramda';
+
+import { Node } from '@models/node';
+import { XeditMapper } from '@models/schema/xedit-mapper';
+import { File } from '@models/file';
+import { DOM } from '@models/dom';
+import { EditorService } from '@services/editor-service/editor.service';
+import { Converters } from '@utils/converters';
+import { WysiwygHandler } from '@components/editor/views/wysiwyg-view/wysiwyg-handler';
 
 @Component({
     selector: 'app-wysiwyg-view',

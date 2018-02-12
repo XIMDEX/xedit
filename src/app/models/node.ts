@@ -1,6 +1,7 @@
 import { equals, isNil, contains, props, reduce, hasIn, is } from 'ramda';
-import { XeditMapper } from './schema/xedit-mapper';
-import { Converters } from '../../utils/converters';
+
+import { XeditMapper } from '@models/schema/xedit-mapper';
+import { Converters } from '@utils/converters';
 
 export class Node {
 

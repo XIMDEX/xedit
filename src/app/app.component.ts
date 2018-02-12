@@ -1,9 +1,5 @@
-import { Component, ViewChild } from '@angular/core';
-import { TaskbarComponent } from '../../../x-edit/src/app/components/taskbar/taskbar.component';
-import { PropertiesViewComponent } from './components/properties-view/properties-view.component';
-import { EditorComponent } from '../../../x-edit/src/app/components/editor/editor.component';
-import { EditorService } from './services/editor-service/editor.service';
-import { OnInit, OnDestroy } from '../../../x-edit/node_modules/@angular/core/src/metadata/lifecycle_hooks';
+import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { EditorService } from '@services/editor-service/editor.service';
 
 @Component({
     selector: 'app-root',

@@ -12,7 +12,7 @@ export class PropertiesAreaComponent implements OnInit {
         'global'
     ];
 
-    protected selectedView: string = 'local';
+    protected selectedView: String = 'local';
 
     constructor() { }
 

@@ -1,17 +1,16 @@
-import { TaskbarComponent } from '../taskbar/taskbar.component';
-import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
-import { PropertiesViewComponent } from '../properties-view/properties-view.component';
-import { WysiwygViewComponent } from '../wysiwyg-view/wysiwyg-view.component';
-import { TextViewComponent } from '../text-view/text-view.component';
-import { equals, merge } from 'ramda';
-import { File } from '../../models/file';
-import { isNil, clone, reduce } from 'ramda';
-import { StateService } from '../../services/state-service/state.service';
+import { Component, OnInit, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
+import { equals, merge, isNil, reduce } from 'ramda';
 import validator from 'html-validator';
 import htmlTagValidator from 'html-tag-validator';
-import { EditorService } from '../../services/editor-service/editor.service';
-import { ElementRef } from '@angular/core';
-import { XeditMapper } from '../../models/schema/xedit-mapper';
+
+import { File } from '@models/file';
+import { StateService } from '@services/state-service/state.service';
+import { XeditMapper } from '@models/schema/xedit-mapper';
+import { EditorService } from '@services/editor-service/editor.service';
+
+import { TaskbarComponent } from '@components/taskbar/taskbar.component';
+import { WysiwygViewComponent } from '@components/editor/views/wysiwyg-view/wysiwyg-view.component';
+import { TextViewComponent } from '@components/editor/views/text-view/text-view.component';
 
 @Component({
     selector: 'app-editor',

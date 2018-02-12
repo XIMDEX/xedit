@@ -19,12 +19,12 @@ declare let tinymce: any;
 // DATEPICKER
 import 'bootstrap-datepicker';
 import { isNil, equals } from 'ramda';
-import { File } from '../../models/file';
-import { EditorService } from '../../services/editor-service/editor.service';
-import { WysiwygViewComponent } from './wysiwyg-view.component';
-import { XeditMapper } from '../../models/schema/xedit-mapper';
-import { Converters } from '../../../utils/converters';
 import { state } from '@angular/core';
+import { WysiwygViewComponent } from './wysiwyg-view.component';
+import { XeditMapper } from '@models/schema/xedit-mapper';
+import { File } from '@models/file';
+import { EditorService } from '@services/editor-service/editor.service';
+import { Converters } from '@utils/converters';
 
 
 export class WysiwygHandler {

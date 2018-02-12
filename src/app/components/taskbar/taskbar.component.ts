@@ -1,12 +1,12 @@
 
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FileReaderEvent } from '../../interfaces/file-reader-event-target';
-import { File } from '../../models/file';
-
 import { equals, contains, isNil, indexOf, remove } from 'ramda';
-import { StateService } from '../../services/state-service/state.service';
-import { EditorService } from '../../services/editor-service/editor.service';
-import { DOM } from '../../models/dom';
+
+import { File } from '@models/file';
+import { DOM } from '@models/dom';
+import { StateService } from '@services/state-service/state.service';
+import { EditorService } from '@services/editor-service/editor.service';
 
 @Component({
     selector: 'app-taskbar',

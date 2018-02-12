@@ -25,13 +25,11 @@ export class History {
         // Save init state
         this.save(initState);
 
-        // Clear sessionStorage
-        //sessionStorage.clear();
     }
 
     // ************************************** Getters and setters **************************************/
     getState() {
-        return this.state; // this.states[this.pos] || null
+        return this.state;
     }
 
     setState(state: any) {
@@ -125,7 +123,6 @@ export class History {
                 return value;
             }
         });
-        //return JSON.parse(sessionStorage.getItem(stateId));
     }
 
     /**
@@ -167,7 +164,7 @@ export class History {
             this.pos++;
         }
 
-        return this.recovery(this.states[this.pos]);;
+        return this.recovery(this.states[this.pos]);
     }
 
     /**
