@@ -1,5 +1,12 @@
+@import '~sass/variables';
+
 :host {    
     > #xe-breadcrumb {
+        @include box-shadow(top, 0.57);
+        min-height: 30px;
+        max-height: 30px;
+        background-color: $white-light;
+
         > ul {
             display: flex;
             flex-direction: row;
@@ -10,6 +17,23 @@
 
             > li {
                 margin: auto 5px;
+                text-transform: capitalize;
+                color: $black-dark;
+                transition: color 0.3s ease-in-out;
+
+                > i.fas {
+                    color: $black-dark;
+                    margin: 0 0 0 5px;
+                }
+
+                &:not(.selected):hover{
+                    cursor: pointer;
+                    color: $green-dark;
+                }
+
+                &.selected {
+                    color: $green-dark;
+                }
             }
         }
     }

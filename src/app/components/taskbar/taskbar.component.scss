@@ -17,7 +17,7 @@
             width: 100%;
             min-height: $taskbar-height;
             max-height: $taskbar-height;
-            box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.57);
+            @include box-shadow(bottom, 0.57);
 
             > ul{
                 flex-grow: 2;
@@ -83,7 +83,7 @@
             height: 0;
             width: 100%;
             background-color: $white-dark;
-            box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.57);
+            @include box-shadow(bottom, 0.57);
             transition: height 0.25s;
 
             position: absolute;

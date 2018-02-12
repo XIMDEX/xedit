@@ -1,5 +1,17 @@
 :host{
-    flex-grow: 2;
+    flex-grow: 1;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+
+    > main {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+
+        > section {
+            flex-grow: 2;
+            position: relative;
+            z-index: 1;
+        }
+    }
 }
