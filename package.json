@@ -33,6 +33,7 @@
     "jquery": "^3.3.1",
     "jquery-datepicker": "^1.11.5",
     "jquery-datetimepicker": "^2.5.17",
+    "localforage": "^1.5.6",
     "ng2-ace-editor": "^0.3.4",
     "ng4-click-outside": "^1.0.1",
     "ngx-bootstrap": "^2.0.0-rc.0",

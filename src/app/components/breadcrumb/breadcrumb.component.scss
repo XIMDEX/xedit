@@ -1,6 +1,9 @@
 @import '~sass/variables';
 
 :host {    
+    position: relative;
+    z-index: 5;
+    
     > #xe-breadcrumb {
         @include box-shadow(top, 0.57);
         min-height: 30px;

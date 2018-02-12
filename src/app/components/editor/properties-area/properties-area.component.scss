@@ -1,0 +1,38 @@
+@import '~sass/variables';
+
+:host {
+    flex-grow: 1;
+    max-width: 300px;
+    min-width: 300px;
+    background-color: $white-light;
+    overflow: hidden;
+
+    > div {
+        > header {
+            display: flex;
+            flex-direction: row;
+            background-color: $white-dark;
+            @include box-shadow(bottom, 0.25);
+
+            > div {
+                box-sizing: border-box;
+                height: $tabs-height-small;
+                padding: 0 10px;
+                line-height: $tabs-height-small;
+                border-bottom: 2px solid transparent;
+                color: $white-darker;
+                transition: color 0.3s ease-in-out, border-bottom-color 0.3s ease-in-out;
+                cursor: pointer;
+
+                &:hover {
+                    border-bottom-color: $green-light;
+                }
+
+                &.selected {
+                    border-bottom-color: $green-dark;
+                    color: $green-darker;
+                }
+            }
+        }
+    }
+}

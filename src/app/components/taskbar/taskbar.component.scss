@@ -78,8 +78,6 @@
         }
 
         > nav.views {
-            $height: 35px;
-
             height: 0;
             width: 100%;
             background-color: $white-dark;
@@ -93,7 +91,7 @@
             overflow: hidden;
 
             &.opened {
-                height: $height;
+                height: $tabs-height;
             }
 
             > .menu {
@@ -101,7 +99,7 @@
                 display: flex;
                 align-items: flex-end;
                 bottom: 0;
-                height: $height;
+                height: $tabs-height;
                 flex-direction: row;
                 list-style: none;
                 padding: 0;

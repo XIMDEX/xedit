@@ -104,7 +104,8 @@ export class TaskbarComponent implements OnInit {
                 const nodes = json.result;
                 this._editorService.createFile(nodes);
             };
-            this._stateService.setAvailableViews(['wysiwyg', 'form']);
+
+            this._stateService.setAvailableViews(['wysiwyg', 'text']);
 
             reader.onerror = (evt) => {
                 console.error('Error loading file');

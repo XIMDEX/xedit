@@ -15,7 +15,7 @@ import { SafeHtmlPipe } from './pipes/inner-html/safe-html.pipe';
 import { ButtonsComponent } from './components/elements/buttons/buttons.component';
 import { PropertiesViewComponent } from './components/properties-view/properties-view.component';
 import { WysiwygViewComponent } from './components/wysiwyg-view/wysiwyg-view.component';
-import { FormViewComponent } from './components/form-view/form-view.component';
+import { TextViewComponent } from './components/text-view/text-view.component';
 import { StateService } from './services/state-service/state.service';
 import { EditorService } from './services/editor-service/editor.service';
 import { DebugPipe } from './pipes/debug/debug.pipe';
@@ -23,6 +23,7 @@ import { KeysPipe } from './pipes/keys/keys.pipe';
 import { ContextMenuComponent } from './components/context-menu/context-menu.component';
 import { ClickOutsideModule } from 'ng4-click-outside';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
+import { PropertiesAreaComponent } from './components/editor/properties-area/properties-area.component';
 
 @NgModule({
   declarations: [
@@ -32,12 +33,13 @@ import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.componen
     ButtonsComponent,
     PropertiesViewComponent,
     WysiwygViewComponent,
-    FormViewComponent,
+    TextViewComponent,
     SafeHtmlPipe,
     DebugPipe,
     KeysPipe,
     ContextMenuComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    PropertiesAreaComponent
   ],
   imports: [
     /* 3rd party components */

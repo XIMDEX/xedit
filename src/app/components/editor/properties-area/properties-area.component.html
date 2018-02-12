@@ -1,0 +1,14 @@
+<div id="x-edit-properties-view">
+    <header>
+        <ng-container *ngFor="let view of availablesViews">
+            <div [ngClass]="{selected: (view === selectedView)}">
+                {{ view }}
+            </div>
+            <ng-template>
+                <div [ngClass]="{selected: (view === selectedView)}">
+                    {{ view }}
+                </div>
+            </ng-template>
+        </ng-container>
+    </header>
+</div>

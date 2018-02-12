@@ -20,11 +20,11 @@ declare let ace: any;
 
 
 @Component({
-  selector: 'app-form-view',
-  templateUrl: './form-view.component.html',
-  styleUrls: ['./form-view.component.scss']
+  selector: 'app-text-view',
+  templateUrl: './text-view.component.html',
+  styleUrls: ['./text-view.component.scss']
 })
-export class FormViewComponent implements OnInit, AfterViewInit, OnDestroy {
+export class TextViewComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(AceEditorComponent) editors: QueryList<AceEditorComponent>;
 
   private editorNodes: Array<any> = null;

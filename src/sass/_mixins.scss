@@ -2,6 +2,8 @@
     $_pos: 0px 0px 3px 0px ;
     @if($pos == top){
         $_pos: 0px 3px 11px 0px ;
+    }@else if($pos == left) {
+        $_pos: -2px 0px 11px -4px;
     }
     box-shadow: $_pos rgba(0,0,0,$opacity);
 }

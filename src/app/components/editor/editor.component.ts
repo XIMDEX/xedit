@@ -2,7 +2,7 @@ import { TaskbarComponent } from '../taskbar/taskbar.component';
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { PropertiesViewComponent } from '../properties-view/properties-view.component';
 import { WysiwygViewComponent } from '../wysiwyg-view/wysiwyg-view.component';
-import { FormViewComponent } from '../form-view/form-view.component';
+import { TextViewComponent } from '../text-view/text-view.component';
 import { equals, merge } from 'ramda';
 import { File } from '../../models/file';
 import { isNil, clone, reduce } from 'ramda';

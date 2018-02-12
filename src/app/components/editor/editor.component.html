@@ -5,12 +5,12 @@
         </app-wysiwyg-view>
         <!-- END WYSIWYG VIEW -->
 
-        <!-- FORM VIEW -->
-        <app-form-view *ngIf="showComponent('form')"> </app-form-view>
-        <!-- END FORM VIEW -->
+        <!-- TEXT VIEW -->
+        <app-text-view *ngIf="showComponent('text')"> </app-text-view>
+        <!-- END TEXT VIEW -->
     </section>
     <!-- BREADCRUMBS -->
     <app-breadcrumb (selectNode)="setCurrentNode($event)"></app-breadcrumb>
     <!-- END BREADCRUMBS -->
 </main>
-<app-properties-view></app-properties-view>
+<app-properties-area></app-properties-area>
