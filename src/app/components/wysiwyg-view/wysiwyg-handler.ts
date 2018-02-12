@@ -54,7 +54,7 @@ export class WysiwygHandler {
             WysiwygHandler.addPlugins();
             tinymce.init({
                 max_chars: 30000,
-                target: args.section,
+                target: args.node.getSection(),
                 inline: true,
                 branding: false,
                 fixed_toolbar_container: '#toolbar',
@@ -71,9 +71,9 @@ export class WysiwygHandler {
                             element.setAttribute(XeditMapper.TAG_UUID, UUID.UUID());
                         }
 
-                        if (!isNil(args.node) && !equals(args.node.getAttribute(XeditMapper.TAG_UUID),
+                        if (!isNil(args.node.getTarget()) && !equals(args.node.getTarget().getAttribute(XeditMapper.TAG_UUID),
                             element.getAttribute(XeditMapper.TAG_UUID))) {
-                            args.service.setCurrentNode(EditorService.parseToNode(element, args.node.schemas));
+                            args.service.setCurrentNode(EditorService.parseToNode(element, args.schemas));
                         }
 
                     });
@@ -104,6 +104,7 @@ export class WysiwygHandler {
                     });
                     editor.on('init', (evt: Event) => {
                         tinymce.execCommand('mceFocus', false, editor.id);
+                        args.service.setCurrentNode(args.node);
                     });
                     editor.on('blur', (e) => {
                         const promise = new Promise(
@@ -144,7 +145,7 @@ export class WysiwygHandler {
     static initDatePicker(args) {
         $(document).ready(function () {
             'use strict';
-            const element = $(args.section);
+            const element = $(args.node.getSection());
             if (element.children().length === 0) {
                 const date = element.html();
                 element.html('<input type="text" value="' + date + '">');
@@ -154,7 +155,7 @@ export class WysiwygHandler {
                 input.datepicker().on('hide', () => {
                     input.datepicker('destroy');
                     element.html(input.val());
-                    args.service.save(args.node, element.html());
+                    args.service.save(args.node.gettarget(), element.html());
                 });
                 input.datepicker('show');
             }

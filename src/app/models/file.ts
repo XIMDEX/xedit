@@ -76,7 +76,7 @@ export class File extends History {
     /**
      * Recovery specific state
      *
-     * @param stateId 
+     * @param stateId
      */
     recovery(stateId: string): FileHistory {
         return Object.assign(new FileHistory, super.recovery(stateId));

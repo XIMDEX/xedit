@@ -9,7 +9,6 @@ import { Subject } from 'rxjs/Subject';
 import { XeditMapper } from '../../models/schema/xedit-mapper';
 import { UUID } from 'angular2-uuid';
 import { Converters } from '../../../utils/converters';
-import object from '../../../assets/skins/lightgray/img/object.gif';
 
 @Injectable()
 export class EditorService {
@@ -163,13 +162,13 @@ export class EditorService {
      */
     addNodeToArea(node: Node, newNode, child: boolean = false) {
 
-        let file = this.newStateFile(this.fileState.getValue().getState().content);
-        const section = node.getSection()
+        const file = this.newStateFile(this.fileState.getValue().getState().content);
+        const section = node.getSection();
 
         const sectionPath = child ? Node.getContextPath(section) : Node.getContextPath(section.parentNode);
 
-        const fileNode = reduce(function (node, value) {
-            return node.child[value];
+        const fileNode = reduce(function (n, value) {
+            return n.child[value];
         }, file.getState().getContent()[node.getAreaId()].content, sectionPath);
 
         if (!child) {
@@ -182,13 +181,13 @@ export class EditorService {
                     object[nodeKey] = newNode[nodeKey];
                 }
                 return object;
-            }, {}, Object.keys(fileNode.child))
+            }, {}, Object.keys(fileNode.child));
         } else {
             const nodeKey = Object.keys(newNode)[0];
             fileNode.child[nodeKey] = newNode[nodeKey];
         }
 
-        this.setFileState(file)
+        this.setFileState(file);
     }
 
 

@@ -49,6 +49,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     private subscribeCNM;
     public contextMenuActions: Array<any> = [];
     private currentNode: Node;
+    private schemas;
 
     constructor(private _editorService: EditorService, private contextMenuService: ContextMenuService, private _elementRef: ElementRef) { }
 
@@ -78,6 +79,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         this.subscribeFile = this._editorService.getFile().subscribe(file => {
             // Parse content to html
             this.renderContent = this.parseContentToWysiwygEditor(file.getState().getContent());
+            this.schemas = file.getSchemas();
         });
 
         // Suscribe to node change
@@ -147,15 +149,15 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         this.currentNode.getTarget().setAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED, this.currentNode.getTarget().nodeName);
 
         if (!isNil(this.currentNode.getSection())) {
-            this.applyHandler(this.currentNode.getTarget(), this.currentNode.getSection());
+            this.applyHandler(this.currentNode);
         }
     }
 
 
-    applyHandler(currentNode, section) {
-        const sectionType = section.getAttribute(XeditMapper.TAG_SECTION_TYPE);
+    applyHandler(currentNode) {
+        const sectionType = currentNode.getSection().getAttribute(XeditMapper.TAG_SECTION_TYPE);
 
-        const args = { section: section, node: currentNode, service: this._editorService };
+        const args = { node: currentNode, service: this._editorService, schemas: this.schemas };
         WysiwygHandler.executeHandler(sectionType, args);
     }
 

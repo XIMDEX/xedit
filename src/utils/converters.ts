@@ -19,7 +19,7 @@ export class Converters {
         return {
             node: 'root',
             child: json
-        }
+        };
     }
     /**
      * Parse html to json

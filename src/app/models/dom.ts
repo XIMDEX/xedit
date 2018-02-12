@@ -76,7 +76,7 @@ export class DOM {
             'class': ' ',
             'style': '; ',
             'default': ' '
-        }
+        };
 
         if (hasIn(attr, attributtes)) {
             return attributtes[attr];
