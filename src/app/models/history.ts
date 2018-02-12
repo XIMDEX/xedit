@@ -1,5 +1,6 @@
 import { isNil, remove as r_remove } from 'ramda';
 import { UUID } from 'angular2-uuid';
+import * as localForage from 'localforage';
 
 export class History {
 
@@ -8,6 +9,7 @@ export class History {
     private pos: number;
     private state: any;
     private states: Array<string>;
+    private db;
 
     // Contructor
     constructor(initState: any, maxStates: number = 50) {
@@ -17,11 +19,14 @@ export class History {
         this.state = initState;
         this.states = [];
 
-        // Clear sessionStorage
-        sessionStorage.clear();
+        // Init database
+        this.db = this.prepareDatabase();
 
-        // if (!isNil(initState))
-        //    this.addState(initState);
+        // Save init state
+        this.save(initState);
+
+        // Clear sessionStorage
+        //sessionStorage.clear();
     }
 
     // ************************************** Getters and setters **************************************/
@@ -89,6 +94,14 @@ export class History {
         if (typeof (Storage) !== 'undefined') {
             const stateId = UUID.UUID();
             try {
+
+                if (this.db) {
+                    this.db.setItem(stateId, state, function (err, value) {
+                        if (err) {
+                            console.error(err);
+                        }
+                    });
+                }
                 sessionStorage.setItem(stateId, JSON.stringify(state));
                 this.states.push(stateId);
             } catch (ex) {
@@ -105,7 +118,14 @@ export class History {
      * @param stateId
      */
     protected recovery(stateId: string) {
-        return JSON.parse(sessionStorage.getItem(stateId));
+        return this.db.getItem(stateId, (err, value) => {
+            if (err) {
+                console.error(err);
+            } else {
+                return value;
+            }
+        });
+        //return JSON.parse(sessionStorage.getItem(stateId));
     }
 
     /**
@@ -114,6 +134,13 @@ export class History {
     private remove(keys) {
         keys = (keys instanceof Array) ? keys : [keys];
         keys.forEach(key => {
+            if (this.db) {
+                this.db.removeItem(key, (err) => {
+                    if (err) {
+                        console.error(err);
+                    }
+                });
+            }
             sessionStorage.removeItem(key);
         });
     }
@@ -127,10 +154,9 @@ export class History {
     lastState(): any {
         if (this.hasPreviousState()) {
             this.pos--;
-            this.state = this.recovery(this.states[this.pos]);
         }
 
-        return this;
+        return this.recovery(this.states[this.pos]);
     }
 
     /**
@@ -139,10 +165,9 @@ export class History {
     nextState(): any {
         if (this.hasNextState()) {
             this.pos++;
-            this.state = this.recovery(this.states[this.pos]);
         }
 
-        return this;
+        return this.recovery(this.states[this.pos]);;
     }
 
     /**
@@ -151,7 +176,7 @@ export class History {
     resetState(): any {
         this.pos = 0;
         if (this.state.length > 0) {
-            this.state = this.recovery(this.states[this.pos]);
+            this.recovery(this.states[this.pos]);
         }
         return this;
     }
@@ -180,4 +205,21 @@ export class History {
         return this.pos > 0;
     }
 
+    /**
+     * Init database
+     */
+    prepareDatabase() {
+        const db = localForage.createInstance({
+            driver: localForage.INDEXEDDB,
+            name: 'xedit',
+            version: 1.0,
+            size: 4980736,
+            storeName: 'history',
+            description: 'Document history'
+        });
+
+        db.clear();
+
+        return db;
+    }
 }

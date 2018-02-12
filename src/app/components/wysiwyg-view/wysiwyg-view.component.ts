@@ -79,6 +79,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         this.subscribeFile = this._editorService.getFile().subscribe(file => {
             // Parse content to html
             this.renderContent = this.parseContentToWysiwygEditor(file.getState().getContent());
+            WysiwygHandler.clearTinymce();
             this.schemas = file.getSchemas();
         });
 

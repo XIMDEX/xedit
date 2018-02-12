@@ -35,7 +35,6 @@ export class EditorService {
         this.fileState.next(file);
     }
 
-
     getFile(): Observable<File> {
         this.file.next(this.fileState.getValue());
         return this.file.asObservable();
@@ -46,7 +45,7 @@ export class EditorService {
         return this.file.getValue();
     }
 
-    setFileState(file): void {
+    setFileState(file: File): void {
         this.fileState.next(file);
     }
 
@@ -103,7 +102,10 @@ export class EditorService {
       * Return to the previous state if it exists, otherwise it does not do anything
      */
     lastStateFile(): void {
-        this.setFile(this.file.getValue().lastState());
+        this.file.getValue().lastState().then((value) => {
+            this.setFile(value);
+            this.setLoading(false);
+        });
     }
 
 
@@ -111,7 +113,10 @@ export class EditorService {
      * Go to the next state if it exists, otherwise it does not do anything
      */
     nextStateFile(): void {
-        this.setFile(this.file.getValue().nextState());
+        this.file.getValue().nextState().then((value) => {
+            this.setFile(value);
+            this.setLoading(false);
+        });
     }
 
     /**
@@ -122,9 +127,6 @@ export class EditorService {
      */
     save(node, content) {
         const fileContent = this.fileState.getValue().getState().content;
-
-        // Save new state
-        const newFile = this.newStateFile(fileContent);
 
         /** @todo Improve performance clone */
         // let fileContent = clone(this.file.getValue().getState().content)
@@ -148,6 +150,8 @@ export class EditorService {
             editContent.child = Converters.html2json(content, false);
         }
 
+        // Save new state
+        const newFile = this.newStateFile(fileContent);
         this.setFileState(newFile);
     }
 

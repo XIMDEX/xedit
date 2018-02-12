@@ -76,10 +76,14 @@ export class File extends History {
     /**
      * Recovery specific state
      *
-     * @param stateId
+     * @param stateId 
      */
-    recovery(stateId: string): FileHistory {
-        return Object.assign(new FileHistory, super.recovery(stateId));
+    recovery(stateId: string): void {
+        return super.recovery(stateId).then((value) => {
+            this.setState(Object.assign(new FileHistory, value));
+            return this;
+        });
+        //return Object.assign(new FileHistory, super.recovery(stateId));
     }
 
     /***************** STATIC METHODS **************************/

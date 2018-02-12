@@ -24,6 +24,7 @@ import { EditorService } from '../../services/editor-service/editor.service';
 import { WysiwygViewComponent } from './wysiwyg-view.component';
 import { XeditMapper } from '../../models/schema/xedit-mapper';
 import { Converters } from '../../../utils/converters';
+import { state } from '@angular/core';
 
 
 export class WysiwygHandler {
@@ -50,10 +51,12 @@ export class WysiwygHandler {
      * Init tinymce editor and added events
      */
     static initTinymce(args) {
-        if (tinymce.activeEditor == null) {
+        if (tinymce.activeEditor == null || !WysiwygHandler.isSameEditor(tinymce.activeEditor,
+            args.node.getTarget().getAttribute(XeditMapper.TAG_UUID))) {
             WysiwygHandler.addPlugins();
             tinymce.init({
                 max_chars: 30000,
+                id: args.node.getSection().getAttribute(XeditMapper.TAG_UUID),
                 target: args.node.getSection(),
                 inline: true,
                 branding: false,
@@ -130,7 +133,11 @@ export class WysiwygHandler {
         }
     }
 
-    static addPlugins() {
+    private static isSameEditor(editor, id) {
+        return equals(editor.targetElm.getAttribute('xe_uuid'), id);
+    }
+
+    private static addPlugins() {
         tinymce.PluginManager.add('dam', function (editor) {
             FilterContent.setup(editor);
             Commands.register(editor);
@@ -155,7 +162,7 @@ export class WysiwygHandler {
                 input.datepicker().on('hide', () => {
                     input.datepicker('destroy');
                     element.html(input.val());
-                    args.service.save(args.node.gettarget(), element.html());
+                    args.service.save(args.node.getTarget(), element.html());
                 });
                 input.datepicker('show');
             }

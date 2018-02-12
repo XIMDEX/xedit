@@ -39,14 +39,12 @@ export class TaskbarComponent implements OnInit {
     undo() {
         this._editorService.setLoading(true);
         this._editorService.lastStateFile();
-        this._editorService.setLoading(false);
     }
 
 
     redo() {
         this._editorService.setLoading(true);
         this._editorService.nextStateFile();
-        this._editorService.setLoading(false);
     }
 
     showComponent(component) {
@@ -106,7 +104,6 @@ export class TaskbarComponent implements OnInit {
                 const nodes = json.result;
                 this._editorService.createFile(nodes);
             };
-
             this._stateService.setAvailableViews(['wysiwyg', 'form']);
 
             reader.onerror = (evt) => {
