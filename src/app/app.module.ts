@@ -23,39 +23,43 @@ import { TextViewComponent } from '@components/editor/views/text-view/text-view.
 import { ContextMenuComponent } from '@components/context-menu/context-menu.component';
 import { BreadcrumbComponent } from '@components/breadcrumb/breadcrumb.component';
 import { PropertiesAreaComponent } from '@components/editor/properties-area/properties-area.component';
+import { MultiInputComponent } from '@elements/forms/multi-input/multi-input.component';
+import { MultiInputAcordionComponent } from './elements/forms/multi-input-acordion/multi-input-acordion.component';
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        TaskbarComponent,
-        EditorComponent,
-        PropertiesLocalViewComponent,
-        WysiwygViewComponent,
-        TextViewComponent,
-        SafeHtmlPipe,
-        DebugPipe,
-        KeysPipe,
-        ContextMenuComponent,
-        BreadcrumbComponent,
-        PropertiesAreaComponent
-    ],
-    imports: [
-        /* 3rd party components */
-        BrowserModule,
-        AppRoutingModule,
-        FormsModule,
-        BrowserAnimationsModule,
-        AceEditorModule,
-        LoadingModule,
-        ContextMenuModule.forRoot(),
-        ClickOutsideModule
-    ],
-    providers: [
-        EditorService,
-        StateService
-    ],
-    bootstrap: [
-        AppComponent
-    ]
+  declarations: [
+    AppComponent,
+    TaskbarComponent,
+    EditorComponent,
+    PropertiesLocalViewComponent,
+    WysiwygViewComponent,
+    TextViewComponent,
+    SafeHtmlPipe,
+    DebugPipe,
+    KeysPipe,
+    ContextMenuComponent,
+    BreadcrumbComponent,
+    PropertiesAreaComponent,
+    MultiInputComponent,
+    MultiInputAcordionComponent
+  ],
+  imports: [
+    /* 3rd party components */
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    BrowserAnimationsModule,
+    AceEditorModule,
+    LoadingModule,
+    ContextMenuModule.forRoot(),
+    ClickOutsideModule
+  ],
+  providers: [
+    EditorService,
+    StateService
+  ],
+  bootstrap: [
+    AppComponent
+  ]
 })
 export class AppModule { }

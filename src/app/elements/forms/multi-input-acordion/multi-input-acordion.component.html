@@ -1,0 +1,8 @@
+<div>
+    <section class="xe-acordion-title">{{title}}</section>
+    <section>
+        <ng-container *ngFor="let value of values">
+            <app-multi-input [data]="value" (changeValue)="updateValues($event)"></app-multi-input>
+        </ng-container>
+    </section>
+</div>

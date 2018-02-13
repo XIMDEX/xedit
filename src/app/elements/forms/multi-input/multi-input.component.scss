@@ -1,0 +1,17 @@
+@import '~sass/variables';
+
+:host {
+    width: 300px;
+    > div{
+        display: flex;
+        flex-direction: row;
+
+        > * {
+            margin: auto 5px auto 0;
+        }
+
+        &:last-child(){
+            margin: auto 0;
+        }
+    }
+}

@@ -4,11 +4,19 @@
         <p> Tag: {{ currentNode.name }}</p>
         <h3>Properties</h3>
         <ul *ngIf="currentNode.attributes != null">
-            <li *ngFor="let attribute of currentNode | keys">
-                <p>{{ attribute.name }}</p>
-                <input type="text" name="{{attribute.name}}" value="{{attribute.value}}" (change)="changePropertyValue($event, attribute.name)"
-                />
-            </li>
+            <ng-container *ngFor="let attr of currentProperties">
+                <ng-template [ngIf]="attr.name === 'style'" [ngIfElse]="default">
+                    <li>
+                        <app-multi-input-acordion [title]="attr.name" [values]="attr.value" (changeValue)="changeStyle($event)"></app-multi-input-acordion>
+                    </li>
+                </ng-template>
+                <ng-template #default>
+                    <li>
+                        <label>{{ attr.name }}</label>
+                        <input type="text" [name]="attr.name" [(ngModel)]="attr.value" (change)="changePropertyValue(attr.name, attr.value)" />
+                    </li>
+                </ng-template>
+            </ng-container>
         </ul>
     </nav>
 </div>
