@@ -43,7 +43,7 @@ export class PropertiesLocalViewComponent implements OnInit {
         editContent['attr'][property] = evt.target.value;
 
         // Save new state
-        const newFile = this._editorService.newStateFile(elementContent);
+        const newFile = this._editorService.newStateFile(editContent, 'Message2');
         this._editorService.setFileState(newFile);
 
         // Update current node

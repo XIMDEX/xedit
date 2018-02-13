@@ -110,6 +110,7 @@ export class WysiwygHandler {
                         args.service.setCurrentNode(args.node);
                     });
                     editor.on('blur', (e) => {
+                        args.service.getFileStateValue().screenshot();
                         const promise = new Promise(
                             () => {
                                 const loop = window.setInterval(() => {
@@ -134,7 +135,7 @@ export class WysiwygHandler {
     }
 
     private static isSameEditor(editor, id) {
-        return equals(editor.targetElm.getAttribute('xe_uuid'), id);
+        return editor.targetElm.hasAttribute('xe_uuid') && equals(editor.targetElm.getAttribute('xe_uuid'), id);
     }
 
     private static addPlugins() {
@@ -163,6 +164,7 @@ export class WysiwygHandler {
                     input.datepicker('destroy');
                     element.html(input.val());
                     args.service.save(args.node.getTarget(), element.html());
+                    args.service.getFileStateValue().screenshot();
                 });
                 input.datepicker('show');
             }

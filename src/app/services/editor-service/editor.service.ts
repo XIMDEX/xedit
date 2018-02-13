@@ -95,8 +95,8 @@ export class EditorService {
     /**
      * Added new state
      */
-    newStateFile(state): File {
-        return this.file.getValue().newState(state);
+    newStateFile(state: any, message: string): File {
+        return this.file.getValue().newStateWithMessage(state, message);
     }
 
     /**
@@ -108,7 +108,6 @@ export class EditorService {
             this.setLoading(false);
         });
     }
-
 
     /**
      * Go to the next state if it exists, otherwise it does not do anything
@@ -125,6 +124,7 @@ export class EditorService {
      *
      * @param node DomNode
      * @param content Html content
+     * @param message string message
      */
     save(node, content) {
         const fileContent = this.fileState.getValue().getState().content;
@@ -152,11 +152,9 @@ export class EditorService {
         }
 
         // Save new state
-        const newFile = this.newStateFile(fileContent);
+        const newFile = this.newStateFile(fileContent, 'Message1');
         this.setFileState(newFile);
     }
-
-
 
     /**
      * Add child or sibling node to area
@@ -167,7 +165,7 @@ export class EditorService {
      */
     addNodeToArea(node: Node, newNode, child: boolean = false) {
 
-        const file = this.newStateFile(this.fileState.getValue().getState().content);
+        const file = this.newStateFile(this.fileState.getValue().getState().content, 'Message3');
         const section = node.getSection();
 
         const sectionPath = child ? Node.getContextPath(section) : Node.getContextPath(section.parentNode);
@@ -195,6 +193,20 @@ export class EditorService {
         this.setFileState(file);
     }
 
+    getUpdatedDocument() {
+        const file = this.getFileStateValue();
+        const state = file.getState();
+        const document = { "nodes": {} };
+
+        for (const nodeId in state.content) {
+            document["nodes"][nodeId] = {
+                content: Converters.json2html(state.content[nodeId].content, false)
+            };
+            //document["nodes"][nodeId]["content"] = Converters.json2html(state.content[nodeId].content, false);
+        }
+        console.log(document)
+    }
+    /************************************** Static Methods **************************************/
 
     /**
     * Parse DomNode to EditorNode

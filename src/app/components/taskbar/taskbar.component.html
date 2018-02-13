@@ -6,7 +6,7 @@
                 <input style='position:absolute; left:-1000px' type="file" name="open_html" id="open_html" (change)="onFileSelect($event)">
             </li>
             <li>
-                <i class="fas fa-save"></i>
+                <i class="fas fa-save" (click)="save()"></i>
             </li>
             <li class="separator"></li>
             <li (click)="undo()" [ngClass]="{disabled: !previousAvailable()}">

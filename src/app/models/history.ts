@@ -6,24 +6,30 @@ export class History {
 
     // Variables
     private maxStates: number;
+    private maxScreenshots: number;
     private pos: number;
     private state: any;
     private states: Array<string>;
+    private screenshots: Array<string>;
     private db;
+    private sc;
 
     // Contructor
-    constructor(initState: any, maxStates: number = 50) {
+    constructor(initState: any, maxStates: number = 50, maxScreenshots = 5) {
         this.pos = 0;
         this.states = new Array;
         this.setMaxStates(maxStates);
+        this.setMaxScrenshots(maxScreenshots);
         this.state = initState;
         this.states = [];
+        this.screenshots = [];
 
         // Init database
-        this.db = this.prepareDatabase();
+        this.prepareDatabase();
 
         // Save init state
         this.save(initState);
+        this.screenshot();
 
     }
 
@@ -45,6 +51,17 @@ export class History {
             throw new TypeError('Invalid maxStates');
         }
         this.maxStates = maxStates;
+    }
+
+    getMaxScrenshots() {
+        return this.maxScreenshots;
+    }
+
+    setMaxScrenshots(maxScreenshots: number) {
+        if (maxScreenshots <= 0 && !Number.isInteger(maxScreenshots)) {
+            throw new TypeError('Invalid maxScreenshots');
+        }
+        this.maxScreenshots = maxScreenshots;
     }
 
     /************************************** Private Methods **************************************/
@@ -69,49 +86,70 @@ export class History {
     private addState(state: any): void {
 
         if (this.countStates() > this.pos) {
-            this.remove(r_remove(0, this.pos + 1, this.states));
+            this.remove(r_remove(0, this.pos + 1, this.states), this.db);
             this.states.splice(this.pos + 1, this.countStates());
         }
 
         if (this.checkMaxStates()) {
-            this.remove(this.states.shift());
+            this.remove(this.states.shift(), this.db);
             this.pos--;
         }
 
-        if (!isNil(this.state)) {
-            this.save(this.state);
-        }
+        this.save(state);
 
         this.state = state;
     }
 
     /**
-     * Save state in SessionStorage
+     * Save state in web storage
      */
     private save(state: any) {
-        if (typeof (Storage) !== 'undefined') {
+
+        if (this.db) {
             const stateId = UUID.UUID();
             try {
-
-                if (this.db) {
-                    this.db.setItem(stateId, state, function (err, value) {
-                        if (err) {
-                            console.error(err);
-                        }
-                    });
-                }
-                sessionStorage.setItem(stateId, JSON.stringify(state));
+                this.db.setItem(stateId, state, function (err, value) {
+                    if (err) {
+                        console.error(err);
+                    }
+                });
                 this.states.push(stateId);
             } catch (ex) {
-                console.error('This object can not support stringify');
+                console.error('History save error');
             }
         } else {
-            console.error('History is not supported.');
+            console.error('Storage not available');
         }
     }
 
+
     /**
-     * Recovery state by key from SessionStorage
+     * Screenshot last state in web storage
+     */
+    public screenshot() {
+
+        if (this.sc) {
+            const stateId = this.states[this.pos];
+            try {
+                if (this.screenshots.length > this.getMaxScrenshots()) {
+                    this.remove(stateId, this.sc);
+                    this.screenshots.shift()
+                }
+                this.sc.setItem(stateId, this.state, function (err, value) {
+                    if (err) { console.error(err); }
+                });
+                this.screenshots.push(stateId);
+            } catch (ex) {
+                console.error('Screenshot save error');
+            }
+        } else {
+            console.error('Storage not available');
+        }
+    }
+
+
+    /**
+     * Recovery state by key from web storage
      *
      * @param stateId
      */
@@ -128,17 +166,16 @@ export class History {
     /**
      * Remove state from storage
      */
-    private remove(keys) {
+    private remove(keys, database) {
         keys = (keys instanceof Array) ? keys : [keys];
         keys.forEach(key => {
-            if (this.db) {
-                this.db.removeItem(key, (err) => {
+            if (database) {
+                database.removeItem(key, (err) => {
                     if (err) {
                         console.error(err);
                     }
                 });
             }
-            sessionStorage.removeItem(key);
         });
     }
 
@@ -181,7 +218,7 @@ export class History {
     /**
      * Added new state
      */
-    newState(state: any): Object {
+    newState(state: any): any {
         this.addState(state);
         this.pos++;
 
@@ -206,7 +243,7 @@ export class History {
      * Init database
      */
     prepareDatabase() {
-        const db = localForage.createInstance({
+        this.db = localForage.createInstance({
             driver: localForage.INDEXEDDB,
             name: 'xedit',
             version: 1.0,
@@ -215,8 +252,16 @@ export class History {
             description: 'Document history'
         });
 
-        db.clear();
+        this.sc = localForage.createInstance({
+            driver: localForage.INDEXEDDB,
+            name: 'xedit',
+            version: 1.0,
+            size: 4980736,
+            storeName: 'screenshot',
+            description: 'Document screenshots'
+        });
 
-        return db;
+        this.db.clear();
+        this.sc.clear();
     }
 }

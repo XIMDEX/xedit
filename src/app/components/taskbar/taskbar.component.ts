@@ -88,6 +88,9 @@ export class TaskbarComponent implements OnInit {
             .toggleClass('opened');
     }
 
+    save() {
+        this._editorService.getUpdatedDocument();
+    }
     load() {
         (<HTMLInputElement>document.getElementById('open_html')).value = '';
         document.getElementById('open_html').click();

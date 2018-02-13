@@ -13,13 +13,15 @@ export class FileHistory {
     static TYPE_JSON = 'json';
     static TYPE_TEXT = 'text';
 
+    message: string;
     content: any;
     type: string;
 
     // Constructor
-    constructor(content: any = null) {
+    constructor(content: any = null, message: string = null) {
         if (content != null) {
             this.content = content;
+            this.message = message;
             this.type = is(String, content) ? FileHistory.TYPE_TEXT : FileHistory.TYPE_JSON;
         }
     }
@@ -31,6 +33,14 @@ export class FileHistory {
 
     setContent(content: any): void {
         this.content = content;
+    }
+
+    getMessage(): string {
+        return this.message;
+    }
+
+    setMessage(message: any): void {
+        this.message = message;
     }
 }
 
@@ -68,8 +78,8 @@ export class File extends History {
     /**
      * Added new state
      */
-    newState(content: any): File {
-        super.newState(new FileHistory(content));
+    newStateWithMessage(content: any, message: string): File {
+        super.newState(new FileHistory(content, message));
         return this;
     }
 
@@ -93,7 +103,7 @@ export class File extends History {
             nodes[property].content = Converters.html2json(nodes[property].content);
         });
 
-        return new FileHistory(nodes);
+        return new FileHistory(nodes, 'Init state');
     }
 
 }
