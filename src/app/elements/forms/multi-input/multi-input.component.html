@@ -1,5 +1,12 @@
 <div>
-    <input type="text" [(ngModel)]="attrName" (change)="changeValues(attrName, attrValue)">
+    <ng-template [ngIf]="hasAttrNameValue" [ngIfElse]="name">
+        <label>
+            {{attrName}}
+        </label>
+    </ng-template>
+    <ng-template #name>
+        <input type="text" [(ngModel)]="attrName" (change)="setAttrName(attrName)">
+    </ng-template>
     <span>:</span>
-    <input type="text" [(ngModel)]="attrValue" (change)="changeValues(attrName, attrValue)">
+    <input type="text" [name]="attrName" [(ngModel)]="attrValue" (change)="changeValues(attrName, attrValue)">
 </div>

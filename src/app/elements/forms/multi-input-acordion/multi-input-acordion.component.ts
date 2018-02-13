@@ -1,4 +1,4 @@
-import { hasIn, keys, forEachObjIndexed } from 'ramda';
+import { hasIn, keys, forEachObjIndexed, isNil } from 'ramda';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
@@ -19,19 +19,38 @@ export class MultiInputAcordionComponent implements OnInit {
     constructor() { }
 
     ngOnInit() {
+        this.values.reduce((acc, value) => {
+            const key = keys(value)[0];
+            this._values[key] = value[key];
+            return this._values;
+        }, this._values);
+
     }
 
-    updateValues(value) {
+    removeElement(index) {
+        this.values.splice(index, 1);
+        this.storeData(this.values);
+    }
+
+    addElement() {
+        this.values.push({});
+    }
+
+    updateElement(value) {
         const style = keys(value)[0];
         this._values[style] = value[style];
 
         const result = [];
         forEachObjIndexed((_value, key) => {
             const json = {};
-            json[key] = _value;
+            json[key] = _value.replace(/;$/, "");
             result.push(json);
         }, this._values);
-        this.changeValue.emit(result);
+
+        this.storeData(result);
     }
 
+    storeData(data: Array<any>) {
+        this.changeValue.emit(data);
+    }
 }

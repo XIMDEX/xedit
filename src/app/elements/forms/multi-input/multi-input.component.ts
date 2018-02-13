@@ -1,4 +1,4 @@
-import { keys } from 'ramda';
+import { keys, isNil, isEmpty } from 'ramda';
 import { Input, Output, EventEmitter } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 
@@ -20,9 +20,21 @@ export class MultiInputComponent implements OnInit {
 
     @Output() changeValue: EventEmitter<any> = new EventEmitter();
 
+    private hasAttrNameValue: boolean;
+
     constructor() { }
 
     ngOnInit() {
+        this.hasAttrNameValue = this.hasAttrName();
+    }
+
+
+    hasAttrName() {
+        return !isNil(this.attrName) && !isEmpty(this.attrName);
+    }
+
+    setAttrName() {
+        this.hasAttrNameValue = this.hasAttrName();
     }
 
     changeValues(index: string, value: string) {

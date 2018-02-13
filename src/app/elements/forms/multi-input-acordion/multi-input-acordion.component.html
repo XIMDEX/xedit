@@ -1,8 +1,15 @@
 <div>
     <section class="xe-acordion-title">{{title}}</section>
     <section>
-        <ng-container *ngFor="let value of values">
-            <app-multi-input [data]="value" (changeValue)="updateValues($event)"></app-multi-input>
+        <ng-container *ngFor="let value of values; let i = index">
+            <app-multi-input [data]="value" (changeValue)="updateElement($event)"></app-multi-input>
+            <button (click)="removeElement(i)">
+                <i class="fas fa-minus"></i>
+            </button>
         </ng-container>
+        <button (click)="addElement()">
+            Add style
+            <i class="fas fa-plus"></i>
+        </button>
     </section>
 </div>

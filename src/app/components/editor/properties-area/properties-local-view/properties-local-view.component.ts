@@ -35,7 +35,7 @@ export class PropertiesLocalViewComponent implements OnInit {
                 const pairs = val.split(':');
                 if (pairs[0] !== '') {
                     const json = {};
-                    json[pairs[0]] = pairs[1];
+                    json[pairs[0].trim()] = pairs[1];
                     result.push(json);
                 }
                 return result;
@@ -100,7 +100,7 @@ export class PropertiesLocalViewComponent implements OnInit {
         editContent['attr'][property] = value;
 
         // Save new state
-        const newFile = this._editorService.newStateFile(editContent, 'Message2');
+        const newFile = this._editorService.newStateFile(elementContent, 'Message2');
         this._editorService.setFileState(newFile);
 
         // Update current node
