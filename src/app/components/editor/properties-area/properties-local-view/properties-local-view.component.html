@@ -5,17 +5,18 @@
         <h3>Properties</h3>
         <ul *ngIf="currentNode.attributes != null">
             <ng-container *ngFor="let attr of currentProperties">
-                <ng-template [ngIf]="attr.name === 'style'" [ngIfElse]="default">
-                    <li>
+                <ng-container [ngSwitch]="attr.name">
+                    <li *ngSwitchCase="'style'">
                         <app-multi-input-acordion [title]="attr.name" [values]="attr.value" (changeValue)="changeStyle($event)"></app-multi-input-acordion>
                     </li>
-                </ng-template>
-                <ng-template #default>
-                    <li>
+                    <li *ngSwitchCase="'class'">
+                        <app-input-acordion [title]="attr.name" [values]="attr.value" action-text="Add new class" (changeValue)="changeClass($event)"></app-input-acordion>
+                    </li>
+                    <li *ngSwitchDefault>
                         <label>{{ attr.name }}</label>
                         <input type="text" [name]="attr.name" [(ngModel)]="attr.value" (change)="changePropertyValue(attr.name, attr.value)" />
                     </li>
-                </ng-template>
+                </ng-container>
             </ng-container>
         </ul>
     </nav>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { reduce, clone, has, isNil, hasIn, keys } from 'ramda';
+import { reduce, clone, has, isNil, hasIn, keys, values, isEmpty } from 'ramda';
 
 import { File } from '@models/file';
 import { Node } from '@models/node';
@@ -20,13 +20,13 @@ export class PropertiesLocalViewComponent implements OnInit {
     private file: File;
     private propertiesGroups: Object = {
         class: (value: string) => {
-            if (isNil(value)) {
+            if (isNil(value) || isEmpty(value)) {
                 return [];
             }
             return value.split(' ');
         },
         style: (value: string) => {
-            if (isNil(value)) {
+            if (isNil(value) || isEmpty(value)) {
                 return [];
             }
             const _value = value.split(';');
@@ -82,6 +82,11 @@ export class PropertiesLocalViewComponent implements OnInit {
             return `${key}:${data[key]};`;
         });
         this.changePropertyValue('style', values.join(' '));
+    }
+
+    changeClass(value) {
+        const values = value.join(" ");
+        this.changePropertyValue('class', values);
     }
 
     changePropertyValue(property, value) {

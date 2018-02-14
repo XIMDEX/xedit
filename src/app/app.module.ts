@@ -25,6 +25,7 @@ import { BreadcrumbComponent } from '@components/breadcrumb/breadcrumb.component
 import { PropertiesAreaComponent } from '@components/editor/properties-area/properties-area.component';
 import { MultiInputComponent } from '@elements/forms/multi-input/multi-input.component';
 import { MultiInputAcordionComponent } from './elements/forms/multi-input-acordion/multi-input-acordion.component';
+import { InputAcordionComponent } from './elements/forms/input-acordion/input-acordion.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { MultiInputAcordionComponent } from './elements/forms/multi-input-acordi
     BreadcrumbComponent,
     PropertiesAreaComponent,
     MultiInputComponent,
-    MultiInputAcordionComponent
+    MultiInputAcordionComponent,
+    InputAcordionComponent
   ],
   imports: [
     /* 3rd party components */
