@@ -114,7 +114,11 @@ export class TextViewComponent implements OnInit, AfterViewInit, OnDestroy {
         let startLine = selectionRange.start.row;
         let endLine = selectionRange.end.row;
       });*/
-
+      _editor.on('blur', (e) => {
+        setTimeout(() => {
+          this._editorService.getFileStateValue().snapshot();
+        }, 1000);
+      });
       session.on('change', (e) => {
         if (_editor.curOp && _editor.curOp.command.name) { // Only if is user trigger event
 
@@ -123,7 +127,7 @@ export class TextViewComponent implements OnInit, AfterViewInit, OnDestroy {
           }
 
           editor.timeoutSaving = setTimeout(() => {
-            this._editorService.save(_editor.container.id, _editor.getValue());
+            this._editorService.save(_editor.container.id, _editor.getValue(), 'Edit mode text');
             editor.timeoutSaving = null;
           }, editor._durationBeforeCallback);
 

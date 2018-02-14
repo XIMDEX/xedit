@@ -145,23 +145,26 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     /************************************** MENU *****************************************/
 
     public onContextMenu($event: KeyboardEvent, item: any): void {
-        this.updateContextMenuActions($event.target);
-        setTimeout(() => {
-            this.contextMenuService.show.next({
-                contextMenu: this.basicMenu,
-                event: $event,
-                item: item,
-            });
-        }, 50);
+
+        const node = EditorService.parseToNode($event.target, this._editorService.getFileStateValue().getSchemas());
+
+        if (!isNil(node) && !isNil(node.getSchema())) {
+            this.updateContextMenuActions(node);
+            setTimeout(() => {
+                this.contextMenuService.show.next({
+                    contextMenu: this.basicMenu,
+                    event: $event,
+                    item: item,
+                });
+            }, 50);
+        }
         $event.preventDefault();
         $event.stopPropagation();
     }
 
-    private updateContextMenuActions(element) {
+    private updateContextMenuActions(node) {
 
-        const node = EditorService.parseToNode(element, this._editorService.getFileStateValue().getSchemas());
-
-        const actions = this.getAvailableActions(node.getSchema(), node.getSchemaParent());
+        const actions = this.getAvailableActions(node);
         let contextMenuActions = [];
         const contextMenuActionsChild = [];
         const contextMenuActionsSiblings = [];
@@ -177,7 +180,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         };
 
         // Childs
-        actions.childs.forEach(action => {
+        actions.children.forEach(action => {
             if (hasIn('template' in action) && !isNil(action.template)) {
                 contextMenuActionsChild.push(
                     this.createAction((i) => 'Añadir hijo ' + action.name,
@@ -227,38 +230,49 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
 
 
-    getAvailableActions(section, parent) {
+    getAvailableActions(node: Node) {
         const actions = {
             name: null,
-            childs: [],
+            children: [],
             siblings: [],
+            others: []
         };
 
-        actions.name = Node.getSectionLang(section, 'es');
+        actions.name = Node.getSectionLang(node.getSchema(), 'es');
 
         // Get childs
-        if (hasIn('sections', section) && !isNil(section.sections)) {
-            for (const key in section.sections) {
-                if (hasIn(key, section.sections)) {
-                    actions.childs.push({
-                        name: Node.getSectionLang(section.sections[key], 'es'),
-                        template: Node.getSectionTemplate(section.sections[key])
-                    });
-                }
+        if (hasIn('sections', node.getSchema()) && !isNil(node.getSchema().sections)) {
+            if (hasIn('children', node.getSchema().sections)) {
+                const children = node.getSchema().sections.children;
+                children.map((child) => {
+                    const schema = node.getSchemaNode()[child];
+                    if (!isNil(schema)) {
+                        actions.children.push({
+                            name: Node.getSectionLang(schema, 'es'),
+                            template: Node.getSectionTemplate(schema)
+                        });
+                    }
+                })
+            }
+
+            if (hasIn('siblings', node.getSchema().sections)) {
+                const siblings = node.getSchema().sections.siblings;
+                siblings.map((sibling) => {
+                    const schema = node.getSchemaNode()[sibling];
+                    if (!isNil(schema)) {
+                        actions.siblings.push({
+                            name: Node.getSectionLang(schema, 'es'),
+                            template: Node.getSectionTemplate(schema)
+                        });
+                    }
+                })
             }
         }
 
-        // Get siblings
-        if (hasIn('sections', parent) && !isNil(parent.sections)) {
-            for (const key in parent.sections) {
-                if (hasIn(key, parent.sections)) {
-                    actions.siblings.push({
-                        name: Node.getSectionLang(parent.sections[key], 'es'),
-                        template: Node.getSectionTemplate(parent.sections[key])
-                    });
-                }
-            }
-        }
+        actions.others.push({
+            name: 'Borrar',
+            template: null
+        });
 
         return actions;
     }

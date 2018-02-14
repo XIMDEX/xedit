@@ -47,6 +47,8 @@ export class FileHistory {
 export class File extends History {
 
     private schemas: Object;
+    private metas: Array<Object>;
+
     constructor(json = null) {
 
         if (isNil(json)) {
@@ -54,8 +56,9 @@ export class File extends History {
         }
 
         super(File.createContent(json.nodes));
-        this.schemas = {};
+        this.metas = json.metas;
 
+        this.schemas = {};
         if (!isNil(json.nodes)) {
             Object.keys(json.nodes).forEach(nodeKey => {
                 this.schemas[nodeKey] = json.nodes[nodeKey].schema;
@@ -73,6 +76,17 @@ export class File extends History {
         return this.schemas[nodeKey];
     }
 
+    getMetas(): Array<Object> {
+        return this.metas;
+    }
+
+    getMeta(name): Object {
+        return this.metas[name];
+    }
+
+    setMeta(name: string, value: string) {
+        return this.metas[name] = value;
+    }
     /***************** PUBLIC METHODS **************************/
 
     /**
@@ -88,7 +102,7 @@ export class File extends History {
      *
      * @param stateId
      */
-    recovery(stateId: string): void {
+    recovery(stateId: string) {
         return super.recovery(stateId).then((value) => {
             this.setState(Object.assign(new FileHistory, value));
             return this;

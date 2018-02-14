@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { clone, isNil, reduce, is, contains } from 'ramda';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { clone, isNil, reduce, is, contains, hasIn } from 'ramda';
 import { Editor } from 'ng2-ace-editor/node_modules/brace';
-import { Subject } from 'rxjs/Subject';
 import { UUID } from 'angular2-uuid';
 
 import { File } from '@models/file';
@@ -17,7 +15,7 @@ export class EditorService {
     // variables
     private file: BehaviorSubject<File>; // Change if do or redo only
     private fileState: BehaviorSubject<File>; // Current state content (Change if component change)
-    private currentNode: Subject<Node>; // Current node
+    private currentNode: BehaviorSubject<Node>; // Current node
     private currentNodeModify: Subject<Node>; // Change if node is modify
     private loading: BehaviorSubject<boolean>;
 
@@ -120,13 +118,22 @@ export class EditorService {
     }
 
     /**
+     * 
+     */
+    recoverySnapshot(key: string): void {
+        this.getFileStateValue().recovery(key).then(() => {
+            this.setFile(this.getFileStateValue());
+        });
+    }
+
+    /**
      * Save content into document
      *
      * @param node DomNode
      * @param content Html content
      * @param message string message
      */
-    save(node, content) {
+    save(node, content, message) {
         const fileContent = this.fileState.getValue().getState().content;
 
         /** @todo Improve performance clone */
@@ -152,7 +159,7 @@ export class EditorService {
         }
 
         // Save new state
-        const newFile = this.newStateFile(fileContent, 'Message1');
+        const newFile = this.newStateFile(fileContent, message);
         this.setFileState(newFile);
     }
 
@@ -165,7 +172,8 @@ export class EditorService {
      */
     addNodeToArea(node: Node, newNode, child: boolean = false) {
 
-        const file = this.newStateFile(this.fileState.getValue().getState().content, 'Message3');
+        const message = (child ? 'Adding child' : 'Adding sibling') + ' to ' + node.getSection().getAttribute('xe_section');
+        const file = this.newStateFile(this.fileState.getValue().getState().content, message);
         const section = node.getSection();
 
         const sectionPath = child ? Node.getContextPath(section) : Node.getContextPath(section.parentNode);
@@ -196,15 +204,16 @@ export class EditorService {
     getUpdatedDocument() {
         const file = this.getFileStateValue();
         const state = file.getState();
-        const document = { "nodes": {} };
+        const document = { 'nodes': {} };
 
         for (const nodeId in state.content) {
-            document["nodes"][nodeId] = {
-                content: Converters.json2html(state.content[nodeId].content, false)
-            };
-            //document["nodes"][nodeId]["content"] = Converters.json2html(state.content[nodeId].content, false);
+            if (hasIn('content', state.content[nodeId])) {
+                document['nodes'][nodeId] = {
+                    content: Converters.json2html(state.content[nodeId].content, false)
+                };
+            }
         }
-        console.log(document)
+        console.log(document);
     }
     /************************************** Static Methods **************************************/
 

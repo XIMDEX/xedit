@@ -14,7 +14,7 @@ export class Node {
     private uuid: string;
     private target: HTMLElement;
     private schema: any;
-    private schemaParent: any;
+    private schemaNode: any;
     private name: string;
     private section: any;
     private attributes: Object;
@@ -38,9 +38,8 @@ export class Node {
         this.areaId = this.uuidSectionsPath.shift();
         this.attributes = attributes;
 
-        const { schema, schemaParent } = this.getSchemas(schemas);
-        this.schema = schema;
-        this.schemaParent = schemaParent;
+        this.schemaNode = schemas[this.areaId];
+        this.schema = this.schemaNode[this.getSection().getAttribute(XeditMapper.TAG_SECTION_TYPE)]
     }
 
     // ************************************** Getters and setters **************************************/
@@ -64,12 +63,12 @@ export class Node {
         return this.areaId;
     }
 
-    getSchema(): string {
+    getSchema() {
         return this.schema;
     }
 
-    getSchemaParent(): string {
-        return this.schemaParent;
+    getSchemaNode() {
+        return this.schemaNode;
     }
 
     getSection(): any {
@@ -106,26 +105,7 @@ export class Node {
             this.attributes[name] = value;
         }
     }
-    /********************* PRIVATE METHODS *********************/
-    /**
-     * Get schema and parent schema by specific DOM element
-     *
-     * @param element
-     */
-    private getSchemas(schemas) {
-        /** @todo Corregir obtener ruta */
 
-        let schema = schemas[this.areaId];
-        let schemaParent = null;
-
-        // Get schema
-        schema = reduce(function (sect, value) {
-            schemaParent = sect;
-            return sect.sections[value];
-        }, schema, this.sectionsPath);
-
-        return { schema, schemaParent };
-    }
     /********************** PUBLIC METHODS *********************/
 
     getType() {

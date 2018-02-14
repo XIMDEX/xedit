@@ -17,6 +17,7 @@ import { DebugPipe } from '@pipes/debug/debug.pipe';
 import { KeysPipe } from '@pipes/keys/keys.pipe';
 import { TaskbarComponent } from '@components/taskbar/taskbar.component';
 import { EditorComponent } from '@components/editor/editor.component';
+import { PropertiesGlobalViewComponent } from '@components/editor/properties-area/properties-global-view/properties-global-view.component';
 import { PropertiesLocalViewComponent } from '@components/editor/properties-area/properties-local-view/properties-local-view.component';
 import { WysiwygViewComponent } from '@components/editor/views/wysiwyg-view/wysiwyg-view.component';
 import { TextViewComponent } from '@components/editor/views/text-view/text-view.component';
@@ -28,40 +29,41 @@ import { MultiInputAcordionComponent } from './elements/forms/multi-input-acordi
 import { InputAcordionComponent } from './elements/forms/input-acordion/input-acordion.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    TaskbarComponent,
-    EditorComponent,
-    PropertiesLocalViewComponent,
-    WysiwygViewComponent,
-    TextViewComponent,
-    SafeHtmlPipe,
-    DebugPipe,
-    KeysPipe,
-    ContextMenuComponent,
-    BreadcrumbComponent,
-    PropertiesAreaComponent,
-    MultiInputComponent,
-    MultiInputAcordionComponent,
-    InputAcordionComponent
-  ],
-  imports: [
-    /* 3rd party components */
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    BrowserAnimationsModule,
-    AceEditorModule,
-    LoadingModule,
-    ContextMenuModule.forRoot(),
-    ClickOutsideModule
-  ],
-  providers: [
-    EditorService,
-    StateService
-  ],
-  bootstrap: [
-    AppComponent
-  ]
+    declarations: [
+        AppComponent,
+        TaskbarComponent,
+        EditorComponent,
+        PropertiesLocalViewComponent,
+        PropertiesGlobalViewComponent,
+        WysiwygViewComponent,
+        TextViewComponent,
+        SafeHtmlPipe,
+        DebugPipe,
+        KeysPipe,
+        ContextMenuComponent,
+        BreadcrumbComponent,
+        PropertiesAreaComponent,
+        MultiInputComponent,
+        MultiInputAcordionComponent,
+        InputAcordionComponent
+    ],
+    imports: [
+        /* 3rd party components */
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        BrowserAnimationsModule,
+        AceEditorModule,
+        LoadingModule,
+        ContextMenuModule.forRoot(),
+        ClickOutsideModule
+    ],
+    providers: [
+        EditorService,
+        StateService
+    ],
+    bootstrap: [
+        AppComponent
+    ]
 })
 export class AppModule { }

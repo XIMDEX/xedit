@@ -54,11 +54,13 @@ export class DOM {
     }
 
     public insertNode(htmlString: string, siblingNode: HTMLElement, before: boolean = false) {
-        const element = DOM.creteElement(htmlString);
+        const elements = DOM.creteElement(htmlString);
         // if (!before) {
         //     this.target.insertBefore(element, siblingNode);
         // }
-        this.target.insertBefore(element, siblingNode);
+        while (elements.length > 0) {
+            this.target.insertBefore(elements.item(0), siblingNode);
+        }
     }
 
     /********************* PRIVATE METHODS *********************/
@@ -115,10 +117,10 @@ export class DOM {
         return new DOM(element);
     }
 
-    public static creteElement(htmlString: string): Node {
+    public static creteElement(htmlString: string): NodeList {
         const div = document.createElement('div');
         div.innerHTML = htmlString.trim();
-        return div.firstChild;
+        return div.childNodes;
     }
 
     // TODO Clean

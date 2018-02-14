@@ -103,14 +103,14 @@ export class WysiwygHandler {
                     editor.on('change', (evt: Event) => {
                         const contentTag = editor.bodyElement;
                         const content = editor.getContent();
-                        args.service.save(contentTag, content);
+                        args.service.save(contentTag, content, 'Change section ' + args.node.getSection().getAttribute('xe_section'));
                     });
                     editor.on('init', (evt: Event) => {
                         tinymce.execCommand('mceFocus', false, editor.id);
                         args.service.setCurrentNode(args.node);
                     });
                     editor.on('blur', (e) => {
-                        args.service.getFileStateValue().screenshot();
+                        args.service.getFileStateValue().snapshot();
                         const promise = new Promise(
                             () => {
                                 const loop = window.setInterval(() => {
@@ -163,8 +163,8 @@ export class WysiwygHandler {
                 input.datepicker().on('hide', () => {
                     input.datepicker('destroy');
                     element.html(input.val());
-                    args.service.save(args.node.getTarget(), element.html());
-                    args.service.getFileStateValue().screenshot();
+                    args.service.save(args.node.getTarget(), element.html(), 'Change section date');
+                    args.service.getFileStateValue().snapshot();
                 });
                 input.datepicker('show');
             }

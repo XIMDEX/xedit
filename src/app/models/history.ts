@@ -6,30 +6,30 @@ export class History {
 
     // Variables
     private maxStates: number;
-    private maxScreenshots: number;
+    private maxSnapshots: number;
     private pos: number;
     private state: any;
     private states: Array<string>;
-    private screenshots: Array<string>;
+    private snapshots: Array<Object>;
     private db;
     private sc;
 
     // Contructor
-    constructor(initState: any, maxStates: number = 50, maxScreenshots = 5) {
+    constructor(initState: any, maxStates: number = 50, maxSnapshots = 5) {
         this.pos = 0;
         this.states = new Array;
         this.setMaxStates(maxStates);
-        this.setMaxScrenshots(maxScreenshots);
+        this.setMaxSnapshots(maxSnapshots);
         this.state = initState;
         this.states = [];
-        this.screenshots = [];
+        this.snapshots = [];
 
         // Init database
         this.prepareDatabase();
 
         // Save init state
         this.save(initState);
-        this.screenshot();
+        this.snapshot();
 
     }
 
@@ -53,15 +53,23 @@ export class History {
         this.maxStates = maxStates;
     }
 
-    getMaxScrenshots() {
-        return this.maxScreenshots;
+    getSnapshots(): Array<Object> {
+        return this.snapshots;
     }
 
-    setMaxScrenshots(maxScreenshots: number) {
-        if (maxScreenshots <= 0 && !Number.isInteger(maxScreenshots)) {
-            throw new TypeError('Invalid maxScreenshots');
+    getSnapshot(key) {
+        return this.snapshots[key];
+    }
+
+    getMaxSnapshots() {
+        return this.maxSnapshots;
+    }
+
+    setMaxSnapshots(maxSnapshots: number) {
+        if (maxSnapshots <= 0 && !Number.isInteger(maxSnapshots)) {
+            throw new TypeError('Invalid maxSnapshots');
         }
-        this.maxScreenshots = maxScreenshots;
+        this.maxSnapshots = maxSnapshots;
     }
 
     /************************************** Private Methods **************************************/
@@ -124,23 +132,23 @@ export class History {
 
 
     /**
-     * Screenshot last state in web storage
+     * Snapshot last state in web storage
      */
-    public screenshot() {
+    public snapshot() {
 
         if (this.sc) {
             const stateId = this.states[this.pos];
             try {
-                if (this.screenshots.length > this.getMaxScrenshots()) {
+                if (this.snapshots.length > this.getMaxSnapshots()) {
                     this.remove(stateId, this.sc);
-                    this.screenshots.shift()
+                    this.snapshots.shift();
                 }
                 this.sc.setItem(stateId, this.state, function (err, value) {
                     if (err) { console.error(err); }
                 });
-                this.screenshots.push(stateId);
+                this.snapshots.push({ 'key': stateId, 'message': this.state.message });
             } catch (ex) {
-                console.error('Screenshot save error');
+                console.error('Snapshot save error');
             }
         } else {
             console.error('Storage not available');
@@ -257,8 +265,8 @@ export class History {
             name: 'xedit',
             version: 1.0,
             size: 4980736,
-            storeName: 'screenshot',
-            description: 'Document screenshots'
+            storeName: 'snapshot',
+            description: 'Document snapshots'
         });
 
         this.db.clear();
