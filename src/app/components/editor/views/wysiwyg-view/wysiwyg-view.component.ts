@@ -10,6 +10,7 @@ import { DOM } from '@models/dom';
 import { EditorService } from '@services/editor-service/editor.service';
 import { Converters } from '@utils/converters';
 import { WysiwygHandler } from '@components/editor/views/wysiwyg-view/wysiwyg-handler';
+import $ from 'jquery';
 
 @Component({
     selector: 'app-wysiwyg-view',
@@ -30,7 +31,8 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     private subscribeCNM;
     public contextMenuActions: Array<any> = [];
     private currentNode: Node;
-    private schemas;
+    private cssLinks: Array<string>;
+    private jsLinks: Array<string>;
 
     constructor(private _editorService: EditorService, private contextMenuService: ContextMenuService, private _elementRef: ElementRef) { }
 
@@ -60,23 +62,29 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
         // Suscribe to file changes
         this.subscribeFile = this._editorService.getFile().subscribe(file => {
+            this.cssLinks = file.getCss();
+            this.jsLinks = file.getJs();
             // Parse content to html
             this.renderContent = this.parseContentToWysiwygEditor(file.getState().getContent());
             WysiwygHandler.clearTinymce();
-            this.schemas = file.getSchemas();
         });
 
         // Suscribe to file changes
         this.subscribeFileState = this._editorService.getFileState().subscribe(file => {
             // Parse content to html
-            // TODO FIX atovar
-            const xedit = this.xedit.nativeElement;
-            const links = xedit.getElementsByTagName('a');
-            if (!isNil(links)) {
-                for (let i = 0; i < links.length; i++) {
-                    links[i].onclick = (evt) => { return false };
+            setTimeout(() => {
+                // TODO FIX atovar
+                const xedit = this.xedit.nativeElement;
+                const links = xedit.getElementsByTagName('a');
+                if (!isNil(links)) {
+                    for (let i = 0; i < links.length; i++) {
+                        links[i].onclick = (evt) => {
+                            evt.preventDefault();
+                            return false;
+                        };
+                    }
                 }
-            }
+            }, 1000);
         });
 
         // Suscribe to node change
@@ -156,7 +164,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     applyHandler(currentNode) {
         const sectionType = currentNode.getSchema().type;
 
-        const args = { node: currentNode, service: this._editorService, schemas: this.schemas };
+        const args = { node: currentNode, service: this._editorService };
         WysiwygHandler.executeHandler(sectionType, args);
     }
 
@@ -164,7 +172,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
     public onContextMenu($event: KeyboardEvent, item: any): void {
 
-        const node = EditorService.parseToNode($event.target, this._editorService.getFileStateValue().getSchemas());
+        const node = this._editorService.parseToNode($event.target);
 
         if (!isNil(node) && !isNil(node.getSchema())) {
             this.updateContextMenuActions(node);
@@ -270,7 +278,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
                             template: Node.getSectionTemplate(schema)
                         });
                     }
-                })
+                });
             }
 
             if (hasIn('siblings', node.getSchema().sections)) {
@@ -283,7 +291,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
                             template: Node.getSectionTemplate(schema)
                         });
                     }
-                })
+                });
             }
         }
 

@@ -1,11 +1,15 @@
-import { isNil, contains } from 'ramda';
+import { isNil, contains, equals } from 'ramda';
 import { UUID } from 'angular2-uuid';
+import { Xedit } from '../app/xedit';
 
 import { XeditMapper } from '@models/schema/xedit-mapper';
 import { HTMLParser } from '@utils/htmlparser';
 
 
 export class Converters {
+
+    private static requiredXeditAttributes = [XeditMapper.TAG_SECTION_TYPE, XeditMapper.TAG_IMAGE];
+
     private static removeDOCTYPE(html) {
         return html
             .replace(/<\?xml.*\?>\n/, '')
@@ -29,7 +33,6 @@ export class Converters {
      * @param hasRootTag If true then root tag will be added
      */
     static html2json(html, hasRootTag = true) {
-        const requiredXeditAttributes = [XeditMapper.TAG_SECTION_TYPE];
         html = Converters.removeDOCTYPE(html);
         const bufArray = [];
         const results = {
@@ -49,7 +52,7 @@ export class Converters {
                 if (attrs.length !== 0) {
                     node.attr = attrs
                         // filter xe_* attributes except if its are required
-                        .filter((attr) => isNil(attr.name.match('xe_')) || contains(attr.name, requiredXeditAttributes))
+                        .filter((attr) => isNil(attr.name.match('xe_')) || contains(attr.name, Converters.requiredXeditAttributes))
                         .reduce(function (pre, attr) {
                             const name = attr.name;
                             let value = attr.value;
@@ -164,7 +167,7 @@ export class Converters {
                 if (Array.isArray(value)) {
                     value = value.join(' ');
                 }
-                return `${key}="${value}"`;
+                return Converters.parseAttributes(key, value);
             }).join(' ');
             if (attr !== '') {
                 attr = ' ' + attr;
@@ -191,5 +194,15 @@ export class Converters {
         } else if (json.node === 'root') {
             return child;
         }
+    }
+
+    private static parseAttributes(key, value) {
+        let extraData = '';
+        if (contains(key, Converters.requiredXeditAttributes)) {
+            if (equals(key, XeditMapper.TAG_IMAGE)) {
+                extraData = `src='${Xedit.getResourceUrl()}/${value}'`;
+            }
+        }
+        return `${key}="${value}" ${extraData}`;
     }
 }

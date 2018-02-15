@@ -25,6 +25,7 @@ import { XeditMapper } from '@models/schema/xedit-mapper';
 import { File } from '@models/file';
 import { EditorService } from '@services/editor-service/editor.service';
 import { Converters } from '@utils/converters';
+import { Xedit } from '../../../../xedit';
 
 
 export class WysiwygHandler {
@@ -55,6 +56,7 @@ export class WysiwygHandler {
             args.node.getTarget().getAttribute(XeditMapper.TAG_UUID))) {
             WysiwygHandler.addPlugins();
             tinymce.init({
+                dam_url: Xedit.getResourceUrl(),
                 max_chars: 30000,
                 id: args.node.getSection().getAttribute(XeditMapper.TAG_UUID),
                 target: args.node.getSection(),
@@ -65,7 +67,7 @@ export class WysiwygHandler {
                     ' bullist numlist outdent indent |fontsizeselect',
                 plugins: ['link', 'table', 'image', 'paste', 'dam'],
                 skin_url: 'assets/skins/lightgray',
-                content_style: '.mce-content-body{ line-height: unset !important; }  .mce-content-focus{ outline: inherit !important; }',
+                content_style: '.mce-content-body{ line-height: inherit !important; }  .mce-content-focus{ outline: inherit !important; }',
                 valid_elements: '*[*]',
                 setup: editor => {
                     editor.on('Nodechange', (e) => {
@@ -76,7 +78,7 @@ export class WysiwygHandler {
 
                         if (!isNil(args.node.getTarget()) && !equals(args.node.getTarget().getAttribute(XeditMapper.TAG_UUID),
                             element.getAttribute(XeditMapper.TAG_UUID))) {
-                            args.service.setCurrentNode(EditorService.parseToNode(element, args.schemas));
+                            args.service.setCurrentNode(args.service.parseToNode(element));
                         }
 
                     });

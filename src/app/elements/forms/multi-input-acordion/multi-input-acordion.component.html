@@ -1,5 +1,5 @@
 <div>
-    <section class="xe-acordion-title">{{title}}</section>
+    <section class="xe-acordion-title">{{ title }}</section>
     <section>
         <ng-container *ngFor="let value of values; let i = index">
             <app-multi-input [data]="value" (changeValue)="updateElement($event)"></app-multi-input>

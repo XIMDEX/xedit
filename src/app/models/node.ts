@@ -2,6 +2,7 @@ import { equals, isNil, contains, props, reduce, hasIn, is } from 'ramda';
 
 import { XeditMapper } from '@models/schema/xedit-mapper';
 import { Converters } from '@utils/converters';
+import { Xedit } from '../xedit';
 
 export class Node {
 
@@ -22,7 +23,7 @@ export class Node {
     private sectionsPath: Array<string>;
 
     // Constructor
-    constructor(uuid: string, target: any, schemas: any, attributes: Object = {}) {
+    constructor(uuid: string, target: any, attributes: Object = {}) {
         if (isNil(uuid) || isNil(name)) {
             throw new TypeError('Invalid arguments');
         }
@@ -38,8 +39,8 @@ export class Node {
         this.areaId = this.uuidSectionsPath.shift();
         this.attributes = attributes;
 
-        this.schemaNode = schemas[this.areaId];
-        this.schema = this.schemaNode[this.getSection().getAttribute(XeditMapper.TAG_SECTION_TYPE)]
+        this.schemaNode = Xedit.getConf('schemas')[this.areaId];
+        this.schema = this.schemaNode[this.getSection().getAttribute(XeditMapper.TAG_SECTION_TYPE)];
     }
 
     // ************************************** Getters and setters **************************************/
@@ -99,8 +100,7 @@ export class Node {
     setAttribute(name: string, value: Object): void {
         if (name === XeditMapper.TAG_IMAGE) {
             this.attributes[name] = value;
-            this.attributes['src'] = 'http://ajlucena.com/ximdex-4/public_xmd/?action=filemapper&method=nodeFromExpresion&expresion='
-                + value;
+            this.attributes['src'] = `${Xedit.getResourceUrl()}/${value}`;
         } else if (contains(name, this.getAvailableAttributes())) {
             this.attributes[name] = value;
         }
@@ -121,11 +121,11 @@ export class Node {
     getAvailableAttributes() {
         let attributes = [];
         if (equals(this.getType(), Node.TYPE_IMAGE) && !isNil(this.getAttribute(XeditMapper.TAG_IMAGE))) {
-            attributes = [XeditMapper.TAG_IMAGE, 'width', 'height', 'xe_uuid'];
+            attributes = [XeditMapper.TAG_IMAGE, 'width', 'height'];
         } else if (equals(this.getType(), Node.TYPE_IMAGE)) {
-            attributes = ['src', 'alt', 'style', 'xe_uuid'];
+            attributes = ['src', 'alt', 'style', 'xe_img'];
         } else {
-            attributes = ['id', 'class', 'style', 'xe_uuid'];
+            attributes = ['id', 'class', 'style'];
         }
         return attributes;
     }

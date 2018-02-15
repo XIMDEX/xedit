@@ -43,7 +43,7 @@ export class MultiInputAcordionComponent implements OnInit {
         const result = [];
         forEachObjIndexed((_value, key) => {
             const json = {};
-            json[key] = _value.replace(/;$/, "");
+            json[key] = _value.replace(/;$/, '');
             result.push(json);
         }, this._values);
 

@@ -31,9 +31,8 @@ export class EditorComponent implements OnInit {
     }
 
     setCurrentNode(uuid: string) {
-        const schemas = this._editorService.getFileStateValue().getSchemas();
         this._editorService.setCurrentNode(
-            EditorService.parseToNode(this._elementRef.nativeElement.querySelector(`[${XeditMapper.TAG_UUID}='${uuid}']`), schemas)
+            this._editorService.parseToNode(this._elementRef.nativeElement.querySelector(`[${XeditMapper.TAG_UUID}='${uuid}']`))
         );
     }
     /**

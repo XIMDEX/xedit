@@ -15,6 +15,7 @@ import { EditorService } from '@services/editor-service/editor.service';
 import { SafeHtmlPipe } from '@pipes/inner-html/safe-html.pipe';
 import { DebugPipe } from '@pipes/debug/debug.pipe';
 import { KeysPipe } from '@pipes/keys/keys.pipe';
+import { UrlPipe } from '@pipes/url/url.pipe';
 import { TaskbarComponent } from '@components/taskbar/taskbar.component';
 import { EditorComponent } from '@components/editor/editor.component';
 import { PropertiesGlobalViewComponent } from '@components/editor/properties-area/properties-global-view/properties-global-view.component';
@@ -39,6 +40,7 @@ import { AcordionComponent } from './elements/blocks/acordion/acordion.component
         WysiwygViewComponent,
         TextViewComponent,
         SafeHtmlPipe,
+        UrlPipe,
         DebugPipe,
         KeysPipe,
         ContextMenuComponent,

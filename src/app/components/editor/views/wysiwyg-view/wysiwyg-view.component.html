@@ -1,3 +1,13 @@
+<!--<div class="js">
+    <ng-container *ngFor="let js of jsLinks">
+        <script [src]="js | url"></script>
+    </ng-container>
+</div>-->
+<div class="css">
+    <ng-container *ngFor="let css of cssLinks">
+        <link rel="stylesheet" [href]="css | url">
+    </ng-container>
+</div>
 <div #xedit [innerHTML]="renderContent | safeHtml" (click)="onclick($event)" (contextmenu)="onContextMenu($event, item)"></div>
 <context-menu #myContextMenu>
     <ng-template *ngFor="let action of contextMenuActions" contextMenuItem let-item [visible]="action.visible" [enabled]="action.enabled"

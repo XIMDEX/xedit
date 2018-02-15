@@ -7,7 +7,7 @@
                     <app-multi-input-acordion [values]="currentProperties[group]" actionText="Add new style" (changeValue)="changeStyle($event)"></app-multi-input-acordion>
                 </ng-container>
                 <ng-container *ngSwitchCase="'class'">
-                    {{attr}}
+                    {{ attr }}
                     <app-input-acordion [values]="currentProperties[group]" action-text="Add new class" (changeValue)="changeClass($event)"></app-input-acordion>
                 </ng-container>
                 <ng-container *ngSwitchDefault>

@@ -30,7 +30,7 @@ export class PropertiesLocalViewComponent implements OnInit {
                 return [];
             }
             const _value = value.split(';');
-            let result = [];
+            const result = [];
             _value.reduce((acum, val) => {
                 const pairs = val.split(':');
                 if (pairs[0] !== '') {
@@ -82,7 +82,7 @@ export class PropertiesLocalViewComponent implements OnInit {
             const json = {};
             json[property] = propertyValue;
             if (hasIn(this.defaultProperty, props)) {
-                props[this.defaultProperty].push(json)
+                props[this.defaultProperty].push(json);
                 return;
             }
             props[this.defaultProperty] = [json];
@@ -100,8 +100,7 @@ export class PropertiesLocalViewComponent implements OnInit {
     }
 
     changeClass(value) {
-        const values = value.join(" ");
-        this.changePropertyValue('class', values);
+        this.changePropertyValue('class', value.join(' '));
     }
 
     cnageProperty(value) {

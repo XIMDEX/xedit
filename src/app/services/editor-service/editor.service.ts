@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 import { clone, isNil, reduce, is, contains, hasIn } from 'ramda';
 import { Editor } from 'ng2-ace-editor/node_modules/brace';
 import { UUID } from 'angular2-uuid';
@@ -118,7 +120,7 @@ export class EditorService {
     }
 
     /**
-     * 
+     *
      */
     recoverySnapshot(key: string): void {
         this.getFileStateValue().recovery(key).then(() => {
@@ -223,7 +225,9 @@ export class EditorService {
     * @param element DomNode
     * @param path Uuid path
     */
-    static parseToNode(element, schemas) {
+    parseToNode(element) {
+
+        const file = this.getFileValue();
 
         const styles = [];
         const attributes = {};
@@ -236,7 +240,7 @@ export class EditorService {
         });
 
         try {
-            node = new Node(uuid, element, schemas, attributes);
+            node = new Node(uuid, element, attributes);
         } catch (e) {
             console.error('Invalid node');
         }

@@ -7,6 +7,7 @@ import { isNil, equals, is, reduce, contains, hasIn, union } from 'ramda';
 import { XeditMapper } from '@models/schema/xedit-mapper';
 import { Converters } from '@utils/converters';
 import { Node } from '@models/node';
+import { Xedit } from '../xedit';
 
 export class FileHistory {
 
@@ -46,7 +47,6 @@ export class FileHistory {
 
 export class File extends History {
 
-    private schemas: Object;
     private css: Array<string>;
     private js: Array<string>;
     private metas: Array<Object>;
@@ -62,25 +62,27 @@ export class File extends History {
         this.css = [];
         this.js = [];
 
-        this.schemas = {};
+        const schemas = {};
         if (!isNil(json.nodes)) {
             Object.keys(json.nodes).forEach(nodeKey => {
                 const node = json.nodes[nodeKey];
-                this.schemas[nodeKey] = node.schema;
+                schemas[nodeKey] = node.schema;
                 this.css = union(this.css, hasIn('css', node) ? node.css : []);
                 this.js = union(this.js, hasIn('js', node) ? node.js : []);
             });
         }
-    }
 
+        Xedit.setConf('schemas', schemas);
+        Xedit.setConf('resourceUrl', json.resourceUrl);
+    }
 
     /**************** Getters and setter ************************/
-    getSchemas() {
-        return this.schemas;
+    getCss() {
+        return this.css;
     }
 
-    getSchema(nodeKey) {
-        return this.schemas[nodeKey];
+    getJs() {
+        return this.js;
     }
 
     getMetas(): Array<Object> {

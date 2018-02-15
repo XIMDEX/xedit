@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { reduce, clone, has } from 'ramda';
+import { reduce, clone, has, isNil } from 'ramda';
 
 import { File } from '@models/file';
 import { Node } from '@models/node';
@@ -28,9 +28,11 @@ export class PropertiesGlobalViewComponent implements OnInit, OnDestroy {
             this.metas = [];
             if (file != null) {
                 for (const meta in file.getMetas()) {
-                    const json = {};
-                    json[meta] = file.getMeta(meta);
-                    this.metas.push(json);
+                    if (!isNil(file.getMeta(meta))) {
+                        const json = {};
+                        json[meta] = file.getMeta(meta);
+                        this.metas.push(json);
+                    }
                 }
             }
         });
