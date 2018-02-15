@@ -31,7 +31,7 @@ export class WysiwygHandler {
 
     static handlers = {
         'date': WysiwygHandler.initDatePicker,
-        'body': WysiwygHandler.initTinymce
+        'text': WysiwygHandler.initTinymce
     };
 
     static executeHandler(type: string, args: any, defaultMethod: Function = function () { }) {
@@ -165,6 +165,9 @@ export class WysiwygHandler {
                     element.html(input.val());
                     args.service.save(args.node.getTarget(), element.html(), 'Change section date');
                     args.service.getFileStateValue().snapshot();
+                });
+                input.on('changeDate', function () {
+                    input.datepicker('hide');
                 });
                 input.datepicker('show');
             }

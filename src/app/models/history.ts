@@ -15,7 +15,7 @@ export class History {
     private sc;
 
     // Contructor
-    constructor(initState: any, maxStates: number = 50, maxSnapshots = 5) {
+    constructor(initState: any, maxStates: number = 50, maxSnapshots = 10) {
         this.pos = 0;
         this.states = new Array;
         this.setMaxStates(maxStates);

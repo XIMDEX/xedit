@@ -2,7 +2,7 @@ import { UUID } from 'angular2-uuid';
 import { History } from './history';
 import { HTMLParser } from '@utils/htmlparser';
 import { Serializable } from './interfaces/Serializable';
-import { isNil, equals, is, reduce, contains } from 'ramda';
+import { isNil, equals, is, reduce, contains, hasIn, union } from 'ramda';
 
 import { XeditMapper } from '@models/schema/xedit-mapper';
 import { Converters } from '@utils/converters';
@@ -47,6 +47,8 @@ export class FileHistory {
 export class File extends History {
 
     private schemas: Object;
+    private css: Array<string>;
+    private js: Array<string>;
     private metas: Array<Object>;
 
     constructor(json = null) {
@@ -57,11 +59,16 @@ export class File extends History {
 
         super(File.createContent(json.nodes));
         this.metas = json.metas;
+        this.css = [];
+        this.js = [];
 
         this.schemas = {};
         if (!isNil(json.nodes)) {
             Object.keys(json.nodes).forEach(nodeKey => {
-                this.schemas[nodeKey] = json.nodes[nodeKey].schema;
+                const node = json.nodes[nodeKey];
+                this.schemas[nodeKey] = node.schema;
+                this.css = union(this.css, hasIn('css', node) ? node.css : []);
+                this.js = union(this.js, hasIn('js', node) ? node.js : []);
             });
         }
     }

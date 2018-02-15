@@ -114,29 +114,31 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         this.selectNode.emit(elementKey);
     }
 
-    setSelection(curretNode) {
+    setSelection(currentNode) {
 
         if (!isNil(this.currentNode)) {
             this.clearAttributes();
         }
 
-        this.currentNode = curretNode;
+        this.currentNode = currentNode;
 
-        // Add selected class
-        const name = Node.getSectionLang(curretNode.getSchema(), 'es');
-        this.currentNode.getSection().setAttribute(XeditMapper.ATTR_SELECTED, name);
+        if (!isNil(currentNode.getSchema())) {
+            // Add selected class
+            const name = Node.getSectionLang(this.currentNode.getSchema(), 'es');
+            this.currentNode.getSection().setAttribute(XeditMapper.ATTR_SELECTED, name);
 
-        // Add selected class
-        this.currentNode.getTarget().setAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED, this.currentNode.getTarget().nodeName);
+            // Add selected class
+            this.currentNode.getTarget().setAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED, this.currentNode.getTarget().nodeName);
 
-        if (!isNil(this.currentNode.getSection())) {
-            this.applyHandler(this.currentNode);
+            if (!isNil(this.currentNode.getSection())) {
+                this.applyHandler(this.currentNode);
+            }
         }
     }
 
 
     applyHandler(currentNode) {
-        const sectionType = currentNode.getSection().getAttribute(XeditMapper.TAG_SECTION_TYPE);
+        const sectionType = currentNode.getSchema().type;
 
         const args = { node: currentNode, service: this._editorService, schemas: this.schemas };
         WysiwygHandler.executeHandler(sectionType, args);
