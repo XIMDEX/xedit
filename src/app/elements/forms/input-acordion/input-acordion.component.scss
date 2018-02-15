@@ -1,0 +1,48 @@
+@import '~sass/variables';
+
+:host {
+    display: flex;
+    
+    > div {
+        flex-grow: 1;
+        background-color: $white-light;
+
+        > .xe-acordion-title {
+
+        }
+
+        > .xe-acordion-element {
+            display: flex;
+            flex-direction: column;
+
+            > div {
+                display: flex;
+                flex-direction: row;
+
+                > input {
+                    flex-grow: 2;
+                    text-indent: 5px;
+                }
+
+                > button {
+                    width: 16px;
+                    height: 16px;
+                    padding: 0;
+                    line-height: 16px;
+                    font-size: 12px;
+                    text-align: center;
+                    border-radius: 100%;
+                    background-color: $red-light;
+                    color: $white-light;
+                    border:0;
+                    margin: auto 0 auto 5px;
+                    transition: background-color 0.3s ease-in-out;
+
+                    &:hover {
+                        background-color: $red-warm;
+                    }
+                }
+            }
+        }
+    }
+}

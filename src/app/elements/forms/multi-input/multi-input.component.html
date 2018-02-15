@@ -5,8 +5,8 @@
         </label>
     </ng-template>
     <ng-template #name>
-        <input type="text" [(ngModel)]="attrName" (change)="setAttrName(attrName)">
+        <input type="text" [value]="isEmptyValue(attrName)" (change)="setAttrName($event)">
     </ng-template>
     <span>:</span>
-    <input type="text" [name]="attrName" [(ngModel)]="attrValue" (change)="changeValues(attrName, attrValue)">
+    <input type="text" [name]="attrName" [value]="isEmptyValue(attrValue)" (change)="changeValues($event)">
 </div>

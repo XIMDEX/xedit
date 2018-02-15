@@ -1,8 +1,10 @@
 @import '~sass/variables';
 
 :host {
+    display: flex;
     flex-grow: 1;
     max-width: 300px;
     min-width: 300px;
-    background-color: $white-light;
+    flex-direction: column;
+    background-color: $white-light;    
 }

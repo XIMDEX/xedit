@@ -1,10 +1,20 @@
 @import '~sass/variables';
 
 :host {
-    width: 300px;
     > div{
         display: flex;
         flex-direction: row;
+        font-size: 14px;
+
+        > label {
+            max-width: 100px;
+        }
+
+        > input {
+            min-width: 100px;
+            flex-grow: 1;
+            text-indent: 5px;
+        }
 
         > * {
             margin: auto 5px auto 0;

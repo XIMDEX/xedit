@@ -27,6 +27,7 @@ import { PropertiesAreaComponent } from '@components/editor/properties-area/prop
 import { MultiInputComponent } from '@elements/forms/multi-input/multi-input.component';
 import { MultiInputAcordionComponent } from './elements/forms/multi-input-acordion/multi-input-acordion.component';
 import { InputAcordionComponent } from './elements/forms/input-acordion/input-acordion.component';
+import { AcordionComponent } from './elements/blocks/acordion/acordion.component';
 
 @NgModule({
     declarations: [
@@ -45,7 +46,8 @@ import { InputAcordionComponent } from './elements/forms/input-acordion/input-ac
         PropertiesAreaComponent,
         MultiInputComponent,
         MultiInputAcordionComponent,
-        InputAcordionComponent
+        InputAcordionComponent,
+        AcordionComponent
     ],
     imports: [
         /* 3rd party components */

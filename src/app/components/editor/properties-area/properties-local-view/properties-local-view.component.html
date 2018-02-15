@@ -1,23 +1,19 @@
-<div id="x-edit-properties-view">
-    View Properties
-    <nav *ngIf="currentNode != null">
-        <p> Tag: {{ currentNode.name }}</p>
-        <h3>Properties</h3>
-        <ul *ngIf="currentNode.attributes != null">
-            <ng-container *ngFor="let attr of currentProperties">
-                <ng-container [ngSwitch]="attr.name">
-                    <li *ngSwitchCase="'style'">
-                        <app-multi-input-acordion [title]="attr.name" [values]="attr.value" (changeValue)="changeStyle($event)"></app-multi-input-acordion>
-                    </li>
-                    <li *ngSwitchCase="'class'">
-                        <app-input-acordion [title]="attr.name" [values]="attr.value" action-text="Add new class" (changeValue)="changeClass($event)"></app-input-acordion>
-                    </li>
-                    <li *ngSwitchDefault>
-                        <label>{{ attr.name }}</label>
-                        <input type="text" [name]="attr.name" [(ngModel)]="attr.value" (change)="changePropertyValue(attr.name, attr.value)" />
-                    </li>
+<ng-template [ngIf]="currentNode != null">
+    <h3> Tag: {{ currentNode.name }}</h3>
+    <ng-container *ngFor="let group of currentProperties | keys">
+        <app-acordion [title]='group' [class]="'form'">
+            <ng-container [ngSwitch]="group">
+                <ng-container *ngSwitchCase="'style'">
+                    <app-multi-input-acordion [values]="currentProperties[group]" actionText="Add new style" (changeValue)="changeStyle($event)"></app-multi-input-acordion>
+                </ng-container>
+                <ng-container *ngSwitchCase="'class'">
+                    {{attr}}
+                    <app-input-acordion [values]="currentProperties[group]" action-text="Add new class" (changeValue)="changeClass($event)"></app-input-acordion>
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                    <app-multi-input *ngFor="let value of currentProperties[group]" [data]="value" (changeValue)="cnageProperty($event)"></app-multi-input>
                 </ng-container>
             </ng-container>
-        </ul>
-    </nav>
-</div>
+        </app-acordion>
+    </ng-container>
+</ng-template>

@@ -25,6 +25,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
     private renderContent: string;
     private subscribeFile;
+    private subscribeFileState;
     private subscribeCN;
     private subscribeCNM;
     public contextMenuActions: Array<any> = [];
@@ -42,6 +43,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.subscribeFile.unsubscribe();
+        this.subscribeFileState.unsubscribe();
         this.subscribeCN.unsubscribe();
         this.subscribeCNM.unsubscribe();
         this._editorService.setCurrentNode(null);
@@ -55,12 +57,26 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
      * Config component
      */
     config() {
+
         // Suscribe to file changes
         this.subscribeFile = this._editorService.getFile().subscribe(file => {
             // Parse content to html
             this.renderContent = this.parseContentToWysiwygEditor(file.getState().getContent());
             WysiwygHandler.clearTinymce();
             this.schemas = file.getSchemas();
+        });
+
+        // Suscribe to file changes
+        this.subscribeFileState = this._editorService.getFileState().subscribe(file => {
+            // Parse content to html
+            // TODO FIX atovar
+            const xedit = this.xedit.nativeElement;
+            const links = xedit.getElementsByTagName('a');
+            if (!isNil(links)) {
+                for (let i = 0; i < links.length; i++) {
+                    links[i].onclick = (evt) => { return false };
+                }
+            }
         });
 
         // Suscribe to node change

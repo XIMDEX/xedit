@@ -1,3 +1,4 @@
+import { keys } from 'ramda';
 import { Pipe, PipeTransform } from '@angular/core';
 
 import { Node } from '@models/node';
@@ -7,11 +8,12 @@ import { Node } from '@models/node';
 })
 export class KeysPipe implements PipeTransform {
 
-  transform(node: Node): any {
-    const attributes = [];
+  transform(value, args: string[]): any {
+    /*const attributes = [];
     node.getAvailableAttributes().forEach(element => {
       attributes.push({ name: element, value: node.getAttribute(element, '') });
     });
-    return attributes;
+    return attributes;*/
+    return keys(value);
   }
 }

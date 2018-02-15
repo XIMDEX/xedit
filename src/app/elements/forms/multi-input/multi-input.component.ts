@@ -28,18 +28,23 @@ export class MultiInputComponent implements OnInit {
         this.hasAttrNameValue = this.hasAttrName();
     }
 
+    isEmptyValue(data) {
+        return isNil(data) || isEmpty(data) ? '' : data;
+    }
 
     hasAttrName() {
         return !isNil(this.attrName) && !isEmpty(this.attrName);
     }
 
-    setAttrName() {
+    setAttrName(evt) {
+        this.attrName = evt.target.value;
         this.hasAttrNameValue = this.hasAttrName();
     }
 
-    changeValues(index: string, value: string) {
+    changeValues(evt) {
+        this.attrValue = evt.target.value;
         const json = {};
-        json[index] = value;
+        json[this.attrName] = this.attrValue;
         this.changeValue.emit(json);
     }
 

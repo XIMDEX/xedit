@@ -16,9 +16,9 @@ export class PropertiesLocalViewComponent implements OnInit {
 
     private currentNode: Node;
     private availableAttributes: any;
-    private currentProperties: Array<Object>;
+    private currentProperties: Object;
     private file: File;
-    private propertiesGroups: Object = {
+    private propertiesGroupsActions: Object = {
         class: (value: string) => {
             if (isNil(value) || isEmpty(value)) {
                 return [];
@@ -44,6 +44,12 @@ export class PropertiesLocalViewComponent implements OnInit {
             return result;
         }
     };
+    private defaultProperty: string = 'attributes';
+    private propertiesGroups: Array<string> = [
+        'style',
+        'class',
+        this.defaultProperty
+    ]
 
     constructor(private _editorService: EditorService) { }
 
@@ -60,19 +66,28 @@ export class PropertiesLocalViewComponent implements OnInit {
         });
     }
 
-    getProperties(): Array<Object> {
-        const props = [];
-        this.availableAttributes.map(attr => {
-            let attrValue = this.currentNode.getAttribute(attr);
-            if (hasIn(attr, this.propertiesGroups)) {
-                attrValue = this.propertiesGroups[attr](attrValue);
+    getProperties(): Object {
+        const props = {};
+        this.availableAttributes.map(property => {
+            let propertyValue = this.currentNode.getAttribute(property);
+            if (hasIn(property, this.propertiesGroupsActions)) {
+                propertyValue = this.propertiesGroupsActions[property](propertyValue);
             }
-            props.push({
-                name: attr,
-                value: attrValue
-            });
-        });
 
+            if (this.propertiesGroups.indexOf(property) >= 0) {
+                props[property] = propertyValue;
+                return;
+            }
+
+            const json = {};
+            json[property] = propertyValue;
+            if (hasIn(this.defaultProperty, props)) {
+                props[this.defaultProperty].push(json)
+                return;
+            }
+            props[this.defaultProperty] = [json];
+        });
+        console.log(props);
         return props;
     }
 
@@ -87,6 +102,11 @@ export class PropertiesLocalViewComponent implements OnInit {
     changeClass(value) {
         const values = value.join(" ");
         this.changePropertyValue('class', values);
+    }
+
+    cnageProperty(value) {
+        const property = keys(value)[0];
+        this.changePropertyValue(property, value[property]);
     }
 
     changePropertyValue(property, value) {

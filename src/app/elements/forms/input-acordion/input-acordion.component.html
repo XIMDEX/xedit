@@ -1,16 +1,19 @@
 <div>
-    <section class="xe-acordion-title">{{title}}</section>
-    <section>
-        values: {{ values.length }}
-        <ng-container *ngFor="let value of values; let i = index">
-            <input type="text" [value]="value" (change)="updateElement($event, i)">
-            <button (click)="removeElement(i)">
-                <i class="fas fa-minus"></i>
-            </button>
-        </ng-container>
+    <section class="xe-acordion-title">
+        <span *ngIf="title !== ''">{{title}}</span>
         <button (click)="addElement()">
             {{actionText}}
             <i class="fas fa-plus"></i>
         </button>
+    </section>
+    <section class="xe-acordion-element">
+        <ng-container *ngFor="let value of values; let i = index">
+            <div>
+                <input type="text" [value]="value" (change)="updateElement($event, i)">
+                <button (click)="removeElement(i)">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </ng-container>
     </section>
 </div>

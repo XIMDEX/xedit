@@ -1,0 +1,34 @@
+@import '~sass/variables';
+
+:host {
+    flex-grow: 1;
+
+    > section {
+        display: flex;
+        flex-grow: 1;
+        flex-direction: column;
+        margin: 20px 10px auto 10px;
+
+        > h2 {
+            margin: 0;
+            font-size: 16px;
+            text-align: left;
+            padding: 7px 10px;
+            color: $white-light;
+            background-color: $green-dark;
+            @include box-shadow(bottom, 0.25);
+            position: relative;
+            z-index: 3;
+        }
+
+        > div {
+            $margin-sides: 10px;
+
+            background-color: $white-light;
+            @include box-shadow(bottom, 0.25);
+            position: relative;
+            padding: 5px $margin-sides;
+            z-index: 2;
+        }
+    }
+}

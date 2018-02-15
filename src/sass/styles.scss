@@ -35,3 +35,24 @@ body{
     color: white !important;
     font-size: 14px !important;
 }
+
+app-acordion {
+    .app-acordion {
+        .form {
+            > h3 {
+                font-size: 14px;
+                text-align: left;
+                margin: 5px 0 10px 0;
+            }
+            > ul {
+                padding: 0;
+                margin: 0;
+                list-style: none;
+
+                > li {
+                    padding: 5px 0;
+                }
+            }
+        }
+    }
+}

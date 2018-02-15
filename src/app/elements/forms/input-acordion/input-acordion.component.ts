@@ -8,7 +8,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class InputAcordionComponent implements OnInit {
 
-    @Input('title') title: string;
+    @Input('title') title: string = '';
     @Input('action-text') actionText: string;
     @Input('values') values: Array<string>;
 
@@ -17,6 +17,7 @@ export class InputAcordionComponent implements OnInit {
     constructor() { }
 
     ngOnInit() {
+        console.log(this.values, typeof this.values);
     }
 
     removeElement(index) {
