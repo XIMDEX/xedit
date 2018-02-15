@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import url('https://fonts.googleapis.com/css?family=Raleway:300,700');
+@import '~sass/fonts/lato';
 @import url('https://use.fontawesome.com/releases/v5.0.6/css/all.css');
 @import '~sass/mixins';
 
@@ -22,3 +22,12 @@ $red-light: #db4949;
 $taskbar-height: 46px;
 $tabs-height: 35px;
 $tabs-height-small: 30px;
+
+$font-family: 'Lato', sans-serif;
+
+$font-size-small: 12px;
+$font-size-default: 14px;
+
+$icon-size-default: 18px;
+
+$font-default: normal $font-size-default $font-family;
