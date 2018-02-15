@@ -8,7 +8,11 @@
         background-color: $white-light;
 
         > .xe-acordion-title {
-
+            display: flex;
+            
+            > button {
+                flex-grow: 2;
+            }
         }
 
         > .xe-acordion-element {

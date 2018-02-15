@@ -8,7 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class AcordionComponent implements OnInit {
 
   @Input('title') title: string;
-  @Input('class') className: string;
+  @Input('className') className: string;
 
   constructor() { }
 

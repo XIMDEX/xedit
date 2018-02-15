@@ -12,6 +12,9 @@
             display: flex;
             flex-direction: row;
             background-color: $white-dark;
+            font: $font-size-default;
+            text-transform: uppercase;
+            font-size: $font-size-small;
             @include box-shadow(bottom, 0.25);
 
             > div {

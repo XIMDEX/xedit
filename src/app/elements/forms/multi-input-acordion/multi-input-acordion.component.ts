@@ -8,7 +8,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class MultiInputAcordionComponent implements OnInit {
 
-    @Input('title') title: string;
+    @Input('title') title: string = '';
+    @Input('actionText') actionText: string;
     @Input('values') values: Array<Object>;
 
     @Output() changeValue: EventEmitter<any> = new EventEmitter();

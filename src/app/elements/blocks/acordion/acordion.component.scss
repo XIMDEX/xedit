@@ -11,9 +11,10 @@
 
         > h2 {
             margin: 0;
-            font-size: 16px;
+            font: $font-default;
+            text-transform: uppercase;
             text-align: left;
-            padding: 7px 10px;
+            padding: 5px 10px;
             color: $white-light;
             background-color: $green-dark;
             @include box-shadow(bottom, 0.25);
@@ -24,6 +25,7 @@
         > div {
             $margin-sides: 10px;
 
+            font: $font-default;
             background-color: $white-light;
             @include box-shadow(bottom, 0.25);
             position: relative;

@@ -9,7 +9,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 export class InputAcordionComponent implements OnInit {
 
     @Input('title') title: String = '';
-    @Input('action-text') actionText: string;
+    @Input('actionText') actionText: string;
     @Input('values') values: Array<string>;
 
     @Output() changeValue: EventEmitter<any> = new EventEmitter();

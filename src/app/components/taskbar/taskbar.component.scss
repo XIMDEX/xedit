@@ -7,6 +7,7 @@
     > header{
         background-color: $green-dark;
         position: relative;
+        font: $font-default;
 
         > nav.taskbar{
             position: relative;
@@ -38,7 +39,7 @@
                     cursor: pointer;
 
                     > i{
-                        font-size: 18px;
+                        font-size: $icon-size-default;
                     }
 
                     &.separator {
@@ -110,6 +111,8 @@
                     padding: 0 15px 5px 15px;
                     border-bottom: 2px solid transparent;
                     color: $white-darker;
+                    text-transform: uppercase;
+                    font-size: $font-size-small;
                     transition: color 0.3s ease-in-out, border-bottom-color 0.3s ease-in-out;
                     cursor: pointer;
 

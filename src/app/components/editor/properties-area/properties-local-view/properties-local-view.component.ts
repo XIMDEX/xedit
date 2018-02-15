@@ -44,14 +44,17 @@ export class PropertiesLocalViewComponent implements OnInit {
             return result;
         }
     };
-    private defaultProperty: string = 'attributes';
-    private propertiesGroups: Array<string> = [
-        'style',
-        'class',
-        this.defaultProperty
-    ]
+    private defaultProperty: string;
+    private propertiesGroups: Array<string>;
 
-    constructor(private _editorService: EditorService) { }
+    constructor(private _editorService: EditorService) {
+        this.defaultProperty = 'attributes';
+        this.propertiesGroups = [
+            'style',
+            'class',
+            this.defaultProperty
+        ];
+    }
 
     ngOnInit() {
         this._editorService.getFileState().subscribe(file => {
@@ -87,16 +90,15 @@ export class PropertiesLocalViewComponent implements OnInit {
             }
             props[this.defaultProperty] = [json];
         });
-        console.log(props);
         return props;
     }
 
     changeStyle(value) {
-        const values = value.map((data) => {
+        const result = value.map((data) => {
             const key = keys(data)[0];
             return `${key}:${data[key]};`;
         });
-        this.changePropertyValue('style', values.join(' '));
+        this.changePropertyValue('style', result.join(' '));
     }
 
     changeClass(value) {
