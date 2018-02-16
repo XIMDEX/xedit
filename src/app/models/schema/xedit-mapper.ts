@@ -31,7 +31,14 @@ export class XeditMapper {
             filter_attributes: ['src'],
             attributes: {
                 accept: ['xe_img'],
-                reject: ['title']
+                reject: []
+            }
+        },
+        img: {
+            filter_attributes: [],
+            attributes: {
+                accept: ['src'],
+                reject: []
             }
         },
         '*': {

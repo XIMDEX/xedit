@@ -118,8 +118,19 @@ export class Node {
         return type;
     }
 
+    /**
+     * 
+     */
     getAvailableAttributes() {
-        return XeditMapper.getAvailableAttribute(this.name);
+        let attrName = this.name
+
+        if (this.getAttribute(XeditMapper.TAG_SECTION_TYPE, null) != null) {
+            attrName = this.getAttribute(XeditMapper.TAG_SECTION_TYPE);
+        } else if (this.getAttribute(XeditMapper.TAG_IMAGE, null) != null) {
+            attrName = XeditMapper.TAG_IMAGE;
+        }
+
+        return XeditMapper.getAvailableAttribute(attrName);
     }
 
     /*********************** STATIC METHODS ***************************************/
