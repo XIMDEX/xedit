@@ -1,0 +1,4 @@
+<button (click)="onClick($event)">
+    {{text}}
+    <i [ngClass]="['icon', icon]" *ngIf="icon !== ''"></i>
+</button>

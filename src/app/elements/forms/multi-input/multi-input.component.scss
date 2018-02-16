@@ -1,6 +1,8 @@
 @import '~sass/variables';
 
 :host {
+    width: 0;
+    
     > div{
         display: flex;
         flex-direction: row;

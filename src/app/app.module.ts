@@ -29,6 +29,7 @@ import { MultiInputComponent } from '@elements/forms/multi-input/multi-input.com
 import { MultiInputAcordionComponent } from './elements/forms/multi-input-acordion/multi-input-acordion.component';
 import { InputAcordionComponent } from './elements/forms/input-acordion/input-acordion.component';
 import { AcordionComponent } from './elements/blocks/acordion/acordion.component';
+import { ButtonComponent } from './elements/forms/button/button.component';
 
 @NgModule({
     declarations: [
@@ -49,7 +50,8 @@ import { AcordionComponent } from './elements/blocks/acordion/acordion.component
         MultiInputComponent,
         MultiInputAcordionComponent,
         InputAcordionComponent,
-        AcordionComponent
+        AcordionComponent,
+        ButtonComponent
     ],
     imports: [
         /* 3rd party components */

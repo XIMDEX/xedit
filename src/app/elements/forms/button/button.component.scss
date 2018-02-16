@@ -1,0 +1,27 @@
+@import '~sass/variables';
+
+:host {
+    > button {
+        width: 100%;
+        font: $font-default;
+        border: none;
+        border-radius: 0px;
+        padding: 5px 10px;
+        text-align: center;
+        color: $white-light; 
+        background-color: $blue-light;
+        transition: background-color 0.3s ease-in-out;
+
+        > .icon {
+            padding-left: 5px;
+        }
+
+        &:hover {
+            background-color: $blue-lighter;
+        }
+
+        &:active {
+            background-color: $blue-dark;
+        }
+    }
+}
