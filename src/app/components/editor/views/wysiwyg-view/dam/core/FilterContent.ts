@@ -4,7 +4,7 @@
  */
 
 const isDamNode = function (node) {
-    return !node.attr('xe_img') && node.attr('xe_uuid');
+    return node.name.toLowerCase() !== 'img';
 };
 
 const setContentEditable = function (state) {

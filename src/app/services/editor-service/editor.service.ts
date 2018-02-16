@@ -227,8 +227,6 @@ export class EditorService {
     */
     parseToNode(element) {
 
-        const file = this.getFileValue();
-
         const styles = [];
         const attributes = {};
         let node = null;

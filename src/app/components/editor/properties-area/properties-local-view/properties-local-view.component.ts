@@ -31,7 +31,7 @@ export class PropertiesLocalViewComponent implements OnInit {
             }
             const _value = value.split(';');
             const result = [];
-            _value.reduce((acum, val) => {
+            return _value.reduce((acum, val) => {
                 const pairs = val.split(':');
                 if (pairs[0] !== '') {
                     const json = {};
@@ -40,8 +40,6 @@ export class PropertiesLocalViewComponent implements OnInit {
                 }
                 return result;
             }, result);
-
-            return result;
         }
     };
     private defaultProperty: string;

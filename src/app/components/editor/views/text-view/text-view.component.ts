@@ -80,7 +80,7 @@ export class TextViewComponent implements OnInit, AfterViewInit, OnDestroy {
       editorNodes.push({
         'id': property,
         'title': node.title,
-        'renderContent': is(String, node.content) ? node.content : pretty(Converters.json2html(node.content, false)),
+        'renderContent': is(String, node.content) ? node.content : pretty(Converters.json2html(node.content, false, false)),
         'editor': null
       });
     });

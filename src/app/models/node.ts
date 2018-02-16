@@ -29,7 +29,7 @@ export class Node {
         }
 
         this.uuid = uuid;
-        this.name = target.tagName;
+        this.name = target.tagName.toLowerCase();
         this.target = target;
         this.section = Node.getContainer(this.target);
         this.uuidSectionsPath = Node.getContextPath(this.target, XeditMapper.TAG_EDITOR, XeditMapper.TAG_UUID,
@@ -110,24 +110,16 @@ export class Node {
 
     getType() {
         let type = Node.TYPE_OTHER;
-        if (equals('img', this.name.toLowerCase())) {
+        if (equals('img', this.name)) {
             type = Node.TYPE_IMAGE;
-        } else if (equals('video', this.name.toLowerCase())) {
+        } else if (equals('video', this.name)) {
             type = Node.TYPE_VIDEO;
         }
         return type;
     }
 
     getAvailableAttributes() {
-        let attributes = [];
-        if (equals(this.getType(), Node.TYPE_IMAGE) && !isNil(this.getAttribute(XeditMapper.TAG_IMAGE))) {
-            attributes = [XeditMapper.TAG_IMAGE, 'width', 'height'];
-        } else if (equals(this.getType(), Node.TYPE_IMAGE)) {
-            attributes = ['src', 'alt', 'style', 'xe_img'];
-        } else {
-            attributes = ['id', 'class', 'style'];
-        }
-        return attributes;
+        return XeditMapper.getAvailableAttribute(this.name);
     }
 
     /*********************** STATIC METHODS ***************************************/

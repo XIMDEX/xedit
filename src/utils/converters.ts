@@ -1,14 +1,13 @@
-import { isNil, contains, equals } from 'ramda';
+import { isNil, contains, equals, hasIn } from 'ramda';
 import { UUID } from 'angular2-uuid';
 import { Xedit } from '../app/xedit';
 
 import { XeditMapper } from '@models/schema/xedit-mapper';
 import { HTMLParser } from '@utils/htmlparser';
+import { isArray } from 'util';
 
 
 export class Converters {
-
-    private static requiredXeditAttributes = [XeditMapper.TAG_SECTION_TYPE, XeditMapper.TAG_IMAGE];
 
     private static removeDOCTYPE(html) {
         return html
@@ -52,7 +51,7 @@ export class Converters {
                 if (attrs.length !== 0) {
                     node.attr = attrs
                         // filter xe_* attributes except if its are required
-                        .filter((attr) => isNil(attr.name.match('xe_')) || contains(attr.name, Converters.requiredXeditAttributes))
+                        .filter((attr) => Converters.filter(attr.name, attrs))
                         .reduce(function (pre, attr) {
                             const name = attr.name;
                             let value = attr.value;
@@ -143,12 +142,44 @@ export class Converters {
     }
 
     /**
+     * Filter attribute
+     * 
+     * @param attr 
+     * @param attrs
+     * @return true if the attribute is valid, otherwise the attribute should be filter
+     */
+    private static filter(attr, attrs) {
+        return (contains(attr, XeditMapper.requiredXeditAttributes) || (isNil(attr.match('xe_')) && Converters.filterAttribute(attr, attrs))) ?
+            true : false;
+    }
+
+    /**
+     * Filter attribute if attrs has a `xe_` attribute and attr exist in a filter_attribute
+     * @param attr 
+     * @param attrs [{name:value},{name2:value2}]  || [name, name2]
+     * 
+     * @return true if the attribute is valid, otherwise the attribute should be filter
+     */
+    private static filterAttribute(attr, attrs) {
+        attrs = isArray(attrs) ? attrs : Object.keys(attrs);
+        const xeditAttribute = attrs.reduce((acc, value) => {
+            const val = (typeof value === 'string') ? value : value.name;
+            return contains(val, XeditMapper.requiredXeditAttributes) ? val : acc
+        }, null);
+
+        let settings = !isNil(xeditAttribute) && hasIn(xeditAttribute, XeditMapper.ATTRIBUTES) && hasIn('filter_attributes', XeditMapper.ATTRIBUTES[xeditAttribute]) ?
+            XeditMapper.ATTRIBUTES[xeditAttribute]['filter_attributes'] : []
+
+        return !contains(attr, settings);
+    }
+
+    /**
      * Convert json to html
      *
      * @param json Json object with content
      * @param showIds If true added attribute id in tags
      */
-    static json2html(json, showIds = true) {
+    static json2html(json, showIds = true, processXedit = true) {
 
         // Empty Elements - HTML 4.01
         const empty = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param', 'embed'];
@@ -156,18 +187,20 @@ export class Converters {
         let child = '';
         if (json.child) {
             child = Object.keys(json.child).map(function (uuid: string) {
-                return Converters.json2html(json.child[uuid], showIds);
+                return Converters.json2html(json.child[uuid], showIds, processXedit);
             }).join('');
         }
 
         let attr = '';
         if (json.attr) {
-            attr = Object.keys(json.attr).map(function (key) {
+            attr = Object.keys(json.attr).filter((val) => {
+                return Converters.filter(val, json.attr);
+            }).map(function (key) {
                 let value = json.attr[key];
                 if (Array.isArray(value)) {
                     value = value.join(' ');
                 }
-                return Converters.parseAttributes(key, value);
+                return Converters.parseAttributes(key, value, processXedit);
             }).join(' ');
             if (attr !== '') {
                 attr = ' ' + attr;
@@ -196,9 +229,9 @@ export class Converters {
         }
     }
 
-    private static parseAttributes(key, value) {
+    private static parseAttributes(key, value, processXedit) {
         let extraData = '';
-        if (contains(key, Converters.requiredXeditAttributes)) {
+        if (processXedit && contains(key, XeditMapper.requiredXeditAttributes)) {
             if (equals(key, XeditMapper.TAG_IMAGE)) {
                 extraData = `src='${Xedit.getResourceUrl()}/${value}'`;
             }
