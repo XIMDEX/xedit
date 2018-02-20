@@ -8,7 +8,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class MultiInputAcordionComponent implements OnInit {
 
-    @Input('title') title: string = '';
+    @Input('title') title: string;
     @Input('actionText') actionText: string;
     @Input('values') values: Array<Object>;
 
@@ -17,13 +17,15 @@ export class MultiInputAcordionComponent implements OnInit {
     private _values: Object = {};
 
 
-    constructor() { }
+    constructor() {
+        this.title = '';
+    }
 
     ngOnInit() {
-        this.values.reduce((acc, value) => {
+        this._values = this.values.reduce((acc, value) => {
             const key = keys(value)[0];
-            this._values[key] = value[key];
-            return this._values;
+            acc[key] = value[key];
+            return acc;
         }, this._values);
 
     }

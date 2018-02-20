@@ -18,7 +18,7 @@ export class XeditMapper {
     static requiredXeditAttributes = [XeditMapper.TAG_SECTION_TYPE, XeditMapper.TAG_IMAGE];
 
 
-    //ATTRIBUTES
+    // ATTRIBUTES
     static ATTRIBUTES = {
         xe_section: {
             filter_attributes: [],
@@ -46,17 +46,17 @@ export class XeditMapper {
                 accept: ['id', 'class', 'style', 'title']
             }
         }
-    }
+    };
 
     /************************* PUBLIC METHODS *************************/
     public static getAvailableAttribute(name: string): Array<string> {
         let attributes = XeditMapper.ATTRIBUTES['*'].attributes.accept;
         if (hasIn(name, XeditMapper.ATTRIBUTES) && hasIn('attributes', XeditMapper.ATTRIBUTES[name])) {
             if (hasIn('accept', XeditMapper.ATTRIBUTES[name].attributes)) {
-                attributes = union(attributes, XeditMapper.ATTRIBUTES[name].attributes.accept)
+                attributes = union(attributes, XeditMapper.ATTRIBUTES[name].attributes.accept);
             }
             if (hasIn('reject', XeditMapper.ATTRIBUTES[name].attributes)) {
-                attributes = difference(attributes, XeditMapper.ATTRIBUTES[name].attributes.reject)
+                attributes = difference(attributes, XeditMapper.ATTRIBUTES[name].attributes.reject);
             }
         }
 

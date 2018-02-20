@@ -7,8 +7,16 @@ import 'tinymce/themes/modern';
 import 'tinymce/plugins/table';
 import 'tinymce/plugins/image';
 import 'tinymce/plugins/link';
-import 'tinymce/plugins/paste';
-
+import 'tinymce/plugins/searchreplace';
+import 'tinymce/plugins/autolink';
+import 'tinymce/plugins/media';
+import 'tinymce/plugins/hr';
+import 'tinymce/plugins/anchor';
+import 'tinymce/plugins/advlist';
+import 'tinymce/plugins/lists';
+import 'tinymce/plugins/textcolor';
+import 'tinymce/plugins/imagetools';
+import 'tinymce/plugins/colorpicker';
 
 import Commands from './dam/api/Commands';
 import FilterContent from './dam/core/FilterContent';
@@ -18,14 +26,15 @@ declare let tinymce: any;
 
 // DATEPICKER
 import 'bootstrap-datepicker';
-import { isNil, equals } from 'ramda';
+import { isNil, equals, hasIn, isEmpty, join, union } from 'ramda';
 import { state } from '@angular/core';
 import { WysiwygViewComponent } from './wysiwyg-view.component';
 import { XeditMapper } from '@models/schema/xedit-mapper';
 import { File } from '@models/file';
 import { EditorService } from '@services/editor-service/editor.service';
 import { Converters } from '@utils/converters';
-import { Xedit } from '../../../../xedit';
+import { Xedit } from '@app/xedit';
+import { isArray } from 'util';
 
 
 export class WysiwygHandler {
@@ -42,6 +51,8 @@ export class WysiwygHandler {
 
     /**********************************     TINYMCE  *******************************************/
 
+    static STYLES_ALL = 'all';
+    static TAGS_ALL = 'all';
     /**
      * Clear tinymce
      */
@@ -54,7 +65,11 @@ export class WysiwygHandler {
     static initTinymce(args) {
         if (tinymce.activeEditor == null || !WysiwygHandler.isSameEditor(tinymce.activeEditor,
             args.node.getTarget().getAttribute(XeditMapper.TAG_UUID))) {
+
             WysiwygHandler.addPlugins();
+            const toolbar = WysiwygHandler.generateToolbar(args.node.getSchema());
+            const fixed_toolbar_container = !isEmpty(toolbar) ? '#toolbar' : false;
+
             tinymce.init({
                 dam_url: Xedit.getResourceUrl(),
                 max_chars: 30000,
@@ -62,10 +77,10 @@ export class WysiwygHandler {
                 target: args.node.getSection(),
                 inline: true,
                 branding: false,
-                fixed_toolbar_container: '#toolbar',
-                toolbar: 'styleselect | link dam | bold italic underline |  aligncenter alignjustify |' +
-                    ' bullist numlist outdent indent |fontsizeselect',
-                plugins: ['link', 'table', 'image', 'paste', 'dam'],
+                fixed_toolbar_container: fixed_toolbar_container,
+                menubar: false,
+                toolbar: toolbar,
+                plugins: WysiwygHandler.getAvailablePlugins(args.node.getSchema()),
                 skin_url: 'assets/skins/lightgray',
                 content_style: '.mce-content-body{ line-height: inherit !important; }  .mce-content-focus{ outline: inherit !important; }',
                 valid_elements: '*[*]',
@@ -148,6 +163,112 @@ export class WysiwygHandler {
         });
     }
 
+    private static generateToolbar(schema) {
+        /*'styleselect | link dam | bold italic underline |  aligncenter alignjustify |' +
+            ' bullist numlist outdent indent |fontsizeselect'*/
+        let toolbar = ''; // 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat';
+        if (hasIn('options', schema)) {
+            if (hasIn('styles', schema.options)) {
+                toolbar += this.toolbarStyles(schema.options.styles);
+            }
+
+            if (hasIn('tags', schema.options)) {
+                toolbar += this.toolbarTags(schema.options.tags);
+            }
+        }
+        return !isEmpty(toolbar) ? toolbar : false;
+    }
+
+    private static toolbarStyles(styles: Array<string> | string) {
+        const stylesValue = {};
+        const groups = {
+            group1: {
+                bold: 'bold', italic: 'italic', underline: 'underline', strikethrough: 'strikethrough', color: 'forecolor', background: 'backcolor'
+            },
+            align: {
+                alignright: 'alignright', aligncenter: 'aligncenter', alignleft: 'alignleft', alignjustify: 'alignjustify'
+            },
+            indent: {
+                outdent: 'outdent', indent: 'indent'
+            },
+            font: {
+                fontsize: 'fontsizeselect'
+            }
+        };
+
+        if (typeof (styles) === 'string') {
+            styles = equals(styles, WysiwygHandler.STYLES_ALL) ? Object.keys(groups) : []
+        }
+
+        styles.forEach(style => {
+            if (hasIn(style, groups)) {
+                WysiwygHandler.addValue(stylesValue, style, Object.values(groups[style]));
+            } else {
+                for (let group in groups) {
+                    if (hasIn(style, groups[group])) {
+                        WysiwygHandler.addValue(stylesValue, group, [groups[group][style]]);
+                    }
+                }
+            }
+        });
+
+        let result = '';
+        for (const styleValue in stylesValue) {
+            result += stylesValue[styleValue].join(' ') + " | ";
+        }
+
+        return result.replace(/(\s\|\s)$/g, '');
+    }
+    private static toolbarTags(tags: Array<string> | string) {
+        const tagsValue = {};
+        const groups = {
+            buttons: {
+                a: 'link', img: 'media', video: 'media', audio: 'media', ol: 'numlist', ul: 'bullist'
+            },
+            formats: {
+            }
+        };
+
+        if (typeof (tags) === 'string') {
+            tags = equals(tags, WysiwygHandler.TAGS_ALL) ? Object.keys(groups) : []
+        } else {
+            tags = Object.keys(tags);
+        }
+
+        tags.forEach(style => {
+            if (hasIn(style, groups)) {
+                WysiwygHandler.addValue(tagsValue, style, Object.values(groups[style]));
+            } else {
+                for (let group in groups) {
+                    if (hasIn(style, groups[group])) {
+                        WysiwygHandler.addValue(tagsValue, group, [groups[group][style]]);
+                    }
+                }
+            }
+        });
+
+        let result = ' ';
+        for (const tagValue in tagsValue) {
+            if (equals(tagValue, 'buttons')) {
+                result += tagsValue[tagValue].join(' ');
+            }
+        }
+        return result;
+    }
+
+    private static addValue(object: Object, property: string, value: Array<string> | string) {
+        if (hasIn(property, object)) {
+            object[property] = union(object[property], value)
+        } else {
+            object[property] = value;
+        }
+    }
+
+    private static getAvailablePlugins(schema) {
+        /*['link', 'table', 'image', 'paste', 'dam']*/
+        let plugins = ''; // 'searchreplace autolink image link media hr anchor advlist lists textcolor imagetools colorpicker';
+        return 'dam searchreplace autolink image link media hr anchor advlist lists textcolor imagetools colorpicker';
+    }
     /**********************************     DATEPICKER  *******************************************/
     /**
      * Init datepicker

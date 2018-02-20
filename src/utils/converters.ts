@@ -143,32 +143,34 @@ export class Converters {
 
     /**
      * Filter attribute
-     * 
-     * @param attr 
+     *
+     * @param attr
      * @param attrs
      * @return true if the attribute is valid, otherwise the attribute should be filter
      */
     private static filter(attr, attrs) {
-        return (contains(attr, XeditMapper.requiredXeditAttributes) || (isNil(attr.match('xe_')) && Converters.filterAttribute(attr, attrs))) ?
+        return (contains(attr, XeditMapper.requiredXeditAttributes) ||
+            (isNil(attr.match('xe_')) && Converters.filterAttribute(attr, attrs))) ?
             true : false;
     }
 
     /**
      * Filter attribute if attrs has a `xe_` attribute and attr exist in a filter_attribute
-     * @param attr 
+     * @param attr
      * @param attrs [{name:value},{name2:value2}]  || [name, name2]
-     * 
+     *
      * @return true if the attribute is valid, otherwise the attribute should be filter
      */
     private static filterAttribute(attr, attrs) {
         attrs = isArray(attrs) ? attrs : Object.keys(attrs);
         const xeditAttribute = attrs.reduce((acc, value) => {
             const val = (typeof value === 'string') ? value : value.name;
-            return contains(val, XeditMapper.requiredXeditAttributes) ? val : acc
+            return contains(val, XeditMapper.requiredXeditAttributes) ? val : acc;
         }, null);
 
-        let settings = !isNil(xeditAttribute) && hasIn(xeditAttribute, XeditMapper.ATTRIBUTES) && hasIn('filter_attributes', XeditMapper.ATTRIBUTES[xeditAttribute]) ?
-            XeditMapper.ATTRIBUTES[xeditAttribute]['filter_attributes'] : []
+        const settings = !isNil(xeditAttribute) && hasIn(xeditAttribute, XeditMapper.ATTRIBUTES) &&
+            hasIn('filter_attributes', XeditMapper.ATTRIBUTES[xeditAttribute]) ?
+            XeditMapper.ATTRIBUTES[xeditAttribute]['filter_attributes'] : [];
 
         return !contains(attr, settings);
     }

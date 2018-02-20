@@ -119,10 +119,10 @@ export class Node {
     }
 
     /**
-     * 
+     *
      */
     getAvailableAttributes() {
-        let attrName = this.name
+        let attrName = this.name;
 
         if (this.getAttribute(XeditMapper.TAG_SECTION_TYPE, null) != null) {
             attrName = this.getAttribute(XeditMapper.TAG_SECTION_TYPE);

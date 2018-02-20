@@ -20,7 +20,7 @@ export class ButtonComponent implements OnInit {
 
     onClick($evt: EventListener) {
         if (!isNil(this.click)) {
-            this.click($evt)
+            this.click($evt);
         }
     }
 
