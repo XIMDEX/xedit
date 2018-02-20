@@ -3,6 +3,7 @@
 :host {
     flex-grow: 1;
     background-color: $white-light;
+    display: block;
 
     > .xe-acordion-title {
         display: flex;
@@ -24,6 +25,7 @@
 
             > app-multi-input {
                 flex-grow: 1;
+                width: 0;
             }
 
             > button {

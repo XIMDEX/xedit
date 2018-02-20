@@ -6,5 +6,11 @@
     max-width: 300px;
     min-width: 300px;
     flex-direction: column;
-    background-color: $white-light;    
+    background-color: $white-light;
+
+    #xe-center-acordion {
+        display: flex;    
+        flex-flow: column;
+        flex-grow: 1;
+    }
 }

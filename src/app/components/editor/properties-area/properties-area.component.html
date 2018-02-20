@@ -1,18 +1,16 @@
-<div id="x-edit-properties-view">
-    <header>
-        <ng-container *ngFor="let view of availablesViews">
-            <div [ngClass]="{selected: (view === selectedView)}" *ngIf="view === selectedView; else actionTab">
+<header>
+    <ng-container *ngFor="let view of availablesViews">
+        <div [ngClass]="{selected: (view === selectedView)}" *ngIf="view === selectedView; else actionTab">
+            {{ view }}
+        </div>
+        <ng-template #actionTab>
+            <div [ngClass]="{selected: (view === selectedView)}" (click)="changeView(view)">
                 {{ view }}
             </div>
-            <ng-template #actionTab>
-                <div [ngClass]="{selected: (view === selectedView)}" (click)="changeView(view)">
-                    {{ view }}
-                </div>
-            </ng-template>
-        </ng-container>
-    </header>
-    <main>
-        <app-properties-local *ngIf="'local' === selectedView"></app-properties-local>
-        <app-properties-global *ngIf="'global' === selectedView"></app-properties-global>
-    </main>
-</div>
+        </ng-template>
+    </ng-container>
+</header>
+<main>
+    <app-properties-local *ngIf="'local' === selectedView"></app-properties-local>
+    <app-properties-global *ngIf="'global' === selectedView"></app-properties-global>
+</main>
