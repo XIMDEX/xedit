@@ -125,7 +125,9 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         }
 
         if (!isNil(this.currentNode.getTarget())) {
-            this.currentNode.getTarget().removeAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED);
+            document.querySelector(
+                `[xe_uuid="${this.currentNode.getTarget().getAttribute(XeditMapper.TAG_UUID)}"]`
+            ).removeAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED);
         }
     }
 
