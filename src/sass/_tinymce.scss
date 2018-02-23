@@ -1,0 +1,95 @@
+#toolbar {
+    > div {
+        border: 0 !important;
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        width: 100% !important;
+        height: auto !important;
+
+        > .mce-container-body {
+            width: 100% !important;
+            height: auto !important;
+
+            > .mce-toolbar-grp{
+                position: relative !important;
+            }
+        }
+    }
+
+    .mce-flow-layout-item {
+        display: flex !important;
+    }
+
+    .mce-container, .mce-container *, .mce-widget, .mce-widget *, .mce-reset{
+        white-space: pre-wrap;
+        background: $white-light;
+        color: $black-light;
+        -webkit-tap-highlight-color: unset;
+        box-sizing: content-box;
+        max-width: unset;
+    }
+
+    .mce-btn{
+        transition: background-color 0.3s ease-in-out;
+
+        &:hover, &:focus {
+            color: $white-light;
+            background-color: $white-warm !important;
+            border-color: transparent !important;
+            border-left-color: transparent !important;
+            border-right-color: transparent !important;
+            border-top-color: transparent !important;
+
+            > button { 
+                border-left-color: transparent !important;
+                border-right-color: transparent !important;
+                border-top-color: transparent !important;
+            }
+        }
+    }
+
+    .mce-colorbutton {
+        border-color: transparent;
+
+        &:hover{
+            > .mce-open {
+                border-color: transparent;
+            }
+        }
+    }
+
+    .mce-splitbtn {
+        border-color: transparent;
+
+        > .mce-open {
+            color: $black-light;
+            background-color: $white-warm;
+            white-space: normal;
+        }
+
+        &:hover {
+            .mce-open {
+                border-left-color: transparent !important;
+            }
+        }
+    }
+
+    .mce-btn-group{
+        .mce-first, .mce-last {
+            border-radius: 0 !important;
+        }
+    }
+
+    .mce-listbox {
+        button {
+
+        }
+    }
+
+    .mce-caret {
+        border-top-color: $black-light;
+        border-right-color: $white-warm;
+        border-left-color: $white-warm;
+    }
+}
