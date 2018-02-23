@@ -1,17 +1,15 @@
-<div id="xe-breadcrumb">
-    <ul>
-        <ng-container *ngFor="let section of breadcrumb; let i = index">
-            <ng-template [ngIf]="(i + 1) < breadcrumb.length" [ngIfElse]="last">
-                <li (click)="changeSelection(section.key)">
-                    {{ section.name }}
-                    <i class="fas fa-chevron-right"></i>
-                </li>
-            </ng-template>
-            <ng-template #last>
-                <li class="selected">
-                    {{ section.name }}
-                </li>
-            </ng-template>
-        </ng-container>
-    </ul>
-</div>
+<ul>
+    <ng-container *ngFor="let section of breadcrumb; let i = index">
+        <ng-template [ngIf]="(i + 1) < breadcrumb.length" [ngIfElse]="last">
+            <li (click)="changeSelection(section.key)">
+                {{ section.name }}
+                <i class="fas fa-chevron-right"></i>
+            </li>
+        </ng-template>
+        <ng-template #last>
+            <li class="selected">
+                {{ section.name }}
+            </li>
+        </ng-template>
+    </ng-container>
+</ul>

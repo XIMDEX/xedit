@@ -9,7 +9,7 @@
         padding: 5px 10px;
         text-align: center;
         color: $white-light; 
-        background-color: $blue-light;
+        background-color: $green-warm;
         transition: background-color 0.3s ease-in-out;
 
         > .icon {
@@ -17,11 +17,11 @@
         }
 
         &:hover {
-            background-color: $blue-lighter;
+            background-color: $green-dark;
         }
 
         &:active {
-            background-color: $blue-dark;
+            background-color: $green-darker;
         }
     }
 }

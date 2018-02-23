@@ -2,13 +2,11 @@
     <span *ngIf="title !== ''">{{ title }}</span>
     <app-button [text]="actionText" [icon]="'fas fa-plus'" [click]="addElement.bind(this)"></app-button>
 </section>
-<section class="xe-acordion-element">
-    <ng-container *ngFor="let value of values; let i = index">
-        <div>
-            <app-multi-input [data]="value" (changeValue)="updateElement($event)"></app-multi-input>
-            <button (click)="removeElement(i)">
-                <i class="fas fa-minus"></i>
-            </button>
-        </div>
-    </ng-container>
-</section>
+<ng-container *ngFor="let value of values; let i = index">
+    <div>
+        <app-multi-input [data]="value" (changeValue)="updateElement($event)" [editable]="true"></app-multi-input>
+        <button (click)=" removeElement(i) ">
+            <i class="fas fa-minus "></i>
+        </button>
+    </div>
+</ng-container>

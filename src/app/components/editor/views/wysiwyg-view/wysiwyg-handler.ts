@@ -81,7 +81,7 @@ export class WysiwygHandler {
                 menubar: false,
                 toolbar: toolbar,
                 plugins: WysiwygHandler.getAvailablePlugins(args.node.getSchema()),
-                skin_url: 'assets/skins/lightgray',
+                skin_url: 'assets/skins/x-edit',
                 content_style: '.mce-content-body{ line-height: inherit !important; }  .mce-content-focus{ outline: inherit !important; }',
                 valid_elements: '*[*]',
                 setup: editor => {

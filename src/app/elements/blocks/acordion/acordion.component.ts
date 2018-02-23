@@ -10,9 +10,14 @@ export class AcordionComponent implements OnInit {
   @Input('title') title: string;
   @Input('className') className: string;
 
+  private isOpen: boolean = false;
+
   constructor() { }
 
   ngOnInit() {
   }
 
+  toggle() {
+    this.isOpen = !this.isOpen;
+  }
 }

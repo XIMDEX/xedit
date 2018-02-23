@@ -18,18 +18,29 @@ export class MultiInputComponent implements OnInit {
         this.attrValue = data[this.attrName];
     }
 
+    @Input('editable') editable: boolean = false;
+
     @Output() changeValue: EventEmitter<any> = new EventEmitter();
 
     private hasAttrNameValue: boolean;
+    private oldValue: Object;
 
     constructor() { }
 
     ngOnInit() {
         this.hasAttrNameValue = this.hasAttrName();
+        this.oldValue = {};
     }
 
     isEmptyValue(data) {
         return isNil(data) || isEmpty(data) ? '' : data;
+    }
+
+    updateLabel() {
+        this.hasAttrNameValue = !this.hasAttrNameValue;
+        const json = {};
+        json[this.attrName] = this.attrValue;
+        this.oldValue = json;
     }
 
     hasAttrName() {
@@ -39,12 +50,20 @@ export class MultiInputComponent implements OnInit {
     setAttrName(evt) {
         this.attrName = evt.target.value;
         this.hasAttrNameValue = this.hasAttrName();
+
+        if (!isNil(this.attrValue) && !isEmpty(this.attrValue)) {
+            this.emitValue();
+        }
     }
 
     changeValues(evt) {
         this.attrValue = evt.target.value;
-        const json = {};
-        json[this.attrName] = this.attrValue;
+        this.emitValue()
+    }
+
+    emitValue() {
+        const json = { old: this.oldValue, new: {} };
+        json.new[this.attrName] = this.attrValue;
         this.changeValue.emit(json);
     }
 

@@ -3,6 +3,7 @@
 :host {
     flex-grow: 1;
     background-color: $white-light;
+    display: block;
 
     > .xe-acordion-title {
         display: flex;
@@ -13,36 +14,32 @@
         }
     }
 
-    > .xe-acordion-element {
+    > div {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
+        margin: 5px 0;
 
-        > div {
-            display: flex;
-            flex-direction: row;
-            margin: 5px 0;
+        > app-multi-input {
+            flex-grow: 1;
+            width: 0;
+        }
 
-            > app-multi-input {
-                flex-grow: 1;
-            }
+        > button {
+            width: 16px;
+            height: 16px;
+            padding: 0;
+            line-height: 16px;
+            font-size: 12px;
+            text-align: center;
+            border-radius: 100%;
+            background-color: $red-light;
+            color: $white-light;
+            border:0;
+            margin: auto 0 auto 5px;
+            transition: background-color 0.3s ease-in-out;
 
-            > button {
-                width: 16px;
-                height: 16px;
-                padding: 0;
-                line-height: 16px;
-                font-size: 12px;
-                text-align: center;
-                border-radius: 100%;
-                background-color: $red-light;
-                color: $white-light;
-                border:0;
-                margin: auto 0 auto 5px;
-                transition: background-color 0.3s ease-in-out;
-
-                &:hover {
-                    background-color: $red-warm;
-                }
+            &:hover {
+                background-color: $red-warm;
             }
         }
     }

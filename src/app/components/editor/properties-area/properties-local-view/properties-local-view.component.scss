@@ -3,8 +3,6 @@
 :host {
     display: flex;
     flex-grow: 1;
-    max-width: 300px;
-    min-width: 300px;
     flex-direction: column;
-    background-color: $white-light;    
+    background-color: $white-light;
 }

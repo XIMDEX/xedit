@@ -1,12 +1,18 @@
-<div>
-    <ng-template [ngIf]="hasAttrNameValue" [ngIfElse]="name">
+<ng-template [ngIf]="hasAttrNameValue" [ngIfElse]="name">
+    <ng-template [ngIf]="editable" [ngIfElse]="static">
+        <label (click)="updateLabel()">
+            {{ attrName }}
+        </label>
+    </ng-template>
+    <ng-template #static>
         <label>
             {{ attrName }}
         </label>
     </ng-template>
-    <ng-template #name>
-        <input type="text" [value]="isEmptyValue(attrName)" (change)="setAttrName($event)">
-    </ng-template>
     <span>:</span>
-    <input type="text" [name]="attrName" [value]="isEmptyValue(attrValue)" (change)="changeValues($event)">
-</div>
+</ng-template>
+<ng-template #name>
+    <input type="text" [value]="isEmptyValue(attrName)" (change)="setAttrName($event)" (blur)="setAttrName($event)">
+    <span>:</span>
+</ng-template>
+<input type="text" [name]="attrName" [value]="isEmptyValue(attrValue)" (change)="changeValues($event)">

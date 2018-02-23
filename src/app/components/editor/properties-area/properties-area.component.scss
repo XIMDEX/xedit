@@ -1,41 +1,83 @@
 @import '~sass/variables';
 
 :host {
-    flex-grow: 1;
-    max-width: 300px;
-    min-width: 300px;
+    z-index: 999;
+    position: absolute;
+    width: 200px;
     background-color: $white-warm;
     overflow: hidden;
+    right: 15px;
+    top: 60px;
+    @include box-shadow(bottom, 0.25);
 
-    > div {
-        > header {
-            display: flex;
-            flex-direction: row;
-            background-color: $white-dark;
-            font: $font-size-default;
-            text-transform: uppercase;
-            font-size: $font-size-small;
-            @include box-shadow(bottom, 0.25);
+    header {
+        border-top-left-radius: 2px;
+        border-top-right-radius: 2px;
+        position: relative;
+        display: flex;
+        height: 22px;
+        background-color: $green-dark;
+        user-select: none;
 
-            > div {
-                box-sizing: border-box;
-                height: $tabs-height-small;
-                padding: 0 10px;
-                line-height: $tabs-height-small;
-                border-bottom: 2px solid transparent;
-                color: $white-darker;
-                transition: color 0.3s ease-in-out, border-bottom-color 0.3s ease-in-out;
-                cursor: pointer;
+        > div {
+            padding: 2px 5px;
+            flex-grow: 2;
+            color: $white-light;
+        }
 
-                &:hover {
-                    border-bottom-color: $green-light;
-                }
+        > aside {
+            padding: 2px 5px;
 
-                &.selected {
-                    border-bottom-color: $green-dark;
-                    color: $green-darker;
-                }
+            > i.fa {
+                color: $white-light;
             }
         }
     }
+
+    > #tabs {
+        display: flex;
+        flex-direction: row;
+        background-color: $white-warm;
+        font: $font-size-default;
+        text-transform: uppercase;
+        font-size: $font-size-small;
+        @include box-shadow(bottom, 0.25);
+
+        > div {
+            box-sizing: border-box;
+            height: $tabs-height-small;
+            padding: 0 10px;
+            line-height: $tabs-height-small;
+            border-bottom: 2px solid transparent;
+            color: $white-darker;
+            transition: color 0.3s ease-in-out, border-bottom-color 0.3s ease-in-out;
+            cursor: pointer;
+
+            &:hover {
+                border-bottom-color: $green-light;
+            }
+
+            &.selected {
+                border-bottom-color: $green-dark;
+                color: $green-darker;
+            }
+        }
+    }
+
+    > collapsible-list-item {        
+
+        > collapsible-header {
+            display: none;
+        }
+
+        > collapsible-body {            
+            @include box-shadow(bottom, 0.25, true);
+            padding: 0;
+            margin: 0;
+            border-bottom: 0;
+            padding-bottom: 8px;
+            background-color: $white-light;
+        }
+    }
+
 }

@@ -1,6 +1,7 @@
 @import '~sass/variables';
 
 :host{
+    display: block;
     position: relative;
     z-index: 10;
 
@@ -34,7 +35,7 @@
                 > li{
                     margin: auto 5px auto 0;
                     padding: 5px 10px;
-                    color: $white-dark;
+                    color: $white-warm;
                     transition: color 0.3s ease-in-out;
                     cursor: pointer;
 
@@ -64,7 +65,7 @@
             > .action {
                 margin: auto 5px auto 0;
                 padding: 5px 10px;
-                color: $white-dark;
+                color: $white-warm;
                 cursor: pointer;
                 transition: color 0.3s ease-in-out;
 
@@ -81,7 +82,7 @@
         > nav.views {
             height: 0;
             width: 100%;
-            background-color: $white-dark;
+            background-color: $white-warm;
             @include box-shadow(bottom, 0.57);
             transition: height 0.25s;
 

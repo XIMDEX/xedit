@@ -1,5 +1,5 @@
 <ng-template [ngIf]="currentNode != null">
-    <h3> Tag: {{ currentNode.name }}</h3>
+    <br>
     <ng-container *ngFor="let group of currentProperties | keys">
         <app-acordion [title]='group' [className]="'form'">
             <ng-container [ngSwitch]="group">
@@ -7,11 +7,12 @@
                     <app-multi-input-acordion [values]="currentProperties[group]" actionText="Add new style" (changeValue)="changeStyle($event)"></app-multi-input-acordion>
                 </ng-container>
                 <ng-container *ngSwitchCase="'class'">
-                    {{ attr }}
                     <app-input-acordion [values]="currentProperties[group]" actionText="Add new class" (changeValue)="changeClass($event)"></app-input-acordion>
                 </ng-container>
                 <ng-container *ngSwitchDefault>
-                    <app-multi-input *ngFor="let value of currentProperties[group]" [data]="value" (changeValue)="cnageProperty($event)"></app-multi-input>
+                    <div id="xe-center-acordion">
+                        <app-multi-input *ngFor="let value of currentProperties[group]" [data]="value" (changeValue)="cnageProperty($event)"></app-multi-input>
+                    </div>
                 </ng-container>
             </ng-container>
         </app-acordion>
