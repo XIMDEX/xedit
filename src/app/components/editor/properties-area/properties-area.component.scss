@@ -1,13 +1,40 @@
 @import '~sass/variables';
 
 :host {
-    flex-grow: 1;
-    max-width: 300px;
-    min-width: 300px;
+    z-index: 999;
+    position: absolute;
+    width: 200px;
     background-color: $white-warm;
     overflow: hidden;
+    right: 15px;
+    top: 60px;
+    @include box-shadow(bottom, 0.25);
 
-    > header {
+    header {
+        border-top-left-radius: 2px;
+        border-top-right-radius: 2px;
+        position: relative;
+        display: flex;
+        height: 22px;
+        background-color: $green-dark;
+        user-select: none;
+
+        > div {
+            padding: 2px 5px;
+            flex-grow: 2;
+            color: $white-light;
+        }
+
+        > aside {
+            padding: 2px 5px;
+
+            > i.fa {
+                color: $white-light;
+            }
+        }
+    }
+
+    > #tabs {
         display: flex;
         flex-direction: row;
         background-color: $white-warm;
@@ -36,4 +63,21 @@
             }
         }
     }
+
+    > collapsible-list-item {        
+
+        > collapsible-header {
+            display: none;
+        }
+
+        > collapsible-body {            
+            @include box-shadow(bottom, 0.25, true);
+            padding: 0;
+            margin: 0;
+            border-bottom: 0;
+            padding-bottom: 8px;
+            background-color: $white-light;
+        }
+    }
+
 }

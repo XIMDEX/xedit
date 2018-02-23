@@ -1,6 +1,8 @@
-<section class="app-acordion">
-    <h2>{{ title }}</h2>
-    <div [class]="className">
+<collapsible-list-item>
+    <collapsible-header class="waves-effect" [ngClass]="{'open': isOpen}" (click)="toggle()">
+        {{ title }}
+    </collapsible-header>
+    <collapsible-body [class]="className" [expanded]="false">
         <ng-content></ng-content>
-    </div>
-</section>
+    </collapsible-body>
+</collapsible-list-item>

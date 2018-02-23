@@ -10,6 +10,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ContextMenuModule } from 'ngx-contextmenu';
 
+import { AngularDraggableModule } from 'angular2-draggable';
+import { CollapsibleModule } from 'angular2-collapsible';
+
 import { StateService } from '@services/state-service/state.service';
 import { EditorService } from '@services/editor-service/editor.service';
 import { SafeHtmlPipe } from '@pipes/inner-html/safe-html.pipe';
@@ -62,7 +65,9 @@ import { ButtonComponent } from './elements/forms/button/button.component';
         AceEditorModule,
         LoadingModule,
         ContextMenuModule.forRoot(),
-        ClickOutsideModule
+        ClickOutsideModule,
+        AngularDraggableModule,
+        CollapsibleModule
     ],
     providers: [
         EditorService,

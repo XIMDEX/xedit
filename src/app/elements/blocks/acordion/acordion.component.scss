@@ -3,34 +3,48 @@
 :host {
     flex-grow: 1;
 
-    > section {
+    > collapsible-list-item {
         display: flex;
         flex-grow: 1;
         flex-direction: column;
-        margin: 20px 10px auto 10px;
+        margin: 0 auto 2px 0;
 
-        > h2 {
+        > collapsible-header  {
             margin: 0;
             font: $font-default;
+            font-size: $font-size-small;
             text-transform: uppercase;
             text-align: left;
-            padding: 5px 10px;
-            color: $white-light;
-            background-color: $white-dark;
-            @include box-shadow(bottom, 0.25);
+            padding: 3px 10px 1px 10px;
+            color: $white-darker;
+            background-color: $white-warm;
+            @include box-shadow(bottom, 0.25, true);
             position: relative;
             z-index: 3;
+            min-height: unset;
+            border-bottom: 2px solid transparent;
+            transition: border-bottom-color 0.3s ease-in-out;
+
+            &:hover {
+                border-bottom-color: $green-light;
+            }
+
+            &.open {
+                color: $black-warm;
+                border-bottom-color: $green-dark;
+            }
         }
 
-        > div {
+        > collapsible-body {
             $margin-sides: 10px;
 
             font: $font-default;
             background-color: $white-light;
-            @include box-shadow(bottom, 0.25);
             position: relative;
             padding: 5px $margin-sides;
             z-index: 2;
+            box-shadow: unset !important;
+            border: 0 !important;
         }
     }
 }

@@ -11,9 +11,9 @@
     }
 
     > input {
-        min-width: 100px;
         flex-grow: 1;
         text-indent: 5px;
+        width: 0;
     }
 
     > * {

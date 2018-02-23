@@ -13,38 +13,34 @@
         }
     }
 
-    > .xe-acordion-element {
+    > div {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
+        margin: 5px 0;
 
-        > div {
-            display: flex;
-            flex-direction: row;
-            margin: 5px 0;
+        > input {
+            flex-grow: 2;
+            text-indent: 5px;
+            width: 0;
+        }
 
-            > input {
-                flex-grow: 2;
-                text-indent: 5px;
-            }
+        > button {
+            width: 16px;
+            height: 16px;
+            padding: 0;
+            line-height: 16px;
+            font-size: 12px;
+            text-align: center;
+            border-radius: 100%;
+            background-color: $red-light;
+            color: $white-light;
+            border:0;
+            margin: auto 0 auto 5px;
+            transition: background-color 0.3s ease-in-out;
 
-            > button {
-                width: 16px;
-                height: 16px;
-                padding: 0;
-                line-height: 16px;
-                font-size: 12px;
-                text-align: center;
-                border-radius: 100%;
-                background-color: $red-light;
-                color: $white-light;
-                border:0;
-                margin: auto 0 auto 5px;
-                transition: background-color 0.3s ease-in-out;
-
-                &:hover {
-                    background-color: $red-warm;
-                }
+            &:hover {
+                background-color: $red-warm;
             }
         }
-    }
+    }    
 }

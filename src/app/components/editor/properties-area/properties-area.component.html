@@ -1,4 +1,14 @@
 <header>
+    <div>
+        <span>{{ nodeName }}</span>
+    </div>
+    <aside (click)="toggleMenu()">
+        <i [ngClass]="{'fa': true, 'fa-minus-square': isOpen, 'fa-window-maximize': !isOpen}"></i>
+    </aside>
+</header>
+<div id='toolbar'>
+</div>
+<div id="tabs">
     <ng-container *ngFor="let view of availablesViews">
         <div [ngClass]="{selected: (view === selectedView)}" *ngIf="view === selectedView; else actionTab">
             {{ view }}
@@ -9,8 +19,12 @@
             </div>
         </ng-template>
     </ng-container>
-</header>
-<main>
-    <app-properties-local *ngIf="'local' === selectedView"></app-properties-local>
-    <app-properties-global *ngIf="'global' === selectedView"></app-properties-global>
-</main>
+</div>
+<collapsible-list-item>
+    <collapsible-header class="waves-effect" #toggleCollapsible>
+    </collapsible-header>
+    <collapsible-body [expanded]="isOpen">
+        <app-properties-local *ngIf="'local' === selectedView"></app-properties-local>
+        <app-properties-global *ngIf="'global' === selectedView"></app-properties-global>
+    </collapsible-body>
+</collapsible-list-item>

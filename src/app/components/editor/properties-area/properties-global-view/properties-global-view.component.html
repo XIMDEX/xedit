@@ -1,17 +1,11 @@
-<div id="x-edit-properties-view">
-    Global Properties
-    <h3>Metatag</h3>
-    <ul>
-        <ng-container *ngFor="let value of metas">
-            <li>
-                <app-multi-input [data]="value"></app-multi-input>
-            </li>
-        </ng-container>
-    </ul>
-    <h3>Estados</h3>
-    <ul>
-        <ng-container *ngFor="let value of states">
-            <li (click)="restoreSnaptshot(value.key)">{{ value.message }}</li>
-        </ng-container>
-    </ul>
-</div>
+<br>
+<app-acordion [title]='"Metadatos"' [className]="'form'">
+    <ng-container *ngFor="let value of metas">
+        <app-multi-input [data]="value"></app-multi-input>
+    </ng-container>
+</app-acordion>
+<app-acordion [title]='"Estados"' [className]="'form'">
+    <ng-container *ngFor="let value of states">
+        <p (click)="restoreSnaptshot(value.key)">{{ value.message }}</p>
+    </ng-container>
+</app-acordion>
