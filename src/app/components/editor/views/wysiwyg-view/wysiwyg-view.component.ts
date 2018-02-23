@@ -120,14 +120,17 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
 
     private clearAttributes() {
-        if (!isNil(this.currentNode.getSection())) {
-            this.currentNode.getSection().removeAttribute(XeditMapper.ATTR_SELECTED);
-        }
+        if (!isNil(this.currentNode)) {
+            if (!isNil(this.currentNode.getSection())) {
+                this.currentNode.getSection().removeAttribute(XeditMapper.ATTR_SELECTED);
+            }
 
-        if (!isNil(this.currentNode.getTarget())) {
-            document.querySelector(
-                `[xe_uuid="${this.currentNode.getTarget().getAttribute(XeditMapper.TAG_UUID)}"]`
-            ).removeAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED);
+            if (!isNil(this.currentNode.getTarget())) {
+                const element = document.querySelector(`[xe_uuid="${this.currentNode.getTarget().getAttribute(XeditMapper.TAG_UUID)}"]`);
+                if (!isNil(element)) {
+                    element.removeAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED);
+                }
+            }
         }
     }
 
