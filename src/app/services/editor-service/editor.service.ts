@@ -79,7 +79,7 @@ export class EditorService {
         return this.loading.asObservable();
     }
 
-    setLoading(loading) {
+    setLoading(loading: boolean) {
         this.loading.next(loading);
     }
 

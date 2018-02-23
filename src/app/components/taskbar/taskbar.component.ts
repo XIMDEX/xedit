@@ -104,7 +104,7 @@ export class TaskbarComponent implements OnInit {
 
             reader.onload = (fileReaderEvent: FileReaderEvent) => {
                 const json = JSON.parse(fileReaderEvent.target.result);
-                const nodes = json.result;
+                const nodes = json.response;
                 this._editorService.createFile(nodes);
             };
 

@@ -33,6 +33,7 @@ import { MultiInputAcordionComponent } from './elements/forms/multi-input-acordi
 import { InputAcordionComponent } from './elements/forms/input-acordion/input-acordion.component';
 import { AcordionComponent } from './elements/blocks/acordion/acordion.component';
 import { ButtonComponent } from './elements/forms/button/button.component';
+import { HttpModule } from '@angular/http';
 
 @NgModule({
     declarations: [
@@ -67,7 +68,8 @@ import { ButtonComponent } from './elements/forms/button/button.component';
         ContextMenuModule.forRoot(),
         ClickOutsideModule,
         AngularDraggableModule,
-        CollapsibleModule
+        CollapsibleModule,
+        HttpModule
     ],
     providers: [
         EditorService,
