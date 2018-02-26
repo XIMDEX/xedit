@@ -31,9 +31,14 @@ export class EditorComponent implements OnInit {
     }
 
     setCurrentNode(uuid: string) {
-        this._editorService.setCurrentNode(
-            this._editorService.parseToNode(this._elementRef.nativeElement.querySelector(`[${XeditMapper.TAG_UUID}='${uuid}']`))
-        );
+        let node = null;
+        if (!isNil(uuid)) {
+            const element = this._elementRef.nativeElement.querySelector(`[${XeditMapper.TAG_UUID}='${uuid}']`);
+            if (!isNil(element)) {
+                node = this._editorService.parseToNode(element);
+            }
+        }
+        this._editorService.setCurrentNode(node);
     }
     /**
      *

@@ -26,7 +26,7 @@ declare let tinymce: any;
 
 // DATEPICKER
 import 'bootstrap-datepicker';
-import { isNil, equals, hasIn, isEmpty, join, union } from 'ramda';
+import { isNil, equals, hasIn, isEmpty, join, union, contains, uniq } from 'ramda';
 import { state } from '@angular/core';
 import { WysiwygViewComponent } from './wysiwyg-view.component';
 import { XeditMapper } from '@models/schema/xedit-mapper';
@@ -214,7 +214,7 @@ export class WysiwygHandler {
 
         let result = '';
         for (const styleValue in stylesValue) {
-            result += stylesValue[styleValue].join(' ') + " | ";
+            result += uniq(stylesValue[styleValue]).join(' ') + " | ";
         }
 
         return result.replace(/(\s\|\s)$/g, '');
@@ -223,7 +223,7 @@ export class WysiwygHandler {
         const tagsValue = {};
         const groups = {
             buttons: {
-                a: 'link', img: 'media', video: 'media', audio: 'media', ol: 'numlist', ul: 'bullist'
+                a: 'link', img: 'dam', video: 'dam', audio: 'dam', ol: 'dam', ul: 'dam'
             },
             formats: {
             }
@@ -250,7 +250,7 @@ export class WysiwygHandler {
         let result = ' ';
         for (const tagValue in tagsValue) {
             if (equals(tagValue, 'buttons')) {
-                result += tagsValue[tagValue].join(' ');
+                result += uniq(tagsValue[tagValue]).join(' ');
             }
         }
         return result;
