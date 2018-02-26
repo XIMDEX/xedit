@@ -9,20 +9,31 @@
         background-color: $green-dark;
         position: relative;
         font: $font-default;
+        display: flex;
+        @include box-shadow(bottom, 0.57);
 
-        > nav.taskbar{
-            position: relative;
-            display: flex;
-            z-index: 2;
+        > .title {
+            flex-grow: 2;
+        }
+
+        > nav{
+            flex-grow: 1;
             padding: 0;
             margin: 0;
-            width: 100%;
+            max-width: 30%;
+            min-width: 30%;
+            overflow-x: auto;
             min-height: $taskbar-height;
             max-height: $taskbar-height;
-            @include box-shadow(bottom, 0.57);
+
+            &.views {
+                > ul {
+                    justify-content: flex-end;
+                }
+            }
 
             > ul{
-                flex-grow: 2;
+                flex-grow: 1;
                 padding: 0;
                 margin: 0;
                 list-style: none;
@@ -39,6 +50,14 @@
                     transition: color 0.3s ease-in-out;
                     cursor: pointer;
 
+                    &.tabs {
+                        height: $taskbar-height;
+                        line-height: $taskbar-height;
+                        text-transform: uppercase;
+                        border-bottom: 2px solid transparent;
+                        transition: color 0.3s ease-in-out, border-bottom-color 0.3s ease-in-out;
+                    }
+
                     > i{
                         font-size: $icon-size-default;
                     }
@@ -52,80 +71,19 @@
                     }
 
                     &:hover{
-                        color: white;
+                        color: $white-light;
                     }
 
                     &.disabled{
                         cursor: not-allowed;
                         color: $green-light;
                     }
-                }
-            }
-
-            > .action {
-                margin: auto 5px auto 0;
-                padding: 5px 10px;
-                color: $white-warm;
-                cursor: pointer;
-                transition: color 0.3s ease-in-out;
-
-                > i{
-                    font-size: 20px;
-                }
-
-                &:hover{
-                    color: white;
-                }
-            } 
-        }
-
-        > nav.views {
-            height: 0;
-            width: 100%;
-            background-color: $white-warm;
-            @include box-shadow(bottom, 0.57);
-            transition: height 0.25s;
-
-            position: absolute;
-            top: $taskbar-height;
-            z-index: 1;
-
-            overflow: hidden;
-
-            &.opened {
-                height: $tabs-height;
-            }
-
-            > .menu {
-                position: absolute;
-                display: flex;
-                align-items: flex-end;
-                bottom: 0;
-                height: $tabs-height;
-                flex-direction: row;
-                list-style: none;
-                padding: 0;
-                margin: 0;
-
-                > li {
-                    margin: auto 0 0 0;
-                    padding: 0 15px 5px 15px;
-                    border-bottom: 2px solid transparent;
-                    color: $white-darker;
-                    text-transform: uppercase;
-                    font-size: $font-size-small;
-                    transition: color 0.3s ease-in-out, border-bottom-color 0.3s ease-in-out;
-                    cursor: pointer;
-
-                    &:hover {
-                        border-bottom-color: $green-light;
-                    }
 
                     &.selected {
-                        border-bottom-color: $green-dark;
-                        color: $green-darker;
+                        border-bottom-color: $white-light;
+                        color: $white-light;
                     }
-                }                
+                } 
             }
         }
     }

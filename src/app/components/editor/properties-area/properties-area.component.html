@@ -10,7 +10,7 @@
 </div>
 <div id="tabs">
     <ng-container *ngFor="let view of availablesViews">
-        <div [ngClass]="{selected: (view === selectedView)}" *ngIf="view === selectedView; else actionTab">
+        <div [ngClass]="{selected: (view === selectedView)}" *ngIf="view === selectedView; else actionTab" (click)="openMenu()">
             {{ view }}
         </div>
         <ng-template #actionTab>

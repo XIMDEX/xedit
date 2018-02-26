@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 
 import { Node } from '@models/node';
 import { EditorService } from '@services/editor-service/editor.service';
+import { CollapsibleHeaderComponent } from 'angular2-collapsible';
 
 @Component({
     selector: 'app-properties-area',
@@ -11,7 +12,7 @@ import { EditorService } from '@services/editor-service/editor.service';
 })
 export class PropertiesAreaComponent implements OnInit {
 
-    @ViewChild('toggleCollapsible') collapsible: ElementRef;
+    @ViewChild('toggleCollapsible') collapsible: CollapsibleHeaderComponent;
 
     private currentNode: Node;
     private availablesViews: Array<string> = [
@@ -37,11 +38,20 @@ export class PropertiesAreaComponent implements OnInit {
 
     private changeView(viewName: string) {
         this.selectedView = viewName;
+        this.openMenu();
     }
 
     private toggleMenu() {
         this.isOpen = !this.isOpen;
-        this.collapsible.nativeElement.click();
+        this.collapsible.click();
+    }
+
+    private openMenu() {
+        if (!this.isOpen) {
+            this.collapsible.click();
+            this.isOpen = true;
+        }
+
     }
 
 }
