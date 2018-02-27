@@ -8,7 +8,7 @@ export class Node {
 
     static TYPE_IMAGE = 'image';
     static TYPE_VIDEO = 'video';
-    static TYPE_OTHER = 'video';
+    static TYPE_OTHER = 'other';
 
     // Variables
     private areaId;

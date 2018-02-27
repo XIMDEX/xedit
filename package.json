@@ -25,6 +25,7 @@
     "angular2-collapsible": "0.0.44",
     "angular2-contextmenu": "^0.8.2",
     "angular2-draggable": "^1.2.1",
+    "angular2-notifications": "^0.9.7",
     "angular2-uuid": "^1.1.1",
     "bootstrap": "^3.3.7",
     "bootstrap-datepicker": "^1.7.1",

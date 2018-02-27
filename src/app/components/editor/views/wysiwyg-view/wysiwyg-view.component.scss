@@ -1,8 +1,25 @@
 @import '~sass/variables';
 
 :host {
-    flex-grow: 1;
+    -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+            flex-grow: 1;
     background-color: $white-lighter;
     display: block;
     overflow: auto;
+}
+
+.no-editable {
+    position: relative;
+}
+
+.no-editable:after {
+    background: gray;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    content: '';
+    opacity: 0.4;
 }

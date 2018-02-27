@@ -33,7 +33,8 @@ import { MultiInputAcordionComponent } from './elements/forms/multi-input-acordi
 import { InputAcordionComponent } from './elements/forms/input-acordion/input-acordion.component';
 import { AcordionComponent } from './elements/blocks/acordion/acordion.component';
 import { ButtonComponent } from './elements/forms/button/button.component';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
+import { SimpleNotificationsModule } from 'angular2-notifications';
 
 @NgModule({
     declarations: [
@@ -69,7 +70,8 @@ import { HttpModule } from '@angular/http';
         ClickOutsideModule,
         AngularDraggableModule,
         CollapsibleModule,
-        HttpModule
+        HttpClientModule,
+        SimpleNotificationsModule.forRoot()
     ],
     providers: [
         EditorService,

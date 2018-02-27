@@ -19,12 +19,14 @@ export class PropertiesAreaComponent implements OnInit {
         'local',
         'global'
     ];
-    private isOpen: boolean = false;
-    protected selectedView: String = 'local';
+    private isOpen: boolean;
+    protected selectedView: String;
     private nodeName: String;
 
     constructor(private _editorService: EditorService) {
         this.nodeName = '';
+        this.isOpen = false;
+        this.selectedView = 'local';
     }
 
     ngOnInit() {

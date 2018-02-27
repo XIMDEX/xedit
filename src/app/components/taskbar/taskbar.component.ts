@@ -2,11 +2,13 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FileReaderEvent } from '../../interfaces/file-reader-event-target';
 import { equals, contains, isNil, indexOf, remove } from 'ramda';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { File } from '@models/file';
 import { DOM } from '@models/dom';
 import { StateService } from '@services/state-service/state.service';
 import { EditorService } from '@services/editor-service/editor.service';
+import { NotificationsService } from 'angular2-notifications';
 
 @Component({
     selector: 'app-taskbar',
@@ -20,7 +22,8 @@ export class TaskbarComponent implements OnInit {
     private currentView: string;
     private availableViews: Array<string> = [];
 
-    constructor(private _editorService: EditorService, private _stateService: StateService) {
+    constructor(private _editorService: EditorService, private _stateService: StateService, private http: HttpClient,
+        private _notification: NotificationsService) {
         this.currentView = '';
     }
 
@@ -89,8 +92,43 @@ export class TaskbarComponent implements OnInit {
     }
 
     save() {
-        this._editorService.getUpdatedDocument();
+        this._editorService.setLoading(true);
+        const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+        const json = JSON.stringify(this._editorService.getUpdatedDocument());
+        const response = this.http.post(
+            'http://localhost/ximdex4/api/?_action=document/10133/set',
+            json, { headers: headers }
+        ).subscribe(
+            (data: any) => {
+                if (data.status === 0) {
+                    this._notification.success('Guardado', 'El documento ha sido guardado.', {
+                        timeOut: 3000,
+                        showProgressBar: true,
+                        pauseOnHover: true,
+                        clickToClose: true
+                    });
+                } else {
+                    this._notification.error('Error', 'Se ha producido un error al guardar el documento.', {
+                        timeOut: 3000,
+                        showProgressBar: true,
+                        pauseOnHover: true,
+                        clickToClose: true
+                    });
+                }
+                this._editorService.setLoading(false);
+            },
+            error => {
+                this._notification.error('Error', 'Se ha producido un error al guardar el documento.', {
+                    timeOut: 3000,
+                    showProgressBar: true,
+                    pauseOnHover: true,
+                    clickToClose: true
+                });
+                this._editorService.setLoading(false);
+            }
+        );
     }
+
     load() {
         (<HTMLInputElement>document.getElementById('open_html')).value = '';
         document.getElementById('open_html').click();

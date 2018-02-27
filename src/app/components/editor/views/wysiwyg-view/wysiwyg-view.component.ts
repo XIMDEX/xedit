@@ -110,12 +110,21 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     private parseContentToWysiwygEditor(content) {
         let renderContent = '';
         Object.keys(content).forEach(property => {
-            renderContent += '<' + XeditMapper.TAG_EDITOR + ' ' + XeditMapper.TAG_UUID + '="' + property + '">';
-            renderContent += Converters.json2html((is(String, content[property].content) ?
-                Converters.html2json(content[property].content) : content[property].content));
-            renderContent += '</' + XeditMapper.TAG_EDITOR + '>';
+
+            const data = is(String, content[property].content) ?
+                Converters.html2json(content[property].content) : content[property].content;
+            renderContent += this.parseContentToWysiwygEditorWrapper(property,
+                content[property].editable, Converters.json2html(data));
+
         });
         return renderContent;
+    }
+
+    private parseContentToWysiwygEditorWrapper(property, editable, content) {
+        const START_TAG = editable ? XeditMapper.TAG_EDITOR + ' ' + XeditMapper.TAG_UUID + '="' + property + '"' :
+            'div class="no-editable"';
+        const END_TAG = editable ? XeditMapper.TAG_EDITOR : 'div';
+        return '<' + START_TAG + '>' + content + '</' + END_TAG + '>';
     }
 
 

@@ -39,6 +39,9 @@ import { isArray } from 'util';
 
 export class WysiwygHandler {
 
+    static STYLES_ALL = 'all';
+    static TAGS_ALL = 'all';
+
     static handlers = {
         'date': WysiwygHandler.initDatePicker,
         'text': WysiwygHandler.initTinymce
@@ -51,8 +54,6 @@ export class WysiwygHandler {
 
     /**********************************     TINYMCE  *******************************************/
 
-    static STYLES_ALL = 'all';
-    static TAGS_ALL = 'all';
     /**
      * Clear tinymce
      */
@@ -166,7 +167,9 @@ export class WysiwygHandler {
     private static generateToolbar(schema) {
         /*'styleselect | link dam | bold italic underline |  aligncenter alignjustify |' +
             ' bullist numlist outdent indent |fontsizeselect'*/
-        let toolbar = ''; // 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat';
+        /*'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify
+        | numlist bullist outdent indent  | removeformat'*/
+        let toolbar = '';
         if (hasIn('options', schema)) {
             if (hasIn('styles', schema.options)) {
                 toolbar += this.toolbarStyles(schema.options.styles);
@@ -183,7 +186,8 @@ export class WysiwygHandler {
         const stylesValue = {};
         const groups = {
             group1: {
-                bold: 'bold', italic: 'italic', underline: 'underline', strikethrough: 'strikethrough', color: 'forecolor', background: 'backcolor'
+                bold: 'bold', italic: 'italic', underline: 'underline', strikethrough: 'strikethrough', color: 'forecolor',
+                background: 'backcolor'
             },
             align: {
                 alignright: 'alignright', aligncenter: 'aligncenter', alignleft: 'alignleft', alignjustify: 'alignjustify'
@@ -197,14 +201,14 @@ export class WysiwygHandler {
         };
 
         if (typeof (styles) === 'string') {
-            styles = equals(styles, WysiwygHandler.STYLES_ALL) ? Object.keys(groups) : []
+            styles = equals(styles, WysiwygHandler.STYLES_ALL) ? Object.keys(groups) : [];
         }
 
         styles.forEach(style => {
             if (hasIn(style, groups)) {
                 WysiwygHandler.addValue(stylesValue, style, Object.values(groups[style]));
             } else {
-                for (let group in groups) {
+                for (const group in groups) {
                     if (hasIn(style, groups[group])) {
                         WysiwygHandler.addValue(stylesValue, group, [groups[group][style]]);
                     }
@@ -214,7 +218,9 @@ export class WysiwygHandler {
 
         let result = '';
         for (const styleValue in stylesValue) {
-            result += uniq(stylesValue[styleValue]).join(' ') + " | ";
+            if (!isNil(stylesValue[styleValue])) {
+                result += uniq(stylesValue[styleValue]).join(' ') + ' | ';
+            }
         }
 
         return result.replace(/(\s\|\s)$/g, '');
@@ -230,7 +236,7 @@ export class WysiwygHandler {
         };
 
         if (typeof (tags) === 'string') {
-            tags = equals(tags, WysiwygHandler.TAGS_ALL) ? Object.keys(groups) : []
+            tags = equals(tags, WysiwygHandler.TAGS_ALL) ? Object.keys(groups) : [];
         } else {
             tags = Object.keys(tags);
         }
@@ -239,7 +245,7 @@ export class WysiwygHandler {
             if (hasIn(style, groups)) {
                 WysiwygHandler.addValue(tagsValue, style, Object.values(groups[style]));
             } else {
-                for (let group in groups) {
+                for (const group in groups) {
                     if (hasIn(style, groups[group])) {
                         WysiwygHandler.addValue(tagsValue, group, [groups[group][style]]);
                     }
@@ -258,7 +264,7 @@ export class WysiwygHandler {
 
     private static addValue(object: Object, property: string, value: Array<string> | string) {
         if (hasIn(property, object)) {
-            object[property] = union(object[property], value)
+            object[property] = union(object[property], value);
         } else {
             object[property] = value;
         }

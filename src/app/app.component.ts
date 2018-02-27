@@ -1,6 +1,6 @@
 import { hasIn } from 'ramda';
 import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import { Http } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ParamMap, Router, ActivatedRoute } from '@angular/router';
 
 import { EditorService } from '@services/editor-service/editor.service';
@@ -18,12 +18,12 @@ export class AppComponent implements OnInit, OnDestroy {
     private loadingSuscribe;
     private loading: boolean;
 
-    constructor(private _editorService: EditorService, private _stateService: StateService, private http: Http, private route: ActivatedRoute) { }
+    constructor(private _editorService: EditorService, private _stateService: StateService, public http: HttpClient,
+        private route: ActivatedRoute) { }
 
 
     /************************************** Life Cycle **************************************/
     ngOnInit() {
-        console.log(this.route.snapshot.queryParamMap);
         this.loadingSuscribe = this._editorService.isLoading().subscribe(loading => {
             this.loading = loading;
         });
@@ -44,14 +44,21 @@ export class AppComponent implements OnInit, OnDestroy {
 
         this._editorService.setLoading(true);
 
-        return this.http.get(url).subscribe(data => {
+        return this.http.get(url).subscribe(
+            (result: any) => {
+                if (hasIn('status', result) && result.status === 0) {
+                    const nodes = result.response;
+                    this._editorService.createFile(nodes);
+                    this._stateService.setAvailableViews(['wysiwyg', 'text']);
+                } else {
+                    console.error('Invalid url');
+                }
 
-            const json = data.json();
-            const nodes = json.response;
-            this._editorService.createFile(nodes);
-            this._stateService.setAvailableViews(['wysiwyg', 'text']);
-
-            this._editorService.setLoading(false);
-        });
+                this._editorService.setLoading(false);
+            },
+            error => {
+                console.log('error');
+            }
+        );
     }
 }

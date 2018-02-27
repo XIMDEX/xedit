@@ -211,11 +211,13 @@ export class EditorService {
         for (const nodeId in state.content) {
             if (hasIn('content', state.content[nodeId])) {
                 document['nodes'][nodeId] = {
-                    content: Converters.json2html(state.content[nodeId].content, false)
+                    content: Converters.json2html(state.content[nodeId].content, false),
+                    editable: state.content[nodeId].editable
                 };
             }
         }
-        console.log(document);
+
+        return document;
     }
     /************************************** Static Methods **************************************/
 
@@ -240,7 +242,7 @@ export class EditorService {
         try {
             node = new Node(uuid, element, attributes);
         } catch (e) {
-            console.error('Invalid node');
+            //console.error('This element is not a valid node');
         }
         return node;
     }
