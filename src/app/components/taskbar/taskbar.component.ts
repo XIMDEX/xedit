@@ -9,6 +9,8 @@ import { DOM } from '@models/dom';
 import { StateService } from '@services/state-service/state.service';
 import { EditorService } from '@services/editor-service/editor.service';
 import { NotificationsService } from 'angular2-notifications';
+import { Api } from '@app/api';
+import { Xedit } from '@app/xedit';
 
 @Component({
     selector: 'app-taskbar',
@@ -52,19 +54,6 @@ export class TaskbarComponent implements OnInit {
 
     showComponent(component) {
         this._stateService.setCurrentView(component);
-        this.toggleMenu();
-    }
-
-    isShowedComponent(component): boolean {
-        return contains(component, this.availableViews);
-    }
-
-    isActivatedComponent(component): boolean {
-        return equals(this.currentView, component);
-    }
-
-    isDisabledComponent(component): boolean {
-        return this.isActivatedComponent(component) || !this.isShowedComponent(component);
     }
 
     hasMultiViews(): boolean {
@@ -86,47 +75,26 @@ export class TaskbarComponent implements OnInit {
         }
     }
 
-    toggleMenu() {
-        DOM.element(this.viewMenu)
-            .toggleClass('opened');
-    }
-
     save() {
         this._editorService.setLoading(true);
-        const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
-        const json = JSON.stringify(this._editorService.getUpdatedDocument());
-        const response = this.http.post(
-            'http://localhost/ximdex4/api/?_action=document/10133/set',
-            json, { headers: headers }
-        ).subscribe(
-            (data: any) => {
-                if (data.status === 0) {
-                    this._notification.success('Guardado', 'El documento ha sido guardado.', {
-                        timeOut: 3000,
-                        showProgressBar: true,
-                        pauseOnHover: true,
-                        clickToClose: true
-                    });
-                } else {
-                    this._notification.error('Error', 'Se ha producido un error al guardar el documento.', {
-                        timeOut: 3000,
-                        showProgressBar: true,
-                        pauseOnHover: true,
-                        clickToClose: true
-                    });
-                }
+
+        const error = () => {
+            console.error('ERROR SAVE DOCUMENT');
+            this._editorService.setLoading(false);
+            this._notification.error('Error', 'Se ha producido un error al guardar el documento.',
+                Xedit.NOTIFICATION_DEFAULT_SETTINGS);
+        };
+
+        const success = (result) => {
+            if (result.status === 0) {
                 this._editorService.setLoading(false);
-            },
-            error => {
-                this._notification.error('Error', 'Se ha producido un error al guardar el documento.', {
-                    timeOut: 3000,
-                    showProgressBar: true,
-                    pauseOnHover: true,
-                    clickToClose: true
-                });
-                this._editorService.setLoading(false);
+                this._notification.success('Guardado', 'El documento ha sido guardado.', Xedit.NOTIFICATION_DEFAULT_SETTINGS);
+            } else {
+                error();
             }
-        );
+        };
+
+        Api.saveDocument(this.http, this._editorService.getUpdatedDocument(), success, error);
     }
 
     load() {

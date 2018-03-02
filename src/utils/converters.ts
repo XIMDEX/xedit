@@ -181,7 +181,7 @@ export class Converters {
      * @param json Json object with content
      * @param showIds If true added attribute id in tags
      */
-    static json2html(json, showIds = true, processXedit = true) {
+    static json2html(json, showIds = true, processXedit = true, resetIds = false) {
 
         // Empty Elements - HTML 4.01
         const empty = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param', 'embed'];
@@ -189,7 +189,7 @@ export class Converters {
         let child = '';
         if (json.child) {
             child = Object.keys(json.child).map(function (uuid: string) {
-                return Converters.json2html(json.child[uuid], showIds, processXedit);
+                return Converters.json2html(json.child[uuid], showIds, processXedit, resetIds);
             }).join('');
         }
 
@@ -211,7 +211,8 @@ export class Converters {
 
         if (json.node === 'element') {
             const tag = json.tag;
-            const uuid = showIds ? ` ${XeditMapper.TAG_UUID} = "${json.uuid}"` : '';
+            let uuid = resetIds ? UUID.UUID() : json.uuid;
+            uuid = showIds ? ` ${XeditMapper.TAG_UUID} = "${uuid}"` : '';
 
             if (empty.indexOf(tag) > -1) {
                 // empty element

@@ -25,7 +25,7 @@
     </aside>
     <nav class="views">
         <ul *ngIf="hasMultiViews()">
-            <li (click)="showComponent(view)" *ngFor="let view of availableViews" [ngClass]="{selected: isActivatedComponent(view), tabs: true}">
+            <li (click)="showComponent(view)" *ngFor="let view of availableViews" [ngClass]="{selected: currentView === view, tabs: true}">
                 {{ view }}
             </li>
         </ul>

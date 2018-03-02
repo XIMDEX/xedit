@@ -5,6 +5,7 @@ import { Subject } from 'rxjs/Subject';
 import { clone, isNil, reduce, is, contains, hasIn } from 'ramda';
 import { Editor } from 'ng2-ace-editor/node_modules/brace';
 import { UUID } from 'angular2-uuid';
+import { Xedit } from '../../xedit';
 
 import { File } from '@models/file';
 import { Node } from '@models/node';
@@ -32,6 +33,10 @@ export class EditorService {
 
     // ************************************** Getters and setters **************************************/
     setFile(file): void {
+        if (isNil(file)) {
+            console.log(null);
+        }
+
         this.file.next(file);
         this.fileState.next(file);
     }
@@ -166,6 +171,26 @@ export class EditorService {
     }
 
     /**
+     * Get json node by path
+     */
+    getJsonNodesByPath(node: Node) {
+        const fileContent = this.fileState.getValue().getState().content;
+
+        const root = fileContent[node.getAreaId()];
+
+        if (is(String, root.content)) {
+            root.content = Converters.html2json(root.content);
+        }
+
+        // Modify file with new changes
+        const editContent = reduce(function (acc, value) {
+            return acc.child[value];
+        }, root.content, node.getPath());
+
+        return editContent;
+    }
+
+    /**
      * Add child or sibling node to area
      *
      * @param node
@@ -242,7 +267,7 @@ export class EditorService {
         try {
             node = new Node(uuid, element, attributes);
         } catch (e) {
-            //console.error('This element is not a valid node');
+            // console.error('This element is not a valid node');
         }
         return node;
     }
@@ -259,6 +284,38 @@ export class EditorService {
 
         return (element.nodeName.toLowerCase() === rootTag || isNil(parent)) ?
             path : this.getUuidPath(parent, rootTag, path);
+    }
+
+    /**
+     * Check if node has a child section
+     */
+
+
+    /**
+     * Check if allow add new child
+     */
+    static isAllowAddChild(currentNode: Node, section) {
+        let valid = false;
+
+        const schema = currentNode.getSchema();
+        if (contains(section, Object.keys(schema.sections))) {
+            valid = true;
+        }
+
+        return valid;
+    }
+
+    /**
+     * Check if current node support a inserted node
+     *
+     * @param currentNode Node
+     * @param insertedNode Node
+     *
+     * @returns boolean
+     */
+    static isInsertedNodeValid(currentNode: Node, insertedNode: Node) {
+        const section = insertedNode.getTarget().getAttribute(XeditMapper.TAG_SECTION_TYPE);
+        return this.isAllowAddChild(currentNode, section);
     }
 
 }

@@ -1,10 +1,12 @@
-import { hasIn } from 'ramda';
+import { hasIn, isNil } from 'ramda';
 import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ParamMap, Router, ActivatedRoute } from '@angular/router';
+import { ParamMap, Router, ActivatedRoute, Params } from '@angular/router';
 
 import { EditorService } from '@services/editor-service/editor.service';
 import { StateService } from '@services/state-service/state.service';
+import { Xedit } from '@app/xedit';
+import { Api } from '@app/api';
 
 
 @Component({
@@ -27,9 +29,15 @@ export class AppComponent implements OnInit, OnDestroy {
         this.loadingSuscribe = this._editorService.isLoading().subscribe(loading => {
             this.loading = loading;
         });
-        this.route.queryParams.subscribe(params => {
-            if (hasIn('url', params)) {
-                this.getDocument(params.url);
+        this.route.queryParams.skip(1).subscribe(params => {
+            if (isNil(params.token)) {
+                console.error('SOLICITAR LOGIN');
+            } else if (isNil(params.url)) {
+                console.error('API NO DISPINIBLE');
+            } else {
+                Xedit.setToken(params.token);
+                Xedit.setApiUrl(params.url);
+                this.getDocument(params);
             }
         });
 
@@ -40,25 +48,28 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     /************************************** Private Methods **************************************/
-    private getDocument(url: string) {
+    private getDocument(params: Params) {
 
         this._editorService.setLoading(true);
 
-        return this.http.get(url).subscribe(
-            (result: any) => {
+        if (!isNil(params.nodeId)) {
+            const error = () => {
+                console.log('error');
+                this._editorService.setLoading(false);
+            };
+
+            const success = (result) => {
                 if (hasIn('status', result) && result.status === 0) {
                     const nodes = result.response;
                     this._editorService.createFile(nodes);
                     this._stateService.setAvailableViews(['wysiwyg', 'text']);
                 } else {
-                    console.error('Invalid url');
+                    error();
                 }
-
                 this._editorService.setLoading(false);
-            },
-            error => {
-                console.log('error');
-            }
-        );
+            };
+
+            return Api.getDocument(this.http, params.nodeId, success, error);
+        }
     }
 }
