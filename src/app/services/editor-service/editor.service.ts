@@ -191,6 +191,26 @@ export class EditorService {
     }
 
     /**
+     * Remove node section
+     */
+    removeNode(node: Node) {
+
+        const file = this.newStateFile(this.fileState.getValue().getState().content, 'Remove node');
+        const section = node.getSection();
+        const sectionPath = Node.getContextPath(section);
+
+        let parentNode = null;
+        const fileNode = reduce((n, value) => {
+            parentNode = n;
+            return n.child[value];
+        }, file.getState().getContent()[node.getAreaId()].content, sectionPath);
+
+        const nodeKey = section.getAttribute(XeditMapper.TAG_UUID);
+        delete parentNode.child[nodeKey];
+
+        this.setFileState(file);
+    }
+    /**
      * Add child or sibling node to area
      *
      * @param node

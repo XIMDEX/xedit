@@ -1,4 +1,4 @@
-import { hasIn, isNil } from 'ramda';
+import { hasIn, isNil, contains } from 'ramda';
 import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ParamMap, Router, ActivatedRoute, Params } from '@angular/router';
@@ -61,8 +61,15 @@ export class AppComponent implements OnInit, OnDestroy {
             const success = (result) => {
                 if (hasIn('status', result) && result.status === 0) {
                     const nodes = result.response;
+                    let view = 'wysiwyg';
+
                     this._editorService.createFile(nodes);
                     this._stateService.setAvailableViews(['wysiwyg', 'text']);
+
+                    if (!isNil(params.type) && contains(params.type, ['wysiwyg', 'text'])) {
+                        view = params.type;
+                    }
+                    this._stateService.setCurrentView(view);
                 } else {
                     error();
                 }

@@ -63,6 +63,10 @@ export class DOM {
         }
     }
 
+    public deleteNode() {
+        this.target.remove();
+    }
+
     /********************* PRIVATE METHODS *********************/
 
     private storeAttr(attr: string, value: string | Array<string>) {

@@ -92,7 +92,7 @@ export class TaskbarComponent implements OnInit {
             } else {
                 error();
             }
-        };
+        }
 
         Api.saveDocument(this.http, this._editorService.getUpdatedDocument(), success, error);
     }

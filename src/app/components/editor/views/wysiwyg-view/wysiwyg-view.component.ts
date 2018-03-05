@@ -11,6 +11,8 @@ import { EditorService } from '@services/editor-service/editor.service';
 import { Converters } from '@utils/converters';
 import { WysiwygHandler } from '@components/editor/views/wysiwyg-view/wysiwyg-handler';
 import $ from 'jquery';
+import { NotificationsService } from 'angular2-notifications';
+import { Xedit } from '@app/xedit';
 
 @Component({
     selector: 'app-wysiwyg-view',
@@ -34,7 +36,10 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     private cssLinks: Array<string>;
     private jsLinks: Array<string>;
 
-    constructor(private _editorService: EditorService, private contextMenuService: ContextMenuService, private _elementRef: ElementRef) { }
+    private copyAction: any;
+
+    constructor(private _editorService: EditorService, private contextMenuService: ContextMenuService,
+        private _elementRef: ElementRef, private _notification: NotificationsService) { }
 
     /************************************** Life Cycle **************************************/
     ngOnInit() {
@@ -254,10 +259,63 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
             contextMenuActions.push(this.createAction(null, null, true, true));
         }
         contextMenuActions = union(contextMenuActions, contextMenuActionsSiblings);
+        contextMenuActions.push(this.createAction(null, null, true, true));
+        contextMenuActions = union(contextMenuActions, this.defaultActions(node));
 
         this.contextMenuActions = contextMenuActions;
     }
 
+    private defaultActions(node) {
+        const actions = [];
+
+        if (!isNil(this.copyAction) && !isNil(node)) {
+
+            // Coger node del json --> Cambiar todos los uid del padre e hijos
+            actions.push(
+                this.createAction(
+                    (i) => 'Paste',
+                    (evt) => {
+                        const sectionNode = new Node(this.copyAction.getAttribute(XeditMapper.TAG_UUID), this.copyAction);
+                        if (EditorService.isInsertedNodeValid(node, sectionNode)) {
+                            let template = this._editorService.getJsonNodesByPath(sectionNode);
+                            template = Converters.json2html(template, true, true, true);
+                            DOM.element(node.getSection())
+                                .insertNode(template, sectionNode.getTarget().childNodes[sectionNode.getTarget().childNodes.length], true);
+                            this._editorService.addNodeToArea(node, Converters.html2json(template, false), true);
+                            this._notification.info('Nodo insertado', 'El nodo ha sido pegado con éxito.',
+                                Xedit.NOTIFICATION_DEFAULT_SETTINGS);
+                        } else {
+                            this._notification.error('Estructura inválida', 'El nodo pegado no es soportado.',
+                                Xedit.NOTIFICATION_DEFAULT_SETTINGS);
+                        }
+                    },
+                    true
+                )
+            );
+        }
+
+        actions.push(this.createAction(
+            (i) => 'Copy',
+            (evt) => {
+                this.copyAction = null;
+                this.copyAction = node.getSection();
+            },
+            true)
+        );
+
+        actions.push(this.createAction(
+            (i) => 'Delete',
+            (evt) => {
+                this._editorService.removeNode(node);
+                DOM.element(node.getSection()).deleteNode();
+            },
+            true)
+        );
+
+        return actions;
+    }
+
+    // Todo create Action Model
     private createAction(html, click, visible, divider = false, enabled = (item) => true) {
         return {
             html: html,
@@ -281,9 +339,9 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         actions.name = Node.getSectionLang(node.getSchema(), 'es');
 
         // Get childs
-        if (hasIn('sections', node.getSchema()) && !isNil(node.getSchema().sections)) {
-            if (hasIn('children', node.getSchema().sections)) {
-                const children = node.getSchema().sections.children;
+        if (hasIn('actions', node.getSchema()) && !isNil(node.getSchema().actions)) {
+            if (hasIn('children', node.getSchema().actions)) {
+                const children = node.getSchema().actions.children;
                 children.map((child) => {
                     const schema = node.getSchemaNode()[child];
                     if (!isNil(schema)) {
@@ -295,8 +353,8 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
                 });
             }
 
-            if (hasIn('siblings', node.getSchema().sections)) {
-                const siblings = node.getSchema().sections.siblings;
+            if (hasIn('siblings', node.getSchema().actions)) {
+                const siblings = node.getSchema().actions.siblings;
                 siblings.map((sibling) => {
                     const schema = node.getSchemaNode()[sibling];
                     if (!isNil(schema)) {

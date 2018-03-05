@@ -26,7 +26,7 @@
     <nav class="views">
         <ul *ngIf="hasMultiViews()">
             <li (click)="showComponent(view)" *ngFor="let view of availableViews" [ngClass]="{selected: currentView === view, tabs: true}">
-                {{ view }}
+                {{ view == 'wysiwyg' ? 'Visual' : 'Texto' }}
             </li>
         </ul>
     </nav>
