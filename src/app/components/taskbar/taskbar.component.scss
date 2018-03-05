@@ -87,4 +87,34 @@
             }
         }
     }
+
+    &.embebed {
+        > header {
+            background-color: $white-warm;
+            > nav {
+                >ul {
+                    > li {
+                        color: $white-darker;
+
+                        &.separator {
+                            background-color: $white-dark;
+                        }
+
+                        &:hover{
+                            color: $black-light;
+                        }
+
+                        &.disabled{
+                            color: $white-dark;
+                        }
+    
+                        &.selected {
+                            border-bottom-color: $black-light;
+                            color: $black-light;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
