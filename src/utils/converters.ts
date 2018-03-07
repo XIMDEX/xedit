@@ -134,7 +134,7 @@ export class Converters {
                 if (parent.child === undefined) {
                     parent.child = [];
                 }
-                parent.child.push(node);
+                parent.child['comment-' + Object.keys(parent.child).length] = node;
             },
         });
 
@@ -236,7 +236,11 @@ export class Converters {
         let extraData = '';
         if (processXedit && contains(key, XeditMapper.requiredXeditAttributes)) {
             if (equals(key, XeditMapper.TAG_IMAGE)) {
-                extraData = `src='${Xedit.getResourceUrl()}/${value}'`;
+                extraData = value;
+                if (!(/^(f|ht)tps?:\/\//i).test(extraData)) {
+                    extraData = `${Xedit.getResourceUrl()}/${extraData}`;
+                }
+                extraData = `src='${extraData}'`;
             }
         }
         return `${key}="${value}" ${extraData}`;

@@ -1,15 +1,21 @@
 <ul>
     <ng-container *ngFor="let section of breadcrumb; let i = index">
         <ng-template [ngIf]="(i + 1) < breadcrumb.length" [ngIfElse]="last">
-            <li (click)="changeSelection(section.key)">
+            <li (click)="changeSelection(section.key)" (contextmenu)="onContextMenu($event, section.target)">
                 {{ section.name }}
                 <i class="fas fa-chevron-right"></i>
             </li>
         </ng-template>
         <ng-template #last>
-            <li class="selected">
+            <li class="selected" (contextmenu)="onContextMenu($event, section.target)">
                 {{ section.name }}
             </li>
         </ng-template>
     </ng-container>
 </ul>
+<context-menu #myContextMenu>
+    <ng-template *ngFor="let action of contextMenuActions" contextMenuItem let-item [visible]="action.visible" [enabled]="action.enabled"
+        [divider]="action.divider" (execute)="action.click()">
+        {{ action.html() }}
+    </ng-template>
+</context-menu>

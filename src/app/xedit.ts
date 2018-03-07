@@ -7,6 +7,7 @@ export class Xedit {
     static API_URL = 'apiUrl';
     static RESOURCE_URL = 'resourceUrl';
     static SCHEMAS = 'schemas';
+    static LANG = 'lang';
 
     static NOTIFICATION_DEFAULT_SETTINGS = {
         timeOut: 3000,
@@ -16,8 +17,9 @@ export class Xedit {
     };
 
     // ************************************** Getters and setters **************************************/
-    static getConf(conf: string): any {
-        return hasIn(conf, Xedit.getBase()) ? Xedit.getBase()[conf] : undefined;
+    static getConf(conf: string, value?: any): any {
+        return hasIn(conf, Xedit.getBase()) ? Xedit.getBase()[conf] :
+            (!isNil(value) ? value : undefined);
     }
 
     static setConf(conf: string, value: any) {
@@ -38,6 +40,14 @@ export class Xedit {
 
     static getApiUrl(): string {
         return Xedit.getConf(Xedit.API_URL);
+    }
+
+    static setLang(lang: string): void {
+        return Xedit.setConf(Xedit.LANG, lang);
+    }
+
+    static getLang(): string {
+        return Xedit.getConf(Xedit.LANG, 'es');
     }
 
     static getResourceUrl(): string {

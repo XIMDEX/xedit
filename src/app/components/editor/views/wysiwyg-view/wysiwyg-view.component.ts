@@ -23,7 +23,6 @@ import { Xedit } from '@app/xedit';
 export class WysiwygViewComponent implements OnInit, OnDestroy {
 
     @ViewChild('xedit') xedit: ElementRef;
-    @ViewChild('myContextMenu') public basicMenu: ContextMenuComponent;
     @Output() selectNode: EventEmitter<string> = new EventEmitter();
 
     private renderContent: string;
@@ -31,12 +30,9 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     private subscribeFileState;
     private subscribeCN;
     private subscribeCNM;
-    public contextMenuActions: Array<any> = [];
     private currentNode: Node;
     private cssLinks: Array<string>;
     private jsLinks: Array<string>;
-
-    private copyAction: any;
 
     constructor(private _editorService: EditorService, private contextMenuService: ContextMenuService,
         private _elementRef: ElementRef, private _notification: NotificationsService) { }
@@ -101,7 +97,8 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         });
 
         this.subscribeCN = this._editorService.getCurrentNode().subscribe(currentNode => {
-            if (!isNil(currentNode)) {
+            if (!isNil(currentNode) && (isNil(this.currentNode) ||
+                !equals(currentNode.getAttribute(XeditMapper.TAG_UUID), this.currentNode.getUuid()))) {
                 this.setSelection(currentNode);
             }
         });
@@ -167,7 +164,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
         if (!isNil(currentNode.getSchema())) {
             // Add selected class
-            const name = Node.getSectionLang(this.currentNode.getSchema(), 'es');
+            const name = Node.getSectionLang(this.currentNode.getSchema(), Xedit.getLang());
             this.currentNode.getSection().setAttribute(XeditMapper.ATTR_SELECTED, name);
 
             // Add selected class
@@ -188,6 +185,9 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     }
 
     /************************************** MENU *****************************************/
+    @ViewChild('myContextMenu') public basicMenu: ContextMenuComponent;
+    public contextMenuActions: Array<any> = [];
+    private copyAction: any;
 
     public onContextMenu($event: KeyboardEvent, item: any): void {
 
@@ -336,7 +336,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
             others: []
         };
 
-        actions.name = Node.getSectionLang(node.getSchema(), 'es');
+        actions.name = Node.getSectionLang(node.getSchema(), Xedit.getLang());
 
         // Get childs
         if (hasIn('actions', node.getSchema()) && !isNil(node.getSchema().actions)) {
@@ -346,7 +346,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
                     const schema = node.getSchemaNode()[child];
                     if (!isNil(schema)) {
                         actions.children.push({
-                            name: Node.getSectionLang(schema, 'es'),
+                            name: Node.getSectionLang(schema, Xedit.getLang()),
                             template: Node.getSectionTemplate(schema)
                         });
                     }
@@ -359,7 +359,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
                     const schema = node.getSchemaNode()[sibling];
                     if (!isNil(schema)) {
                         actions.siblings.push({
-                            name: Node.getSectionLang(schema, 'es'),
+                            name: Node.getSectionLang(schema, Xedit.getLang()),
                             template: Node.getSectionTemplate(schema)
                         });
                     }

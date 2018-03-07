@@ -92,10 +92,10 @@ export class WysiwygHandler {
                             element.setAttribute(XeditMapper.TAG_UUID, UUID.UUID());
                         }
 
-                        if (!isNil(args.node.getTarget()) && !equals(args.node.getTarget().getAttribute(XeditMapper.TAG_UUID),
+                        /*if (!isNil(args.node.getTarget()) && !equals(args.node.getTarget().getAttribute(XeditMapper.TAG_UUID),
                             element.getAttribute(XeditMapper.TAG_UUID))) {
                             args.service.setCurrentNode(args.service.parseToNode(element));
-                        }
+                        }*/
 
                     });
                     editor.on('PastePreProcess', (e) => {
@@ -127,9 +127,26 @@ export class WysiwygHandler {
                         tinymce.execCommand('mceFocus', false, editor.id);
                         args.service.setCurrentNode(args.node);
                     });
+
+                    editor.on('hide', (e) => {
+                        console.log("OK");
+                        tinymce.remove(editor);
+                    });
+
                     editor.on('blur', (e) => {
+                        // TODO FIX atovar
+                        const xedit = e.target.bodyElement;
+                        const links = xedit.getElementsByTagName('a');
+                        if (!isNil(links)) {
+                            for (let i = 0; i < links.length; i++) {
+                                links[i].onclick = (evt) => {
+                                    evt.preventDefault();
+                                    return false;
+                                };
+                            }
+                        }
                         args.service.getFileStateValue().snapshot();
-                        const promise = new Promise(
+                        /*const promise = new Promise(
                             () => {
                                 const loop = window.setInterval(() => {
                                     try {
@@ -145,7 +162,8 @@ export class WysiwygHandler {
                                 }, 30);
 
                             }
-                        );
+                        );*/
+                        return false;
                     });
                 }
             });

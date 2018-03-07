@@ -124,10 +124,16 @@ export class Node {
     getAvailableAttributes() {
         let attrName = this.name;
 
-        if (this.getAttribute(XeditMapper.TAG_SECTION_TYPE, null) != null) {
-            attrName = this.getAttribute(XeditMapper.TAG_SECTION_TYPE);
-        } else if (this.getAttribute(XeditMapper.TAG_IMAGE, null) != null) {
+        if (this.getAttribute(XeditMapper.TAG_IMAGE, null) != null) {
             attrName = XeditMapper.TAG_IMAGE;
+        } else if (this.getAttribute(XeditMapper.TAG_AUDIO, null) != null) {
+            attrName = XeditMapper.TAG_AUDIO;
+        } else if (this.getAttribute(XeditMapper.TAG_LINK, null) != null) {
+            attrName = XeditMapper.TAG_LINK;
+        } else if (this.getAttribute(XeditMapper.TAG_VIDEO, null) != null) {
+            attrName = XeditMapper.TAG_VIDEO;
+        } else if (this.getAttribute(XeditMapper.TAG_SECTION_TYPE, null) != null) {
+            attrName = this.getAttribute(XeditMapper.TAG_SECTION_TYPE);
         }
 
         return XeditMapper.getAvailableAttribute(attrName);
@@ -170,9 +176,13 @@ export class Node {
      * @param lang
      */
     static getSectionLang(section, lang) {
-        let name = section.name;
-        if (hasIn('lang', section) && is(Object, section.lang) && hasIn(lang, section.lang)) {
-            name = section.lang[lang];
+        let name = null;
+        if (!isNil(section)) {
+            if (hasIn('lang', section) && is(Object, section.lang) && hasIn(lang, section.lang)) {
+                name = section.lang[lang];
+            } else if (hasIn('name', section)) {
+                name = section.name;
+            }
         }
         return name;
     }

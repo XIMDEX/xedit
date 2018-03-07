@@ -103,9 +103,11 @@ export class PropertiesLocalViewComponent implements OnInit {
         this.changePropertyValue('class', value.join(' '));
     }
 
-    cnageProperty(value) {
-        const property = keys(value)[0];
-        this.changePropertyValue(property, value[property]);
+    cnageProperty({ new: newValue }) {
+        const property = keys(newValue)[0];
+        this.changePropertyValue(property, newValue[property]);
+        /*const property = keys(value)[0];
+        this.changePropertyValue(property, value[property]);*/
     }
 
     changePropertyValue(property, value) {
