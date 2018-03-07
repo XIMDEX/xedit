@@ -241,6 +241,12 @@ export class Converters {
                     extraData = `${Xedit.getResourceUrl()}/${extraData}`;
                 }
                 extraData = `src='${extraData}'`;
+            } else if (equals(key, XeditMapper.TAG_LINK)) {
+                extraData = value;
+                if (!(/^(f|ht)tps?:\/\//i).test(extraData)) {
+                    extraData = `${Xedit.getResourceUrl()}/${extraData}`;
+                }
+                extraData = `href='${extraData}'`;
             }
         }
         return `${key}="${value}" ${extraData}`;
