@@ -16,8 +16,7 @@ export class PropertiesAreaComponent implements OnInit {
 
     private currentNode: Node;
     private availablesViews: Array<string> = [
-        'local',
-        'global'
+        'local'
     ];
     private isOpen: boolean;
     protected selectedView: String;

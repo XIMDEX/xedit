@@ -1,0 +1,16 @@
+<div>
+    <header>Metadatos</header>
+    <main>
+        <ng-container *ngFor="let value of metas">
+            <app-multi-input [data]="value"></app-multi-input>
+        </ng-container>
+    </main>
+</div>
+<div>
+    <header>Estados</header>
+    <main>
+        <ng-container *ngFor="let value of states">
+            <p (click)="restoreSnaptshot(value.key)">{{ value.message }}</p>
+        </ng-container>
+    </main>
+</div>

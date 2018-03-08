@@ -21,7 +21,7 @@ import { KeysPipe } from '@pipes/keys/keys.pipe';
 import { UrlPipe } from '@pipes/url/url.pipe';
 import { TaskbarComponent } from '@components/taskbar/taskbar.component';
 import { EditorComponent } from '@components/editor/editor.component';
-import { PropertiesGlobalViewComponent } from '@components/editor/properties-area/properties-global-view/properties-global-view.component';
+import { PropertiesGlobalViewComponent } from '@components/taskbar/properties-global-view/properties-global-view.component';
 import { PropertiesLocalViewComponent } from '@components/editor/properties-area/properties-local-view/properties-local-view.component';
 import { WysiwygViewComponent } from '@components/editor/views/wysiwyg-view/wysiwyg-view.component';
 import { TextViewComponent } from '@components/editor/views/text-view/text-view.component';

@@ -5,72 +5,38 @@
     position: relative;
     z-index: 10;
 
-    > header{
-        background-color: $green-dark;
+    > header {
         position: relative;
-        font: $font-default;
-        display: flex;
-        @include box-shadow(bottom, 0.57);
+        user-select: none;
 
-        > .title {
-            flex-grow: 2;
-        }
+        > div{
+            background-color: $green-dark;
+            position: relative;
+            font: $font-default;
+            display: flex;
+            @include box-shadow(bottom, 0.57);
+            z-index: 6;
 
-        > nav{
-            flex-grow: 1;
-            padding: 0;
-            margin: 0;
-            max-width: 30%;
-            min-width: 30%;
-            overflow-x: auto;
-            min-height: $taskbar-height;
-            max-height: $taskbar-height;
-
-            &.views {
-                > ul {
-                    justify-content: flex-end;
-                }
-            }
-
-            > ul{
-                flex-grow: 1;
-                padding: 0;
-                margin: 0;
-                list-style: none;
-                height: $taskbar-height;
+            > .title {
+                flex-grow: 2;
                 display: flex;
-                flex-direction: row;
-                align-items: center;
-                padding: 0 5px;
-
-                > li{
-                    margin: auto 5px auto 0;
-                    padding: 5px 10px;
+                > h2 {
+                    text-align: center;
+                    font: $font-default;
+                    font-size: $font-size-big;
                     color: $white-warm;
-                    transition: color 0.3s ease-in-out;
+                    margin: auto;
+                    padding: 0;
                     cursor: pointer;
+                    transition: color 0.3s ease-in-out;
 
-                    &.tabs {
-                        height: $taskbar-height;
-                        line-height: $taskbar-height;
-                        text-transform: uppercase;
-                        border-bottom: 2px solid transparent;
-                        transition: color 0.3s ease-in-out, border-bottom-color 0.3s ease-in-out;
+                    > i {
+                        transform: rotate(0);
+                        color: inherit;
+                        padding: 0 5px;
                     }
 
-                    > i{
-                        font-size: $icon-size-default;
-                    }
-
-                    &.separator {
-                        padding: 0;
-                        height: $taskbar-height - 16px;
-                        width: 1px;
-                        margin: auto 0;
-                        background-color: $green-light;
-                    }
-
-                    &:hover{
+                    &:hover {
                         color: $white-light;
                     }
 
@@ -80,25 +46,111 @@
                     }
 
                     &.selected {
-                        border-bottom-color: $white-light;
                         color: $white-light;
+
+                        > i {
+                            transform: rotate(180deg);
+                        }
                     }
-                } 
+                }
             }
+
+            > nav{
+                flex-grow: 1;
+                padding: 0;
+                margin: 0;
+                max-width: 30%;
+                min-width: 30%;
+                overflow-x: auto;
+                min-height: $taskbar-height;
+                max-height: $taskbar-height;
+
+                &.views {
+                    > ul {
+                        justify-content: flex-end;
+                    }
+                }
+
+                > ul{
+                    flex-grow: 1;
+                    padding: 0;
+                    margin: 0;
+                    list-style: none;
+                    height: $taskbar-height;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    padding: 0 5px;
+
+                    > li{
+                        margin: auto 5px auto 0;
+                        padding: 5px 10px;
+                        color: $white-warm;
+                        transition: color 0.3s ease-in-out;
+                        cursor: pointer;
+
+                        &.tabs {
+                            height: $taskbar-height;
+                            line-height: $taskbar-height;
+                            text-transform: uppercase;
+                            border-bottom: 2px solid transparent;
+                            transition: color 0.3s ease-in-out, border-bottom-color 0.3s ease-in-out;
+                        }
+
+                        > i{
+                            font-size: $icon-size-default;
+                        }
+
+                        &.separator {
+                            padding: 0;
+                            height: $taskbar-height - 16px;
+                            width: 1px;
+                            margin: auto 0;
+                            background-color: $green-light;
+                        }
+
+                        &:hover{
+                            color: $white-light;
+                        }
+
+                        &.disabled{
+                            cursor: not-allowed;
+                            color: $green-light;
+                        }
+
+                        &.selected {
+                            border-bottom-color: $white-light;
+                            color: $white-light;
+                        }
+                    } 
+                }
+            }
+        }
+
+        > #attributes {
+            margin: 15px 50% auto;
+            position: absolute;
+            top: 100%;
+            left: auto;
+            bottom: auto;
+            right: auto;
+            transform: translateX(-50%);
+            max-width: 600px;
+            min-width: 220px;
+            width: 100%;
+            z-index: -1;
+            @include box-shadow(bottom, 0.5);
         }
     }
 
     &.embebed {
         > header {
-            background-color: $white-warm;
-            > nav {
-                >ul {
-                    > li {
-                        color: $white-darker;
+            > div{
+                background-color: $white-ximdex;
 
-                        &.separator {
-                            background-color: $white-dark;
-                        }
+                > .title {
+                    > h2 {
+                        color: $white-darker;
 
                         &:hover{
                             color: $black-light;
@@ -107,10 +159,34 @@
                         &.disabled{
                             color: $white-dark;
                         }
-    
+
                         &.selected {
-                            border-bottom-color: $black-light;
                             color: $black-light;
+                        }
+                    }
+                }
+
+                > nav {
+                    >ul {
+                        > li {
+                            color: $white-darker;
+
+                            &.separator {
+                                background-color: $white-dark;
+                            }
+
+                            &:hover{
+                                color: $black-light;
+                            }
+
+                            &.disabled{
+                                color: $white-dark;
+                            }
+        
+                            &.selected {
+                                border-bottom-color: $black-light;
+                                color: $black-light;
+                            }
                         }
                     }
                 }

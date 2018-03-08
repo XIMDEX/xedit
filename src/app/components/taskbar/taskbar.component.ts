@@ -1,7 +1,7 @@
 
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { FileReaderEvent } from '../../interfaces/file-reader-event-target';
-import { equals, contains, isNil, indexOf, remove } from 'ramda';
+import { equals, contains, isNil, indexOf, remove, hasIn } from 'ramda';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { File } from '@models/file';
@@ -9,6 +9,7 @@ import { DOM } from '@models/dom';
 import { StateService } from '@services/state-service/state.service';
 import { EditorService } from '@services/editor-service/editor.service';
 import { NotificationsService } from 'angular2-notifications';
+import { trigger, transition, style, animate, state } from '@angular/animations'
 import { Api } from '@app/api';
 import { Xedit } from '@app/xedit';
 
@@ -16,23 +17,51 @@ import { Xedit } from '@app/xedit';
     selector: 'app-taskbar',
     templateUrl: './taskbar.component.html',
     styleUrls: ['./taskbar.component.scss'],
+    animations: [
+        trigger(
+            'toggleAtributes',
+            [
+                transition(
+                    ':enter', [
+                        style({ transform: 'translate(-50%, -100%)', opacity: 0 }),
+                        animate('250ms', style({ transform: 'translate(-50%, 0)', 'opacity': 1 }))
+                    ]
+                ),
+                transition(
+                    ':leave', [
+                        style({ transform: 'translate(-50%, 0)', 'opacity': 1 }),
+                        animate('250ms', style({ transform: 'translate(-50%, -100%)', 'opacity': 0 }))
+
+                    ]
+                )
+            ]
+        )
+    ]
 })
 export class TaskbarComponent implements OnInit {
 
     @ViewChild('viewMenu') viewMenu: ElementRef;
+
     private file: File;
     private currentView: string;
     private availableViews: Array<string> = [];
+    private title: String;
+    private displayToggle: boolean;
 
     constructor(private _editorService: EditorService, private _stateService: StateService, private http: HttpClient,
         private _notification: NotificationsService) {
         this.currentView = '';
+        this.title = 'Document'
+        this.displayToggle = false;
     }
 
     /************************************ LIFE CYCLE *******************************************/
     ngOnInit() {
         this._editorService.getFile().subscribe(obsFile => {
             this.file = obsFile;
+            if (!isNil(obsFile)) {
+                this.title = obsFile.getName();
+            }
         });
 
         this._stateService.getCurrentView().subscribe(currentView => this.currentView = currentView);
@@ -120,5 +149,16 @@ export class TaskbarComponent implements OnInit {
                 console.error('Error loading file');
             };
         }
+    }
+
+    toggleAttributes(event) {
+        DOM.element(event.target).toggleClass('selected');
+        this.displayToggle = !this.displayToggle;
+    }
+
+    closeAttributes(event) {
+        const title = document.getElementById('xe-task-title');
+        DOM.element(title).removeClass('selected');
+        this.displayToggle = false;
     }
 }

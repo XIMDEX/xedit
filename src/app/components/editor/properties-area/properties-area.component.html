@@ -25,6 +25,5 @@
     </collapsible-header>
     <collapsible-body [expanded]="isOpen">
         <app-properties-local *ngIf="'local' === selectedView"></app-properties-local>
-        <app-properties-global *ngIf="'global' === selectedView"></app-properties-global>
     </collapsible-body>
 </collapsible-list-item>

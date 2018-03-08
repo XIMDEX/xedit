@@ -1,33 +1,41 @@
-<header (clickOutside)="closeMenu()">
-    <nav id="xedit-taskbar" class="taskbar">
-        <ul>
-            <li (click)="load()">
-                <i class="fas fa-upload"></i>
-                <input style='position:absolute; left:-1000px' type="file" name="open_html" id="open_html" (change)="onFileSelect($event)">
-            </li>
-            <li>
-                <i class="fas fa-save" (click)="save()"></i>
-            </li>
-            <li class="separator"></li>
-            <li (click)="undo()" [ngClass]="{disabled: !previousAvailable()}">
-                <i class="fas fa-undo"></i>
-            </li>
-            <li (click)="redo()" [ngClass]="{disabled: !nextAvailable()}">
-                <i class="fas fa-redo"></i>
-            </li>
-            <li>
-                <i class="fas fa-separator"></i>
-            </li>
-        </ul>
-    </nav>
-    <aside class="title">
-
-    </aside>
-    <nav class="views">
-        <ul *ngIf="hasMultiViews()">
-            <li (click)="showComponent(view)" *ngFor="let view of availableViews" [ngClass]="{selected: currentView === view, tabs: true}">
-                {{ view == 'wysiwyg' ? 'Visual' : 'Texto' }}
-            </li>
-        </ul>
-    </nav>
+<header (clickOutside)="closeAttributes()">
+    <div>
+        <nav id="xedit-taskbar" class="taskbar">
+            <ul>
+                <li (click)="load()">
+                    <i class="fas fa-upload"></i>
+                    <input style='position:absolute; left:-1000px' type="file" name="open_html" id="open_html" (change)="onFileSelect($event)">
+                </li>
+                <li>
+                    <i class="fas fa-save" (click)="save()"></i>
+                </li>
+                <li class="separator"></li>
+                <li (click)="undo()" [ngClass]="{disabled: !previousAvailable()}">
+                    <i class="fas fa-undo"></i>
+                </li>
+                <li (click)="redo()" [ngClass]="{disabled: !nextAvailable()}">
+                    <i class="fas fa-redo"></i>
+                </li>
+                <li>
+                    <i class="fas fa-separator"></i>
+                </li>
+            </ul>
+        </nav>
+        <aside class="title">
+            <h2 (click)="toggleAttributes($event)" id="xe-task-title">
+                {{ title }}
+                <i class="fas fa-caret-down"></i>
+            </h2>
+        </aside>
+        <nav class="views">
+            <ul *ngIf="hasMultiViews()">
+                <li (click)="showComponent(view)" *ngFor="let view of availableViews" [ngClass]="{selected: currentView === view, tabs: true}">
+                    {{ view == 'wysiwyg' ? 'Visual' : 'Texto' }}
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div id="attributes" *ngIf="displayToggle" [@toggleAtributes]>
+        <app-properties-global></app-properties-global>
+    </div>
 </header>

@@ -50,6 +50,7 @@ export class File extends History {
     private css: Array<string>;
     private js: Array<string>;
     private metas: Array<Object>;
+    private name: String;
 
     constructor(json = null) {
 
@@ -61,6 +62,7 @@ export class File extends History {
         this.metas = json.metas;
         this.css = [];
         this.js = [];
+        this.name = json.name;
 
         const schemas = {};
         if (!isNil(json.nodes)) {
@@ -95,6 +97,10 @@ export class File extends History {
 
     setMeta(name: string, value: string) {
         return this.metas[name] = value;
+    }
+
+    getName(): String {
+        return this.name;
     }
     /***************** PUBLIC METHODS **************************/
 
