@@ -65,8 +65,8 @@ export class WysiwygHandler {
      */
     static initTinymce(args) {
         if (tinymce.activeEditor == null || !WysiwygHandler.isSameEditor(tinymce.activeEditor,
-            args.node.getTarget().getAttribute(XeditMapper.TAG_UUID))) {
-
+            args.node.getSection().getAttribute(XeditMapper.TAG_UUID))) {
+            WysiwygHandler.clearTinymce();
             WysiwygHandler.addPlugins();
             const toolbar = WysiwygHandler.generateToolbar(args.node.getSchema());
             const fixed_toolbar_container = !isEmpty(toolbar) ? '#toolbar' : false;
@@ -83,12 +83,25 @@ export class WysiwygHandler {
                 toolbar: toolbar,
                 plugins: WysiwygHandler.getAvailablePlugins(args.node.getSchema()),
                 skin_url: 'assets/skins/x-edit',
-                content_style: '.mce-content-body{ line-height: inherit !important; }  .mce-content-focus{ outline: inherit !important; }',
+                //content_style: '.mce-content-body{ line-height: inherit !important; }  .mce-content-focus{ outline: inherit !important; }',
                 valid_elements: '*[*]',
                 setup: editor => {
                     editor.on('Nodechange', (e) => {
                         const element = e.element;
-                        if (isNil(element.getAttribute(XeditMapper.TAG_UUID))) {
+                        const id = element.getAttribute(XeditMapper.TAG_UUID);
+                        function isParentId(parents, id) {
+                            let is = false;
+                            if (!isNil(parents)) {
+                                parents.forEach(parent => {
+                                    if (equals(parent.getAttribute(XeditMapper.TAG_UUID), id)) {
+                                        is = true;
+                                        parent.removeAttribute('xe_w_selected');
+                                    }
+                                });
+                            }
+                            return is;
+                        }
+                        if (isNil(id) || isParentId(e.parents, id)) {
                             element.setAttribute(XeditMapper.TAG_UUID, UUID.UUID());
                         }
 

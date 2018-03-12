@@ -287,7 +287,7 @@ export class EditorService {
         try {
             node = new Node(uuid, element, attributes);
         } catch (e) {
-            // console.error('This element is not a valid node');
+            console.error('This element is not a valid node');
         }
         return node;
     }

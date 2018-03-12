@@ -153,10 +153,10 @@ export class BreadcrumbComponent implements OnInit {
                             DOM.element(node.getSection())
                                 .insertNode(template, sectionNode.getTarget().childNodes[sectionNode.getTarget().childNodes.length], true);
                             this._editorService.addNodeToArea(node, Converters.html2json(template, false), true);
-                            this._notification.info('Nodo insertado', 'El nodo ha sido pegado con éxito.',
+                            this._notification.info('Componente insertado', 'El componente ha sido pegado con éxito.',
                                 Xedit.NOTIFICATION_DEFAULT_SETTINGS);
                         } else {
-                            this._notification.error('Estructura inválida', 'El nodo pegado no es soportado.',
+                            this._notification.error('Estructura inválida', 'El componente pegado no es soportado.',
                                 Xedit.NOTIFICATION_DEFAULT_SETTINGS);
                         }
                     },
