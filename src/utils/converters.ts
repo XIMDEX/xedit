@@ -238,13 +238,13 @@ export class Converters {
             if (equals(key, XeditMapper.TAG_IMAGE)) {
                 extraData = value;
                 if (!(/^(f|ht)tps?:\/\//i).test(extraData)) {
-                    extraData = `${Xedit.getResourceUrl()}/${extraData}`;
+                    extraData = `${Xedit.getResourceUrl()}${extraData}`;
                 }
                 extraData = `src='${extraData}'`;
             } else if (equals(key, XeditMapper.TAG_LINK)) {
                 extraData = value;
                 if (!(/^(f|ht)tps?:\/\//i).test(extraData)) {
-                    extraData = `${Xedit.getResourceUrl()}/${extraData}`;
+                    extraData = `${Xedit.getResourceUrl()}${extraData}`;
                 }
                 extraData = `href='${extraData}'`;
             }

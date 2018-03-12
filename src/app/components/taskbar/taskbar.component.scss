@@ -91,7 +91,7 @@
 
                         &.tabs {
                             height: $taskbar-height;
-                            line-height: $taskbar-height;
+                            line-height: $taskbar-line-height;
                             text-transform: uppercase;
                             border-bottom: 2px solid transparent;
                             transition: color 0.3s ease-in-out, border-bottom-color 0.3s ease-in-out;
