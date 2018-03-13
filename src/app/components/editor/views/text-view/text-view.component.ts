@@ -1,6 +1,6 @@
-import { Component, ViewChildren, AfterViewInit, OnInit, QueryList, OnDestroy } from '@angular/core';
+import { Component, AfterViewInit, OnInit, QueryList, OnDestroy, ViewChild } from '@angular/core';
 import pretty from 'pretty';
-import { isNil, is } from 'ramda';
+import { isNil, is, isEmpty } from 'ramda';
 import { AceEditorComponent } from 'ng2-ace-editor/src/component';
 
 import { File } from '@models/file';
@@ -19,144 +19,175 @@ declare let ace: any;
 
 
 @Component({
-  selector: 'app-text-view',
-  templateUrl: './text-view.component.html',
-  styleUrls: ['./text-view.component.scss']
+    selector: 'app-text-view',
+    templateUrl: './text-view.component.html',
+    styleUrls: ['./text-view.component.scss']
 })
 export class TextViewComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChildren(AceEditorComponent) editors: QueryList<AceEditorComponent>;
+    @ViewChild('aceEditor') editor: AceEditorComponent;
 
-  private editorNodes: Array<any> = null;
-  private reload: boolean;
-  private isHtmlValid: boolean;
-  private subscribeFile;
+    private editorNodes: Array<any> = null;
+    private reload: boolean;
+    private isHtmlValid: boolean;
+    private subscribeFile;
 
-  constructor(private _editorService: EditorService, private _stateService: StateService) {
-    this.reload = false;
-    this.isHtmlValid = true;
-  }
+    private openEditor: Object;
 
-  /************* LIFE CYCLE *************/
-  ngOnInit() {
-    this._editorService.setLoading(true);
-    this.config();
-    this._editorService.setLoading(false);
-  }
+    private styleMode: Object;
+    private reloadAceEditor: Boolean;
 
-  ngAfterViewInit() {
-    this.initEditor();
-    this.editors.changes.subscribe(() => { this.initEditor(); });
-  }
+    constructor(private _editorService: EditorService, private _stateService: StateService) {
+        this.openEditor = {};
+        this.reloadAceEditor = false;
 
-  ngOnDestroy() {
-    this.subscribeFile.unsubscribe();
-  }
+        this.reload = false;
+        this.isHtmlValid = true;
 
-
-  /************* END LIFE CYCLE *************/
-  private config() {
-    this.subscribeFile = this._editorService.getFile().subscribe(file => {
-      this.editorNodes = this.parseToHtmlToEditors(file.getState().content);
-    });
-
-  }
-
-  /**
-   *
-   * @param content
-   */
-  private parseToHtmlToEditors(content) {
-    const editorNodes = [];
-
-    // Clean editors if exist
-    if (!isNil(this.editors)) {
-      this.editors.forEach(editor => {
-        editor.getEditor().destroy();
-      });
+        this.styleMode = {
+            height: '100%',
+            width: '100%',
+            overflow: 'auto'
+        };
     }
 
-    Object.keys(content).forEach(property => {
-      const node = content[property];
-      editorNodes.push({
-        'id': property,
-        'title': node.title,
-        'renderContent': is(String, node.content) ? node.content : pretty(Converters.json2html(node.content, false, false)),
-        'editor': null
-      });
-    });
+    /************* LIFE CYCLE *************/
+    ngOnInit() {
+        this._editorService.setLoading(true);
+        this.config();
+        this._editorService.setLoading(false);
+    }
 
-    return editorNodes;
-  }
+    ngAfterViewInit() {
+        this.initEditor();
+    }
 
-  initEditor() {
-    this.editors.forEach((editor, i) => {
-      const _editor = editor.getEditor();
-      const session = _editor.getSession();
+    ngOnDestroy() {
+        this.subscribeFile.unsubscribe();
+    }
 
-      this.editorNodes[i].editor = _editor;
 
-      _editor.setOptions({
-        enableBasicAutocompletion: true,
-        enableSnippets: true,
-        enableLiveAutocompletion: false
-      });
-      // session.setOption('minLines', 2);
+    /************* END LIFE CYCLE *************/
+    public changeView(openEditor: Object, index: any) {
+        this.openEditor = openEditor;
+        this.openEditor['index'] = index;
 
-      /*_editor.commands.addCommand({
-        name: 'showOtherCompletions',
-        bindKey: 'Ctrl-.',
-        exec: function (editor) {
+        this.reloadAceEditor = true;
+
+        if (!this.openEditor['editable']) {
+            this.styleMode['backgroundColor'] = '#e8e8e8';
+        } else {
+            delete (this.styleMode['backgroundColor']);
         }
-      });*/
 
-      /*session.selection.on('changeSelection', function (e) {
-        let selectionRange = _editor.getSelectionRange();
-        let startLine = selectionRange.start.row;
-        let endLine = selectionRange.end.row;
-      });*/
-      _editor.on('blur', (e) => {
-        setTimeout(() => {
-          this._editorService.getFileStateValue().snapshot();
-        }, 1000);
-      });
-      session.on('change', (e) => {
-        if (_editor.curOp && _editor.curOp.command.name) { // Only if is user trigger event
 
-          if (editor.timeoutSaving != null) {
-            clearTimeout(editor.timeoutSaving);
-          }
+    }
 
-          editor.timeoutSaving = setTimeout(() => {
-            this._editorService.save(_editor.container.id, _editor.getValue(), 'Edit mode text');
-            editor.timeoutSaving = null;
-          }, editor._durationBeforeCallback);
 
-          /*let content = _editor.getValue();
-          let options = {
-            settings: {
-              format: 'html', // 'plain', 'html', or 'markdown'
-            },
-            attributes: {
-              '_': {
-                mixed: /.
-              }
+    private config() {
+        this.subscribeFile = this._editorService.getFile().subscribe(file => {
+            this.editorNodes = this.parseToHtmlToEditors(file.getState().content);
+            for (let key in this.editorNodes) {
+                if (this.editorNodes[key].editable) {
+                    this.changeView(this.editorNodes[key], key);
+                    return;
+                }
             }
-          };
-          EditorComponent.executeIfvalidateHtmlTags(content,
-            _ => {
-              let newState = clone(this.file.getState().getContent());
-              let json = File.html2json(content, false);
-              newState[_editor.container.id].content.child = json;
-              this.isHtmlValid = true;
-              this._editorService.newStateFile(newState);
-              this._stateService.setAvailableViews(['form', 'wysiwyg']);
-            },
-            _ => {
-              this.isHtmlValid = false;
-              this._stateService.setAvailableViews(['form']);
-            })*/
-        }
-      });
-    });
-  }
+        });
+
+    }
+
+    /**
+     *
+     * @param content
+     */
+    private parseToHtmlToEditors(content) {
+        const editorNodes = [];
+
+        Object.keys(content).forEach(property => {
+            const node = content[property];
+            editorNodes.push({
+                id: property,
+                title: node.title,
+                editable: node.editable,
+                renderContent: is(String, node.content) ? node.content : pretty(Converters.json2html(node.content, false, false)),
+                editor: null
+            });
+        });
+
+        return editorNodes;
+    }
+
+    initEditor() {
+        const _editor = this.editor.getEditor();
+        const session = _editor.getSession();
+
+        _editor.setOptions({
+            enableBasicAutocompletion: true,
+            enableSnippets: true,
+            enableLiveAutocompletion: false
+        });
+        // session.setOption('minLines', 2);
+
+        /*_editor.commands.addCommand({
+          name: 'showOtherCompletions',
+          bindKey: 'Ctrl-.',
+          exec: function (editor) {
+          }
+        });*/
+
+        /*session.selection.on('changeSelection', function (e) {
+          let selectionRange = _editor.getSelectionRange();
+          let startLine = selectionRange.start.row;
+          let endLine = selectionRange.end.row;
+        });*/
+        _editor.on('focus', (e) => {
+            this.reloadAceEditor = false;
+        });
+        _editor.on('blur', (e) => {
+            this.reloadAceEditor = true;
+            setTimeout(() => {
+                this._editorService.getFileStateValue().snapshot();
+            }, 1000);
+        });
+        session.on('change', (e) => {
+            if (_editor.curOp && _editor.curOp.command.name) { // Only if is user trigger event
+                this.editorNodes[this.openEditor['index']].renderContent = _editor.getValue();
+
+                if (this.editor.timeoutSaving != null) {
+                    clearTimeout(this.editor.timeoutSaving);
+                }
+
+                this.editor.timeoutSaving = setTimeout(() => {
+                    this._editorService.save(this.openEditor['id'], _editor.getValue(), 'Edit mode text');
+                    this.editor.timeoutSaving = null;
+                }, this.editor._durationBeforeCallback);
+
+                /*let content = _editor.getValue();
+                let options = {
+                  settings: {
+                    format: 'html', // 'plain', 'html', or 'markdown'
+                  },
+                  attributes: {
+                    '_': {
+                      mixed: /.
+                    }
+                  }
+                };
+                EditorComponent.executeIfvalidateHtmlTags(content,
+                  _ => {
+                    let newState = clone(this.file.getState().getContent());
+                    let json = File.html2json(content, false);
+                    newState[_editor.container.id].content.child = json;
+                    this.isHtmlValid = true;
+                    this._editorService.newStateFile(newState);
+                    this._stateService.setAvailableViews(['form', 'wysiwyg']);
+                  },
+                  _ => {
+                    this.isHtmlValid = false;
+                    this._stateService.setAvailableViews(['form']);
+                  })*/
+            }
+        });
+        // });
+    }
 }

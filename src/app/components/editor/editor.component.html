@@ -13,4 +13,4 @@
     <app-breadcrumb (selectNode)="setCurrentNode($event)"></app-breadcrumb>
     <!-- END BREADCRUMBS -->
 </main>
-<app-properties-area ngDraggable></app-properties-area>
+<app-properties-area ngDraggable *ngIf="showComponent('wysiwyg')"></app-properties-area>
