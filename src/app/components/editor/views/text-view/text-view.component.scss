@@ -5,7 +5,44 @@
     background-color: $white-lighter;
     height: 100%;
     display: block;
-    background: #e3e3e3 !important;
+
+    > #tabs {
+        user-select: none;
+        display: flex;
+        flex-direction: row;
+        background-color: $white-warm;
+        font: $font-size-default;
+        text-transform: uppercase;
+        font-size: $font-size-small;
+        @include box-shadow(bottom, 0.5);
+        position: relative;
+        z-index: 5;
+
+        > div {
+            box-sizing: border-box;
+            height: $tabs-height-small;
+            padding: 0 10px;
+            line-height: $tabs-height-small;
+            border-bottom: 2px solid transparent;
+            color: $white-darker;
+            transition: color 0.3s ease-in-out, border-bottom-color 0.3s ease-in-out;
+            cursor: pointer;
+
+            &:hover {
+                border-bottom-color: $green-light;
+            }
+
+            &.selected {
+                border-bottom-color: $green-dark;
+                color: $green-darker;
+            }
+        }
+    }
+
+    > ace-editor {
+        position: relative;
+        z-index: 3;
+    }
 }
 
 

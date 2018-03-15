@@ -142,7 +142,7 @@ export class WysiwygHandler {
                     });
 
                     editor.on('hide', (e) => {
-                        console.log("OK");
+                        console.log('OK');
                         tinymce.remove(editor);
                     });
 
@@ -303,7 +303,7 @@ export class WysiwygHandler {
 
     private static getAvailablePlugins(schema) {
         /*['link', 'table', 'image', 'paste', 'dam']*/
-        let plugins = ''; // 'searchreplace autolink image link media hr anchor advlist lists textcolor imagetools colorpicker';
+        const plugins = ''; // 'searchreplace autolink image link media hr anchor advlist lists textcolor imagetools colorpicker';
         return 'dam searchreplace autolink image link media hr anchor advlist lists textcolor imagetools colorpicker';
     }
     /**********************************     DATEPICKER  *******************************************/

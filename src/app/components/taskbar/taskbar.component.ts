@@ -9,7 +9,7 @@ import { DOM } from '@models/dom';
 import { StateService } from '@services/state-service/state.service';
 import { EditorService } from '@services/editor-service/editor.service';
 import { NotificationsService } from 'angular2-notifications';
-import { trigger, transition, style, animate, state } from '@angular/animations'
+import { trigger, transition, style, animate, state } from '@angular/animations';
 import { Api } from '@app/api';
 import { Xedit } from '@app/xedit';
 
@@ -51,7 +51,7 @@ export class TaskbarComponent implements OnInit {
     constructor(private _editorService: EditorService, private _stateService: StateService, private http: HttpClient,
         private _notification: NotificationsService) {
         this.currentView = '';
-        this.title = 'Document'
+        this.title = 'Document';
         this.displayToggle = false;
     }
 
@@ -121,7 +121,7 @@ export class TaskbarComponent implements OnInit {
             } else {
                 error();
             }
-        }
+        };
 
         Api.saveDocument(this.http, this._editorService.getUpdatedDocument(), success, error);
     }

@@ -34,7 +34,7 @@ export class BreadcrumbComponent implements OnInit {
     }
 
     getBreadCrumb(currentNode, rootTag = 'xedit', path: Array<Object> = []) {
-        let section = null;
+        const section = null;
         let key = null;
 
         if (!isNil(currentNode) && !isNil(currentNode.getAttribute(XeditMapper.TAG_SECTION_TYPE)) &&

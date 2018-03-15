@@ -2,8 +2,18 @@
     <p *ngIf="!isHtmlValid" style="color:rgb(233, 113, 113)">HTML INVÁLIDO</p>
 </div>
 
-<div *ngFor="let editorNode of editorNodes">
-    <h3>{{ editorNode.title }}</h3>
-    <ace-editor [text]=editorNode.renderContent id={{editorNode.id}} [durationBeforeCallback]=500 [autoUpdateContent]="false"
-        [theme]="'dreamweaver'" [mode]="'html'" style="height: 500px; width:100%; overflow: auto;"></ace-editor>
+<div id="tabs">
+    <ng-container *ngFor="let editorNode of editorNodes; let i = index">
+        <div [ngClass]="{selected: (openEditor.id === editorNode.id)}" *ngIf="openEditor.id === editorNode.id; else actionTab">
+            {{ editorNode.title }}
+        </div>
+        <ng-template #actionTab>
+            <div [ngClass]="{selected: (openEditor.id === editorNode.id)}" (click)="changeView(editorNode, i)">
+                {{ editorNode.title }}
+            </div>
+        </ng-template>
+    </ng-container>
 </div>
+
+<ace-editor #aceEditor [text]="openEditor.renderContent" id={{openEditor.id}} [durationBeforeCallback]=500 [autoUpdateContent]="reloadAceEditor"
+    [readOnly]="!openEditor.editable" [theme]="'dreamweaver'" [mode]="'html'" [ngStyle]="styleMode"></ace-editor>
