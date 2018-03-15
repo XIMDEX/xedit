@@ -52,6 +52,9 @@ export class Node {
         return this.target;
     }
 
+    getHtmlTag() {
+        return this.target.tagName;
+    }
     setTarget(target: any): void {
         this.target = target;
     }
@@ -98,7 +101,7 @@ export class Node {
     }
 
     setAttribute(name: string, value: Object): void {
-        if (name === XeditMapper.TAG_IMAGE) {
+        if (name === XeditMapper.TAG_LINK && this.getHtmlTag() === 'IMG') {
             this.attributes[name] = value;
             this.attributes['src'] = `${Xedit.getResourceUrl()}/${value}`;
         } else if (contains(name, this.getAvailableAttributes())) {
@@ -124,9 +127,7 @@ export class Node {
     getAvailableAttributes() {
         let attrName = this.name;
 
-        if (this.getAttribute(XeditMapper.TAG_IMAGE, null) != null) {
-            attrName = XeditMapper.TAG_IMAGE;
-        } else if (this.getAttribute(XeditMapper.TAG_AUDIO, null) != null) {
+        if (this.getAttribute(XeditMapper.TAG_AUDIO, null) != null) {
             attrName = XeditMapper.TAG_AUDIO;
         } else if (this.getAttribute(XeditMapper.TAG_LINK, null) != null) {
             attrName = XeditMapper.TAG_LINK;

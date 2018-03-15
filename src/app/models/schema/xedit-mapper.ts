@@ -10,7 +10,6 @@ export class XeditMapper {
     static TAG_EDITOR = 'xedit';
     static TAG_SECTION_TYPE = 'xe_section';
     static TAG_UUID = 'xe_uuid';
-    static TAG_IMAGE = 'xe_img';
     static TAG_VIDEO = 'xe_video';
     static TAG_LINK = 'xe_link';
     static TAG_AUDIO = 'xe_audio';
@@ -19,7 +18,7 @@ export class XeditMapper {
     static ATTR_SELECTED = 'xe_selected';
     static ATTR_WYSIWYG_SELECTED = 'xe_w_selected';
     static requiredXeditAttributes = [
-        XeditMapper.TAG_SECTION_TYPE, XeditMapper.TAG_IMAGE, XeditMapper.TAG_AUDIO, XeditMapper.TAG_LINK,
+        XeditMapper.TAG_SECTION_TYPE, XeditMapper.TAG_AUDIO, XeditMapper.TAG_LINK,
         XeditMapper.TAG_VIDEO
     ];
 
@@ -34,16 +33,9 @@ export class XeditMapper {
             }
         },
         xe_link: {
-            filter_attributes: ['href'],
+            filter_attributes: ['href', 'src'],
             attributes: {
                 accept: ['xe_link'],
-                reject: []
-            }
-        },
-        xe_img: {
-            filter_attributes: ['src'],
-            attributes: {
-                accept: ['xe_img'],
                 reject: []
             }
         },

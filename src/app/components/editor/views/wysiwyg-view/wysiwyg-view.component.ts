@@ -145,6 +145,14 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
         }
     }
 
+
+    private addHttp(resource: string) {
+        if (!(/^(f|ht)tps?:\/\//i).test(resource)) {
+            resource = `${Xedit.getResourceUrl()}${resource}`;
+        }
+        return resource;
+    }
+
     /************************************** Public Methods **************************************/
     onclick(evt) {
         this.changeSelection(evt.target.getAttribute(XeditMapper.TAG_UUID));

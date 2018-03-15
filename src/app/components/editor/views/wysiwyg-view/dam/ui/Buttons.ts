@@ -8,7 +8,7 @@ const register = function (editor) {
         icon: 'media',
         tooltip: 'DAM',
         cmd: 'mceDam',
-        stateSelector: 'img[xe_img]'
+        stateSelector: 'img[xe_link]'
     });
 
     editor.addMenuItem('dam', {

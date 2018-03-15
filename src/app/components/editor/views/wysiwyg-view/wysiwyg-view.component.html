@@ -5,7 +5,7 @@
 </div>-->
 <div class="css">
     <ng-container *ngFor="let css of cssLinks">
-        <link rel="stylesheet" [href]="css | url">
+        <link rel="stylesheet" [href]="addHttp(css) | url">
     </ng-container>
 </div>
 <div #xedit [innerHTML]="renderContent | safeHtml" (click)="onclick($event)" (contextmenu)="onContextMenu($event, item)"></div>

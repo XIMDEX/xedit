@@ -256,7 +256,7 @@ export class EditorService {
         for (const nodeId in state.content) {
             if (hasIn('content', state.content[nodeId])) {
                 document['nodes'][nodeId] = {
-                    content: Converters.json2html(state.content[nodeId].content, false),
+                    content: Converters.json2html(state.content[nodeId].content, false, false),
                     editable: state.content[nodeId].editable
                 };
             }

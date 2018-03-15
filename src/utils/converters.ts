@@ -235,7 +235,7 @@ export class Converters {
     private static parseAttributes(key, value, processXedit) {
         let extraData = '';
         if (processXedit && contains(key, XeditMapper.requiredXeditAttributes)) {
-            if (equals(key, XeditMapper.TAG_IMAGE)) {
+            if (equals(key, XeditMapper.TAG_LINK)) {
                 extraData = value;
                 if (!(/^(f|ht)tps?:\/\//i).test(extraData)) {
                     extraData = `${Xedit.getResourceUrl()}${extraData}`;
