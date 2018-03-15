@@ -86,7 +86,7 @@ export class TextViewComponent implements OnInit, AfterViewInit, OnDestroy {
     private config() {
         this.subscribeFile = this._editorService.getFile().subscribe(file => {
             this.editorNodes = this.parseToHtmlToEditors(file.getState().content);
-            for (let key in this.editorNodes) {
+            for (const key in this.editorNodes) {
                 if (this.editorNodes[key].editable) {
                     this.changeView(this.editorNodes[key], key);
                     return;

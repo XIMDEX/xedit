@@ -5,6 +5,7 @@ export class Xedit {
     static BASE = '$xedit';
     static TOKEN = 'token';
     static API_URL = 'apiUrl';
+    static ROUTER_MAPPER = 'routerMapper';
     static RESOURCE_URL = 'resourceUrl';
     static SCHEMAS = 'schemas';
     static LANG = 'lang';
@@ -17,50 +18,68 @@ export class Xedit {
     };
 
     // ************************************** Getters and setters **************************************/
-    static getConf(conf: string, value?: any): any {
+    public static getConf(conf: string, value?: any): any {
         return hasIn(conf, Xedit.getBase()) ? Xedit.getBase()[conf] :
             (!isNil(value) ? value : undefined);
     }
 
-    static setConf(conf: string, value: any) {
+    public static setConf(conf: string, value: any) {
         return Xedit.getBase()[conf] = value;
     }
 
-    static setToken(token: string): void {
+    public static setToken(token: string): void {
         return Xedit.setConf(Xedit.TOKEN, token);
     }
 
-    static getToken(): string {
+    public static getToken(): string {
         return Xedit.getConf(Xedit.TOKEN);
     }
 
-    static setApiUrl(url: string): void {
+    public static setApiUrl(url: string): void {
         return Xedit.setConf(Xedit.API_URL, url);
     }
 
-    static getApiUrl(): string {
+
+    public static getRouterMapper(): string {
+        return Xedit.getConf(Xedit.ROUTER_MAPPER);
+    }
+
+    public static getApiUrl(): string {
         return Xedit.getConf(Xedit.API_URL);
     }
 
-    static setLang(lang: string): void {
+    public static setLang(lang: string): void {
         return Xedit.setConf(Xedit.LANG, lang);
     }
 
-    static getLang(): string {
+    public static getLang(): string {
         return Xedit.getConf(Xedit.LANG, 'es');
     }
 
-    static getResourceUrl(): string {
-        return Xedit.getConf(Xedit.RESOURCE_URL);
+    public static getResourceUrl(): string {
+        const routerMapper = Xedit.getRouterMapper();
+        let resourceUrl = '';
+        if (hasIn('resource', routerMapper['routes'])) {
+            resourceUrl = routerMapper['routes']['resource'];
+        }
+        return `${Xedit.generateActionUrl(resourceUrl)}&id=`;
     }
 
-    static getSchemas(): any {
+    public static getTreeUrl(): string {
+        const routerMapper = Xedit.getRouterMapper();
+        let treeInfo = '';
+        if (hasIn('treeInfo', routerMapper['routes'])) {
+            treeInfo = routerMapper['routes']['treeInfo'];
+        }
+        return `${Xedit.generateActionUrl(treeInfo)}&id=`;
+    }
+
+    public static getSchemas(): any {
         return Xedit.getConf(Xedit.SCHEMAS);
     }
 
     // ************************************** Private Methods **************************************/
-
-    static getBase() {
+    private static getBase() {
         let xedit = window[Xedit.BASE];
 
         if (isNil(xedit)) {
@@ -69,4 +88,9 @@ export class Xedit {
 
         return xedit;
     }
+
+    private static generateActionUrl(action: string): string {
+        return `${Xedit.getApiUrl()}?${action}&token=${Xedit.getToken()}`;
+    }
+
 }

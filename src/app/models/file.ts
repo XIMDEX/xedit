@@ -75,7 +75,8 @@ export class File extends History {
         }
 
         Xedit.setConf('schemas', schemas);
-        Xedit.setConf('resourceUrl', json.resourceUrl);
+        Xedit.setConf('baseUrl', json.baseUrl);
+        Xedit.setConf('routerMapper', json.routerMapper);
     }
 
     /**************** Getters and setter ************************/

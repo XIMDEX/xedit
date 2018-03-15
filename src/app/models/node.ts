@@ -101,7 +101,7 @@ export class Node {
     }
 
     setAttribute(name: string, value: Object): void {
-        if (name === XeditMapper.TAG_LINK && this.getHtmlTag() === 'IMG') {
+        if (name === XeditMapper.TAG_LINK && this.getHtmlTag() === 'IMG ') {
             this.attributes[name] = value;
             this.attributes['src'] = `${Xedit.getResourceUrl()}/${value}`;
         } else if (contains(name, this.getAvailableAttributes())) {

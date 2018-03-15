@@ -83,17 +83,17 @@ export class WysiwygHandler {
                 toolbar: toolbar,
                 plugins: WysiwygHandler.getAvailablePlugins(args.node.getSchema()),
                 skin_url: 'assets/skins/x-edit',
-                //content_style: '.mce-content-body{ line-height: inherit !important; }  .mce-content-focus{ outline: inherit !important; }',
                 valid_elements: '*[*]',
                 setup: editor => {
                     editor.on('Nodechange', (e) => {
-                        const element = e.element;
+                        console.log(e);
+                        /*const element = e.element;
                         const id = element.getAttribute(XeditMapper.TAG_UUID);
-                        function isParentId(parents, id) {
+                        function isParentId(parents, elementId) {
                             let is = false;
                             if (!isNil(parents)) {
                                 parents.forEach(parent => {
-                                    if (equals(parent.getAttribute(XeditMapper.TAG_UUID), id)) {
+                                    if (equals(parent.getAttribute(XeditMapper.TAG_UUID), elementId)) {
                                         is = true;
                                         parent.removeAttribute('xe_w_selected');
                                     }
@@ -103,7 +103,7 @@ export class WysiwygHandler {
                         }
                         if (isNil(id) || isParentId(e.parents, id)) {
                             element.setAttribute(XeditMapper.TAG_UUID, UUID.UUID());
-                        }
+                        }*/
 
                         /*if (!isNil(args.node.getTarget()) && !equals(args.node.getTarget().getAttribute(XeditMapper.TAG_UUID),
                             element.getAttribute(XeditMapper.TAG_UUID))) {
@@ -111,25 +111,15 @@ export class WysiwygHandler {
                         }*/
 
                     });
-                    editor.on('PastePreProcess', (e) => {
-                        function replaceIndex(string, at, repl) {
-                            let pos = -1;
-                            return string.replace(/ xe_uuid=\"[^"]*\" */g, (match) => {
-                                pos++;
-                                if (pos === at) {
-                                    return repl;
-                                }
-                                return match;
-                            });
-                        }
+                    editor.on('Paste', (e) => {
+                        e.preventDefault();
+                        let data = e.clipboardData.getData('text/html');
+                        data = WysiwygHandler.resetIdsFromString(data);
+                        document.execCommand('insertHTML', false, data);
 
-                        let occurrences = e.content.match(/ xe_uuid=\"[^"]*\" */g);
-                        occurrences = occurrences != null ? occurrences.length : 0;
-                        for (let i = 0; i < occurrences; i++) {
-                            e.content = replaceIndex(e.content, i, ' xe_uuid="' + UUID.UUID() + '" ');
-                        }
-
-                        e.content = Converters.json2html(Converters.html2json(e.content));
+                        const contentTag = editor.bodyElement;
+                        const content = editor.getContent();
+                        args.service.save(contentTag, content, 'Change section ' + args.node.getSection().getAttribute('xe_section'));
                     });
                     editor.on('change', (evt: Event) => {
                         const contentTag = editor.bodyElement;
@@ -181,6 +171,27 @@ export class WysiwygHandler {
                 }
             });
         }
+    }
+
+    private static resetIdsFromString(text) {
+        function replaceIndex(string, at, repl) {
+            let pos = -1;
+            return string.replace(/ xe_uuid=\"[^"]*\" */g, (match) => {
+                pos++;
+                if (pos === at) {
+                    return repl;
+                }
+                return match;
+            });
+        }
+
+        let occurrences = text.match(/ xe_uuid=\"[^"]*\" */g);
+        occurrences = occurrences != null ? occurrences.length : 0;
+        for (let i = 0; i < occurrences; i++) {
+            text = replaceIndex(text, i, ' xe_uuid="' + UUID.UUID() + '" ');
+        }
+
+        return Converters.json2html(Converters.html2json(text));
     }
 
     private static isSameEditor(editor, id) {
@@ -304,7 +315,7 @@ export class WysiwygHandler {
     private static getAvailablePlugins(schema) {
         /*['link', 'table', 'image', 'paste', 'dam']*/
         const plugins = ''; // 'searchreplace autolink image link media hr anchor advlist lists textcolor imagetools colorpicker';
-        return 'dam searchreplace autolink image link media hr anchor advlist lists textcolor imagetools colorpicker';
+        return 'dam searchreplace autolink link media hr anchor advlist lists textcolor colorpicker';
     }
     /**********************************     DATEPICKER  *******************************************/
     /**
