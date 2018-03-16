@@ -1,3 +1,4 @@
+import { isNil } from 'ramda';
 import { XeditMapper } from '@models/schema/xedit-mapper';
 /**
  * Dam.js
@@ -14,7 +15,17 @@ const getId = function (editor) {
     return isDam ? selectedNode.getAttribute(XeditMapper.TAG_LINK) : isSrc ? selectedNode.getAttribute('src') : '';
 };
 
-const insert = function (editor, nodeId) {
+const getTitle = function (editor) {
+    const selectedNode = editor.selection.getNode();
+    return editor.dom.getAttrib(selectedNode, 'title');
+};
+
+const getDescription = function (editor) {
+    const selectedNode = editor.selection.getNode();
+    return editor.dom.getAttrib(selectedNode, 'longdesc');
+};
+
+const insert = function (editor, nodeId, extra) {
     const resourceUrl = editor.getParam('dam_url', editor.documentBaseUrl);
     const selectedNode = editor.selection.getNode();
     const isDam = selectedNode.tagName === 'IMG';
@@ -27,13 +38,17 @@ const insert = function (editor, nodeId) {
     if (isDam) {
         selectedNode.setAttribute(XeditMapper.TAG_LINK, nodeId);
         selectedNode.setAttribute('src', url);
+        selectedNode.setAttribute('alt', isNil(extra.title) ? '' : extra.title);
+        selectedNode.setAttribute('description', extra.description);
     } else {
         editor.focus();
         editor.selection.collapse(true);
 
         editor.execCommand('mceInsertContent', false, editor.dom.createHTML('img', {
             xe_link: nodeId,
-            src: url
+            src: url,
+            alt: extra.title,
+            longdesc: extra.description
         }));
     }
 };
@@ -41,5 +56,7 @@ const insert = function (editor, nodeId) {
 export default {
     isValidNodeId,
     getId,
+    getTitle,
+    getDescription,
     insert
 };
