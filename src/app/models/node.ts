@@ -196,8 +196,8 @@ export class Node {
      */
     static getSectionTemplate(section) {
         let template = null;
-        if (hasIn('template', section) && is(String, section.template)) {
-            template = Converters.json2html(Converters.html2json(section.template));
+        if (hasIn('view', section) && is(String, section.view)) {
+            template = Converters.json2html(Converters.html2json(section.view));
         }
         return template;
     }

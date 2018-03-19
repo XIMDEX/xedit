@@ -24,7 +24,7 @@ body{
 
 [xe_selected]::before {
     content: attr(xe_selected);
-    float: right !important;
+    position: absolute;
     display: block;
     height: 20px;
     line-height: 20px;

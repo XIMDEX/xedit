@@ -8,18 +8,6 @@
 </header>
 <div id='toolbar'>
 </div>
-<div id="tabs">
-    <ng-container *ngFor="let view of availablesViews">
-        <div [ngClass]="{selected: (view === selectedView)}" *ngIf="view === selectedView; else actionTab" (click)="openMenu()">
-            {{ view }}
-        </div>
-        <ng-template #actionTab>
-            <div [ngClass]="{selected: (view === selectedView)}" (click)="changeView(view)">
-                {{ view }}
-            </div>
-        </ng-template>
-    </ng-container>
-</div>
 <collapsible-list-item>
     <collapsible-header class="waves-effect" #toggleCollapsible>
     </collapsible-header>

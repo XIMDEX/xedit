@@ -1,5 +1,5 @@
 import { isNil } from 'ramda';
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 
 import { Node } from '@models/node';
 import { EditorService } from '@services/editor-service/editor.service';
@@ -10,7 +10,7 @@ import { CollapsibleHeaderComponent } from 'angular2-collapsible';
     templateUrl: './properties-area.component.html',
     styleUrls: ['./properties-area.component.scss']
 })
-export class PropertiesAreaComponent implements OnInit {
+export class PropertiesAreaComponent implements OnInit, AfterViewChecked {
 
     @ViewChild('toggleCollapsible') collapsible: CollapsibleHeaderComponent;
 
@@ -21,11 +21,13 @@ export class PropertiesAreaComponent implements OnInit {
     private isOpen: boolean;
     protected selectedView: String;
     private nodeName: String;
+    private start: Boolean;
 
     constructor(private _editorService: EditorService) {
         this.nodeName = '';
         this.isOpen = false;
         this.selectedView = 'local';
+        this.start = true;
     }
 
     ngOnInit() {
@@ -35,6 +37,13 @@ export class PropertiesAreaComponent implements OnInit {
                 this.nodeName = currentNode.getName();
             }
         });
+    }
+
+    ngAfterViewChecked() {
+        if (this.start) {
+            this.openMenu();
+            this.start = false;
+        }
     }
 
     private changeView(viewName: string) {

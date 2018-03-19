@@ -221,6 +221,8 @@ export class WysiwygHandler {
                 toolbar += this.toolbarTags(schema.options.tags);
             }
         }
+
+        toolbar = toolbar.trim();
         return !isEmpty(toolbar) ? toolbar : false;
     }
 
