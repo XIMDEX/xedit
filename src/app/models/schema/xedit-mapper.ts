@@ -22,6 +22,35 @@ export class XeditMapper {
         XeditMapper.TAG_VIDEO
     ];
 
+    // LINKS_TYPE
+    static LINK_TYPES = {
+        a: 'href',
+        applet: 'codebase',
+        area: 'href',
+        base: 'href',
+        blockquote: 'cite',
+        del: 'cite',
+        form: 'action',
+        frame: 'src',
+        head: 'profile',
+        iframe: 'src',
+        img: 'src',
+        input: 'src',
+        ins: 'cite',
+        link: 'href',
+        object: 'data',
+        q: 'cite',
+        script: 'src',
+        audio: 'src',
+        button: 'formaction',
+        command: 'icon',
+        embed: 'src',
+        html: 'manifest',
+        source: 'src',
+        track: 'src',
+        video: 'src'
+    }
+
 
     // ATTRIBUTES
     static ATTRIBUTES = {

@@ -195,6 +195,7 @@ export class Converters {
 
         let attr = '';
         if (json.attr) {
+            const tag = json.tag;
             attr = Object.keys(json.attr).filter((val) => {
                 return Converters.filter(val, json.attr);
             }).map(function (key) {
@@ -202,7 +203,7 @@ export class Converters {
                 if (Array.isArray(value)) {
                     value = value.join(' ');
                 }
-                return Converters.parseAttributes(key, value, processXedit);
+                return Converters.parseAttributes(key, value, processXedit, tag);
             }).join(' ');
             if (attr !== '') {
                 attr = ' ' + attr;
@@ -232,22 +233,25 @@ export class Converters {
         }
     }
 
-    private static parseAttributes(key, value, processXedit) {
+    private static parseAttributes(key, value, processXedit, tag = 'a') {
         let extraData = '';
+        const linkType = (hasIn(tag, XeditMapper.LINK_TYPES)) ? XeditMapper.LINK_TYPES[tag] : 'href';
         if (processXedit && contains(key, XeditMapper.requiredXeditAttributes)) {
             if (equals(key, XeditMapper.TAG_LINK)) {
                 extraData = value;
                 if (!(/^(f|ht)tps?:\/\//i).test(extraData)) {
                     extraData = `${Xedit.getResourceUrl()}${extraData}`;
                 }
-                extraData = `src='${extraData}'`;
-            } else if (equals(key, XeditMapper.TAG_LINK)) {
-                extraData = value;
-                if (!(/^(f|ht)tps?:\/\//i).test(extraData)) {
-                    extraData = `${Xedit.getResourceUrl()}${extraData}`;
-                }
-                extraData = `href='${extraData}'`;
+
+                extraData = `${linkType}='${extraData}'`;
             }
+            // else if (equals(key, XeditMapper.TAG_LINK)) {
+            //     extraData = value;
+            //     if (!(/^(f|ht)tps?:\/\//i).test(extraData)) {
+            //         extraData = `${Xedit.getResourceUrl()}${extraData}`;
+            //     }
+            //     extraData = `href='${extraData}'`;
+            // }
         }
         return `${key}="${value}" ${extraData}`;
     }
