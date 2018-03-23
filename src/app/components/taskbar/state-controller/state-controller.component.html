@@ -1,0 +1,8 @@
+<div>
+    <header>Estado de elementos</header>
+    <main>
+        <ng-container *ngFor="let value of configs; let i = index;">
+            <app-checkbox [placeholder]="value.name" [checked]="value.enable" (changeValue)="updateStates($event, value)"></app-checkbox>
+        </ng-container>
+    </main>
+</div>

@@ -1,0 +1,37 @@
+@import '~sass/variables';
+
+:host {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    background-color: $white-light;
+    > div {
+        padding: 0;
+        
+        > header {
+            position: relative;
+            z-index: 5;
+            margin: 0;
+            font: $font-default;
+            font-size: $font-size-small;
+            text-transform: uppercase;
+            text-align: left;
+            padding: 3px 10px 1px 10px;
+            color: $white-darker;
+            background-color: $white-warm;
+            @include box-shadow(bottom, 0.25, true);
+        }
+
+        > main {
+            $margin-sides: 10px;
+
+            font: $font-default;
+            background-color: $white-light;
+            position: relative;
+            padding: 5px $margin-sides;
+            z-index: 2;
+            box-shadow: unset !important;
+            border: 0 !important;
+        }
+    }
+}

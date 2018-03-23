@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, OnDestroy, Output, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewChecked, EventEmitter, OnDestroy, Output, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { UUID } from 'angular2-uuid';
 import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
 import { isNil, reduce, equals, is, props, has, union, hasIn } from 'ramda';
@@ -13,6 +13,7 @@ import { WysiwygHandler } from '@components/editor/views/wysiwyg-view/wysiwyg-ha
 import $ from 'jquery';
 import { NotificationsService } from 'angular2-notifications';
 import { Xedit } from '@app/xedit';
+import { StateConfigs } from '@app/models/configs/statesConfigs';
 
 @Component({
     selector: 'app-wysiwyg-view',
@@ -20,7 +21,7 @@ import { Xedit } from '@app/xedit';
     styleUrls: ['./wysiwyg-view.component.scss']
 })
 
-export class WysiwygViewComponent implements OnInit, OnDestroy {
+export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     @ViewChild('xedit') xedit: ElementRef;
     @Output() selectNode: EventEmitter<string> = new EventEmitter();
@@ -34,14 +35,30 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
     private cssLinks: Array<string>;
     private jsLinks: Array<string>;
 
+    private enableHover: boolean = null;
+    private reload: boolean = false;
+    private stateConfigs: StateConfigs;
+
     constructor(private _editorService: EditorService, private contextMenuService: ContextMenuService,
-        private _elementRef: ElementRef, private _notification: NotificationsService) { }
+        private _elementRef: ElementRef, private _notification: NotificationsService, private cdr: ChangeDetectorRef) { }
 
     /************************************** Life Cycle **************************************/
     ngOnInit() {
+        this.stateConfigs = new StateConfigs();
         this._editorService.setLoading(true);
         this.config();
-        this._editorService.setLoading(false);
+    }
+
+    ngAfterViewChecked() {
+        if (this.reload) {
+            this.reloadView();
+            this.reload = false;
+        }
+
+        if (isNil(this.enableHover) && !isNil(this.stateConfigs.isActive())) {
+            this.enableHover = !this.stateConfigs.isActive() && this.stateConfigs.getConfigs('hover').enable;
+            this.reload = true;
+        }
     }
 
     ngOnDestroy() {
@@ -68,6 +85,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
             // Parse content to html
             this.renderContent = this.parseContentToWysiwygEditor(file.getState().getContent());
             WysiwygHandler.clearTinymce();
+            this._editorService.setLoading(false);
         });
 
         // Suscribe to file changes
@@ -102,6 +120,21 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
                 this.setSelection(currentNode);
             }
         });
+
+        this._editorService.getElementsState().subscribe(elementState => {
+            if (!isNil(this.stateConfigs.isActive())) {
+                this.enableHover = elementState && this.stateConfigs.getConfigs('hover').enable;
+                this.reload = true;
+            }
+        });
+    }
+
+    private reloadView() {
+        this.reload = false;
+        const file = this._editorService.getFileStateValue();
+        this.renderContent = this.parseContentToWysiwygEditor(file.getState().getContent());
+        this.cdr.detectChanges();
+        WysiwygHandler.clearTinymce();
     }
 
     /**
@@ -116,7 +149,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
             const data = is(String, content[property].content) ?
                 Converters.html2json(content[property].content) : content[property].content;
             renderContent += this.parseContentToWysiwygEditorWrapper(property,
-                content[property].editable, Converters.json2html(data));
+                content[property].editable, Converters.json2html(data, true, true, false, this.enableHover));
 
         });
         return renderContent;
@@ -144,7 +177,6 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
             }
         }
     }
-
 
     private addHttp(resource: string) {
         if (!(/^(f|ht)tps?:\/\//i).test(resource)) {
@@ -228,7 +260,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
 
         const clickFunc = (currentNode: any, afterNode: any, strTemplate: string, child = false) => {
             const nodeTemplate = Converters.html2json(strTemplate, false);
-            DOM.element(currentNode).insertNode(Converters.json2html(Converters.addWrapJson(nodeTemplate)), afterNode, true);
+            DOM.element(currentNode).insertNode(Converters.json2html(Converters.addWrapJson(nodeTemplate), true, true, false, this.enableHover), afterNode, true);
             this._editorService.addNodeToArea(node, nodeTemplate, child);
         };
 
@@ -286,7 +318,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy {
                         const sectionNode = new Node(this.copyAction.getAttribute(XeditMapper.TAG_UUID), this.copyAction);
                         if (EditorService.isInsertedNodeValid(node, sectionNode)) {
                             let template = this._editorService.getJsonNodesByPath(sectionNode);
-                            template = Converters.json2html(template, true, true, true);
+                            template = Converters.json2html(template, true, true, true, this.enableHover);
                             DOM.element(node.getSection())
                                 .insertNode(template, sectionNode.getTarget().childNodes[sectionNode.getTarget().childNodes.length], true);
                             this._editorService.addNodeToArea(node, Converters.html2json(template, false), true);

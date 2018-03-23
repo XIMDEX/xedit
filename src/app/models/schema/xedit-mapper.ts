@@ -14,11 +14,16 @@ export class XeditMapper {
     static TAG_LINK = 'xe_link';
     static TAG_AUDIO = 'xe_audio';
 
+    // ATTRIBUTES
+    static ATTR_HOVER = 'xe_hover';
+
     // UTILS
     static ATTR_SELECTED = 'xe_selected';
     static ATTR_WYSIWYG_SELECTED = 'xe_w_selected';
     static requiredXeditAttributes = [
-        XeditMapper.TAG_SECTION_TYPE, XeditMapper.TAG_AUDIO, XeditMapper.TAG_LINK,
+        XeditMapper.TAG_SECTION_TYPE,
+        XeditMapper.TAG_AUDIO,
+        XeditMapper.TAG_LINK,
         XeditMapper.TAG_VIDEO
     ];
 

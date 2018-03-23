@@ -21,6 +21,7 @@ export class EditorService {
     private currentNode: BehaviorSubject<Node>; // Current node
     private currentNodeModify: Subject<Node>; // Change if node is modify
     private loading: BehaviorSubject<boolean>;
+    private elementsState: Subject<boolean>;
 
     // Constructor
     constructor() {
@@ -29,6 +30,7 @@ export class EditorService {
         this.currentNode = new BehaviorSubject<Node>(null);
         this.currentNodeModify = new Subject<Node>();
         this.loading = new BehaviorSubject<boolean>(false);
+        this.elementsState = new BehaviorSubject<boolean>(false);
     }
 
     // ************************************** Getters and setters **************************************/
@@ -86,6 +88,15 @@ export class EditorService {
 
     setLoading(loading: boolean) {
         this.loading.next(loading);
+    }
+
+
+    setElementsState(elementState: boolean): void {
+        this.elementsState.next(elementState);
+    }
+
+    getElementsState(): Observable<boolean> {
+        return this.elementsState.asObservable();
     }
 
     /************************************** Public Methods **************************************/

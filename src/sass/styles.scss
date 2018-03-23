@@ -34,10 +34,15 @@ body{
     padding: 0 10px !important;
     color: white !important;
     font-size: 14px !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 120px;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 a{
-    display: inline-block !important;
+    display: inline-block;
 }
 
 app-acordion {

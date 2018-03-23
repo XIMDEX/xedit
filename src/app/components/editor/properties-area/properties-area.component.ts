@@ -1,5 +1,5 @@
 import { isNil } from 'ramda';
-import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
 
 import { Node } from '@models/node';
 import { EditorService } from '@services/editor-service/editor.service';
@@ -23,7 +23,7 @@ export class PropertiesAreaComponent implements OnInit, AfterViewChecked {
     private nodeName: String;
     private start: Boolean;
 
-    constructor(private _editorService: EditorService) {
+    constructor(private _editorService: EditorService, private cdr: ChangeDetectorRef) {
         this.nodeName = '';
         this.isOpen = false;
         this.selectedView = 'local';
@@ -43,6 +43,7 @@ export class PropertiesAreaComponent implements OnInit, AfterViewChecked {
         if (this.start) {
             this.openMenu();
             this.start = false;
+            this.cdr.detectChanges();
         }
     }
 

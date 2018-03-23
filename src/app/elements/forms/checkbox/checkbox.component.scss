@@ -1,0 +1,12 @@
+:host {
+    display: flex;
+
+    >  label{
+        margin: auto 0;
+        flex-grow: 1;
+        
+        > input {
+            margin-right: 5px; 
+        }
+    }
+}

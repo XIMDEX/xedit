@@ -35,6 +35,8 @@ import { AcordionComponent } from './elements/blocks/acordion/acordion.component
 import { ButtonComponent } from './elements/forms/button/button.component';
 import { HttpClientModule } from '@angular/common/http';
 import { SimpleNotificationsModule } from 'angular2-notifications';
+import { CheckboxComponent } from './elements/forms/checkbox/checkbox.component';
+import { StateControllerComponent } from './components/taskbar/state-controller/state-controller.component';
 
 @NgModule({
     declarations: [
@@ -56,7 +58,9 @@ import { SimpleNotificationsModule } from 'angular2-notifications';
         MultiInputAcordionComponent,
         InputAcordionComponent,
         AcordionComponent,
-        ButtonComponent
+        ButtonComponent,
+        CheckboxComponent,
+        StateControllerComponent
     ],
     imports: [
         /* 3rd party components */

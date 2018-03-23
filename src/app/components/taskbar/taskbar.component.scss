@@ -3,7 +3,7 @@
 :host{
     display: block;
     position: relative;
-    z-index: 10;
+    z-index: 1000;
 
     > header {
         position: relative;
@@ -61,13 +61,19 @@
                 margin: 0;
                 max-width: 30%;
                 min-width: 30%;
-                overflow-x: auto;
                 min-height: $taskbar-height;
                 max-height: $taskbar-height;
 
                 &.views {
+                    display: flex;
+
                     > ul {
                         justify-content: flex-end;
+                        flex-grow: 0;
+
+                        &.actions {
+                            flex-grow: 2;
+                        }
                     }
                 }
 
@@ -99,6 +105,36 @@
 
                         > i{
                             font-size: $icon-size-default;
+                        }
+
+                        &.option-button {
+                            display: flex;
+                            flex-direction: row;
+                            position: relative;
+
+                            >aside {
+                                margin-left: 5px;
+                                padding: 0 2px;
+                                flex-grow: 1;
+                                background-color: transparent;
+                                transition: background-color 0.3s ease-in-out;
+
+                                &:hover {
+                                    background-color: $white-warm;
+                                }
+                            }
+
+                            > .action-panel {
+                                position: absolute;
+                                top: $taskbar-height - 5px;
+                                right: 0;
+                                width: 240px;
+                                min-width: 220px;
+                                width: 100%;
+                                background-color: $white-warm;
+                    
+                                @include box-shadow(bottom, 0.5);
+                            }
                         }
 
                         &.separator {

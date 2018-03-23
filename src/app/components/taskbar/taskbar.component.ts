@@ -1,5 +1,5 @@
 
-import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewChecked, ViewChild, ElementRef, HostListener, ChangeDetectorRef } from '@angular/core';
 import { FileReaderEvent } from '../../interfaces/file-reader-event-target';
 import { equals, contains, isNil, indexOf, remove, hasIn } from 'ramda';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -9,6 +9,7 @@ import { DOM } from '@models/dom';
 import { StateService } from '@services/state-service/state.service';
 import { EditorService } from '@services/editor-service/editor.service';
 import { NotificationsService } from 'angular2-notifications';
+import { StateConfigs } from '@models/configs/statesConfigs';
 import { trigger, transition, style, animate, state } from '@angular/animations';
 import { Api } from '@app/api';
 import { Xedit } from '@app/xedit';
@@ -38,7 +39,7 @@ import { Xedit } from '@app/xedit';
         )
     ]
 })
-export class TaskbarComponent implements OnInit {
+export class TaskbarComponent implements OnInit, AfterViewChecked {
 
     @ViewChild('viewMenu') viewMenu: ElementRef;
 
@@ -48,15 +49,25 @@ export class TaskbarComponent implements OnInit {
     private title: String;
     private displayToggle: boolean;
 
+    // State Configs
+    private stateConfigs: StateConfigs;
+    private toogleStateConfigs: boolean;
+    private configs: Array<Object>;
+    private stateActive: boolean;
+
     constructor(private _editorService: EditorService, private _stateService: StateService, private http: HttpClient,
-        private _notification: NotificationsService) {
+        private _notification: NotificationsService, private cdr: ChangeDetectorRef) {
         this.currentView = '';
         this.title = 'Document';
         this.displayToggle = false;
+
+        this.toogleStateConfigs = false;
+        this.configs = [];
     }
 
     /************************************ LIFE CYCLE *******************************************/
     ngOnInit() {
+        this.stateConfigs = new StateConfigs();
         this._editorService.getFile().subscribe(obsFile => {
             this.file = obsFile;
             if (!isNil(obsFile)) {
@@ -66,6 +77,13 @@ export class TaskbarComponent implements OnInit {
 
         this._stateService.getCurrentView().subscribe(currentView => this.currentView = currentView);
         this._stateService.getAvailabelViews().subscribe(availableViews => this.availableViews = availableViews);
+    }
+
+    ngAfterViewChecked() {
+        if (isNil(this.stateActive) && !isNil(this.stateConfigs.isActive())) {
+            this.stateActive = this.stateConfigs.isActive();
+            this.cdr.detectChanges();
+        }
     }
 
     /********************************** END LIFE CYCLE *****************************************/
@@ -160,5 +178,29 @@ export class TaskbarComponent implements OnInit {
         const title = document.getElementById('xe-task-title');
         DOM.element(title).removeClass('selected');
         this.displayToggle = false;
+    }
+
+    toggleStates(event) {
+        this.stateConfigs.getConfigs();
+        alert('toggle');
+    }
+    openStates(event) {
+        event.stopPropagation();
+        this.toogleStateConfigs = true;
+        this.configs = this.stateConfigs.getConfigs();
+    }
+
+    closeStates() {
+        this.toogleStateConfigs = false;
+    }
+
+    saveStateConfigs(evt) {
+        this.configs = evt;
+        this.stateConfigs.setConfigs(evt);
+    }
+
+    toggleElementState() {
+        this.stateActive = this.stateConfigs.toggleActive()
+        this._editorService.setElementsState(!this.stateActive);
     }
 }

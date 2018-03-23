@@ -181,7 +181,7 @@ export class Converters {
      * @param json Json object with content
      * @param showIds If true added attribute id in tags
      */
-    static json2html(json, showIds = true, processXedit = true, resetIds = false) {
+    static json2html(json, showIds = true, processXedit = true, resetIds = false, enableHover = true) {
 
         // Empty Elements - HTML 4.01
         const empty = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param', 'embed'];
@@ -189,7 +189,7 @@ export class Converters {
         let child = '';
         if (json.child) {
             child = Object.keys(json.child).map(function (uuid: string) {
-                return Converters.json2html(json.child[uuid], showIds, processXedit, resetIds);
+                return Converters.json2html(json.child[uuid], showIds, processXedit, resetIds, enableHover);
             }).join('');
         }
 
@@ -206,7 +206,11 @@ export class Converters {
                 return Converters.parseAttributes(key, value, processXedit, tag);
             }).join(' ');
             if (attr !== '') {
-                attr = ' ' + attr;
+                attr = ` ${attr}`;
+            }
+
+            if (!enableHover) {
+                attr += `${XeditMapper.ATTR_HOVER}="false"`;
             }
         }
 
@@ -217,17 +221,17 @@ export class Converters {
 
             if (empty.indexOf(tag) > -1) {
                 // empty element
-                return '<' + json.tag + uuid + attr + '/>';
+                return `<${json.tag} ${uuid} ${attr}/>`;
             }
 
             // non empty element
-            const open = '<' + json.tag + uuid + attr + '>';
-            const close = '</' + json.tag + '>';
+            const open = `<${json.tag} ${uuid} ${attr}>`;
+            const close = `</${json.tag}>`;
             return open + child + close;
         } else if (json.node === 'text') {
             return json.text;
         } else if (json.node === 'comment') {
-            return '<!--' + json.text + '-->';
+            return `<!-- ${json.text} -->`;
         } else if (json.node === 'root') {
             return child;
         }
@@ -245,13 +249,6 @@ export class Converters {
 
                 extraData = `${linkType}='${extraData}'`;
             }
-            // else if (equals(key, XeditMapper.TAG_LINK)) {
-            //     extraData = value;
-            //     if (!(/^(f|ht)tps?:\/\//i).test(extraData)) {
-            //         extraData = `${Xedit.getResourceUrl()}${extraData}`;
-            //     }
-            //     extraData = `href='${extraData}'`;
-            // }
         }
         return `${key}="${value}" ${extraData}`;
     }
