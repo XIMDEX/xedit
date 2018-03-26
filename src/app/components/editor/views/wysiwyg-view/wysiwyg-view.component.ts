@@ -52,7 +52,18 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
     ngAfterViewChecked() {
         if (this.reload) {
             this.reloadView();
-            this.reload = false;
+
+            // TODO fix event
+            const xedit = this.xedit.nativeElement;
+            const links = xedit.getElementsByTagName('a');
+            if (!isNil(links)) {
+                for (let i = 0; i < links.length; i++) {
+                    links[i].onclick = (evt) => {
+                        evt.preventDefault();
+                        return false;
+                    };
+                }
+            }
         }
 
         if (isNil(this.enableHover) && !isNil(this.stateConfigs.isActive())) {
@@ -91,19 +102,19 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
         // Suscribe to file changes
         this.subscribeFileState = this._editorService.getFileState().subscribe(file => {
             // Parse content to html
-            setTimeout(() => {
-                // TODO FIX atovar
-                const xedit = this.xedit.nativeElement;
-                const links = xedit.getElementsByTagName('a');
-                if (!isNil(links)) {
-                    for (let i = 0; i < links.length; i++) {
-                        links[i].onclick = (evt) => {
-                            evt.preventDefault();
-                            return false;
-                        };
-                    }
-                }
-            }, 1000);
+            // setTimeout(() => {
+            //     // TODO FIX atovar
+            //     const xedit = this.xedit.nativeElement;
+            //     const links = xedit.getElementsByTagName('a');
+            //     if (!isNil(links)) {
+            //         for (let i = 0; i < links.length; i++) {
+            //             links[i].onclick = (evt) => {
+            //                 evt.preventDefault();
+            //                 return false;
+            //             };
+            //         }
+            //     }
+            // }, 1000);
         });
 
         // Suscribe to node change
