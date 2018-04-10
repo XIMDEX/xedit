@@ -92,6 +92,7 @@ export class WysiwygHandler {
                         if (sibling && typeof sibling.getAttribute === 'function') {
                             if (sibling.getAttribute(XeditMapper.TAG_UUID) == ele.getAttribute(XeditMapper.TAG_UUID)) {
                                 ele.setAttribute(XeditMapper.TAG_UUID, UUID.UUID());
+                                sibling.removeAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED);
                             }
                         }
                         /*const element = e.element;
@@ -240,6 +241,9 @@ export class WysiwygHandler {
                 bold: 'bold', italic: 'italic', underline: 'underline', strikethrough: 'strikethrough', color: 'forecolor',
                 background: 'backcolor'
             },
+            others: {
+                ol: 'numlist', ul: 'bullist', table: "table"
+            },
             align: {
                 alignright: 'alignright', aligncenter: 'aligncenter', alignleft: 'alignleft', alignjustify: 'alignjustify'
             },
@@ -280,7 +284,7 @@ export class WysiwygHandler {
         const tagsValue = {};
         const groups = {
             buttons: {
-                a: 'link', img: 'dam', video: 'dam', audio: 'dam', ol: 'dam', ul: 'dam'
+                a: 'link', img: 'dam', video: 'dam', audio: 'dam'
             },
             formats: {
             }
@@ -324,7 +328,7 @@ export class WysiwygHandler {
     private static getAvailablePlugins(schema) {
         /*['link', 'table', 'image', 'paste', 'dam']*/
         const plugins = ''; // 'searchreplace autolink image link media hr anchor advlist lists textcolor imagetools colorpicker';
-        return 'dam searchreplace autolink link media hr anchor advlist lists textcolor colorpicker';
+        return 'dam searchreplace autolink link media hr anchor advlist lists textcolor colorpicker table';
     }
     /**********************************     DATEPICKER  *******************************************/
     /**
