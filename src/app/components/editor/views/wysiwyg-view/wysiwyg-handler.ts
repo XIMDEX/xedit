@@ -87,6 +87,13 @@ export class WysiwygHandler {
                 setup: editor => {
                     editor.on('Nodechange', (e) => {
                         console.log(e);
+                        const ele = e.element;
+                        const sibling = ele.previousSibling;
+                        if (sibling && typeof sibling.getAttribute === 'function') {
+                            if (sibling.getAttribute(XeditMapper.TAG_UUID) == ele.getAttribute(XeditMapper.TAG_UUID)) {
+                                ele.setAttribute(XeditMapper.TAG_UUID, UUID.UUID());
+                            }
+                        }
                         /*const element = e.element;
                         const id = element.getAttribute(XeditMapper.TAG_UUID);
                         function isParentId(parents, elementId) {
