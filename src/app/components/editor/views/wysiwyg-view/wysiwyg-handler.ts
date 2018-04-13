@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import { UUID } from 'angular2-uuid';
+import sanitizeHtml from 'sanitize-html'
 
 // TIYMCE
 import 'tinymce';
@@ -121,7 +122,11 @@ export class WysiwygHandler {
                     });
                     editor.on('Paste', (e) => {
                         e.preventDefault();
-                        let data = e.clipboardData.getData('text/html');
+                        let data = e.clipboardData.getData('text/plain');
+                        let html = e.clipboardData.getData('text/html');
+                        if (html) {
+                            data = sanitizeHtml(html);
+                        }
                         data = WysiwygHandler.resetIdsFromString(data);
                         document.execCommand('insertHTML', false, data);
 

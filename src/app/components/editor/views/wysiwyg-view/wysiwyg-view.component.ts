@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewChecked, EventEmitter, OnDestroy, Output, E
 import { UUID } from 'angular2-uuid';
 import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
 import { isNil, reduce, equals, is, props, has, union, hasIn } from 'ramda';
+import sanitizeHtml from 'sanitize-html'
 
 import { Node } from '@models/node';
 import { XeditMapper } from '@models/schema/xedit-mapper';
@@ -319,12 +320,27 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
     private defaultActions(node) {
         const actions = [];
 
+        actions.push(this.createAction(
+            (i) => 'Paste as html',
+            (evt) => {
+            },
+            true)
+        );
+
+        actions.push(this.createAction(
+            (i) => 'Paste as text',
+            (evt) => {
+            },
+            true)
+        );
+
         if (!isNil(this.copyAction) && !isNil(node)) {
+            actions.push(this.createAction(null, null, true, true));
 
             // Coger node del json --> Cambiar todos los uid del padre e hijos
             actions.push(
                 this.createAction(
-                    (i) => 'Paste',
+                    (i) => 'Paste component',
                     (evt) => {
                         const sectionNode = new Node(this.copyAction.getAttribute(XeditMapper.TAG_UUID), this.copyAction);
                         if (EditorService.isInsertedNodeValid(node, sectionNode)) {
@@ -346,7 +362,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
         }
 
         actions.push(this.createAction(
-            (i) => 'Copy',
+            (i) => 'Copy component',
             (evt) => {
                 this.copyAction = null;
                 this.copyAction = node.getSection();
@@ -355,7 +371,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
         );
 
         actions.push(this.createAction(
-            (i) => 'Delete',
+            (i) => 'Delete component',
             (evt) => {
                 this._editorService.removeNode(node);
                 DOM.element(node.getSection()).deleteNode();
@@ -364,6 +380,26 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
         );
 
         return actions;
+    }
+
+    /** 
+     * This method get data in plain format from clipboard
+     */
+    public static copyPlain(evt: ClipboardEvent) {
+        let data = evt.clipboardData.getData('text/plain');
+        return data;
+    }
+
+    /*
+    * This method get the data in html format from the clipboard but if it is empty it try to get in plain format
+    */
+    public static copyHtml(evt: ClipboardEvent) {
+        let data = evt.clipboardData.getData('text/plain');
+        let html = evt.clipboardData.getData('text/html');
+        if (html) {
+            data = sanitizeHtml(html);
+        }
+        return data;
     }
 
     // Todo create Action Model
