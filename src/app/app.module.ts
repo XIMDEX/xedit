@@ -37,6 +37,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { SimpleNotificationsModule } from 'angular2-notifications';
 import { CheckboxComponent } from './elements/forms/checkbox/checkbox.component';
 import { StateControllerComponent } from './components/taskbar/state-controller/state-controller.component';
+import { ListboxComponent } from './elements/forms/listbox/listbox.component';
 
 @NgModule({
     declarations: [
@@ -60,6 +61,7 @@ import { StateControllerComponent } from './components/taskbar/state-controller/
         AcordionComponent,
         ButtonComponent,
         CheckboxComponent,
+        ListboxComponent,
         StateControllerComponent
     ],
     imports: [

@@ -1,0 +1,10 @@
+:host {
+    background: #edeff2;
+    display: inherit;
+    >  select{
+        border: none;
+        margin: 5px;
+        background: transparent;
+        outline: none;
+    }
+}

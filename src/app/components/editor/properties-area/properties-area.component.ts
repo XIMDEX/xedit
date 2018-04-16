@@ -1,5 +1,5 @@
 import { isNil } from 'ramda';
-import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, ChangeDetectorRef, Input, EventEmitter, Output } from '@angular/core';
 
 import { Node } from '@models/node';
 import { EditorService } from '@services/editor-service/editor.service';
@@ -22,6 +22,9 @@ export class PropertiesAreaComponent implements OnInit, AfterViewChecked {
     protected selectedView: String;
     private nodeName: String;
     private start: Boolean;
+
+    @Input('configs') configs: Array<Object>;
+    @Output() updated: EventEmitter<any> = new EventEmitter();
 
     constructor(private _editorService: EditorService, private cdr: ChangeDetectorRef) {
         this.nodeName = '';
@@ -62,7 +65,16 @@ export class PropertiesAreaComponent implements OnInit, AfterViewChecked {
             this.collapsible.click();
             this.isOpen = true;
         }
-
     }
+
+    updateClipboard(evt, object) {
+        object.selected = evt;
+        this.updateClipboardConfigs();
+    }
+
+    updateClipboardConfigs() {
+        this.updated.emit(this.configs);
+    }
+
 
 }

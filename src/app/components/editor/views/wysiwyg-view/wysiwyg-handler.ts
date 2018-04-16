@@ -36,6 +36,7 @@ import { EditorService } from '@services/editor-service/editor.service';
 import { Converters } from '@utils/converters';
 import { Xedit } from '@app/xedit';
 import { isArray } from 'util';
+import { ClipboardConfigs } from '../../../../models/configs/clipboardConfigs';
 
 
 export class WysiwygHandler {
@@ -122,11 +123,9 @@ export class WysiwygHandler {
                     });
                     editor.on('Paste', (e) => {
                         e.preventDefault();
-                        let data = e.clipboardData.getData('text/plain');
-                        let html = e.clipboardData.getData('text/html');
-                        if (html) {
-                            data = sanitizeHtml(html);
-                        }
+
+                        let copyHtml = args.clipboardConfigs.getConfigs('copy');
+                        let data = WysiwygHandler.copy(e, copyHtml.enable);
                         data = WysiwygHandler.resetIdsFromString(data);
                         document.execCommand('insertHTML', false, data);
 
@@ -145,7 +144,6 @@ export class WysiwygHandler {
                     });
 
                     editor.on('hide', (e) => {
-                        console.log('OK');
                         tinymce.remove(editor);
                     });
 
@@ -361,6 +359,37 @@ export class WysiwygHandler {
                 input.datepicker('show');
             }
         });
+    }
+
+
+    /** 
+     * This method get data in plain format from clipboard
+     */
+    public static copyPlain(evt: ClipboardEvent) {
+        let data = evt.clipboardData.getData('text/plain');
+        return data;
+    }
+
+    /*
+    * This method get the data in html format from the clipboard but if it is empty it try to get in plain format
+    */
+    public static copyHtml(evt: ClipboardEvent) {
+        let data = evt.clipboardData.getData('text/plain');
+        let html = evt.clipboardData.getData('text/html');
+        if (html) {
+            data = sanitizeHtml(html);
+        }
+        return data;
+    }
+
+    public static copy(evt: ClipboardEvent, asHtml = true) {
+        let data = '';
+        if (asHtml) {
+            data = WysiwygHandler.copyHtml(evt);
+        } else {
+            data = WysiwygHandler.copyPlain(evt);
+        }
+        return data;
     }
 
 }

@@ -4,9 +4,11 @@ import validator from 'html-validator';
 import htmlTagValidator from 'html-tag-validator';
 
 import { File } from '@models/file';
-import { StateService } from '@services/state-service/state.service';
 import { XeditMapper } from '@models/schema/xedit-mapper';
+import { ClipboardConfigs } from '@models/configs/clipboardConfigs';
+
 import { EditorService } from '@services/editor-service/editor.service';
+import { StateService } from '@services/state-service/state.service';
 
 import { TaskbarComponent } from '@components/taskbar/taskbar.component';
 import { WysiwygViewComponent } from '@components/editor/views/wysiwyg-view/wysiwyg-view.component';
@@ -20,6 +22,8 @@ import { TextViewComponent } from '@components/editor/views/text-view/text-view.
 export class EditorComponent implements OnInit {
 
     private currentView: string;
+    private clipboardConfigs: ClipboardConfigs;
+    private cConfigs: Array<Object>;
 
     constructor(private _stateService: StateService, private _editorService: EditorService, private _elementRef: ElementRef) { }
 
@@ -28,6 +32,12 @@ export class EditorComponent implements OnInit {
         this._stateService.getCurrentView().subscribe(currentView => {
             this.currentView = currentView;
         });
+
+        this.clipboardConfigs = new ClipboardConfigs();
+    }
+
+    ngAfterViewChecked() {
+        this.cConfigs = this.clipboardConfigs.getConfigs();
     }
 
     setCurrentNode(uuid: string) {
@@ -103,6 +113,10 @@ export class EditorComponent implements OnInit {
             })*/
     }
 
+    saveClipboardConfigs(evt) {
+        this.cConfigs = evt;
+        this.clipboardConfigs.setConfigs(evt);
+    }
 
     /**
      *

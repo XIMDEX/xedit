@@ -18,14 +18,14 @@ const insertDam = function (editor, newId, extra) {
 
 const open = function (editor) {
     const currentId = Dam.getId(editor);
-    const title = Dam.getTitle(editor);
-    const description = Dam.getDescription(editor);
+    const alt = Dam.getAlt(editor);
+    const longdesc = Dam.getLongdesc(editor);
 
     const save = (e) => {
         const newNodeId = e.data.nodeId;
         const extra = {
-            'title': e.data.title,
-            'description': e.data.description
+            'alt': e.data.alt,
+            'longdesc': e.data.longdesc
         }
 
         if (insertDam(editor, newNodeId, extra)) {
@@ -48,8 +48,8 @@ const open = function (editor) {
                     /*{ type: 'button', icon: 'browse' },*/
                 ]
             },
-            { type: 'textbox', name: 'title', size: 40, label: 'Alternativo', value: title },
-            { type: 'textbox', name: 'description', size: 40, label: 'Descripción', value: description }
+            { type: 'textbox', name: 'alt', size: 40, label: 'Alternativo', value: alt },
+            { type: 'textbox', name: 'longdesc', size: 40, label: 'Descripción', value: longdesc }
         ],
         onsubmit(e) {
             console.log(e)

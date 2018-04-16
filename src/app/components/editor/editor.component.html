@@ -13,4 +13,5 @@
     <app-breadcrumb (selectNode)="setCurrentNode($event)"></app-breadcrumb>
     <!-- END BREADCRUMBS -->
 </main>
-<app-properties-area ngDraggable *ngIf="showComponent('wysiwyg')"></app-properties-area>
+<app-properties-area ngDraggable *ngIf="showComponent('wysiwyg')" [(configs)]="cConfigs" (updated)="saveClipboardConfigs($event)">
+</app-properties-area>

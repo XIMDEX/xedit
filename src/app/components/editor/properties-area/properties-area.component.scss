@@ -71,11 +71,11 @@
         }
 
         > collapsible-body {            
-            @include box-shadow(bottom, 0.25, true);
+            //@include box-shadow(bottom, 0.25, true);
             padding: 0;
             margin: 0;
             border-bottom: 0;
-            padding-bottom: 8px;
+            padding-bottom: 0px;
             background-color: $white-light;
         }
     }

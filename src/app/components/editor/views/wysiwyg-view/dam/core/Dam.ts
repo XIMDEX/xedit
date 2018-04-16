@@ -1,4 +1,4 @@
-import { isNil } from 'ramda';
+import { isNil, isEmpty } from 'ramda';
 import { XeditMapper } from '@models/schema/xedit-mapper';
 /**
  * Dam.js
@@ -15,17 +15,18 @@ const getId = function (editor) {
     return isDam ? selectedNode.getAttribute(XeditMapper.TAG_LINK) : isSrc ? selectedNode.getAttribute('src') : '';
 };
 
-const getTitle = function (editor) {
+const getAlt = function (editor) {
     const selectedNode = editor.selection.getNode();
-    return editor.dom.getAttrib(selectedNode, 'title');
+    const alt = editor.dom.getAttrib(selectedNode, 'alt');
+    return isEmpty(alt) ? 'Image' : alt;
 };
 
-const getDescription = function (editor) {
+const getLongdesc = function (editor) {
     const selectedNode = editor.selection.getNode();
     return editor.dom.getAttrib(selectedNode, 'longdesc');
 };
 
-const insert = function (editor, nodeId, extra) {
+const insert = function (editor, nodeId, { alt, longdesc }) {
     const resourceUrl = editor.getParam('dam_url', editor.documentBaseUrl);
     const selectedNode = editor.selection.getNode();
     const isDam = selectedNode.tagName === 'IMG';
@@ -38,8 +39,8 @@ const insert = function (editor, nodeId, extra) {
     if (isDam) {
         selectedNode.setAttribute(XeditMapper.TAG_LINK, nodeId);
         selectedNode.setAttribute('src', url);
-        selectedNode.setAttribute('alt', isNil(extra.title) ? '' : extra.title);
-        selectedNode.setAttribute('description', extra.description);
+        selectedNode.setAttribute('alt', alt);
+        selectedNode.setAttribute('description', longdesc);
     } else {
         editor.focus();
         editor.selection.collapse(true);
@@ -47,8 +48,8 @@ const insert = function (editor, nodeId, extra) {
         editor.execCommand('mceInsertContent', false, editor.dom.createHTML('img', {
             xe_link: nodeId,
             src: url,
-            alt: extra.title,
-            longdesc: extra.description
+            alt,
+            longdesc
         }));
     }
 };
@@ -56,7 +57,7 @@ const insert = function (editor, nodeId, extra) {
 export default {
     isValidNodeId,
     getId,
-    getTitle,
-    getDescription,
+    getAlt,
+    getLongdesc,
     insert
 };

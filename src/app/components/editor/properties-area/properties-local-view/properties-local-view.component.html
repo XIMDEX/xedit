@@ -1,5 +1,4 @@
 <ng-template [ngIf]="currentNode != null">
-    <br>
     <ng-container *ngFor="let group of currentProperties | keys">
         <app-acordion [title]='group' [className]="'form'">
             <ng-container [ngSwitch]="group">

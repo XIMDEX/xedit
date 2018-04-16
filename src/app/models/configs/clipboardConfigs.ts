@@ -1,18 +1,22 @@
 import { isNil, isEmpty, hasIn } from 'ramda';
 import { Configs } from './configs';
 
-export class StateConfigs extends Configs {
+export class ClipboardConfigs extends Configs {
 
     private self: any = this.constructor;
 
-    protected static GROUP: string = 'statesController';
+    protected static GROUP: string = 'clipboardConfigs';
     protected static DEFUALT: any = {
         active: false,
         configs: [
             {
-                id: 'hover',
-                name: 'Controlar hover',
-                enable: true
+                id: 'copy',
+                name: 'Format copy',
+                selected: 'copyPlain',
+                options: {
+                    'copyHtml': 'Copy as HTML',
+                    'copyPlain': 'Copy as Plain Text'
+                }
             }
         ]
     };
@@ -28,7 +32,7 @@ export class StateConfigs extends Configs {
 
     public setConfigs(configs: any) {
         this.configs.configs = configs;
-        StateConfigs.save(this.configs);
+        ClipboardConfigs.save(this.configs);
         return this;
     }
 
@@ -47,7 +51,7 @@ export class StateConfigs extends Configs {
 
     public toggleActive(): boolean {
         this.configs.active = !this.configs.active;
-        StateConfigs.save(this.configs);
+        ClipboardConfigs.save(this.configs);
         return this.isActive();
     }
 
@@ -58,7 +62,7 @@ export class StateConfigs extends Configs {
 
     public addConfig(config: any) {
         if (isNil(this.configs)) {
-            this.configs = StateConfigs.DEFUALT;
+            this.configs = ClipboardConfigs.DEFUALT;
         }
         this.configs.configs.push(config);
         return this.setConfigs(this.configs);
@@ -77,14 +81,17 @@ export class StateConfigs extends Configs {
         })
     }
 
-    public static save(data: any, group: string = StateConfigs.GROUP): any {
+    public static save(data: any, group: string = ClipboardConfigs.GROUP): any {
         if (isEmpty(group)) {
-            group = StateConfigs.GROUP;
+            group = ClipboardConfigs.GROUP;
         }
         return super.save(data, group);
     }
 
-    public static get(group: string = StateConfigs.GROUP): any {
+    public static get(group: string = ClipboardConfigs.GROUP): any {
+        if (isEmpty(group)) {
+            group = ClipboardConfigs.GROUP;
+        }
         return super.get(group);
     }
 
@@ -93,7 +100,7 @@ export class StateConfigs extends Configs {
             console.error(error);
         } else {
             if (isNil(value)) {
-                value = StateConfigs.DEFUALT;
+                value = ClipboardConfigs.DEFUALT;
             }
         }
 

@@ -1,0 +1,5 @@
+<select name="" (change)="changeValues($event)">
+    <ng-container *ngFor="let key of options | keys">
+        <option [value]="key" [selected]="key == selected">{{options[key]}}</option>
+    </ng-container>
+</select>

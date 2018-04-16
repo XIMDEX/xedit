@@ -8,10 +8,15 @@
 </header>
 <div id='toolbar'>
 </div>
+<div>
+    <ng-container *ngFor="let value of configs; let i = index;">
+        <app-listbox [placeholder]="value.name" [selected]="value.selected" [options]="value.options" (changeValue)="updateClipboard($event, value)"></app-listbox>
+    </ng-container>
+</div>
 <collapsible-list-item>
     <collapsible-header class="waves-effect" #toggleCollapsible>
     </collapsible-header>
     <collapsible-body [expanded]="isOpen">
-        <app-properties-local *ngIf="'local' === selectedView"></app-properties-local>
+        <app-properties-local *ngIf="'local'===selectedView"></app-properties-local>
     </collapsible-body>
 </collapsible-list-item>
