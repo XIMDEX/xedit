@@ -1,0 +1,13 @@
+<sc-modal id="modal-1" class="default" #modal>
+  <div class="modal">
+    <div class="model-header">
+      <button class="sc-modal-close" (click)="closeModal('modal-1');">
+        <i class="fa fa-times-circle fa-2x" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <app-tree #tree (selected)="closeModal('modal-1', $event)" [type]="type" [path]="path"></app-tree>
+    </div>
+  </div>
+  <div class="modal-background"></div>
+</sc-modal>

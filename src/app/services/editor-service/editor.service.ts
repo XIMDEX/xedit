@@ -273,6 +273,10 @@ export class EditorService {
             }
         }
 
+        if (hasIn('metas', file)) {
+            document['metas'] = file['metas'];
+        }
+
         return document;
     }
     /************************************** Static Methods **************************************/

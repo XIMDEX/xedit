@@ -15,6 +15,7 @@ import { NotificationsService } from 'angular2-notifications';
 import { ClipboardConfigs } from '../../../../models/configs/clipboardConfigs';
 import { Xedit } from '@app/xedit';
 import { StateConfigs } from '@app/models/configs/statesConfigs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'app-wysiwyg-view',
@@ -40,7 +41,8 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
     private stateConfigs: StateConfigs;
 
     constructor(private _editorService: EditorService, private contextMenuService: ContextMenuService,
-        private _elementRef: ElementRef, private _notification: NotificationsService, private cdr: ChangeDetectorRef) { }
+        private _elementRef: ElementRef, private _notification: NotificationsService, private cdr: ChangeDetectorRef,
+        public http: HttpClient) { }
 
     /************************************** Life Cycle **************************************/
     ngOnInit() {
@@ -212,7 +214,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
     applyHandler(currentNode) {
         const sectionType = currentNode.getSchema().type;
         const clipboardConfigs = new ClipboardConfigs();
-        const args = { node: currentNode, service: this._editorService, clipboardConfigs: clipboardConfigs };
+        const args = { node: currentNode, service: this._editorService, clipboardConfigs: clipboardConfigs, http: this.http };
         WysiwygHandler.executeHandler(sectionType, args);
     }
 

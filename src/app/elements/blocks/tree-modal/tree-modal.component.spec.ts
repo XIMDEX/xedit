@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CheckboxComponent } from './checkbox.component';
+import { TreeModalComponent } from './tree-modal.component';
 
-describe('CheckboxComponent', () => {
-  let component: CheckboxComponent;
-  let fixture: ComponentFixture<CheckboxComponent>;
+describe('TreeModalComponent', () => {
+  let component: TreeModalComponent;
+  let fixture: ComponentFixture<TreeModalComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CheckboxComponent ]
+      declarations: [TreeModalComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CheckboxComponent);
+    fixture = TestBed.createComponent(TreeModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

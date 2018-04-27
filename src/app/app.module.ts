@@ -38,6 +38,10 @@ import { SimpleNotificationsModule } from 'angular2-notifications';
 import { CheckboxComponent } from './elements/forms/checkbox/checkbox.component';
 import { StateControllerComponent } from './components/taskbar/state-controller/state-controller.component';
 import { ListboxComponent } from './elements/forms/listbox/listbox.component';
+import { TreeComponent } from './elements/blocks/tree/tree.component';
+import { TreeModule } from 'ng2-tree'
+import { TreeModalComponent } from './elements/blocks/tree-modal/tree-modal.component'
+import { ScModalModule } from 'angular-5-popup';
 
 @NgModule({
     declarations: [
@@ -52,7 +56,7 @@ import { ListboxComponent } from './elements/forms/listbox/listbox.component';
         UrlPipe,
         DebugPipe,
         KeysPipe,
-        ContextMenuComponent,
+        ContextMenuComponent,/*  */
         BreadcrumbComponent,
         PropertiesAreaComponent,
         MultiInputComponent,
@@ -62,7 +66,9 @@ import { ListboxComponent } from './elements/forms/listbox/listbox.component';
         ButtonComponent,
         CheckboxComponent,
         ListboxComponent,
-        StateControllerComponent
+        StateControllerComponent,
+        TreeComponent,
+        TreeModalComponent
     ],
     imports: [
         /* 3rd party components */
@@ -77,7 +83,9 @@ import { ListboxComponent } from './elements/forms/listbox/listbox.component';
         AngularDraggableModule,
         CollapsibleModule,
         HttpClientModule,
-        SimpleNotificationsModule.forRoot()
+        SimpleNotificationsModule.forRoot(),
+        TreeModule,
+        ScModalModule
     ],
     providers: [
         EditorService,

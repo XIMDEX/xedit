@@ -92,6 +92,10 @@ export class File extends History {
         return this.metas;
     }
 
+    setMetas(metas: Array<Object>) {
+        return this.metas = metas;
+    }
+
     getMeta(name): Object {
         return this.metas[name];
     }

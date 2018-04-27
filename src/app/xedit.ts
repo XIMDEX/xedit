@@ -56,6 +56,15 @@ export class Xedit {
         return Xedit.getConf(Xedit.LANG, 'es');
     }
 
+    public static getSetUrl(): string {
+        const routerMapper = Xedit.getRouterMapper();
+        let setUrl = '';
+        if (hasIn('set', routerMapper['routes'])) {
+            setUrl = routerMapper['routes']['set'];
+        }
+        return Xedit.generateActionUrl(setUrl);
+    }
+
     public static getResourceUrl(): string {
         const routerMapper = Xedit.getRouterMapper();
         let resourceUrl = '';
@@ -71,7 +80,16 @@ export class Xedit {
         if (hasIn('treeInfo', routerMapper['routes'])) {
             treeInfo = routerMapper['routes']['treeInfo'];
         }
-        return `${Xedit.generateActionUrl(treeInfo)}&id=`;
+        return Xedit.generateActionUrl(treeInfo);
+    }
+
+    public static getInfoNodeUrl(): string {
+        const routerMapper = Xedit.getRouterMapper();
+        let infoNode = '';
+        if (hasIn('infonode', routerMapper['routes'])) {
+            infoNode = routerMapper['routes']['infonode'];
+        }
+        return Xedit.generateActionUrl(infoNode);
     }
 
     public static getSchemas(): any {

@@ -1,4 +1,5 @@
 @import '~bootstrap/dist/css/bootstrap.min.css';
+@import './../../node_modules/ng2-tree/styles.css';
 @import 'variables';
 
 html,
@@ -83,5 +84,30 @@ app-acordion {
     }
 }
 
+// MODAL
+.sc-modal-close{
+    z-index: 10000;
+}
+
+.modal.modal-open{
+    display: block; 
+}
+
+sc-modal.default {
+    text-align: unset !important;
+}
+
+app-tree-modal{
+    z-index: 100000;
+}
+
+// DAM
+
+div#dam-path { 
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    max-width: 100%; 
+    display: inline-block; 
+}
 
 @import 'tinymce';

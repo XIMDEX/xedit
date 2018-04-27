@@ -37,6 +37,7 @@ import { Converters } from '@utils/converters';
 import { Xedit } from '@app/xedit';
 import { isArray } from 'util';
 import { ClipboardConfigs } from '../../../../models/configs/clipboardConfigs';
+import { HttpClient } from '@angular/common/http';
 
 
 export class WysiwygHandler {
@@ -69,7 +70,7 @@ export class WysiwygHandler {
         if (tinymce.activeEditor == null || !WysiwygHandler.isSameEditor(tinymce.activeEditor,
             args.node.getSection().getAttribute(XeditMapper.TAG_UUID))) {
             WysiwygHandler.clearTinymce();
-            WysiwygHandler.addPlugins();
+            WysiwygHandler.addPlugins(args.http);
             const toolbar = WysiwygHandler.generateToolbar(args.node.getSchema());
             const fixed_toolbar_container = !isEmpty(toolbar) ? '#toolbar' : false;
 
@@ -209,10 +210,10 @@ export class WysiwygHandler {
         return editor.targetElm.hasAttribute('xe_uuid') && equals(editor.targetElm.getAttribute('xe_uuid'), id);
     }
 
-    private static addPlugins() {
+    private static addPlugins(http: HttpClient) {
         tinymce.PluginManager.add('dam', function (editor) {
             FilterContent.setup(editor);
-            Commands.register(editor);
+            Commands.register(editor, http);
             Buttons.register(editor);
         });
     }
@@ -253,6 +254,9 @@ export class WysiwygHandler {
             indent: {
                 outdent: 'outdent', indent: 'indent'
             },
+            format: {
+                formatselect: 'formatselect'
+            },
             font: {
                 fontsize: 'fontsizeselect'
             }
@@ -287,7 +291,7 @@ export class WysiwygHandler {
         const tagsValue = {};
         const groups = {
             buttons: {
-                a: 'link', img: 'dam', video: 'dam', audio: 'dam'
+                a: 'dam_link', img: 'dam', video: 'dam_video', audio: 'dam_audio'
             },
             formats: {
             }

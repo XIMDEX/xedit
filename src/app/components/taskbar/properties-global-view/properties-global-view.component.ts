@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { reduce, clone, has, isNil } from 'ramda';
+import { reduce, clone, has, isNil, keys, hasIn } from 'ramda';
 
 import { File } from '@models/file';
 import { Node } from '@models/node';
@@ -17,6 +17,7 @@ export class PropertiesGlobalViewComponent implements OnInit, OnDestroy {
     private metas: Array<Object>;
     private states: Array<Object>;
     private suscribeFile;
+    private file: File;
 
     constructor(private _editorService: EditorService) { }
 
@@ -26,12 +27,13 @@ export class PropertiesGlobalViewComponent implements OnInit, OnDestroy {
 
         this.suscribeFile = this._editorService.getFile().subscribe(file => {
             this.metas = [];
+            this.file = file;
             if (file != null) {
-                for (const meta in file.getMetas()) {
+                const metas = file.getMetas();
+                for (const meta in metas) {
                     if (!isNil(file.getMeta(meta))) {
                         const json = {};
-                        json[meta] = file.getMeta(meta);
-                        this.metas.push(json);
+                        this.metas.push(file.getMeta(meta));
                     }
                 }
             }
@@ -43,6 +45,24 @@ export class PropertiesGlobalViewComponent implements OnInit, OnDestroy {
                 this.states = file.getSnapshots();
             }
         });
+    }
+
+    changeMetadata(value, key) {
+
+        const metas = this.file.getMetas();
+        for (let meta in metas) {
+            if (hasIn('name', metas[meta]) && metas[meta]['name'] == key && hasIn('value', metas[meta])) {
+                metas[meta]['value'] = value;
+            }
+        }
+        this.file.setMetas(metas);
+    }
+
+    ñ
+    createMetaObject(meta: Array<any>): Object {
+        const json = {};
+        json[meta['name']] = meta['value'];
+        return json;
     }
 
     restoreSnaptshot(key) {

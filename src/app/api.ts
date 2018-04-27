@@ -7,13 +7,16 @@ export class Api {
 
 
     /** Paths **/
-
     public static pathGetNode($nodeId) {
         return Api.getBaseQuery() + `${$nodeId}/get`;
     }
 
-    public static pathSetNode() {
-        return Api.getBaseQuery() + `set`;
+    /** Paramas **/
+    public static addParams(url, params): string {
+        for (let key in params) {
+            url = url.replace(`:${key}`, params[key]);
+        }
+        return url;
     }
 
     /****************** API METHODS ******************/
@@ -38,12 +41,50 @@ export class Api {
             .set('Content-Type', 'application/x-www-form-urlencoded')
             .set('Authorization', `Basic ${btoa(Xedit.getToken() + ':')}`);
 
-        http.post(this.pathSetNode(), json, { headers: headers }).subscribe(
+        http.post(Xedit.getSetUrl(), json, { headers: headers }).subscribe(
             (data: any) => {
                 successCallback(data);
             },
             error => {
                 errorCallback();
+            }
+        );
+    }
+
+    public static getTreeChildren(http: HttpClient, nodeId: string, type: string, successCallback: Function, errorCallback: Function) {
+
+        const headers = new HttpHeaders()
+            .set('Content-Type', 'application/x-www-form-urlencoded')
+            .set('Authorization', `Basic ${btoa(Xedit.getToken() + ':')}`);
+
+        let url = Xedit.getTreeUrl();
+        url = this.addParams(url, { 'id': nodeId, 'type': type });
+
+        return http.get(url, { headers: headers }).subscribe(
+            (result: any) => {
+                successCallback(result);
+            },
+            error => {
+                errorCallback();
+            }
+        );
+    }
+
+    public static getInfoNode(http: HttpClient, nodeId: string, type: string, successCallback: Function, errorCallback: Function, extra: object) {
+
+        const headers = new HttpHeaders()
+            .set('Content-Type', 'application/x-www-form-urlencoded')
+            .set('Authorization', `Basic ${btoa(Xedit.getToken() + ':')}`);
+
+        let url = Xedit.getInfoNodeUrl();
+        url = this.addParams(url, { 'id': nodeId, 'type': type });
+
+        return http.get(url, { headers: headers }).subscribe(
+            (result: any) => {
+                successCallback(result.response, extra);
+            },
+            error => {
+                errorCallback(null, extra);
             }
         );
     }
