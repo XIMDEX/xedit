@@ -1,16 +1,30 @@
-
-import { Component, OnInit, AfterViewChecked, ViewChild, ElementRef, HostListener, ChangeDetectorRef } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    AfterViewChecked,
+    ViewChild,
+    ElementRef,
+    HostListener,
+    ChangeDetectorRef,
+} from '@angular/core';
 import { FileReaderEvent } from '../../interfaces/file-reader-event-target';
 import { equals, contains, isNil, indexOf, remove, hasIn } from 'ramda';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { File } from '@models/file';
 import { DOM } from '@models/dom';
+import $ from 'jquery';
 import { StateService } from '@services/state-service/state.service';
 import { EditorService } from '@services/editor-service/editor.service';
 import { NotificationsService } from 'angular2-notifications';
 import { StateConfigs } from '@models/configs/statesConfigs';
-import { trigger, transition, style, animate, state } from '@angular/animations';
+import {
+    trigger,
+    transition,
+    style,
+    animate,
+    state,
+} from '@angular/animations';
 import { Api } from '@app/api';
 import { Xedit } from '@app/xedit';
 
@@ -19,28 +33,25 @@ import { Xedit } from '@app/xedit';
     templateUrl: './taskbar.component.html',
     styleUrls: ['./taskbar.component.scss'],
     animations: [
-        trigger(
-            'toggleAtributes',
-            [
-                transition(
-                    ':enter', [
-                        style({ transform: 'translate(-50%, -100%)', opacity: 0 }),
-                        animate('250ms', style({ transform: 'translate(-50%, 0)', 'opacity': 1 }))
-                    ]
+        trigger('toggleAtributes', [
+            transition(':enter', [
+                style({ transform: 'translate(-50%, -100%)', opacity: 0 }),
+                animate(
+                    '250ms',
+                    style({ transform: 'translate(-50%, 0)', opacity: 1 })
                 ),
-                transition(
-                    ':leave', [
-                        style({ transform: 'translate(-50%, 0)', 'opacity': 1 }),
-                        animate('250ms', style({ transform: 'translate(-50%, -100%)', 'opacity': 0 }))
-
-                    ]
-                )
-            ]
-        )
-    ]
+            ]),
+            transition(':leave', [
+                style({ transform: 'translate(-50%, 0)', opacity: 1 }),
+                animate(
+                    '250ms',
+                    style({ transform: 'translate(-50%, -100%)', opacity: 0 })
+                ),
+            ]),
+        ]),
+    ],
 })
 export class TaskbarComponent implements OnInit, AfterViewChecked {
-
     @ViewChild('viewMenu') viewMenu: ElementRef;
 
     private file: File;
@@ -55,8 +66,13 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
     private configs: Array<Object>;
     private stateActive: boolean;
 
-    constructor(private _editorService: EditorService, private _stateService: StateService, private http: HttpClient,
-        private _notification: NotificationsService, private cdr: ChangeDetectorRef) {
+    constructor(
+        private _editorService: EditorService,
+        private _stateService: StateService,
+        private http: HttpClient,
+        private _notification: NotificationsService,
+        private cdr: ChangeDetectorRef
+    ) {
         this.currentView = '';
         this.title = 'Document';
         this.displayToggle = false;
@@ -75,8 +91,14 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
             }
         });
 
-        this._stateService.getCurrentView().subscribe(currentView => this.currentView = currentView);
-        this._stateService.getAvailabelViews().subscribe(availableViews => this.availableViews = availableViews);
+        this._stateService
+            .getCurrentView()
+            .subscribe(currentView => (this.currentView = currentView));
+        this._stateService
+            .getAvailabelViews()
+            .subscribe(
+                availableViews => (this.availableViews = availableViews)
+            );
     }
 
     ngAfterViewChecked() {
@@ -92,7 +114,6 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
         this._editorService.setLoading(true);
         this._editorService.lastStateFile();
     }
-
 
     redo() {
         this._editorService.setLoading(true);
@@ -117,8 +138,7 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
 
     closeMenu() {
         if (!isNil(this.viewMenu)) {
-            DOM.element(this.viewMenu)
-                .removeClass('opened');
+            DOM.element(this.viewMenu).removeClass('opened');
         }
     }
 
@@ -128,20 +148,32 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
         const error = () => {
             console.error('ERROR SAVE DOCUMENT');
             this._editorService.setLoading(false);
-            this._notification.error('Error', 'Se ha producido un error al guardar el documento.',
-                Xedit.NOTIFICATION_DEFAULT_SETTINGS);
+            this._notification.error(
+                'Error',
+                'Se ha producido un error al guardar el documento.',
+                Xedit.NOTIFICATION_DEFAULT_SETTINGS
+            );
         };
 
-        const success = (result) => {
+        const success = result => {
             if (result.status === 0) {
                 this._editorService.setLoading(false);
-                this._notification.success('Guardado', 'El documento ha sido guardado.', Xedit.NOTIFICATION_DEFAULT_SETTINGS);
+                this._notification.success(
+                    'Guardado',
+                    'El documento ha sido guardado.',
+                    Xedit.NOTIFICATION_DEFAULT_SETTINGS
+                );
             } else {
                 error();
             }
         };
 
-        Api.saveDocument(this.http, this._editorService.getUpdatedDocument(), success, error);
+        Api.saveDocument(
+            this.http,
+            this._editorService.getUpdatedDocument(),
+            success,
+            error
+        );
     }
 
     load() {
@@ -163,7 +195,7 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
 
             this._stateService.setAvailableViews(['wysiwyg', 'text']);
 
-            reader.onerror = (evt) => {
+            reader.onerror = evt => {
                 console.error('Error loading file');
             };
         }
@@ -174,10 +206,16 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
         this.displayToggle = !this.displayToggle;
     }
 
-    closeAttributes(event) {
+    closeAttributes(evt) {
         const title = document.getElementById('xe-task-title');
+
         DOM.element(title).removeClass('selected');
-        this.displayToggle = false;
+
+        let element = evt.target;
+
+        if ($(element).parents('app-tree-modal').length === 0) {
+            this.displayToggle = false;
+        }
     }
 
     toggleStates(event) {
@@ -200,7 +238,7 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
     }
 
     toggleElementState() {
-        this.stateActive = this.stateConfigs.toggleActive()
+        this.stateActive = this.stateConfigs.toggleActive();
         this._editorService.setElementsState(!this.stateActive);
     }
 }

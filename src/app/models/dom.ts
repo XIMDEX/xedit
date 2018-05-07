@@ -2,7 +2,6 @@ import { indexOf, remove, hasIn } from 'ramda';
 import { ElementRef } from '@angular/core';
 
 export class DOM {
-
     protected target: HTMLElement;
     private classes: Array<string>;
 
@@ -22,6 +21,15 @@ export class DOM {
     }
 
     /********************** PUBLIC METHODS **********************/
+
+    public tagName(upper: boolean = false) {
+        let tag = this.getTarget().tagName.toLowerCase();
+        if (upper) {
+            tag = tag.toUpperCase();
+        }
+
+        return tag;
+    }
 
     public addClass(className: string) {
         const { index, exists } = this.classExists(className);
@@ -53,7 +61,11 @@ export class DOM {
         this.storeAttr(attr, value);
     }
 
-    public insertNode(htmlString: string, siblingNode: HTMLElement, before: boolean = false) {
+    public insertNode(
+        htmlString: string,
+        siblingNode: HTMLElement,
+        before: boolean = false
+    ) {
         const elements = DOM.creteElement(htmlString);
         // if (!before) {
         //     this.target.insertBefore(element, siblingNode);
@@ -79,9 +91,9 @@ export class DOM {
 
     private joinAttrTypes(attr: string): string {
         const attributtes = {
-            'class': ' ',
-            'style': '; ',
-            'default': ' '
+            class: ' ',
+            style: '; ',
+            default: ' ',
         };
 
         if (hasIn(attr, attributtes)) {
@@ -116,7 +128,9 @@ export class DOM {
         } else if (selector instanceof HTMLElement) {
             element = selector;
         } else {
-            element = new ElementRef(document.body).nativeElement.querySelector(selector);
+            element = new ElementRef(document.body).nativeElement.querySelector(
+                selector
+            );
         }
         return new DOM(element);
     }
@@ -137,6 +151,14 @@ export class DOM {
         if (index >= 0) {
             classes.splice(index, 1);
         }
+    }
+
+    static tag(
+        selector: ElementRef | HTMLElement | string,
+        upper: boolean = false
+    ): string {
+        const element = DOM.element(selector);
+        return element.tagName(upper);
     }
 
     static getClass(element: ElementRef): Array<string> {

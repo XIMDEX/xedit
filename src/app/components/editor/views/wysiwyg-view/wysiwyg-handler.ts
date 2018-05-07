@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { UUID } from 'angular2-uuid';
-import sanitizeHtml from 'sanitize-html'
+import sanitizeHtml from 'sanitize-html';
 
 // TIYMCE
 import 'tinymce';
@@ -27,7 +27,16 @@ declare let tinymce: any;
 
 // DATEPICKER
 import 'bootstrap-datepicker';
-import { isNil, equals, hasIn, isEmpty, join, union, contains, uniq } from 'ramda';
+import {
+    isNil,
+    equals,
+    hasIn,
+    isEmpty,
+    join,
+    union,
+    contains,
+    uniq,
+} from 'ramda';
 import { state } from '@angular/core';
 import { WysiwygViewComponent } from './wysiwyg-view.component';
 import { XeditMapper } from '@models/schema/xedit-mapper';
@@ -39,18 +48,20 @@ import { isArray } from 'util';
 import { ClipboardConfigs } from '../../../../models/configs/clipboardConfigs';
 import { HttpClient } from '@angular/common/http';
 
-
 export class WysiwygHandler {
-
     static STYLES_ALL = 'all';
     static TAGS_ALL = 'all';
 
     static handlers = {
-        'date': WysiwygHandler.initDatePicker,
-        'text': WysiwygHandler.initTinymce
+        date: WysiwygHandler.initDatePicker,
+        text: WysiwygHandler.initTinymce,
     };
 
-    static executeHandler(type: string, args: any, defaultMethod: Function = function () { }) {
+    static executeHandler(
+        type: string,
+        args: any,
+        defaultMethod: Function = function() {}
+    ) {
         const handlers = WysiwygHandler.handlers;
         handlers[type] ? handlers[type](args) : defaultMethod(args);
     }
@@ -67,12 +78,21 @@ export class WysiwygHandler {
      * Init tinymce editor and added events
      */
     static initTinymce(args) {
-        if (tinymce.activeEditor == null || !WysiwygHandler.isSameEditor(tinymce.activeEditor,
-            args.node.getSection().getAttribute(XeditMapper.TAG_UUID))) {
+        if (
+            tinymce.activeEditor == null ||
+            !WysiwygHandler.isSameEditor(
+                tinymce.activeEditor,
+                args.node.getSection().getAttribute(XeditMapper.TAG_UUID)
+            )
+        ) {
             WysiwygHandler.clearTinymce();
             WysiwygHandler.addPlugins(args.http);
-            const toolbar = WysiwygHandler.generateToolbar(args.node.getSchema());
-            const fixed_toolbar_container = !isEmpty(toolbar) ? '#toolbar' : false;
+            const toolbar = WysiwygHandler.generateToolbar(
+                args.node.getSchema()
+            );
+            const fixed_toolbar_container = !isEmpty(toolbar)
+                ? '#toolbar'
+                : false;
 
             tinymce.init({
                 dam_url: Xedit.getResourceUrl(),
@@ -84,18 +104,31 @@ export class WysiwygHandler {
                 fixed_toolbar_container: fixed_toolbar_container,
                 menubar: false,
                 toolbar: toolbar,
-                plugins: WysiwygHandler.getAvailablePlugins(args.node.getSchema()),
+                plugins: WysiwygHandler.getAvailablePlugins(
+                    args.node.getSchema()
+                ),
                 skin_url: 'assets/skins/x-edit',
                 valid_elements: '*[*]',
                 setup: editor => {
-                    editor.on('Nodechange', (e) => {
+                    editor.on('Nodechange', e => {
                         console.log(e);
                         const ele = e.element;
                         const sibling = ele.previousSibling;
-                        if (sibling && typeof sibling.getAttribute === 'function') {
-                            if (sibling.getAttribute(XeditMapper.TAG_UUID) == ele.getAttribute(XeditMapper.TAG_UUID)) {
-                                ele.setAttribute(XeditMapper.TAG_UUID, UUID.UUID());
-                                sibling.removeAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED);
+                        if (
+                            sibling &&
+                            typeof sibling.getAttribute === 'function'
+                        ) {
+                            if (
+                                sibling.getAttribute(XeditMapper.TAG_UUID) ==
+                                ele.getAttribute(XeditMapper.TAG_UUID)
+                            ) {
+                                ele.setAttribute(
+                                    XeditMapper.TAG_UUID,
+                                    UUID.UUID()
+                                );
+                                sibling.removeAttribute(
+                                    XeditMapper.ATTR_WYSIWYG_SELECTED
+                                );
                             }
                         }
                         /*const element = e.element;
@@ -120,9 +153,8 @@ export class WysiwygHandler {
                             element.getAttribute(XeditMapper.TAG_UUID))) {
                             args.service.setCurrentNode(args.service.parseToNode(element));
                         }*/
-
                     });
-                    editor.on('Paste', (e) => {
+                    editor.on('Paste', e => {
                         e.preventDefault();
 
                         let copyHtml = args.clipboardConfigs.getConfigs('copy');
@@ -132,29 +164,43 @@ export class WysiwygHandler {
 
                         const contentTag = editor.bodyElement;
                         const content = editor.getContent();
-                        args.service.save(contentTag, content, 'Change section ' + args.node.getSection().getAttribute('xe_section'));
+                        args.service.save(
+                            contentTag,
+                            content,
+                            'Change section ' +
+                                args.node
+                                    .getSection()
+                                    .getAttribute('xe_section')
+                        );
                     });
                     editor.on('change', (evt: Event) => {
                         const contentTag = editor.bodyElement;
                         const content = editor.getContent();
-                        args.service.save(contentTag, content, 'Change section ' + args.node.getSection().getAttribute('xe_section'));
+                        args.service.save(
+                            contentTag,
+                            content,
+                            'Change section ' +
+                                args.node
+                                    .getSection()
+                                    .getAttribute('xe_section')
+                        );
                     });
                     editor.on('init', (evt: Event) => {
                         tinymce.execCommand('mceFocus', false, editor.id);
                         args.service.setCurrentNode(args.node);
                     });
 
-                    editor.on('hide', (e) => {
+                    editor.on('hide', e => {
                         tinymce.remove(editor);
                     });
 
-                    editor.on('blur', (e) => {
+                    editor.on('blur', e => {
                         // TODO FIX atovar
                         const xedit = e.target.bodyElement;
                         const links = xedit.getElementsByTagName('a');
                         if (!isNil(links)) {
                             for (let i = 0; i < links.length; i++) {
-                                links[i].onclick = (evt) => {
+                                links[i].onclick = evt => {
                                     evt.preventDefault();
                                     return false;
                                 };
@@ -180,7 +226,7 @@ export class WysiwygHandler {
                         );*/
                         return false;
                     });
-                }
+                },
             });
         }
     }
@@ -188,7 +234,7 @@ export class WysiwygHandler {
     private static resetIdsFromString(text) {
         function replaceIndex(string, at, repl) {
             let pos = -1;
-            return string.replace(/ xe_uuid=\"[^"]*\" */g, (match) => {
+            return string.replace(/ xe_uuid=\"[^"]*\" */g, match => {
                 pos++;
                 if (pos === at) {
                     return repl;
@@ -207,11 +253,14 @@ export class WysiwygHandler {
     }
 
     private static isSameEditor(editor, id) {
-        return editor.targetElm.hasAttribute('xe_uuid') && equals(editor.targetElm.getAttribute('xe_uuid'), id);
+        return (
+            editor.targetElm.hasAttribute('xe_uuid') &&
+            equals(editor.targetElm.getAttribute('xe_uuid'), id)
+        );
     }
 
     private static addPlugins(http: HttpClient) {
-        tinymce.PluginManager.add('dam', function (editor) {
+        tinymce.PluginManager.add('dam', function(editor) {
             FilterContent.setup(editor);
             Commands.register(editor, http);
             Buttons.register(editor);
@@ -242,37 +291,55 @@ export class WysiwygHandler {
         const stylesValue = {};
         const groups = {
             group1: {
-                bold: 'bold', italic: 'italic', underline: 'underline', strikethrough: 'strikethrough', color: 'forecolor',
-                background: 'backcolor'
+                bold: 'bold',
+                italic: 'italic',
+                underline: 'underline',
+                strikethrough: 'strikethrough',
+                color: 'forecolor',
+                background: 'backcolor',
             },
             others: {
-                ol: 'numlist', ul: 'bullist', table: "table"
+                ol: 'numlist',
+                ul: 'bullist',
+                table: 'table',
             },
             align: {
-                alignright: 'alignright', aligncenter: 'aligncenter', alignleft: 'alignleft', alignjustify: 'alignjustify'
+                alignright: 'alignright',
+                aligncenter: 'aligncenter',
+                alignleft: 'alignleft',
+                alignjustify: 'alignjustify',
             },
             indent: {
-                outdent: 'outdent', indent: 'indent'
+                outdent: 'outdent',
+                indent: 'indent',
             },
             format: {
-                formatselect: 'formatselect'
+                formatselect: 'formatselect',
             },
             font: {
-                fontsize: 'fontsizeselect'
-            }
+                fontsize: 'fontsizeselect',
+            },
         };
 
-        if (typeof (styles) === 'string') {
-            styles = equals(styles, WysiwygHandler.STYLES_ALL) ? Object.keys(groups) : [];
+        if (typeof styles === 'string') {
+            styles = equals(styles, WysiwygHandler.STYLES_ALL)
+                ? Object.keys(groups)
+                : [];
         }
 
         styles.forEach(style => {
             if (hasIn(style, groups)) {
-                WysiwygHandler.addValue(stylesValue, style, Object.values(groups[style]));
+                WysiwygHandler.addValue(
+                    stylesValue,
+                    style,
+                    Object.values(groups[style])
+                );
             } else {
                 for (const group in groups) {
                     if (hasIn(style, groups[group])) {
-                        WysiwygHandler.addValue(stylesValue, group, [groups[group][style]]);
+                        WysiwygHandler.addValue(stylesValue, group, [
+                            groups[group][style],
+                        ]);
                     }
                 }
             }
@@ -291,25 +358,35 @@ export class WysiwygHandler {
         const tagsValue = {};
         const groups = {
             buttons: {
-                a: 'dam_link', img: 'dam', video: 'dam_video', audio: 'dam_audio'
+                a: 'dam_link',
+                img: 'dam',
+                video: 'dam_video',
+                audio: 'dam_audio',
             },
-            formats: {
-            }
+            formats: {},
         };
 
-        if (typeof (tags) === 'string') {
-            tags = equals(tags, WysiwygHandler.TAGS_ALL) ? Object.keys(groups) : [];
+        if (typeof tags === 'string') {
+            tags = equals(tags, WysiwygHandler.TAGS_ALL)
+                ? Object.keys(groups)
+                : [];
         } else {
             tags = Object.keys(tags);
         }
 
         tags.forEach(style => {
             if (hasIn(style, groups)) {
-                WysiwygHandler.addValue(tagsValue, style, Object.values(groups[style]));
+                WysiwygHandler.addValue(
+                    tagsValue,
+                    style,
+                    Object.values(groups[style])
+                );
             } else {
                 for (const group in groups) {
                     if (hasIn(style, groups[group])) {
-                        WysiwygHandler.addValue(tagsValue, group, [groups[group][style]]);
+                        WysiwygHandler.addValue(tagsValue, group, [
+                            groups[group][style],
+                        ]);
                     }
                 }
             }
@@ -324,7 +401,11 @@ export class WysiwygHandler {
         return result;
     }
 
-    private static addValue(object: Object, property: string, value: Array<string> | string) {
+    private static addValue(
+        object: Object,
+        property: string,
+        value: Array<string> | string
+    ) {
         if (hasIn(property, object)) {
             object[property] = union(object[property], value);
         } else {
@@ -342,22 +423,38 @@ export class WysiwygHandler {
      * Init datepicker
      */
     static initDatePicker(args) {
-        $(document).ready(function () {
+        $(document).ready(function() {
             'use strict';
-            const element = $(args.node.getSection());
+            const hasNode = hasIn('node', args);
+            const hasElement = hasIn('element', args);
+            const element = hasNode
+                ? $(args.node.getSection())
+                : hasElement
+                    ? $(args.element)
+                    : $(args);
             if (element.children().length === 0) {
                 const date = element.html();
                 element.html('<input type="text" value="' + date + '">');
 
                 const input = element.children();
-                input.datepicker();
+                input.datepicker({
+                    format: 'dd-mm-yyyy',
+                });
                 input.datepicker().on('hide', () => {
                     input.datepicker('destroy');
                     element.html(input.val());
-                    args.service.save(args.node.getTarget(), element.html(), 'Change section date');
-                    args.service.getFileStateValue().snapshot();
+                    if (hasNode) {
+                        args.service.save(
+                            args.node.getTarget(),
+                            element.html(),
+                            'Change section date'
+                        );
+                        args.service.getFileStateValue().snapshot();
+                    } else if (hasElement && hasIn('callback', args)) {
+                        args.callback(input.val());
+                    }
                 });
-                input.on('changeDate', function () {
+                input.on('changeDate', function() {
                     input.datepicker('hide');
                 });
                 input.datepicker('show');
@@ -365,8 +462,7 @@ export class WysiwygHandler {
         });
     }
 
-
-    /** 
+    /**
      * This method get data in plain format from clipboard
      */
     public static copyPlain(evt: ClipboardEvent) {
@@ -395,5 +491,4 @@ export class WysiwygHandler {
         }
         return data;
     }
-
 }

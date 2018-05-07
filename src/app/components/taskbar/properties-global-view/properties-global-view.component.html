@@ -5,13 +5,16 @@
             <ng-container *ngSwitchCase="'string'">
                 <app-multi-input [data]="createMetaObject(meta)" (changeValue)="changeMetadata($event.new[meta.name], meta.name)"></app-multi-input>
             </ng-container>
-            <ng-container *ngSwitchCase="'enum'">
-                <strong> {{meta.name}}</strong> :
-                <app-listbox [placeholder]="meta.name" [selected]="meta.value" [options]="meta.options" (changeValue)="changeMetadata($event, meta.name)"></app-listbox>
-                <br/>
-            </ng-container>
-            <ng-container *ngSwitchDefault>
-                <strong> {{meta.name}}</strong> : {{meta.value}}
+            <ng-container *ngSwitchDefault [ngSwitch]="meta.type">
+                <strong>{{meta.name}}</strong> :
+                <app-listbox *ngSwitchCase="'enum'" [placeholder]="meta.name" [selected]="meta.value" [options]="meta.options" (changeValue)="changeMetadata($event, meta.name)"></app-listbox>
+                <time *ngSwitchCase="'date'" #date xe_section="date" datetime="0000-00-00" (click)="applyHandler($event, meta, this)">{{ (meta.value === '') ? dateNow() : meta.value }}</time>
+                <p *ngSwitchCase="'image'" (click)="applyHandler($event, meta, this)" style="display: inline-block;">
+                    <img style="max-height: 50px; min-height: 50px;" src="{{ baseUrl }}{{ meta.value }}" alt="select image">
+                </p>
+                <ng-container *ngSwitchDefault>
+                    {{meta.value}}
+                </ng-container>
                 <br/>
             </ng-container>
         </ng-container>
