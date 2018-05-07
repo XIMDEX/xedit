@@ -6,7 +6,7 @@ const register = function(editor, http) {
     });
 
     editor.addCommand('mceDamLink', function() {
-        Dialog.open(editor, http, '');
+        Dialog.open(editor, http, 'link');
     });
 };
 
