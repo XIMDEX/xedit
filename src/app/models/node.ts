@@ -5,7 +5,6 @@ import { Converters } from '@utils/converters';
 import { Xedit } from '../xedit';
 
 export class Node {
-
     static TYPE_IMAGE = 'image';
     static TYPE_VIDEO = 'video';
     static TYPE_OTHER = 'other';
@@ -32,15 +31,30 @@ export class Node {
         this.name = target.tagName.toLowerCase();
         this.target = target;
         this.section = Node.getContainer(this.target);
-        this.uuidSectionsPath = Node.getContextPath(this.target, XeditMapper.TAG_EDITOR, XeditMapper.TAG_UUID,
-            XeditMapper.TAG_UUID, [], false, true);
-        this.sectionsPath = Node.getContextPath(this.target, XeditMapper.TAG_EDITOR,
-            XeditMapper.TAG_SECTION_TYPE, XeditMapper.TAG_SECTION_TYPE, [], true);
+        this.uuidSectionsPath = Node.getContextPath(
+            this.target,
+            XeditMapper.TAG_EDITOR,
+            XeditMapper.TAG_UUID,
+            XeditMapper.TAG_UUID,
+            [],
+            false,
+            true
+        );
+        this.sectionsPath = Node.getContextPath(
+            this.target,
+            XeditMapper.TAG_EDITOR,
+            XeditMapper.TAG_SECTION_TYPE,
+            XeditMapper.TAG_SECTION_TYPE,
+            [],
+            true
+        );
         this.areaId = this.uuidSectionsPath.shift();
         this.attributes = attributes;
 
         this.schemaNode = Xedit.getConf('schemas')[this.areaId];
-        this.schema = this.schemaNode[this.getSection().getAttribute(XeditMapper.TAG_SECTION_TYPE)];
+        this.schema = this.schemaNode[
+            this.getSection().getAttribute(XeditMapper.TAG_SECTION_TYPE)
+        ];
     }
 
     // ************************************** Getters and setters **************************************/
@@ -82,7 +96,6 @@ export class Node {
     getPath(): Array<string> {
         return this.uuidSectionsPath;
     }
-
 
     getSectionsPath(): Array<string> {
         return this.sectionsPath;
@@ -126,18 +139,17 @@ export class Node {
      */
     getAvailableAttributes() {
         let attrName = this.name;
-
-        if (this.getAttribute(XeditMapper.TAG_AUDIO, null) != null) {
-            attrName = XeditMapper.TAG_AUDIO;
-        } else if (this.getAttribute(XeditMapper.TAG_LINK, null) != null) {
+        let auxTag = null;
+        if (this.getAttribute(XeditMapper.TAG_LINK, null) != null) {
             attrName = XeditMapper.TAG_LINK;
-        } else if (this.getAttribute(XeditMapper.TAG_VIDEO, null) != null) {
-            attrName = XeditMapper.TAG_VIDEO;
-        } else if (this.getAttribute(XeditMapper.TAG_SECTION_TYPE, null) != null) {
+            auxTag = this.name;
+        } else if (
+            this.getAttribute(XeditMapper.TAG_SECTION_TYPE, null) != null
+        ) {
             attrName = this.getAttribute(XeditMapper.TAG_SECTION_TYPE);
         }
 
-        return XeditMapper.getAvailableAttribute(attrName);
+        return XeditMapper.getAvailableAttribute(attrName, auxTag);
     }
 
     /*********************** STATIC METHODS ***************************************/
@@ -148,27 +160,46 @@ export class Node {
             container = element;
         }
 
-        return !isNil(container) || isNil(element) || isNil(element.parentNode) ?
-            container : Node.getContainer(element.parentNode, attribute);
+        return !isNil(container) || isNil(element) || isNil(element.parentNode)
+            ? container
+            : Node.getContainer(element.parentNode, attribute);
     }
 
     /**
      * Calculate uuid path to xedit node
      */
-    static getContextPath(element, rootTag = XeditMapper.TAG_EDITOR, hasAttribute = XeditMapper.TAG_UUID,
-        attribute = XeditMapper.TAG_UUID, path = [], onlyAttribute = false, rootTagIncluded = false) {
+    static getContextPath(
+        element,
+        rootTag = XeditMapper.TAG_EDITOR,
+        hasAttribute = XeditMapper.TAG_UUID,
+        attribute = XeditMapper.TAG_UUID,
+        path = [],
+        onlyAttribute = false,
+        rootTagIncluded = false
+    ) {
         const parent = element.parentNode;
 
-        if (!isNil(element) && (!onlyAttribute || element.hasAttribute(hasAttribute)) &&
-            (element.nodeName.toLowerCase() !== rootTag) || rootTagIncluded) {
+        if (
+            (!isNil(element) &&
+                (!onlyAttribute || element.hasAttribute(hasAttribute)) &&
+                element.nodeName.toLowerCase() !== rootTag) ||
+            rootTagIncluded
+        ) {
             path.unshift(element.getAttribute(attribute));
         }
 
-        return (element.nodeName.toLowerCase() === rootTag || isNil(parent)) ?
-            path : this.getContextPath(parent, rootTag, hasAttribute, attribute, path, onlyAttribute, rootTagIncluded);
+        return element.nodeName.toLowerCase() === rootTag || isNil(parent)
+            ? path
+            : this.getContextPath(
+                  parent,
+                  rootTag,
+                  hasAttribute,
+                  attribute,
+                  path,
+                  onlyAttribute,
+                  rootTagIncluded
+              );
     }
-
-
 
     /**
      * Get section name according to the language
@@ -179,7 +210,11 @@ export class Node {
     static getSectionLang(section, lang) {
         let name = null;
         if (!isNil(section)) {
-            if (hasIn('lang', section) && is(Object, section.lang) && hasIn(lang, section.lang)) {
+            if (
+                hasIn('lang', section) &&
+                is(Object, section.lang) &&
+                hasIn(lang, section.lang)
+            ) {
                 name = section.lang[lang];
             } else if (hasIn('name', section)) {
                 name = section.name;
@@ -187,7 +222,6 @@ export class Node {
         }
         return name;
     }
-
 
     /**
      * Get section template
