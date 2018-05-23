@@ -4,9 +4,9 @@ import { XeditMapper } from '@models/schema/xedit-mapper';
  * Dam.js
  */
 
-const TAG_BY_TYPE = { 'image': 'img', 'link': 'a' };
-const ATTR_BY_TAG = { 'img': 'src', 'a': 'href' };
-const ATTRS_BY_TAG = { 'img': ['alt', 'longdesc'], 'a': ['target', 'title'] }
+const TAG_BY_TYPE = { 'image': 'img', 'link': 'a', 'video': 'video' };
+const ATTR_BY_TAG = { 'img': 'src', 'a': 'href', 'video': 'src' };
+const ATTRS_BY_TAG = { 'img': ['alt', 'longdesc'], 'a': ['target', 'title'], 'video': ['autoplay', 'longdesc'] }
 const VALID_TAGS = Object.keys(ATTR_BY_TAG);
 
 const isValidNodeId = function (nodeId) {
@@ -83,6 +83,8 @@ const insert = function (editor, nodeId, type, attributes) {
             } else {
                 text = resource['title'];
             }
+        } else if (type == 'video') {
+            resource['controls'] = '';
         }
 
         editor.execCommand('mceInsertContent', false, editor.dom.createHTML(TAG_BY_TYPE[type], resource, text));

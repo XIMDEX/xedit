@@ -5,7 +5,7 @@
 const register = function (editor) {
 
     editor.addButton('dam', {
-        icon: 'media',
+        icon: 'image',
         tooltip: 'DAM image',
         cmd: 'mceDam',
         stateSelector: 'img[xe_link]'
@@ -18,8 +18,15 @@ const register = function (editor) {
         stateSelector: 'a[xe_link]'
     });
 
-    editor.addMenuItem('dam', {
+    editor.addButton('dam_video', {
         icon: 'media',
+        tooltip: 'DAM video',
+        cmd: 'mceDamVideo',
+        stateSelector: 'video[xe_link]'
+    });
+
+    editor.addMenuItem('dam', {
+        icon: 'image',
         text: 'DAM',
         context: 'insert',
         cmd: 'mceDam'
@@ -30,6 +37,13 @@ const register = function (editor) {
         text: 'DAM link',
         context: 'insert',
         cmd: 'mceDamLink'
+    });
+
+    editor.addMenuItem('dam_video', {
+        icon: 'video',
+        text: 'DAM video',
+        context: 'insert',
+        cmd: 'mceDamVideo'
     });
 };
 

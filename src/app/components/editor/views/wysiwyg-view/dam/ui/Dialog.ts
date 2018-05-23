@@ -7,6 +7,14 @@ import { Api } from '@app/api';
 import { HttpClient } from '@angular/common/http';
 
 const ATTRS_BY_TYPE = {
+    video: {
+        longdesc: {
+            type: 'textbox',
+            name: 'longdesc',
+            size: 40,
+            label: 'Descripción',
+        }
+    },
     image: {
         alt: { type: 'textbox', name: 'alt', size: 40, label: 'Alternativo' },
         longdesc: {
@@ -30,7 +38,7 @@ const ATTRS_BY_TYPE = {
     },
 };
 
-const insertDam = function(editor, newId, type, extra) {
+const insertDam = function (editor, newId, type, extra) {
     if (!Dam.isValidNodeId(newId)) {
         editor.windowManager.alert('El enlace elegido no es válido');
         return true;
@@ -40,7 +48,7 @@ const insertDam = function(editor, newId, type, extra) {
     }
 };
 
-const open = function(editor, http: HttpClient, type: string) {
+const open = function (editor, http: HttpClient, type: string) {
     const currentId = Dam.getId(editor, type);
     const attributes = {};
 
