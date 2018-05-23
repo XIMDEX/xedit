@@ -11,8 +11,20 @@ const ATTRS_BY_TYPE = {
         longdesc: {
             type: 'textbox',
             name: 'longdesc',
-            size: 40,
+            size: 20,
             label: 'Descripción',
+        },
+        width: {
+            type: 'textbox',
+            name: 'width',
+            size: 40,
+            label: 'Anchura',
+        },
+        height: {
+            type: 'textbox',
+            name: 'height',
+            size: 40,
+            label: 'Altura',
         }
     },
     image: {

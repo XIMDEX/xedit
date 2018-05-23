@@ -22,7 +22,7 @@ const register = function (editor) {
         icon: 'media',
         tooltip: 'DAM video',
         cmd: 'mceDamVideo',
-        stateSelector: 'video[xe_link]'
+        stateSelector: 'img[data-mce-object="video"]'
     });
 
     editor.addMenuItem('dam', {

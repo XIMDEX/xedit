@@ -60,7 +60,7 @@ export class WysiwygHandler {
     static executeHandler(
         type: string,
         args: any,
-        defaultMethod: Function = function() {}
+        defaultMethod: Function = function () { }
     ) {
         const handlers = WysiwygHandler.handlers;
         handlers[type] ? handlers[type](args) : defaultMethod(args);
@@ -168,9 +168,9 @@ export class WysiwygHandler {
                             contentTag,
                             content,
                             'Change section ' +
-                                args.node
-                                    .getSection()
-                                    .getAttribute('xe_section')
+                            args.node
+                                .getSection()
+                                .getAttribute('xe_section')
                         );
                     });
                     editor.on('change', (evt: Event) => {
@@ -180,9 +180,9 @@ export class WysiwygHandler {
                             contentTag,
                             content,
                             'Change section ' +
-                                args.node
-                                    .getSection()
-                                    .getAttribute('xe_section')
+                            args.node
+                                .getSection()
+                                .getAttribute('xe_section')
                         );
                     });
                     editor.on('init', (evt: Event) => {
@@ -260,7 +260,7 @@ export class WysiwygHandler {
     }
 
     private static addPlugins(http: HttpClient) {
-        tinymce.PluginManager.add('dam', function(editor) {
+        tinymce.PluginManager.add('dam', function (editor) {
             FilterContent.setup(editor);
             Commands.register(editor, http);
             Buttons.register(editor);
@@ -423,7 +423,7 @@ export class WysiwygHandler {
      * Init datepicker
      */
     static initDatePicker(args) {
-        $(document).ready(function() {
+        $(document).ready(function () {
             'use strict';
             const hasNode = hasIn('node', args);
             const hasElement = hasIn('element', args);
@@ -454,7 +454,7 @@ export class WysiwygHandler {
                         args.callback(input.val());
                     }
                 });
-                input.on('changeDate', function() {
+                input.on('changeDate', function () {
                     input.datepicker('hide');
                 });
                 input.datepicker('show');
