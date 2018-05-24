@@ -55,8 +55,8 @@ const getUrl = function (editor, nodeId) {
 }
 
 const createHtmlVideo = function (text, resource) {
-    var height = 'height' in resource && !isEmpty(resource['height']) ? resource['height'] : '320px';
-    var width = 'width' in resource && !isEmpty(resource['width']) ? resource['width'] : '240px';
+    var height = 'height' in resource && !isEmpty(resource['height']) ? resource['height'] : '100%';
+    var width = 'width' in resource && !isEmpty(resource['width']) ? resource['width'] : '100%';
     //text = `<video xe_link="${resource['xe_link']}" lingkwidth="${width}" height="${height}" controls>`;
     text = `<source src="${resource['xe_link']}" type="video/mp4"/>Your browser does not support the video tag.`;
     //text += `</video>`;
