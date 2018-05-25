@@ -1,0 +1,21 @@
+{
+    "name": "ximdex/xedit",
+    "description": "Html editor",
+    "type": "project",
+    "license": "AGPL-3.0",
+    "authors": [
+        {
+            "name": "Ximdex",
+            "email": "soporte@ximdex.com"
+        },
+        {
+            "name": "Alejandro de Tovar",
+            "email": "atovar@ximdex.com"
+        },
+        {
+            "name": "David Arroyo",
+            "email": "darroyo@ximdex.com"
+        }
+    ],
+    "require": {}
+}
