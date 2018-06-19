@@ -22,6 +22,7 @@ import 'tinymce/plugins/colorpicker';
 import Commands from './dam/api/Commands';
 import FilterContent from './dam/core/FilterContent';
 import Buttons from './dam/ui/Buttons';
+import dateFormat from 'dateformat';
 
 declare let tinymce: any;
 
@@ -438,11 +439,15 @@ export class WysiwygHandler {
 
                 const input = element.children();
                 input.datepicker({
-                    format: 'dd-mm-yyyy',
+                    // format: 'dd-mm-yyyy',
                 });
                 input.datepicker().on('hide', () => {
                     input.datepicker('destroy');
-                    element.html(input.val());
+                    const format = !isNil(args.node.getSchema().options.format) ? args.node.getSchema().options.format : 'dd-mm-yyyy';
+                    if (element.prop("tagName") === 'TIME') {
+                        element.attr('datetime', input.val());
+                    }
+                    element.html(dateFormat(input.val(), format));
                     if (hasNode) {
                         args.service.save(
                             args.node.getTarget(),
@@ -491,4 +496,19 @@ export class WysiwygHandler {
         }
         return data;
     }
+
 }
+
+dateFormat.i18n = {
+    dayNames: [
+        'Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab',
+        'Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado'
+    ],
+    monthNames: [
+        'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic',
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ],
+    timeNames: [
+        'a', 'p', 'am', 'pm', 'A', 'P', 'AM', 'PM'
+    ]
+};
