@@ -1,8 +1,10 @@
 @import '~sass/variables';
 
-:host {    
+:host {
     position: relative;
     z-index: 5;
+    display: flex;
+    flex-direction: row;
     @include box-shadow(top, 0.57);
     min-height: 30px;
     max-height: 30px;
@@ -28,7 +30,7 @@
                 margin: 0 0 0 5px;
             }
 
-            &:not(.selected):hover{
+            &:not(.selected):hover {
                 cursor: pointer;
                 color: $green-dark;
             }
@@ -37,5 +39,11 @@
                 color: $green-dark;
             }
         }
+    }
+
+    > img.logo {
+        margin: auto 0 auto auto;
+        height: 30px;
+        width: auto;
     }
 }
