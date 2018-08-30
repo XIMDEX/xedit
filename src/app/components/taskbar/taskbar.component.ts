@@ -181,26 +181,6 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
         document.getElementById('open_html').click();
     }
 
-    onFileSelect(event) {
-        const file = event.target.files[0];
-        if (file.type === 'application/json') {
-            const reader: FileReader = new FileReader();
-            reader.readAsText(file, 'UTF-8');
-
-            reader.onload = (fileReaderEvent: FileReaderEvent) => {
-                const json = JSON.parse(fileReaderEvent.target.result);
-                const nodes = json.response;
-                this._editorService.createFile(nodes);
-            };
-
-            this._stateService.setAvailableViews(['wysiwyg', 'text']);
-
-            reader.onerror = evt => {
-                console.error('Error loading file');
-            };
-        }
-    }
-
     toggleAttributes(event) {
         DOM.element(event.target).toggleClass('selected');
         this.displayToggle = !this.displayToggle;
@@ -211,7 +191,7 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
 
         DOM.element(title).removeClass('selected');
 
-        let element = evt.target;
+        const element = evt.target;
 
         if ($(element).parents('app-tree-modal').length === 0) {
             this.displayToggle = false;

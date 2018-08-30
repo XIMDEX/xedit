@@ -18,8 +18,12 @@ import { Xedit } from '@app/xedit';
 export class BreadcrumbComponent implements OnInit {
 
     @Output() selectNode: EventEmitter<string> = new EventEmitter();
+    @ViewChild('myContextMenu') public basicMenu: ContextMenuComponent;
 
+    public contextMenuActions: Array<any> = [];
     public breadcrumb: Array<Object> = [];
+
+    private copyAction: any;
     private currentNode: any;
 
     constructor(private _editorService: EditorService, private _elementRef: ElementRef, private contextMenuService: ContextMenuService,
@@ -56,10 +60,6 @@ export class BreadcrumbComponent implements OnInit {
     }
 
     /************************************** MENU *****************************************/
-    @ViewChild('myContextMenu') public basicMenu: ContextMenuComponent;
-    public contextMenuActions: Array<any> = [];
-    private copyAction: any;
-
     public onContextMenu($event: KeyboardEvent, item: any): void {
 
         const node = this._editorService.parseToNode(item);

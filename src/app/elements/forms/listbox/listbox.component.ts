@@ -9,9 +9,9 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 })
 export class ListboxComponent implements OnInit {
 
-    @Input('placeholder') placeholder: String;
-    @Input('options') options: String;
-    @Input('selected') selected: String;
+    @Input() placeholder: string;
+    @Input() options: string;
+    @Input() selected: string;
 
     @Output() changeValue: EventEmitter<any> = new EventEmitter();
 

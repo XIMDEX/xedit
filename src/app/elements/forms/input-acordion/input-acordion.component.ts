@@ -8,9 +8,9 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class InputAcordionComponent implements OnInit {
 
-    @Input('title') title: String = '';
-    @Input('actionText') actionText: string;
-    @Input('values') values: Array<string>;
+    @Input() title = '';
+    @Input() actionText: string;
+    @Input() values: Array<string>;
 
     @Output() changeValue: EventEmitter<any> = new EventEmitter();
 

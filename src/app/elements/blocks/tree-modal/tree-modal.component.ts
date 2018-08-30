@@ -9,10 +9,10 @@ import { TreeComponent } from '@elements/blocks/tree/tree.component';
   styleUrls: ['./tree-modal.component.scss']
 })
 export class TreeModalComponent implements OnInit {
-  @ViewChild("modal") modal: ModalComponent;
-  @ViewChild("tree") tree: TreeComponent;
+  @ViewChild('modal') modal: ModalComponent;
+  @ViewChild('tree') tree: TreeComponent;
 
-  public close: boolean = false;
+  public close = false;
   public selectedId: string;
 
   private type;
@@ -20,15 +20,15 @@ export class TreeModalComponent implements OnInit {
 
   constructor(private ms: ModalService) { }
 
-  openModal(id, type, path = []) {
+  openModal(id, type, p = []) {
     this.close = false;
     this.selectedId = null;
-    this.path = path;
+    this.path = p;
     this.type = type;
     this.modal.openModal(id);
     this.tree.resetTreeModel();
 
-    let promise = new Promise(
+    const promise = new Promise(
       (resolve, reject) => {
         const loop = window.setInterval(() => {
           try {
@@ -40,7 +40,7 @@ export class TreeModalComponent implements OnInit {
             } else if (treeModal.close && isNil(treeModal.selectedId)) {
               window.clearInterval(loop);
               this.modal.closeModal(id);
-              reject("Closed without selection");
+              reject('Closed without selection');
             }
           } catch (e) {
             window.clearInterval(loop);

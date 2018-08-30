@@ -47,7 +47,9 @@ import { Converters } from '@utils/converters';
 import { Xedit } from '@app/xedit';
 import { isArray } from 'util';
 import { ClipboardConfigs } from '../../../../models/configs/clipboardConfigs';
+import Router from '../../../../core/mappers/router';
 import { HttpClient } from '@angular/common/http';
+import { Api } from '@app/api';
 
 export class WysiwygHandler {
     static STYLES_ALL = 'all';
@@ -96,7 +98,9 @@ export class WysiwygHandler {
                 : false;
 
             tinymce.init({
-                dam_url: Xedit.getResourceUrl(),
+                dam_url: function (id) {
+                    return Router.configUrl(Api.getResourceUrl(), { id: id });
+                },
                 max_chars: 30000,
                 id: args.node.getSection().getAttribute(XeditMapper.TAG_UUID),
                 target: args.node.getSection(),
@@ -120,7 +124,7 @@ export class WysiwygHandler {
                             typeof sibling.getAttribute === 'function'
                         ) {
                             if (
-                                sibling.getAttribute(XeditMapper.TAG_UUID) ==
+                                sibling.getAttribute(XeditMapper.TAG_UUID) ===
                                 ele.getAttribute(XeditMapper.TAG_UUID)
                             ) {
                                 ele.setAttribute(
@@ -158,7 +162,7 @@ export class WysiwygHandler {
                     editor.on('Paste', e => {
                         e.preventDefault();
 
-                        let copyHtml = args.clipboardConfigs.getConfigs('copy');
+                        const copyHtml = args.clipboardConfigs.getConfigs('copy');
                         let data = WysiwygHandler.copy(e, copyHtml.enable);
                         data = WysiwygHandler.resetIdsFromString(data);
                         document.execCommand('insertHTML', false, data);
@@ -175,16 +179,7 @@ export class WysiwygHandler {
                         );
                     });
                     editor.on('change', (evt: Event) => {
-                        const contentTag = editor.bodyElement;
-                        const content = editor.getContent();
-                        args.service.save(
-                            contentTag,
-                            content,
-                            'Change section ' +
-                            args.node
-                                .getSection()
-                                .getAttribute('xe_section')
-                        );
+                        WysiwygHandler.saveDoc(editor, args)
                     });
                     editor.on('init', (evt: Event) => {
                         tinymce.execCommand('mceFocus', false, editor.id);
@@ -195,9 +190,9 @@ export class WysiwygHandler {
                         tinymce.remove(editor);
                     });
 
-                    editor.on('blur', e => {
+                    editor.on('blur', (evt) => {
                         // TODO FIX atovar
-                        const xedit = e.target.bodyElement;
+                        const xedit = evt.target.bodyElement;
                         const links = xedit.getElementsByTagName('a');
                         if (!isNil(links)) {
                             for (let i = 0; i < links.length; i++) {
@@ -207,6 +202,7 @@ export class WysiwygHandler {
                                 };
                             }
                         }
+                        WysiwygHandler.saveDoc(editor, args)
                         args.service.getFileStateValue().snapshot();
                         /*const promise = new Promise(
                             () => {
@@ -230,6 +226,19 @@ export class WysiwygHandler {
                 },
             });
         }
+    }
+
+    public static saveDoc(editor, args) {
+        const contentTag = editor.bodyElement;
+        const content = editor.getContent();
+        args.service.save(
+            contentTag,
+            content,
+            'Change section ' +
+            args.node
+                .getSection()
+                .getAttribute('xe_section')
+        );
     }
 
     private static resetIdsFromString(text) {
@@ -305,9 +314,9 @@ export class WysiwygHandler {
                 table: 'table',
             },
             align: {
-                alignright: 'alignright',
-                aligncenter: 'aligncenter',
                 alignleft: 'alignleft',
+                aligncenter: 'aligncenter',
+                alignright: 'alignright',
                 alignjustify: 'alignjustify',
             },
             indent: {
@@ -444,7 +453,7 @@ export class WysiwygHandler {
                 input.datepicker().on('hide', () => {
                     input.datepicker('destroy');
                     const format = !isNil(args.node.getSchema().options.format) ? args.node.getSchema().options.format : 'dd-mm-yyyy';
-                    if (element.prop("tagName") === 'TIME') {
+                    if (element.prop('tagName') === 'TIME') {
                         element.attr('datetime', input.val());
                     }
                     element.html(dateFormat(input.val(), format));
@@ -471,8 +480,7 @@ export class WysiwygHandler {
      * This method get data in plain format from clipboard
      */
     public static copyPlain(evt: ClipboardEvent) {
-        let data = evt.clipboardData.getData('text/plain');
-        return data;
+        return evt.clipboardData.getData('text/plain');
     }
 
     /*
@@ -480,7 +488,7 @@ export class WysiwygHandler {
     */
     public static copyHtml(evt: ClipboardEvent) {
         let data = evt.clipboardData.getData('text/plain');
-        let html = evt.clipboardData.getData('text/html');
+        const html = evt.clipboardData.getData('text/html');
         if (html) {
             data = sanitizeHtml(html);
         }

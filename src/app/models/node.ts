@@ -3,6 +3,8 @@ import { equals, isNil, contains, props, reduce, hasIn, is } from 'ramda';
 import { XeditMapper } from '@models/schema/xedit-mapper';
 import { Converters } from '@utils/converters';
 import { Xedit } from '../xedit';
+import { Api } from '../api';
+import Router from '@app/core/mappers/router';
 
 export class Node {
     static TYPE_IMAGE = 'image';
@@ -116,7 +118,7 @@ export class Node {
     setAttribute(name: string, value: Object): void {
         if (name === XeditMapper.TAG_LINK && this.getHtmlTag() === 'IMG ') {
             this.attributes[name] = value;
-            this.attributes['src'] = `${Xedit.getResourceUrl()}/${value}`;
+            this.attributes['src'] = Router.configUrl(Api.getResourceUrl(), { id: value });
         } else if (contains(name, this.getAvailableAttributes())) {
             this.attributes[name] = value;
         }
@@ -191,14 +193,14 @@ export class Node {
         return element.nodeName.toLowerCase() === rootTag || isNil(parent)
             ? path
             : this.getContextPath(
-                  parent,
-                  rootTag,
-                  hasAttribute,
-                  attribute,
-                  path,
-                  onlyAttribute,
-                  rootTagIncluded
-              );
+                parent,
+                rootTag,
+                hasAttribute,
+                attribute,
+                path,
+                onlyAttribute,
+                rootTagIncluded
+            );
     }
 
     /**

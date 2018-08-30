@@ -1,4 +1,6 @@
-import { Component, OnInit, AfterViewChecked, EventEmitter, OnDestroy, Output, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
+import {
+    Component, OnInit, AfterViewChecked, EventEmitter, OnDestroy, Output, ElementRef, ViewChild, ChangeDetectorRef
+} from '@angular/core';
 import { UUID } from 'angular2-uuid';
 import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
 import { isNil, reduce, equals, is, props, has, union, hasIn } from 'ramda';
@@ -13,6 +15,8 @@ import { WysiwygHandler } from '@components/editor/views/wysiwyg-view/wysiwyg-ha
 import $ from 'jquery';
 import { NotificationsService } from 'angular2-notifications';
 import { ClipboardConfigs } from '../../../../models/configs/clipboardConfigs';
+import { Api } from '../../../../api';
+import Router from '../../../../core/mappers/router';
 import { Xedit } from '@app/xedit';
 import { StateConfigs } from '@app/models/configs/statesConfigs';
 import { HttpClient } from '@angular/common/http';
@@ -26,7 +30,11 @@ import { HttpClient } from '@angular/common/http';
 export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     @ViewChild('xedit') xedit: ElementRef;
+    @ViewChild('myContextMenu') public basicMenu: ContextMenuComponent;
     @Output() selectNode: EventEmitter<string> = new EventEmitter();
+
+    contextMenuActions: Array<any> = [];
+    copyAction: any;
 
     private renderContent: string;
     private subscribeFile;
@@ -37,7 +45,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
     private jsLinks: Array<string>;
 
     private enableHover: boolean = null;
-    private reload: boolean = false;
+    private reload = false;
     private stateConfigs: StateConfigs;
 
     constructor(private _editorService: EditorService, private contextMenuService: ContextMenuService,
@@ -174,7 +182,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
 
     private addHttp(resource: string) {
         if (!(/^(f|ht)tps?:\/\//i).test(resource)) {
-            resource = `${Xedit.getResourceUrl()}${resource}`;
+            resource = Router.configUrl(Api.getResourceUrl(), { id: resource });
         }
         return resource;
     }
@@ -219,10 +227,6 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
     }
 
     /************************************** MENU *****************************************/
-    @ViewChild('myContextMenu') public basicMenu: ContextMenuComponent;
-    public contextMenuActions: Array<any> = [];
-    private copyAction: any;
-
     public onContextMenu($event: MouseEvent, item: any): void {
 
         const node = this._editorService.parseToNode($event.target);
@@ -254,7 +258,8 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
 
         const clickFunc = (currentNode: any, afterNode: any, strTemplate: string, child = false) => {
             const nodeTemplate = Converters.html2json(strTemplate, false);
-            DOM.element(currentNode).insertNode(Converters.json2html(Converters.addWrapJson(nodeTemplate), true, true, false, this.enableHover), afterNode, true);
+            DOM.element(currentNode).insertNode(Converters.json2html(Converters.addWrapJson(nodeTemplate), true,
+                true, false, this.enableHover), afterNode, true);
             this._editorService.addNodeToArea(node, nodeTemplate, child);
         };
 
@@ -299,12 +304,25 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
         this.contextMenuActions = contextMenuActions;
     }
 
+    private existActions(node): boolean {
+        return hasIn('actions', node.getSchema()) && !isNil(node.getSchema().actions);
+    }
+
+    private existAction(node, action: string): boolean {
+        return this.existActions(node) && hasIn(action, node.getSchema().actions);
+    }
+
+    private getAction(node, action) {
+        return node.getSchema().actions[action];
+    }
+
     private defaultActions(node) {
         const actions = [];
 
         actions.push(this.createAction(null, null, true, true));
 
-        if (!isNil(this.copyAction) && !isNil(node)) {
+        if ((!this.existAction(node, 'paste') || this.getAction(node, 'paste') == true) && !isNil(this.copyAction)
+            && !isNil(node)) {
             // Coger node del json --> Cambiar todos los uid del padre e hijos
             actions.push(
                 this.createAction(
@@ -328,24 +346,26 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
                 )
             );
         }
-
-        actions.push(this.createAction(
-            (i) => 'Copy component',
-            (evt) => {
-                this.copyAction = null;
-                this.copyAction = node.getSection();
-            },
-            true)
-        );
-
-        actions.push(this.createAction(
-            (i) => 'Delete component',
-            (evt) => {
-                this._editorService.removeNode(node);
-                DOM.element(node.getSection()).deleteNode();
-            },
-            true)
-        );
+        if ((!this.existAction(node, 'copy') || this.getAction(node, 'copy') == true)) {
+            actions.push(this.createAction(
+                (i) => 'Copy component',
+                (evt) => {
+                    this.copyAction = null;
+                    this.copyAction = node.getSection();
+                },
+                true)
+            );
+        }
+        if ((!this.existAction(node, 'delete') || this.getAction(node, 'delete') == true)) {
+            actions.push(this.createAction(
+                (i) => 'Delete component',
+                (evt) => {
+                    this._editorService.removeNode(node);
+                    DOM.element(node.getSection()).deleteNode();
+                },
+                true)
+            );
+        }
 
         return actions;
     }

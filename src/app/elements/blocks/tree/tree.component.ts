@@ -1,6 +1,6 @@
 import { Component, ViewChild, Output, Input, EventEmitter, OnInit } from '@angular/core';
 import { TreeModel, NodeMenuItemAction, MenuItemSelectedEvent } from 'ng2-tree';
-import { hasIn } from 'ramda';
+import { hasIn, isNil } from 'ramda';
 import { EditorService } from '../../../services/editor-service/editor.service';
 import { Api } from '@app/api';
 import { HttpClient } from '@angular/common/http';
@@ -16,8 +16,8 @@ export class TreeComponent implements OnInit {
 
   @ViewChild('Tree') tree;
   @Output() selected: EventEmitter<any> = new EventEmitter();
-  @Input('type') type;
-  @Input('path') path;
+  @Input() type;
+  @Input() path;
 
   constructor(public http: HttpClient, public _editorService: EditorService) { }
 
@@ -35,47 +35,49 @@ export class TreeComponent implements OnInit {
         rightMenu: false
       },
       loadChildren: (callback) => {
-        this.requestChildren("1", callback);
+        this.requestChildren('1', callback);
       }
     };
 
-    //TODO LOAD PATH TREE
+    // TODO LOAD PATH TREE
   }
   public processChildren(nodes): Array<any> {
-    let children = [];
+    const children = [];
 
-    for (let nodeId in nodes) {
-      let obj = {
-        id: nodeId,
-        value: nodes[nodeId]['name']
-      }
-      if (nodes[nodeId]['type'] == 'folder') {
-        obj['loadChildren'] = (callback) => {
-          this.requestChildren(nodeId, callback);
+    for (const nodeId in nodes) {
+      if (!isNil(nodeId)) {
+        const obj = {
+          id: nodeId,
+          value: nodes[nodeId]['name']
         };
-      } else {
-        obj['settings'] = {
-          rightMenu: true,
-          menuItems: [
-            {
-              name: 'Seleccionar', cssClass: '', action: NodeMenuItemAction.Custom
-            }
-          ]
-        };
+        if (nodes[nodeId]['type'] === 'folder') {
+          obj['loadChildren'] = (callback) => {
+            this.requestChildren(nodeId, callback);
+          };
+        } else {
+          obj['settings'] = {
+            rightMenu: true,
+            menuItems: [
+              {
+                name: 'Seleccionar', cssClass: '', action: NodeMenuItemAction.Custom
+              }
+            ]
+          };
+        }
+
+        children.push(obj);
       }
+    }
 
-      children.push(obj);
-    };
-
-    if (children.length == 0) {
-      children.push({ value: "No hay elementos disponibles..." })
+    if (children.length === 0) {
+      children.push({ value: 'No hay elementos disponibles...' });
     }
 
     return children;
   }
 
   public onMenuItemSelected(e: MenuItemSelectedEvent) {
-    let id = e.node.node.id;
+    const id = e.node.node.id;
     this.selected.emit(id);
   }
 
@@ -88,8 +90,8 @@ export class TreeComponent implements OnInit {
     const success = (result) => {
       if (hasIn('status', result) && result.status === 0) {
         let nodes = result.response;
-        nodes = hasIn('l1', nodes) ? nodes['l1'] : []
-        nodes = hasIn('nodes', nodes) ? nodes['nodes'] : []
+        nodes = hasIn('l1', nodes) ? nodes['l1'] : [];
+        nodes = hasIn('nodes', nodes) ? nodes['nodes'] : [];
         callback(this.processChildren(nodes));
       } else {
         error();

@@ -23,7 +23,7 @@ export class PropertiesAreaComponent implements OnInit, AfterViewChecked {
     private nodeName: String;
     private start: Boolean;
 
-    @Input('configs') configs: Array<Object>;
+    @Input() configs: Array<Object>;
     @Output() updated: EventEmitter<any> = new EventEmitter();
 
     constructor(private _editorService: EditorService, private cdr: ChangeDetectorRef) {

@@ -7,8 +7,8 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class AcordionComponent implements OnInit {
 
-  @Input('title') title: string;
-  @Input('className') className: string;
+  @Input() title: string;
+  @Input() className: string;
 
   private isOpen: boolean;
 

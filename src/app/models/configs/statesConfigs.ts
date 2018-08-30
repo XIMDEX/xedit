@@ -3,9 +3,7 @@ import { Configs } from './configs';
 
 export class StateConfigs extends Configs {
 
-    private self: any = this.constructor;
-
-    protected static GROUP: string = 'statesController';
+    protected static GROUP = 'statesController';
     protected static DEFUALT: any = {
         active: false,
         configs: [
@@ -16,6 +14,8 @@ export class StateConfigs extends Configs {
             }
         ]
     };
+
+    private self: any = this.constructor;
 
     protected configs: any;
 
@@ -33,7 +33,7 @@ export class StateConfigs extends Configs {
     }
 
     public getConfigs(config: string = null): any {
-        const configs = this.configs.configs
+        const configs = this.configs.configs;
         if (isNil(config)) {
             return configs;
         }
@@ -74,7 +74,7 @@ export class StateConfigs extends Configs {
                 data = this.self.DEFUALT;
             }
             this.configs = data;
-        })
+        });
     }
 
     public static save(data: any, group: string = StateConfigs.GROUP): any {

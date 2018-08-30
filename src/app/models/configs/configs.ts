@@ -16,12 +16,12 @@ export class Configs {
         return localForage;
     }
 
-    public static save(data: Object, group: string = 'configs'): any {
-        return this.init().setItem(group, data, this.callback);
+    public static save(data: Object, gr: string = 'configs'): any {
+        return this.init().setItem(gr, data, this.callback);
     }
 
-    public static get(group: string = 'configs'): any {
-        return this.init().getItem(group, this.callback);
+    public static get(gr: string = 'configs'): any {
+        return this.init().getItem(gr, this.callback);
     }
 
     protected static callback(error, value): any {

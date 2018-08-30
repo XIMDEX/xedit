@@ -12,14 +12,13 @@ export class MultiInputComponent implements OnInit {
     private attrName: string;
     private attrValue: string;
 
-    @Input('data')
+    @Input()
     set data(data: Object) {
         this.attrName = keys(data)[0];
         this.attrValue = data[this.attrName];
     }
 
-    @Input('editable') editable: boolean;
-
+    @Input() editable: boolean;
     @Output() changeValue: EventEmitter<any> = new EventEmitter();
 
     private hasAttrNameValue: boolean;

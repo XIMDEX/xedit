@@ -14,6 +14,7 @@ import { EditorService } from '@services/editor-service/editor.service';
 import { EditorComponent } from '@components/editor/editor.component';
 import { WysiwygHandler } from '@app/components/editor/views/wysiwyg-view/wysiwyg-handler';
 import dateformat from 'dateformat';
+import Router from '../../../core/mappers/router';
 import { DOM } from '@app/models/dom';
 import { Api } from '@app/api';
 import { HttpClient } from '@angular/common/http';
@@ -34,13 +35,13 @@ export class PropertiesGlobalViewComponent implements OnInit, OnDestroy {
     constructor(
         private _editorService: EditorService,
         private http: HttpClient
-    ) {}
+    ) { }
 
     ngOnInit() {
         this.metas = [];
         this.states = [];
 
-        this.baseUrl = Xedit.getResourceUrl();
+        this.baseUrl = Router.BASE_URL;
 
         this.suscribeFile = this._editorService.getFile().subscribe(file => {
             this.metas = [];
@@ -68,10 +69,10 @@ export class PropertiesGlobalViewComponent implements OnInit, OnDestroy {
 
     changeMetadata(value, key) {
         const metas = this.file.getMetas();
-        for (let meta in metas) {
+        for (const meta in metas) {
             if (
                 hasIn('name', metas[meta]) &&
-                metas[meta]['name'] == key &&
+                metas[meta]['name'] === key &&
                 hasIn('value', metas[meta])
             ) {
                 metas[meta]['value'] = value;
@@ -95,7 +96,7 @@ export class PropertiesGlobalViewComponent implements OnInit, OnDestroy {
     }
 
     applyHandler(evt, meta) {
-        let element = evt.target;
+        const element = evt.target;
         if (meta['type'] === 'date') {
             const args = {
                 element: element,

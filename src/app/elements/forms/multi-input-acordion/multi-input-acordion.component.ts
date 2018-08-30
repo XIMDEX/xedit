@@ -8,9 +8,9 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class MultiInputAcordionComponent implements OnInit {
 
-    @Input('title') title: string;
-    @Input('actionText') actionText: string;
-    @Input('values') values: Array<Object>;
+    @Input() title: string;
+    @Input() actionText: string;
+    @Input() values: Array<Object>;
 
     @Output() changeValue: EventEmitter<any> = new EventEmitter();
 
@@ -53,7 +53,6 @@ export class MultiInputAcordionComponent implements OnInit {
             this._values = {};
 
             for (const key in valuesClone) {
-                const json = {};
                 if (oldKey !== key) {
                     this._values[key] = valuesClone[key].replace(/;$/, '');
                 } else {

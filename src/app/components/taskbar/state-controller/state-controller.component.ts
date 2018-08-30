@@ -7,7 +7,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class StateControllerComponent implements OnInit {
 
-    @Input('configs') configs: Array<Object>;
+    @Input() configs: Array<Object>;
 
     @Output() updated: EventEmitter<any> = new EventEmitter();
 

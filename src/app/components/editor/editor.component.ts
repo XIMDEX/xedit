@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { equals, merge, isNil, reduce } from 'ramda';
 import validator from 'html-validator';
 import htmlTagValidator from 'html-tag-validator';
@@ -19,7 +19,7 @@ import { TextViewComponent } from '@components/editor/views/text-view/text-view.
     templateUrl: './editor.component.html',
     styleUrls: ['./editor.component.scss'],
 })
-export class EditorComponent implements OnInit {
+export class EditorComponent implements OnInit, AfterViewChecked {
 
     private currentView: string;
     private clipboardConfigs: ClipboardConfigs;
@@ -58,6 +58,11 @@ export class EditorComponent implements OnInit {
         return equals(view, this.currentView);
     }
 
+    saveClipboardConfigs(evt) {
+        this.cConfigs = evt;
+        this.clipboardConfigs.setConfigs(evt);
+    }
+
     /**
      *
      */
@@ -81,7 +86,6 @@ export class EditorComponent implements OnInit {
             }
         });
     }
-
 
     /**
      * @todo Check if validate html with w3c
@@ -111,11 +115,6 @@ export class EditorComponent implements OnInit {
             .catch((error) => {
               console.error(error)
             })*/
-    }
-
-    saveClipboardConfigs(evt) {
-        this.cConfigs = evt;
-        this.clipboardConfigs.setConfigs(evt);
     }
 
     /**

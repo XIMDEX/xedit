@@ -5,6 +5,8 @@ import { Xedit } from '../app/xedit';
 import { XeditMapper } from '@models/schema/xedit-mapper';
 import { HTMLParser } from '@utils/htmlparser';
 import { isArray } from 'util';
+import { Api } from '../app/api';
+import Router from '../app/core/mappers/router';
 
 
 export class Converters {
@@ -244,7 +246,7 @@ export class Converters {
             if (equals(key, XeditMapper.TAG_LINK)) {
                 extraData = value;
                 if (!(/^(f|ht)tps?:\/\//i).test(extraData)) {
-                    extraData = `${Xedit.getResourceUrl()}${extraData}`;
+                    extraData = Router.configUrl(Api.getResourceUrl(), { id: value });
                 }
 
                 extraData = `${linkType}='${extraData}'`;

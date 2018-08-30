@@ -64,7 +64,7 @@ const open = function (editor, http: HttpClient, type: string) {
     const currentId = Dam.getId(editor, type);
     const attributes = {};
 
-    for (let attr in ATTRS_BY_TYPE[type]) {
+    for (const attr in ATTRS_BY_TYPE[type]) {
         attributes[attr] = Dam.getAttribute(editor, attr);
     }
 
@@ -72,7 +72,7 @@ const open = function (editor, http: HttpClient, type: string) {
         const newNodeId = e.data.nodeId;
         const extra = {};
 
-        for (let key in ATTRS_BY_TYPE[type]) {
+        for (const key in ATTRS_BY_TYPE[type]) {
             extra[key] = e.data[key];
         }
 
@@ -91,22 +91,20 @@ const open = function (editor, http: HttpClient, type: string) {
     }
 
     function setData(result, extra) {
-        let id = result && result.nodeid ? result.nodeid : '';
-        let name = result && result.name ? result.name : '';
+        const id = result && result.nodeid ? result.nodeid : '';
+        const name = result && result.name ? result.name : '';
         let path = '<i>Elemento no seleccionado...</i>';
         if (result && result.path) {
             path = Object.values(result.path).join('/');
             path = `<span title="${path}">${path}<span/>`;
         }
 
-        let pathIds = result && result.path ? Object.keys(result.path) : [];
-
         document.getElementById('dam-nodeId')['value'] = id;
         document.getElementById('dam-name')['innerHTML'] = name;
         document.getElementById('dam-path')['innerHTML'] = path;
     }
     function showWManager(result, { editor }) {
-        let name =
+        const name =
             result && result.name
                 ? result.name
                 : '<i>Elemento no seleccionado...</i>';
@@ -115,9 +113,9 @@ const open = function (editor, http: HttpClient, type: string) {
             path = Object.values(result.path).join('/');
             path = `<span title="${path}">${path}<span/>`;
         }
-        let pathIds = result && result.path ? Object.keys(result.path) : [];
+        const pathIds = result && result.path ? Object.keys(result.path) : [];
 
-        let form = {
+        const form = {
             title: 'Dam',
             body: [],
             onsubmit(e) {
@@ -162,15 +160,15 @@ const open = function (editor, http: HttpClient, type: string) {
         });
 
         // Attributes
-        for (let key in ATTRS_BY_TYPE[type]) {
-            let obj = ATTRS_BY_TYPE[type][key];
+        for (const key in ATTRS_BY_TYPE[type]) {
+            const obj = ATTRS_BY_TYPE[type][key];
             obj['value'] = attributes[key];
             form.body.push(obj);
         }
 
         editor.windowManager.open(form);
     }
-    if (currentId) {
+    if (currentId && !(/^(f|ht)tps?:\/\//i).test(currentId)) {
         Api.getInfoNode(http, currentId, type, showWManager, showWManager, {
             editor: editor,
         });

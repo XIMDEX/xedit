@@ -1,96 +1,80 @@
+import Router from './core/mappers/router';
+import ApiGlobal from './core/api';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Xedit } from '@app/xedit';
+import { error } from 'util';
 
 export class Api {
 
-    static action = '/?_action=xedit/';
-
-
-    /** Paths **/
-    public static pathGetNode($nodeId) {
-        return Api.getBaseQuery() + `${$nodeId}/get`;
+    /****************** API ENDPOINTS ******************/
+    public static getMapperUrl() {
+        return 'documents.mapper';
+    }
+    public static getDocumentUrl() {
+        return 'documents.get';
+    }
+    public static getSaveUrl() {
+        return 'documents.save';
     }
 
-    /** Paramas **/
-    public static addParams(url, params): string {
-        for (let key in params) {
-            url = url.replace(`:${key}`, params[key]);
-        }
-        return url;
+    public static getResourceUrl() {
+        return 'resources.image';
+    }
+
+    public static getTreeUrl() {
+        return 'resources.tree';
+    }
+
+    public static getInfoNodeUrl() {
+        return 'resources.get';
     }
 
     /****************** API METHODS ******************/
-    public static getDocument(http: HttpClient, nodeId: string, successCallback: Function, errorCallback: Function) {
-        const headers = new HttpHeaders()
-            .set('Content-Type', 'application/x-www-form-urlencoded')
-            .set('Authorization', `Basic ${btoa(Xedit.getToken() + ':')}`);
-        return http.get(this.pathGetNode(nodeId), { headers: headers }).subscribe(
-            (result: any) => {
-                successCallback(result);
-            },
-            error => {
-                errorCallback();
-            }
-        );
+    public static getMapper(http: HttpClient, url: string, params: object, successCallback: Function, errorCallback: Function) {
+
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded'
+        });
+        return ApiGlobal.request(http, url, params, {}, headers, successCallback, errorCallback);
+    }
+
+    public static getDocument(http: HttpClient, id: string, successCallback: Function, errorCallback: Function) {
+
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded'
+        });
+        return ApiGlobal.request(http, this.getDocumentUrl(), { id: id }, {}, headers, successCallback, errorCallback);
     }
 
     public static saveDocument(http: HttpClient, document, successCallback: Function, errorCallback: Function) {
 
-        const json = JSON.stringify(document);
-        const headers = new HttpHeaders()
-            .set('Content-Type', 'application/x-www-form-urlencoded')
-            .set('Authorization', `Basic ${btoa(Xedit.getToken() + ':')}`);
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded'
+        });
 
-        http.post(Xedit.getSetUrl(), json, { headers: headers }).subscribe(
-            (data: any) => {
-                successCallback(data);
-            },
-            error => {
-                errorCallback();
-            }
-        );
+        return ApiGlobal.request(http, this.getSaveUrl(), {}, document, headers, successCallback, errorCallback, {}, 'post');
     }
 
-    public static getTreeChildren(http: HttpClient, nodeId: string, type: string, successCallback: Function, errorCallback: Function) {
+    public static getTreeChildren(http: HttpClient, nodeId: string, type: string, successCallback: Function, errorCallback: Function,
+        extra: object = {}) {
 
-        const headers = new HttpHeaders()
-            .set('Content-Type', 'application/x-www-form-urlencoded')
-            .set('Authorization', `Basic ${btoa(Xedit.getToken() + ':')}`);
-
-        let url = Xedit.getTreeUrl();
-        url = this.addParams(url, { 'id': nodeId, 'type': type });
-
-        return http.get(url, { headers: headers }).subscribe(
-            (result: any) => {
-                successCallback(result);
-            },
-            error => {
-                errorCallback();
-            }
-        );
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded'
+        });
+        return ApiGlobal.request(http, this.getTreeUrl(), { id: nodeId }, null, headers, successCallback, errorCallback, extra);
     }
 
-    public static getInfoNode(http: HttpClient, nodeId: string, type: string, successCallback: Function, errorCallback: Function, extra: object) {
+    public static getInfoNode(http: HttpClient, nodeId: string, type: string, successCallback: Function, errorCallback: Function,
+        extra: object = {}) {
 
-        const headers = new HttpHeaders()
-            .set('Content-Type', 'application/x-www-form-urlencoded')
-            .set('Authorization', `Basic ${btoa(Xedit.getToken() + ':')}`);
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded'
+        });
 
-        let url = Xedit.getInfoNodeUrl();
-        url = this.addParams(url, { 'id': nodeId, 'type': type });
-
-        return http.get(url, { headers: headers }).subscribe(
-            (result: any) => {
-                successCallback(result.response, extra);
-            },
-            error => {
-                errorCallback(null, extra);
-            }
-        );
-    }
-
-    /****************** AUX METHODS ******************/
-    public static getBaseQuery() {
-        return Xedit.getApiUrl() + Api.action;
+        let endpoint = nodeId;
+        if (!nodeId.startsWith('http')) {
+            endpoint = this.getInfoNodeUrl();
+        }
+        return ApiGlobal.request(http, endpoint, { id: nodeId, type: type }, null, headers, successCallback, errorCallback, extra);
     }
 }
