@@ -35,6 +35,7 @@ export class DamComponent implements OnInit, OnChanges {
     this.limit = this.mainConfig.query.limit;
     this.search = this.mainConfig.query.search;
     this.page = this.mainConfig.query.page.name;
+    this.getItems();
     this.mainService.getCurrentPage().subscribe(data => {
       if (this.currentPage !== data) {
         this.currentPage = data;
@@ -42,10 +43,8 @@ export class DamComponent implements OnInit, OnChanges {
       }
     });
     this.mainService.getSearchTerm().subscribe(data => {
-      if (this.searchTerm !== data) {
-        this.searchTerm = data;
-        this.getItems();
-      }
+      this.searchTerm = data;
+      this.getItems();
     });
     this.mainService.getActiveItem().subscribe(data => {
       this.activeItem = data;
@@ -72,6 +71,7 @@ export class DamComponent implements OnInit, OnChanges {
         }
       },
       err => console.error(err)
+
     );
   }
 

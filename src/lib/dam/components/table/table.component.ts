@@ -22,7 +22,7 @@ export class TableComponent implements OnInit, OnChanges {
   pagShorted: boolean;
   tableConfig = null;
 
-  constructor(private mainService: MainService) { }
+  constructor(private mainService: MainService) {}
 
   ngOnInit() {
     this.currentPage = 1;
@@ -34,7 +34,7 @@ export class TableComponent implements OnInit, OnChanges {
     // this.totalPages = Math.ceil(this.items.length/this.limit);
     this.totalPages = this.query.lastPage;
     const newPage = this.mainService.getCurrentPageValue();
-    if (newPage !== this.currentPage) {
+    if(newPage !== this.currentPage){
       this.changePage(newPage);
     }
     this.createPaginator();
@@ -62,21 +62,21 @@ export class TableComponent implements OnInit, OnChanges {
       this.pagShorted = true;
     }
     if (this.currentPage > 2 && this.pagShorted) {
-      this.paginator.push({ value: 1, active: false, icon: faStepBackward });
-      this.paginator.push({ value: this.currentPage - 1, active: false, icon: faCaretLeft });
+      this.paginator.push({value: 1, active: false, icon: faStepBackward});
+      this.paginator.push({value: this.currentPage - 1, active: false, icon: faCaretLeft});
     }
     for (let i = 1; i <= this.query.lastPage; i++) {
       if (this.pagShorted) {
-        if ((i < this.currentPage + 3 && i > this.currentPage - 3)) {
-          this.paginator.push({ value: i, active: i === this.currentPage, icon: null });
+        if ((i < this.currentPage + 3 && i > this.currentPage - 3 )) {
+          this.paginator.push({value: i, active: i === this.currentPage, icon: null});
         }
       } else {
-        this.paginator.push({ value: i, active: i === this.currentPage, icon: null });
+        this.paginator.push({value: i, active: i === this.currentPage, icon: null});
       }
     }
     if (this.currentPage < this.query.lastPage - 2 && this.pagShorted) {
-      this.paginator.push({ value: this.currentPage + 1, active: false, icon: faCaretRight });
-      this.paginator.push({ value: this.query.lastPage, active: false, icon: faStepForward });
+      this.paginator.push({value: this.currentPage + 1, active: false, icon: faCaretRight});
+      this.paginator.push({value: this.query.lastPage, active: false, icon: faStepForward});
     }
   }
 

@@ -22,7 +22,7 @@ export class DynQuestionComponent implements OnInit {
         this.searchOptions();
       });
     }
-    if (this.question.controlType === 'dropdown' && this.question['fetchable']) {
+    if(this.question.controlType === 'dropdown' && this.question['fetchable']) {
       this.getOptions();
     }
   }
@@ -31,31 +31,31 @@ export class DynQuestionComponent implements OnInit {
 
   searchOptions() {
     const value = this.form.get(this.question['ref']).value;
-    if (value !== '') {
+    if ( value !== '') {
       this.mainService.getOptions(
         this.question['endpoint'], this.question['param'], value
       ).subscribe(resp => {
-        this.question['options'] = [];
-        this.question['options'] = resp['result'].data.map(
-          item => (
-            {
-              key: item[this.question['map'].key], value: item[this.question['map'].value]
-            })
-        );
-      });
+          this.question['options'] = [];
+          this.question['options'] = resp['result'].data.map(
+            item => (
+              {
+                key: item[this.question['map'].key], value: item[this.question['map'].value]
+              })
+            );
+        });
     }
   }
 
   getOptions() {
-    this.mainService.getOptions(this.question['endpoint'], '', '').subscribe(
-      resp => {
-        this.question['options'] = [];
-        this.question['options'] = resp['result'].data.map(
-          item => (
-            {
-              key: item[this.question['map'].key], value: item[this.question['map'].value]
-            })
-        );
-      });
-  }
+      this.mainService.getOptions(this.question['endpoint'], '', '').subscribe(
+        resp => {
+          this.question['options'] = [];
+          this.question['options'] = resp['result'].data.map(
+            item => (
+              {
+                key: item[this.question['map'].key], value: item[this.question['map'].value]
+              })
+            );
+        });
+    }
 }

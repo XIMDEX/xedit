@@ -1,7 +1,7 @@
 import { hasIn } from 'ramda';
 
 export class QuestionBase<T> {
-
+  
   value: T;
   key: string;
   label: string;
@@ -9,18 +9,18 @@ export class QuestionBase<T> {
   order: number;
   controlType: string;
   val: any;
-  map: { key: string, value: string };
+  map: {key: string, value: string};
 
   constructor(options: {
-    value?: T,
-    key?: string,
-    label?: string,
-    required?: boolean,
-    order?: number,
-    controlType?: string,
-    val?: any,
-    map?: { key: string, value: string }
-  } = {}) {
+      value?: T,
+      key?: string,
+      label?: string,
+      required?: boolean,
+      order?: number,
+      controlType?: string,
+      val?: any,
+      map?: {key: string, value: string}
+    } = {}) {
     this.value = options.value;
     this.key = options.key || '';
     this.label = options.label || '';
@@ -38,7 +38,7 @@ export class QuestionBase<T> {
       value = object[field];
     }
     this[field] = value;
-    return this;
+    return this
   }
 
   setVal(val: any = null) {

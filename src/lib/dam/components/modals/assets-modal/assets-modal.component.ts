@@ -22,6 +22,7 @@ export class AssetsModalComponent implements OnInit {
   questions: QuestionBase<any>[] = [];
   dynData: any = {};
   resetForms = false;
+  fileDir: string;
 
   private formMapper: FormMapper;
 
@@ -53,7 +54,7 @@ export class AssetsModalComponent implements OnInit {
       const data = this.ngxSmartModalService.getModal('assets').getData();
       this.asset = data.asset;
       this.id = data.id;
-      const fields = this.formMapper.handleForm(this.formMapper.getForms().fields, this.asset);
+      let fields = this.formMapper.handleForm(this.formMapper.getForms().fields, this.asset);
       this.formMapper.setFields(fields);
       this.questions = fields;
     }
@@ -70,8 +71,10 @@ export class AssetsModalComponent implements OnInit {
     }
 
     for (const key in this.asset) {
-      if (key === 'resource' && isNil(this.asset[key])) {
+      if ((key === 'resource') && isNil(this.asset[key])) {
         continue;
+      } else if ((key ==='items' || key ==='category') && isNil(this.asset[key])) {
+        this.asset[key] = '';
       }
       formData.append(key, this.asset[key]);
     }
@@ -104,8 +107,14 @@ export class AssetsModalComponent implements OnInit {
 
   reset() {
     this.resetForms = true;
-    this.asset = new Asset();
+    this.asset = new Asset('', '', '', '', '', null);
     this.ngxSmartModalService.get('assets').removeData();
+    this.id = 0;
+    this.edit = false;
+  }
+
+  resetDynForm() {
+    this.dynData = {};
   }
 
   close() {

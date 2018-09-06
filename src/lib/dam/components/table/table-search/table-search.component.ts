@@ -18,14 +18,14 @@ export class TableSearchComponent implements OnInit {
 
   constructor(
     private mainService: MainService,
-    private ngxSmartModalService: NgxSmartModalService) { }
+    private ngxSmartModalService: NgxSmartModalService) {}
 
   ngOnInit() {
     this.buttonsConfig = this.mainService.getComponentConfigs('tableSearch').searchButtons;
   }
 
-  search() {
-    this.mainService.setSearchTerm(this.term);
+  search() {  
+    this.mainService.setSearchTerm(this.term); 
     this.mainService.setCurrentPage(1);
   }
 
