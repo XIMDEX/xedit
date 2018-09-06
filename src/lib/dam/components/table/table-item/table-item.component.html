@@ -1,0 +1,23 @@
+<div class="dam-item">
+    <div class="dam-type"> {{ header }}</div>
+    <div class="dam-preview">
+        <div class="prueba">
+            <img class="dam-image" [src]="image">
+        </div>
+        <div (title)="item.title" class="dam-info">
+            <strong>{{ title }}</strong>
+            <div> {{ subtitle }} </div>
+        </div>
+    </div>
+    <div class="dam-options">
+        <a *ngIf="itemConfigs.actions.edit" (click)="editFile()" class="dam-btn-base group" title="Edit">
+            <fa-icon [icon]="faEdit"></fa-icon>
+        </a>
+        <a *ngIf="itemConfigs.actions.download" (click)="downloadFile()" download class="dam-btn-base group" title="Download">
+            <fa-icon [icon]="faDownload"></fa-icon>
+        </a>
+        <a *ngIf="itemConfigs.actions.delete" (click)="deleteFile()" class="dam-btn-base group" title="Delete">
+            <fa-icon [icon]="faTrash"></fa-icon>
+        </a>
+    </div>
+</div>

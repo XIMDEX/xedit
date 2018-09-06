@@ -1,0 +1,56 @@
+<ngx-smart-modal (onOpen)="resetForms = false" (onClose)="assetForm.reset(); reset();" (onDataAdded)="updateData()" (onDismiss)="assetForm.reset(); reset();"
+    #assets identifier="assets">
+    <form (ngSubmit)="submit()" #assetForm="ngForm" class="dam-form dam-edit-item">
+        <div class="dam-edit-item-column">
+            <div class="dam-edit-item-img">
+                <img src=""> </div>
+            <div class="dam-form-item">
+                <label>New File</label>
+                <input ref="fileInput" (change)="setFile($event.target.files)" name="file" accept="image/*" type="file"> </div>
+            <div class="dam-form-item">
+                <label>External Resource</label>
+                <input ref="externalUrl" name="url" [(ngModel)]="asset.externalUrl" type="text"> </div>
+            <app-dynamic-form (sendForm)="setDynData($event)" *ngIf="questions.length > 0 && !resetForms" [questions]="questions"></app-dynamic-form>
+        </div>
+        <div class="dam-edit-item-column big">
+            <div class="options">
+                <button (click)="close()" class="dam-btn-base red">
+                    <fa-icon [icon]="faTimes"></fa-icon> Cancel </button>
+                <button [disabled]="!assetForm.form.valid" type="submit" class="dam-btn-base">
+                    <fa-icon [icon]="faSave"></fa-icon> Save </button>
+            </div>
+            <h2 class="legend">Information</h2>
+            <div class="dam-edit-item">
+                <div class="dam-edit-item-column">
+                    <label>Image Format</label>
+                    <div class="dam-edit-line"> {{ asset.extension }}</div>
+                </div>
+                <div class="dam-edit-item-column">
+                    <label>Resource Type</label>
+                    <div class="dam-edit-line">{{ asset.type }}</div>
+                </div>
+                <div class="dam-edit-item-column">
+                    <label>Width</label>
+                    <div class="dam-edit-line"> </div>
+                </div>
+                <div class="dam-edit-item-column">
+                    <label>Height</label>
+                    <div class="dam-edit-line"> </div>
+                </div>
+            </div>
+            <div class="dam-form-item">
+                <label>Name</label>
+                <input ref="nameField" name="title" required [(ngModel)]="asset.title" type="text"> </div>
+            <div class="dam-form-item">
+                <label>Description</label>
+                <input ref="descriptionField" name="desc" [(ngModel)]="asset.description" type="text">
+            </div>
+            <div class="dam-form-item">
+                <label>Author</label>
+                <input ref="authorField" name="author" [(ngModel)]="asset.author" type="text"> </div>
+            <div class="dam-form-item">
+                <label>Tags</label>
+            </div>
+        </div>
+    </form>
+</ngx-smart-modal>

@@ -15,5 +15,5 @@
     </ng-container>
 </div>
 
-<ace-editor #aceEditor [text]="openEditor.renderContent" id={{openEditor.id}} [durationBeforeCallback]=500 [autoUpdateContent]="reloadAceEditor"
-    [readOnly]="!openEditor.editable" [theme]="'dreamweaver'" [mode]="'html'" [ngStyle]="styleMode"></ace-editor>
+<ace-editor #aceEditor [text]="getRenderContent()" id="getId()" [durationBeforeCallback]=500 [autoUpdateContent]="reloadAceEditor"
+    [readOnly]="isReadOnly()" [theme]="'dreamweaver'" [mode]="'html'" [ngStyle]="styleMode"></ace-editor>

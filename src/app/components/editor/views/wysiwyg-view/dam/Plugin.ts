@@ -8,9 +8,9 @@ import Commands from './api/Commands';
 import FilterContent from './core/FilterContent';
 import Buttons from './ui/Buttons';
 
-tinymce.PluginManager.add('anchor', function (editor, http) {
+tinymce.PluginManager.add('anchor', function (editor, type: string, getInfo, callback) {
     FilterContent.setup(editor);
-    Commands.register(editor, http);
+    Commands.register(editor, getInfo, callback);
     Buttons.register(editor);
 });
 

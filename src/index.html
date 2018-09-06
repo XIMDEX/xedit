@@ -71,6 +71,66 @@
     // }
 
   </script>
+
+  <script>
+    window.$xdam = {
+      token: "ssdfksj856erfh3vs634pldaskg",
+      base_url: 'http://universo.lh/api/v1/',
+      profile: 'light',
+      endpoints: {
+        resources: {
+          list: 'resources?context_resource=resource',
+          get: 'resources',
+          post: 'resources',
+          delete: 'resources'
+        }
+      },
+      forms: {
+        name: "resource-form",
+        endpoint: "resources",
+        api: false,
+        fields: [
+          {
+            type: "dropdown",
+            object: {
+              key: "items",
+              multi: true,
+              searchable: true,
+              fetchable: true,
+              endpoint: 'items?limit=0',
+              label: "Seleccione una palabra",
+              options: [],
+              order: 1,
+              realName: 'items',
+              map: {
+                key: "id",
+                value: "title"
+              }
+            }
+          },
+          {
+            "type": "dropdown",
+            "object": {
+              "key": "category",
+              "label": "Seleccione un tipo",
+              "options": [
+                {
+                  "key": "investigation",
+                  "value": "Investigación"
+                },
+                {
+                  "key": "activation",
+                  "value": "Activación"
+                }
+              ],
+              "order": 2
+            }
+          }
+        ]
+      }
+    }
+  </script>
+
   <app-root>Loading...</app-root>
 </body>
 

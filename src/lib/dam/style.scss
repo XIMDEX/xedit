@@ -1,0 +1,65 @@
+@import 'node_modules/ngx-smart-modal/ngx-smart-modal.scss';
+@import "~@ng-select/ng-select/themes/default.theme";
+
+.dam-main{
+    height: 100%;
+    margin: 0;
+}
+
+.flex-row-container{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.nsm-dialog { 
+    max-width: 100%;
+}
+
+.dam-select {
+    width: 95%;
+}
+
+.dam-edit-item label{
+    display: block;
+    padding: 0;
+    border: 0;
+    margin-bottom: 10px;
+    font-size: 11px;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+
+.dam-btn-base.group:first-child {
+    border-right: unset;
+}
+
+.dam-btn-base.group:last-child {
+    border-left: unset;
+}
+
+.dam-form input[type="text"], select{
+    height: 34px;
+    width: 90%;
+    padding: 0 10px;
+    border-radius: 3px;
+}
+
+.dam-btn-base{
+    display: inline-block;
+    height: 28px;
+    padding: 0 8px;
+    line-height: 28px;
+    cursor: pointer;
+    padding: 0 10px;
+    border: unset;
+}
+
+.dam-form-item{
+    margin-top: 1em;
+}
+
+.dam-main .overlay.nsm-overlay-open{
+    z-index: 70000 !important;
+}

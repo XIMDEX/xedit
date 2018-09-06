@@ -1,0 +1,17 @@
+.main{
+    display: flex;
+    flex-direction: row;
+    min-height: 100%;
+}
+.col{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+/* MOBILE */
+@media all and (max-width: 599px) { 
+    .col{
+        padding:0.5rem;
+    }
+}

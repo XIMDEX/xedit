@@ -14,7 +14,7 @@ import { EditorComponent } from '@components/editor/editor.component';
 })
 export class PropertiesLocalViewComponent implements OnInit {
 
-    private currentNode: Node;
+    public currentNode: Node;
     private availableAttributes: any;
     private currentProperties: Object;
     private file: File;

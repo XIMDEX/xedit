@@ -35,10 +35,6 @@ export class EditorService {
 
     // ************************************** Getters and setters **************************************/
     setFile(file): void {
-        if (isNil(file)) {
-            console.log(null);
-        }
-
         this.file.next(file);
         this.fileState.next(file);
     }

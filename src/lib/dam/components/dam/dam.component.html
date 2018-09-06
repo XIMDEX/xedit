@@ -1,0 +1,12 @@
+<div class="dam-main shadow-panel">
+    <div class="col dam-main-back">
+        <ng-container *ngIf="popup; else nopup">
+            <ngx-smart-modal (onDismiss)="closeModal()" (onClose)="closeModal()" #dam identifier="dam">
+                <app-table [items]="items" [(query)]="query"></app-table>
+            </ngx-smart-modal>
+        </ng-container>
+        <ng-template #nopup>
+            <app-table [items]="items" [(query)]="query"></app-table>
+        </ng-template>
+    </div>
+</div>

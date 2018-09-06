@@ -60,7 +60,7 @@ const insertDam = function (editor, newId, type, extra) {
     }
 };
 
-const open = function (editor, http: HttpClient, type: string) {
+const open = function (editor, type: string, getInfo, callback) {
     const currentId = Dam.getId(editor, type);
     const attributes = {};
 
@@ -81,14 +81,14 @@ const open = function (editor, http: HttpClient, type: string) {
         }
     };
 
-    function openTree(evt, windowM, pathIds) {
-        window['treeModal']
-            .openModal('modal-1', type, pathIds)
-            .then(selectedId => {
-                Api.getInfoNode(http, selectedId, type, setData, null, null);
-            })
-            .catch(err => console.log(err));
-    }
+    // function openTree(evt, windowM, pathIds) {
+    //     window['treeModal']
+    //         .openModal('modal-1', type, pathIds)
+    //         .then(selectedId => {
+    //             Api.getInfoNode(http, selectedId, type, setData, null, null);
+    //         })
+    //         .catch(err => console.log(err));
+    // }
 
     function setData(result, extra) {
         const id = result && result.nodeid ? result.nodeid : '';
@@ -142,7 +142,7 @@ const open = function (editor, http: HttpClient, type: string) {
                 {
                     type: 'button',
                     icon: 'browse',
-                    onclick: e => openTree(e, editor.windowManager, pathIds),
+                    onclick: e => callback(e, editor.windowManager, type, pathIds, setData),
                 },
             ],
         });
@@ -168,12 +168,11 @@ const open = function (editor, http: HttpClient, type: string) {
 
         editor.windowManager.open(form);
     }
+    showWManager(null, { editor: editor });
     if (currentId && !(/^(f|ht)tps?:\/\//i).test(currentId)) {
-        Api.getInfoNode(http, currentId, type, showWManager, showWManager, {
+        getInfo(currentId, type, setData, showWManager, showWManager, {
             editor: editor,
         });
-    } else {
-        showWManager(null, { editor: editor });
     }
 };
 

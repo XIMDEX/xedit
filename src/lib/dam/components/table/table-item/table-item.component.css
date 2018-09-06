@@ -1,0 +1,89 @@
+:host {
+    flex-grow: 1;
+    align-content: space-between;
+    justify-content: space-between;
+    margin: 5px;
+    min-width: 150px;
+    max-width: 150px;
+    min-height: 250px;
+    max-height: 250px;
+    cursor: pointer;
+}
+
+.dam-item{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: auto auto 15px auto;
+    overflow: hidden;
+}
+
+.dam-item:hover{
+    transform: scale(1.1);
+}
+
+.dam-item .prueba{
+    height: 118px;
+    align-items: center;
+}
+
+.dam-type{
+    padding: 0 0 10px;
+    padding-top: 0px;
+    margin-top: 10px;
+    text-transform: uppercase;
+    text-align: center;
+    
+}
+
+.dam-preview{
+    padding: 0;
+    font-size: 11px;
+    text-align: center;
+}
+
+.dam-item img{
+    width: auto;
+    max-width: 100%;
+    margin: auto auto 15px;
+    cursor: pointer;
+    object-fit: contain;
+    height: 100px;
+}
+
+.dam-options{
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: end;
+    align-items: flex-end;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    margin: 10px auto 10px auto;
+    padding: 0;
+}
+
+.dam-info{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 12px 0 12px;
+}
+
+/* MOBILE */
+@media all and (max-width: 599px) { 
+    :host{
+        margin: 10px;
+        
+    }
+}
+/*TABLET*/
+@media all and (min-width: 600px) and (max-width: 1024px){
+    :host{
+        margin: 5px;
+    }
+}
+

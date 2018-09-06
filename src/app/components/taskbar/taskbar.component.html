@@ -23,7 +23,7 @@
         <nav class="views">
             <ul class="actions">
                 <li class="option-button">
-                    <i [ngClass]="{'fas': true, 'fa-eye': stateActive === false, 'fa-eye-slash': stateActive === true}" (click)="toggleElementState($event)"></i>
+                    <i [ngClass]="{'fas': true, 'fa-eye': stateActive === false, 'fa-eye-slash': stateActive === true}" (click)="toggleElementState()"></i>
                     <aside (click)="openStates($event)">
                         <i class="fas fa-caret-down"></i>
                     </aside>

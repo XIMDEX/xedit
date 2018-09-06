@@ -17,7 +17,7 @@ export class InputAcordionComponent implements OnInit {
     constructor() { }
 
     ngOnInit() {
-        console.log(this.values, typeof this.values);
+        // console.log(this.values, typeof this.values);
     }
 
     removeElement(index) {

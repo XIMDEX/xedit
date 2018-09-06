@@ -15,8 +15,8 @@ export class TreeModalComponent implements OnInit {
   public close = false;
   public selectedId: string;
 
-  private type;
-  private path;
+  public type;
+  public path;
 
   constructor(private ms: ModalService) { }
 
@@ -54,7 +54,7 @@ export class TreeModalComponent implements OnInit {
     return promise;
   }
 
-  closeModal(id, selectedId) {
+  closeModal(id, selectedId = null) {
     this.selectedId = selectedId;
     this.close = true;
   }

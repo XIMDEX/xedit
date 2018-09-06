@@ -83,7 +83,6 @@ export class TreeComponent implements OnInit {
 
   private requestChildren(nodeId: string, callback) {
     const error = () => {
-      console.log('error');
       this._editorService.setLoading(false);
     };
 

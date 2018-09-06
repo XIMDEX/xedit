@@ -10,7 +10,7 @@ export class AcordionComponent implements OnInit {
   @Input() title: string;
   @Input() className: string;
 
-  private isOpen: boolean;
+  public isOpen: boolean;
 
   constructor() {
     this.isOpen = false;

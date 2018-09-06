@@ -26,15 +26,15 @@ declare let ace: any;
 export class TextViewComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('aceEditor') editor: AceEditorComponent;
 
-    private editorNodes: Array<any> = null;
+    public editorNodes: Array<any> = null;
     private reload: boolean;
-    private isHtmlValid: boolean;
+    public isHtmlValid: boolean;
     private subscribeFile;
 
-    private openEditor: Object;
+    public openEditor: Object;
 
-    private styleMode: Object;
-    private reloadAceEditor: Boolean;
+    public styleMode: Object;
+    public reloadAceEditor: boolean;
 
     constructor(private _editorService: EditorService, private _stateService: StateService) {
         this.openEditor = {};
@@ -82,6 +82,17 @@ export class TextViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
     }
 
+    public getId() {
+        return this.openEditor.hasOwnProperty('id') ? this.openEditor['id'] : null;
+    }
+
+    public isReadOnly() {
+        return this.openEditor.hasOwnProperty('editable') && !this.openEditor['editable'];
+    }
+
+    public getRenderContent() {
+        return this.openEditor.hasOwnProperty('renderContent') ? this.openEditor['renderContent'] : '';
+    }
 
     private config() {
         this.subscribeFile = this._editorService.getFile().subscribe(file => {

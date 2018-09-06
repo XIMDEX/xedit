@@ -18,10 +18,10 @@ export class PropertiesAreaComponent implements OnInit, AfterViewChecked {
     private availablesViews: Array<string> = [
         'local'
     ];
-    private isOpen: boolean;
-    protected selectedView: String;
-    private nodeName: String;
-    private start: Boolean;
+    public isOpen: boolean;
+    public selectedView: string;
+    public nodeName: string;
+    private start: boolean;
 
     @Input() configs: Array<Object>;
     @Output() updated: EventEmitter<any> = new EventEmitter();
@@ -55,7 +55,7 @@ export class PropertiesAreaComponent implements OnInit, AfterViewChecked {
         this.openMenu();
     }
 
-    private toggleMenu() {
+    public toggleMenu() {
         this.isOpen = !this.isOpen;
         this.collapsible.click();
     }

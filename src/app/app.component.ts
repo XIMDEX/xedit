@@ -1,7 +1,9 @@
 import { hasIn, isNil, contains } from 'ramda';
 import RouterXedit from './core/mappers/router';
 import { Xedit } from './core/mappers/xedit';
-import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
+import { DamService } from './services/dam-service/dam.service';
+import { Component, ViewChild, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ParamMap, Router, ActivatedRoute, Params } from '@angular/router';
 
@@ -17,18 +19,32 @@ import { Api } from '@app/api';
 export class AppComponent implements OnInit, OnDestroy {
     title = 'app';
 
-    private loadingSuscribe;
-    private loading: boolean;
+    private loadingSuscribe: Subscription;
+    private isOpenSuscribe: Subscription;
+    private handleSelectSuscribe: Subscription;
+
+    public loading: boolean;
+    public isOpen = false;
+    public handleSelect;
 
     constructor(private _editorService: EditorService, private _stateService: StateService, public http: HttpClient,
-        private route: ActivatedRoute) { }
+        private route: ActivatedRoute, private cdRef: ChangeDetectorRef, private _damService: DamService) { }
 
 
     /************************************** Life Cycle **************************************/
     ngOnInit() {
+        this.isOpenSuscribe = this._damService.isOpen().subscribe(open => {
+            this.isOpen = open;
+        });
+
+        this.handleSelectSuscribe = this._damService.getOnSelect().subscribe(onSelect => {
+            this.handleSelect = onSelect;
+        });
+
         this.loadingSuscribe = this._editorService.isLoading().subscribe(loading => {
             this.loading = loading;
         });
+
         if (hasIn(Xedit.BASE, window)) {
             // TODO Validate $xedit object
             if (!isNil(Xedit.getData()) && Xedit.getData() !== '') {
@@ -67,6 +83,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.loadingSuscribe.unsubscribe();
+        this.isOpenSuscribe.unsubscribe();
+        this.handleSelectSuscribe.unsubscribe();
     }
 
     /************************************** Private Methods **************************************/
@@ -83,8 +101,8 @@ export class AppComponent implements OnInit, OnDestroy {
                 this.getDocument(params.id, view);
             } else {
                 error();
+                this._editorService.setLoading(false);
             }
-            this._editorService.setLoading(false);
         };
 
         return Api.getMapper(this.http, url, params, success, error);
@@ -103,9 +121,9 @@ export class AppComponent implements OnInit, OnDestroy {
             } else {
                 error();
             }
-            this._editorService.setLoading(false);
         };
 
+        this._editorService.setLoading(true);
         return Api.getDocument(this.http, id, success, error);
     }
 
@@ -117,6 +135,15 @@ export class AppComponent implements OnInit, OnDestroy {
         this._editorService.createFile(nodes);
         this._stateService.setAvailableViews(['wysiwyg', 'text']);
         this._stateService.setCurrentView(view);
+        this._editorService.setLoading(false);
+    }
+
+    public closeModal() {
+        this._damService.setIsOpen(false);
+    }
+    public toggleOpen() {
+        this.isOpen = !this.isOpen;
+        this.cdRef.detectChanges();
     }
 
 }

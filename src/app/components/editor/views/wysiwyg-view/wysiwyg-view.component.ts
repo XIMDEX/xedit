@@ -17,6 +17,7 @@ import { NotificationsService } from 'angular2-notifications';
 import { ClipboardConfigs } from '../../../../models/configs/clipboardConfigs';
 import { Api } from '../../../../api';
 import Router from '../../../../core/mappers/router';
+import { DamService } from '../../../../services/dam-service/dam.service';
 import { Xedit } from '@app/xedit';
 import { StateConfigs } from '@app/models/configs/statesConfigs';
 import { HttpClient } from '@angular/common/http';
@@ -36,12 +37,12 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
     contextMenuActions: Array<any> = [];
     copyAction: any;
 
-    private renderContent: string;
+    public renderContent: string;
     private subscribeFile;
     private subscribeCN;
     private subscribeCNM;
     private currentNode: Node;
-    private cssLinks: Array<string>;
+    public cssLinks: Array<string>;
     private jsLinks: Array<string>;
 
     private enableHover: boolean = null;
@@ -50,7 +51,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
 
     constructor(private _editorService: EditorService, private contextMenuService: ContextMenuService,
         private _elementRef: ElementRef, private _notification: NotificationsService, private cdr: ChangeDetectorRef,
-        public http: HttpClient) { }
+        public http: HttpClient, private _damService: DamService) { }
 
     /************************************** Life Cycle **************************************/
     ngOnInit() {
@@ -222,12 +223,35 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
     applyHandler(currentNode) {
         const sectionType = currentNode.getSchema().type;
         const clipboardConfigs = new ClipboardConfigs();
-        const args = { node: currentNode, service: this._editorService, clipboardConfigs: clipboardConfigs, http: this.http };
+        const args = {
+            node: currentNode,
+            service: this._editorService,
+            clipboardConfigs: clipboardConfigs,
+            http: this.http,
+            getInfo: (selectedId, type, setData, errorCallback, extra) => {
+                Api.getInfoNode(this.http, selectedId, type, setData, errorCallback, extra);
+            },
+            callback: (evt, windowM, type, pathIds, setData) => {
+                this._damService.setIsOpen(true);
+                this._damService.setOnSelect((item) => {
+                    if (!isNil(item)) {
+                        Api.getInfoNode(this.http, item.hash, type, setData, null, null);
+                        this._damService.setIsOpen(false);
+                    }
+                });
+                // window['treeModal']
+                //     .openModal('modal-1', type, pathIds)
+                //     .then(selectedId => {
+                //         Api.getInfoNode(this.http, selectedId, type, setData, null, null);
+                //     })
+                //     .catch(err => console.log(err));
+            }
+        };
         WysiwygHandler.executeHandler(sectionType, args);
     }
 
     /************************************** MENU *****************************************/
-    public onContextMenu($event: MouseEvent, item: any): void {
+    public onContextMenu($event: MouseEvent): void {
 
         const node = this._editorService.parseToNode($event.target);
 
@@ -237,7 +261,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
                 this.contextMenuService.show.next({
                     contextMenu: this.basicMenu,
                     event: $event,
-                    item: item,
+                    item: null,
                 });
             }, 50);
         }
@@ -321,7 +345,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
 
         actions.push(this.createAction(null, null, true, true));
 
-        if ((!this.existAction(node, 'paste') || this.getAction(node, 'paste') == true) && !isNil(this.copyAction)
+        if ((!this.existAction(node, 'paste') || this.getAction(node, 'paste') === true) && !isNil(this.copyAction)
             && !isNil(node)) {
             // Coger node del json --> Cambiar todos los uid del padre e hijos
             actions.push(
@@ -346,7 +370,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
                 )
             );
         }
-        if ((!this.existAction(node, 'copy') || this.getAction(node, 'copy') == true)) {
+        if ((!this.existAction(node, 'copy') || this.getAction(node, 'copy') === true)) {
             actions.push(this.createAction(
                 (i) => 'Copy component',
                 (evt) => {
@@ -356,7 +380,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
                 true)
             );
         }
-        if ((!this.existAction(node, 'delete') || this.getAction(node, 'delete') == true)) {
+        if ((!this.existAction(node, 'delete') || this.getAction(node, 'delete') === true)) {
             actions.push(this.createAction(
                 (i) => 'Delete component',
                 (evt) => {

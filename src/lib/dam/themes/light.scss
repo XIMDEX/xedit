@@ -1,0 +1,78 @@
+/* Base theme */
+@import url('https://fonts.googleapis.com/css?family=Lato');
+@import '../style';
+
+.dam-main{
+    font-family: 'Lato', sans-serif;
+    color: #666;
+}
+
+.shadow-panel{
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.12);
+}
+
+.dam-main-back{
+    background-color: #EDEFF2;
+}
+
+.dam-item{
+    font-size: 13px;
+    background: #FFF;
+    border-top: 2px solid rgb(177, 177, 177);
+    transition: all .25s;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.12);
+}
+
+.dam-type{
+    font-size: 10px;
+    font-weight: 700;
+    color: #666;
+}
+
+.dam-btn-base{  
+    background: linear-gradient(180deg,#00a397 0,#009E92 100%);
+    color: white; 
+    font-size: 10px;
+    box-shadow: none;  
+    border-left: 1px dotted #E0E4E6;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.dam-btn-base:hover {
+    background: #00a397;
+    background: linear-gradient(180deg,#00a89b 0,#00a397 100%); 
+}
+
+.dam-search-bar{
+    background-color: white;
+}
+
+.dam-btn-base.group {
+    border:1px solid #00a89b;
+}
+
+.dam-btn-base.red{
+    background: linear-gradient(180deg,#c54444 0,#E35D5D 100%);
+}
+
+.dam-form input[type="text"], select{
+    font-family: Lato,sans-serif;
+    font-size: 13px;
+    color: #666;
+    background-color: #f9fafb;
+    border: 1px solid #DDD;
+    transition: all .25s;
+}
+
+.dam-form input[type="text"]:focus{
+    outline: 0;
+    background-color: #FFF;
+    border-color: rgba(0,163,151,.5);
+    box-shadow: 0 0 10px 0 rgba(0,163,151,.05);
+}
+
+.dam-form input[type="text"].ng-invalid.ng-dirty{
+    border-color: rgba(250,80,80,.5);
+    box-shadow: 0 0 10px 0 rgba(250,80,80,.5);
+}

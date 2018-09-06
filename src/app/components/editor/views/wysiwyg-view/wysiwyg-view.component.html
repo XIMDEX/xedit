@@ -8,7 +8,7 @@
         <link rel="stylesheet" [href]="addHttp(css) | url">
     </ng-container>
 </div>
-<div #xedit [innerHTML]="renderContent | safeHtml" (click)="onclick($event)" (contextmenu)="onContextMenu($event, item)"></div>
+<div #xedit [innerHTML]="renderContent | safeHtml" (click)="onclick($event)" (contextmenu)="onContextMenu($event)"></div>
 <context-menu #myContextMenu>
     <ng-template *ngFor="let action of contextMenuActions" contextMenuItem let-item [visible]="action.visible" [enabled]="action.enabled"
         [divider]="action.divider" (execute)="action.click()">

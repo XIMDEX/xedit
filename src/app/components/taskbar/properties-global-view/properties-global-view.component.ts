@@ -26,8 +26,8 @@ import { Xedit } from '@app/xedit';
     styleUrls: ['./properties-global-view.component.scss'],
 })
 export class PropertiesGlobalViewComponent implements OnInit, OnDestroy {
-    private metas: Array<Object>;
-    private states: Array<Object>;
+    public metas: Array<Object>;
+    public states: Array<Object>;
     private suscribeFile;
     private file: File;
     private baseUrl: string;

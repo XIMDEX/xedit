@@ -89,7 +89,7 @@ export class WysiwygHandler {
             )
         ) {
             WysiwygHandler.clearTinymce();
-            WysiwygHandler.addPlugins(args.http);
+            WysiwygHandler.addPlugins(args.getInfo, args.callback);
             const toolbar = WysiwygHandler.generateToolbar(
                 args.node.getSchema()
             );
@@ -114,9 +114,10 @@ export class WysiwygHandler {
                 ),
                 skin_url: 'assets/skins/x-edit',
                 valid_elements: '*[*]',
+                content_css: ['//fonts.googleapis.com/css?family=Libre+Franklin', '//fonts.googleapis.com/css?family=Vibur'],
+                font_formats: 'Normal=libre franklin;Infantil=vibur;',
                 setup: editor => {
                     editor.on('Nodechange', e => {
-                        console.log(e);
                         const ele = e.element;
                         const sibling = ele.previousSibling;
                         if (
@@ -179,7 +180,7 @@ export class WysiwygHandler {
                         );
                     });
                     editor.on('change', (evt: Event) => {
-                        WysiwygHandler.saveDoc(editor, args)
+                        WysiwygHandler.saveDoc(editor, args);
                     });
                     editor.on('init', (evt: Event) => {
                         tinymce.execCommand('mceFocus', false, editor.id);
@@ -196,13 +197,13 @@ export class WysiwygHandler {
                         const links = xedit.getElementsByTagName('a');
                         if (!isNil(links)) {
                             for (let i = 0; i < links.length; i++) {
-                                links[i].onclick = evt => {
+                                links[i].onclick = (evt) => {
                                     evt.preventDefault();
                                     return false;
                                 };
                             }
                         }
-                        WysiwygHandler.saveDoc(editor, args)
+                        WysiwygHandler.saveDoc(editor, args);
                         args.service.getFileStateValue().snapshot();
                         /*const promise = new Promise(
                             () => {
@@ -269,10 +270,10 @@ export class WysiwygHandler {
         );
     }
 
-    private static addPlugins(http: HttpClient) {
+    private static addPlugins(getInfo, callback) {
         tinymce.PluginManager.add('dam', function (editor) {
             FilterContent.setup(editor);
-            Commands.register(editor, http);
+            Commands.register(editor, getInfo, callback);
             Buttons.register(editor);
         });
     }
@@ -327,6 +328,7 @@ export class WysiwygHandler {
                 formatselect: 'formatselect',
             },
             font: {
+                fontselect: 'fontselect',
                 fontsize: 'fontsizeselect',
             },
         };

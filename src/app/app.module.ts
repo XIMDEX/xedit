@@ -42,6 +42,8 @@ import { TreeComponent } from './elements/blocks/tree/tree.component';
 import { TreeModule } from 'ng2-tree';
 import { TreeModalComponent } from './elements/blocks/tree-modal/tree-modal.component';
 import { ScModalModule } from 'angular-5-popup';
+import { DamModule } from '../lib/dam';
+import { DamService } from './services/dam-service/dam.service';
 
 @NgModule({
     declarations: [
@@ -85,11 +87,13 @@ import { ScModalModule } from 'angular-5-popup';
         HttpClientModule,
         SimpleNotificationsModule.forRoot(),
         TreeModule,
-        ScModalModule
+        ScModalModule,
+        DamModule
     ],
     providers: [
         EditorService,
-        StateService
+        StateService,
+        DamService
     ],
     bootstrap: [
         AppComponent

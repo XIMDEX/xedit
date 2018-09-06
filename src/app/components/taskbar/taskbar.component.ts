@@ -57,14 +57,14 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
     private file: File;
     private currentView: string;
     private availableViews: Array<string> = [];
-    private title: String;
-    private displayToggle: boolean;
+    public title: String;
+    public displayToggle: boolean;
 
     // State Configs
     private stateConfigs: StateConfigs;
-    private toogleStateConfigs: boolean;
+    public toogleStateConfigs: boolean;
     private configs: Array<Object>;
-    private stateActive: boolean;
+    public stateActive: boolean;
 
     constructor(
         private _editorService: EditorService,

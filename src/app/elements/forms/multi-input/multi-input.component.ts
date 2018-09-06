@@ -9,8 +9,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MultiInputComponent implements OnInit {
 
-    private attrName: string;
-    private attrValue: string;
+    public attrName: string;
+    public attrValue: string;
 
     @Input()
     set data(data: Object) {
@@ -21,7 +21,7 @@ export class MultiInputComponent implements OnInit {
     @Input() editable: boolean;
     @Output() changeValue: EventEmitter<any> = new EventEmitter();
 
-    private hasAttrNameValue: boolean;
+    public hasAttrNameValue: boolean;
     private oldValue: Object;
 
     constructor() {
