@@ -74,17 +74,32 @@
 
   <script>
     window.$xdam = {
-      token: "ssdfksj856erfh3vs634pldaskg",
-      base_url: 'http://universo.lh/api/v1/',
+      token: "ssdfksj856tfj33vscc4pldaskg",
+      base_url: 'http://universo.lab14/api/v1/',
       profile: 'light',
       endpoints: {
         resources: {
-          list: 'resources?context_resource=resource',
+          list: 'resources/dam',
           get: 'resources',
           post: 'resources',
           delete: 'resources'
         }
       },
+      models: {
+          item: {
+            id: 'resource_id',
+            title: 'name',
+            hash: 'id',
+            size: '',
+            type: 'type',
+            image: 'preview'
+          },
+          requests: {
+            get: 'hash',
+            delete: 'id',
+            put: 'id'
+          }
+        },
       forms: {
         name: "resource-form",
         endpoint: "resources",

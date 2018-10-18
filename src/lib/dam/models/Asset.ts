@@ -1,24 +1,54 @@
+/**
+ * The Asset model used by the resources modal to show or store the resources parameters.
+ */
 export class Asset {
 
-    title: string;
-    description: string;
-    author: string;
-    externalUrl: string;
-    resource: File;
-    extension: string;
-    items: Object;
-    type: string;
-    category: string;
+  /**
+   * The title of the asset
+   */
+  title: string;
+  /**
+   * The description text for the asset
+   */
+  description: string;
+  /**
+   * The author of the asset
+   */
+  author: string;
+  /**
+   * The external URL for the file of the asset
+   */
+  externalUrl: string;
+  /**
+   * The file for the asset
+   */
+  resource: File;
+  /**
+   * The file extension of the asset
+   */
+  extension: string;
+  /**
+   * The type of resource attached to the asset
+   */
+  type: string;
 
-    constructor(title?, desc?, aut?, url?, f?, ext?,  it?, ty?, cat?) {
-      this.title = title || '';
-      this.description = desc || '';
-      this.author = aut || '';
-      this.externalUrl = url || '';
-      this.resource = f || null;
-      this.extension = ext || '';
-      this.items = it || null;
-      this.type = ty || '';
-      this.category = cat || '';
-    }
+  /**@ignore */
+  constructor(
+    title?: string,
+    description?: string,
+    author?: string,
+    url?: string,
+    resource?: File,
+    extension?: string,
+    type?: string
+    ) {
+    this.title = title || '';
+    this.description = description || '';
+    this.author = author || '';
+    this.externalUrl = url || '';
+    this.resource = resource || null;
+    this.extension = extension || '';
+    this.type = type || '';
+
+  }
 }

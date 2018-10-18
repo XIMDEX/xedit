@@ -1,1 +1,1 @@
-export { DamModule } from './dam.module';
+export {DamModule} from './dam.module';

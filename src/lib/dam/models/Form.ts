@@ -1,5 +1,5 @@
 import {JsonMember, JsonObject} from 'typedjson-npm';
-
+/**@ignore */
 @JsonObject
 export class Form {
     @JsonMember({ name: 'name' })

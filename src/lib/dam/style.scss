@@ -1,6 +1,11 @@
 @import 'node_modules/ngx-smart-modal/ngx-smart-modal.scss';
 @import "~@ng-select/ng-select/themes/default.theme";
 
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
 .dam-main{
     height: 100%;
     margin: 0;
@@ -13,12 +18,31 @@
     justify-content: space-between;
 }
 
+
 .nsm-dialog { 
+    max-width: 100% !important;
+}
+
+.dam-main .nsm-overlay-open {
+    z-index: 999999 !important;
+}
+
+.assets-modal .nsm-dialog{ 
     max-width: 100%;
+}
+
+.modal-delete .nsm-dialog{
+    max-width: auto;
 }
 
 .dam-select {
     width: 95%;
+}
+
+.dam-textarea {
+    width: 95%;
+    height: 9em;
+    resize: none;
 }
 
 .dam-edit-item label{
@@ -58,8 +82,4 @@
 
 .dam-form-item{
     margin-top: 1em;
-}
-
-.dam-main .overlay.nsm-overlay-open{
-    z-index: 70000 !important;
 }

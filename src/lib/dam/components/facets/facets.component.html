@@ -1,0 +1,17 @@
+<ng-container *ngIf="facetsConfig.active">
+  <div class="facets-wrapper" [className]="isOpen ? 'facets-wrapper opened' : 'facets-wrapper closed'"></div>
+  <div class="facets-list">
+    <div class="facets-title">
+      <h4 *ngIf="isOpen">Facets</h4>
+      <button (click)="togglePanel()" class="dam-btn-base btn-facets">
+          <fa-icon [icon]="faAngleLeft" *ngIf="isOpen;else rightAngle"></fa-icon>
+          <ng-template #rightAngle><fa-icon [icon]="faAngleRight"></fa-icon></ng-template>
+      </button>
+    </div>
+    <div *ngIf="isOpen">
+      <div *ngFor="let facet of facets; index as i" class="facets-panel">
+        <app-facet [facet]="facet" [selected]="selectedFacets" [hidden]="(i === 0) ? false : true" (selectedValue)="updateFacetsQuery($event, facet.key)"></app-facet>
+      </div>
+    </div>
+  </div>
+</ng-container>

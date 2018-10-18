@@ -5,6 +5,9 @@
 
     <input *ngSwitchCase="'text'" [formControlName]="question.key"
             [id]="question.key" [type]="question.type">
+
+    <textarea *ngSwitchCase="'text-area'" class="dam-textarea" [formControlName]="question.key"
+      [id]="question.key">{{question.val}}</textarea>
     
     <ng-select
       class="dam-select"

@@ -1,17 +1,22 @@
+:host {
+    margin: 0 1em;
+}
+
 .items{
     display: -ms-flexbox;
     display: flex;
-    -ms-flex-direction: row;
     flex-direction: row;
-    -ms-flex-wrap: wrap;
     flex-wrap: wrap;
-    -ms-flex-pack: start;
-    justify-content: flex-start;
+    justify-content: center;
+    display: -ms-grid;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-column-gap: 15px;
+    justify-items: center;
     
 }
 
 .items:after {
-    content: "";
     flex: auto;
 }
 
@@ -82,6 +87,35 @@ ul.pagination li:last-child{
     justify-content: flex-end;
 }
 
+.dialog-delete {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+.dialog-delete h2.legend {
+    color: #00a397;
+}
+
+.dialog-delete span {
+    font-weight: bold;
+}
+
+.dialog-delete .options {
+    border-top: 1px solid #C8CACC;
+    margin-top: 1em;
+    padding-top: 1em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.limit-selector {
+    width: 4em;
+    margin: 0.6em 1em 0 auto;
+}
+
 /* MOBILE */
 @media all and (max-width: 599px) { 
     .pagination-nav{
@@ -102,8 +136,6 @@ ul.pagination li:last-child{
 }
 /*PC*/
 @media all and (min-width: 1025px){
-    .items{
-        margin-left:50px;
-    }
+    
 }
 

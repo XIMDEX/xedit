@@ -12,6 +12,10 @@ import { AssetsModalComponent } from './components/modals/assets-modal/assets-mo
 import { TableComponent } from './components/table/table.component';
 import { TableSearchComponent } from './components/table/table-search/table-search.component';
 import { TableItemComponent } from './components/table/table-item/table-item.component';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { FacetsComponent } from './components/facets/facets.component';
+import { FacetComponent } from './components/facets/facet/facet.component';
+import { LoadingComponent } from './components/loading/loading.component';
 
 
 @NgModule({
@@ -21,7 +25,8 @@ import { TableItemComponent } from './components/table/table-item/table-item.com
     HttpClientModule,
     FormsModule,
     NgxSmartModalModule.forRoot(),
-    DynFormModule
+    DynFormModule,
+    NgSelectModule
   ],
   providers: [
     MainService,
@@ -34,6 +39,9 @@ import { TableItemComponent } from './components/table/table-item/table-item.com
     TableSearchComponent,
     TableItemComponent,
     AssetsModalComponent,
+    FacetsComponent,
+    FacetComponent,
+    LoadingComponent,
   ],
   exports: [
     DamComponent

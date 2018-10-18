@@ -70,3 +70,12 @@ button:disabled {
     background: #dddddd !important;
     cursor: not-allowed;
 }
+
+.assets-error {
+    color: #FFF;
+    text-align: center;
+    background-color: rgb(227, 93, 93, 0.8);
+    border-radius: 5px;
+    padding: 0.5em 0.5em;
+    margin: 0em 1em 1em 1em;
+}

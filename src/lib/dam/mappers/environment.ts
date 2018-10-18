@@ -1,7 +1,10 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-
+/**
+ * The default configuration for the app, all the info here will be overwrited if
+ * the window also includes it
+ */
 export const environment = {
     token: 'ssdfksj856erfh3vs634pldaskg',
     base_url: 'http://universo.lh/api/v1/',

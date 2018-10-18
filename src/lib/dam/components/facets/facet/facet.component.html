@@ -1,0 +1,17 @@
+<button class="facet-title" (click)="togglePanel()">
+  <span class="text">{{ facet.label }}</span>
+  <fa-icon *ngIf="hidden; else minus" style="float:right;" [icon]="faPlus"></fa-icon>
+  <ng-template #minus>
+      <fa-icon style="float:right;" [icon]="faMinus"></fa-icon>
+  </ng-template>
+</button>
+<div *ngIf="!hidden">
+ <!--<ng-container  *ngFor="let item of facet.values | keyvalue">
+    <ng-container *ngIf="item.value > 0 || isActive(item)">
+      <div class="facet-option" [title]="item.key">
+          <input type="checkbox" (change)="toggleFacet($event, item)" [checked]="isActive(item)"/>
+          <label><span>{{ item.key }}</span> ({{item.value}})</label>
+      </div>
+    </ng-container>
+  </ng-container>--> 
+</div>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+/**@ignore */
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
@@ -7,8 +7,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SearchComponent implements OnInit {
 
+  /**@ignore */
   constructor() { }
 
+  /**@ignore */
   ngOnInit() {
   }
 
