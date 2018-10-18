@@ -1,7 +1,7 @@
 import { hasIn, isNil, contains } from 'ramda';
 import RouterXedit from './core/mappers/router';
 import { Xedit } from './core/mappers/xedit';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { DamService } from './services/dam-service/dam.service';
 import { Component, ViewChild, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -53,7 +53,7 @@ export class AppComponent implements OnInit, OnDestroy {
                 this.getDocument(Xedit.getDocument().id, hasIn('view', Xedit.getDocument()) ? Xedit.getDocument().view : null);
             }
         } else {
-            this.route.queryParams.skip(1).subscribe(_params => {
+            this.route.queryParams.subscribe(_params => {
                 const params = Object.assign({}, _params);
                 if (isNil(params['token[field]']) || isNil(params['token[value]'])) {
                     console.log('Not authentication');
@@ -140,6 +140,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     public closeModal() {
         this._damService.setIsOpen(false);
+        this.cdRef.detectChanges();
     }
     public toggleOpen() {
         this.isOpen = !this.isOpen;

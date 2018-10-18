@@ -33,22 +33,12 @@ import {
     equals,
     hasIn,
     isEmpty,
-    join,
     union,
-    contains,
     uniq,
 } from 'ramda';
-import { state } from '@angular/core';
-import { WysiwygViewComponent } from './wysiwyg-view.component';
 import { XeditMapper } from '@models/schema/xedit-mapper';
-import { File } from '@models/file';
-import { EditorService } from '@services/editor-service/editor.service';
 import { Converters } from '@utils/converters';
-import { Xedit } from '@app/xedit';
-import { isArray } from 'util';
-import { ClipboardConfigs } from '../../../../models/configs/clipboardConfigs';
 import Router from '../../../../core/mappers/router';
-import { HttpClient } from '@angular/common/http';
 import { Api } from '@app/api';
 
 export class WysiwygHandler {

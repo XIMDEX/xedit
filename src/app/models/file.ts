@@ -1,12 +1,7 @@
-import { UUID } from 'angular2-uuid';
 import { History } from './history';
-import { HTMLParser } from '@utils/htmlparser';
-import { Serializable } from './interfaces/Serializable';
-import { isNil, equals, is, reduce, contains, hasIn, union } from 'ramda';
+import { isNil, is, hasIn, union } from 'ramda';
 
-import { XeditMapper } from '@models/schema/xedit-mapper';
 import { Converters } from '@utils/converters';
-import { Node } from '@models/node';
 import { Xedit } from '../xedit';
 
 export class FileHistory {
