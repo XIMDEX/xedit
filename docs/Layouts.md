@@ -47,10 +47,10 @@ A layout is a schematic of the document. It includes info about the structure of
 
 | Field name |            Allowed values             |                         Description                          |
 | :--------: | :-----------------------------------: | :----------------------------------------------------------: |
-|    css     | A node ID (In Ximdex), A external URL |     Adds a css link in headers when transformed to HTML      |
-|     js     | A node ID (In Ximdex), A external URL |     Adds a JS script in headers when transformed to HTML     |
+|    css     | A node ID (In Ximdex), A external URL |     Adds a css link in headers when transformed to HTML.      |
+|     js     | A node ID (In Ximdex), A external URL |     Adds a JS script in headers when transformed to HTML.     |
 |  metadata  |  An Object("name", "type", "value")   | An object with a (name, value) as a (key, value) and its variable type (*int, date, string...*) |
-|  template  |          A "content" Object           | A "content" object with the name of every component that should be included in the layout |
+|  template  |          A "content" Object           | A "content" object with the name of every component that should be included in the layout. |
 
 
 
