@@ -1,6 +1,6 @@
 # XEdit
 
- ![version](https://img.shields.io/badge/version-1.1.0-brightgreen.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+ ![version](https://img.shields.io/badge/version-1.1.0-brightgreen.svg) [![License: GPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
 ## Description
 
