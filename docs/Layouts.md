@@ -1,6 +1,6 @@
 # Layouts
 
-A layout is a schematic of the document itself. It includes info about the document and the components that will be included in it.
+A layout is a schematic of the document. It includes info about the structure of the document and its components.
 
 ```json
 {
