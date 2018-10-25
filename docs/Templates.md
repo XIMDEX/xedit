@@ -1,4 +1,4 @@
-# Templates creation
+# Template creation
 
 The biggest feature of Xedit is not only its easy to use what-you-see-is-what-you-get interface, but also the creation of new templates with custom components to speed up the development of new documents.
 
