@@ -4,17 +4,20 @@
 
 ## Description
 
-XEdit is a HTML template editor focused on user experience and customization, allowing the creation of multiple HTML pages using reusable user defined components.
+XEdit is a WYSIWYG HTML5 editor focused on user experience and customization, allowing the creation of multiple HTML pages using reusable user-defined components in templates.
 
 ## Features
 
 - User experience: Easy to use and learn.
 - Fast development: Design a beautiful web like a pro with no effort.
-- Visual or text: Choose how to use it based on your own development skills.
+- Visual or Text: Choose how to use it based on your own development skills.
+- Dynamic: the JS code on your page is working while editing.
+- Structure: using templates of templates, views and layouts to "guide" the user while editing.
+- Deploy it as a component or as a Service (adding the connectors xedit-base or xedit-laravel)
 
 ## Guide
 
-You can access our templates development guide to get an insight on how to make your own templates. [Click here](./docs/Templates.md).
+Access our templates development guide to know how to make your own templates. [Click here](./docs/Templates.md).
 
 ## Availability
 
