@@ -1,18 +1,12 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
-import { equals, merge, isNil, reduce } from 'ramda';
-import validator from 'html-validator';
+import { Component, OnInit, ElementRef, AfterViewChecked } from '@angular/core';
+import { equals, merge, isNil } from 'ramda';
 import htmlTagValidator from 'html-tag-validator';
 
-import { File } from '@models/file';
 import { XeditMapper } from '@models/schema/xedit-mapper';
 import { ClipboardConfigs } from '@models/configs/clipboardConfigs';
 
 import { EditorService } from '@services/editor-service/editor.service';
 import { StateService } from '@services/state-service/state.service';
-
-import { TaskbarComponent } from '@components/taskbar/taskbar.component';
-import { WysiwygViewComponent } from '@components/editor/views/wysiwyg-view/wysiwyg-view.component';
-import { TextViewComponent } from '@components/editor/views/text-view/text-view.component';
 
 @Component({
     selector: 'app-editor',

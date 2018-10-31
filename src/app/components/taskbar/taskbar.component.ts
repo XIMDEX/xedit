@@ -193,9 +193,9 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
 
         const element = evt.target;
 
-        if ($(element).parents('app-tree-modal').length === 0) {
-            this.displayToggle = false;
-        }
+        // if ($(element).parents('app-tree-modal').length === 0) {
+        //     this.displayToggle = false;
+        // }
     }
 
     toggleStates(event) {

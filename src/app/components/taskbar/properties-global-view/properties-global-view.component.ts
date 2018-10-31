@@ -2,23 +2,16 @@ import {
     Component,
     OnInit,
     OnDestroy,
-    ViewChild,
-    ElementRef,
 } from '@angular/core';
-import { reduce, clone, has, isNil, keys, hasIn } from 'ramda';
+import { isNil, hasIn } from 'ramda';
 
 import { File } from '@models/file';
-import { Node } from '@models/node';
-import { XeditMapper } from '@models/schema/xedit-mapper';
 import { EditorService } from '@services/editor-service/editor.service';
-import { EditorComponent } from '@components/editor/editor.component';
 import { WysiwygHandler } from '@app/components/editor/views/wysiwyg-view/wysiwyg-handler';
 import dateformat from 'dateformat';
 import Router from '../../../core/mappers/router';
-import { DOM } from '@app/models/dom';
 import { Api } from '@app/api';
 import { HttpClient } from '@angular/common/http';
-import { Xedit } from '@app/xedit';
 
 @Component({
     selector: 'app-properties-global',

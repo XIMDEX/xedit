@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject ,  Observable ,  Subject } from 'rxjs';
 import { clone, isNil, reduce, is, contains, hasIn } from 'ramda';
 import { Editor } from 'ng2-ace-editor/node_modules/brace';
 import { UUID } from 'angular2-uuid';

@@ -59,8 +59,10 @@ import 'core-js/es7/reflect';
  */
 import 'zone.js/dist/zone';  // Included with Angular CLI.
 
-
-
+/* Solves an error with ng6 */
+(window as any).process = {
+    env: { DEBUG: undefined },
+  };
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
