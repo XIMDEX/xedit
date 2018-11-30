@@ -1,6 +1,8 @@
 import $ from 'jquery';
 import { UUID } from 'angular2-uuid';
 import sanitizeHtml from 'sanitize-html';
+import { Xedit } from 'app/core/mappers/xedit';
+import { HttpClient } from '@angular/common/http';
 
 // TIYMCE
 import 'tinymce';
@@ -18,10 +20,14 @@ import 'tinymce/plugins/lists';
 import 'tinymce/plugins/textcolor';
 import 'tinymce/plugins/imagetools';
 import 'tinymce/plugins/colorpicker';
+import './tiny_plugins/eqneditor';
 
-import Commands from './dam/api/Commands';
-import FilterContent from './dam/core/FilterContent';
-import Buttons from './dam/ui/Buttons';
+import Commands from './tiny_plugins/dam/api/Commands';
+import FilterContent from './tiny_plugins/dam/core/FilterContent';
+import Buttons from './tiny_plugins/dam/ui/Buttons';
+import TreeCommands from './tiny_plugins/tree/api/Commands';
+import TreeFilterContent from './tiny_plugins/tree/core/FilterContent';
+import TreeButtons from './tiny_plugins/tree/ui/Buttons';
 import dateFormat from 'dateformat';
 
 declare let tinymce: any;
@@ -79,7 +85,7 @@ export class WysiwygHandler {
             )
         ) {
             WysiwygHandler.clearTinymce();
-            WysiwygHandler.addPlugins(args.getInfo, args.callback);
+            WysiwygHandler.addPlugins(args.getInfo, args.callback, args.http);
             const toolbar = WysiwygHandler.generateToolbar(
                 args.node.getSchema()
             );
@@ -170,6 +176,7 @@ export class WysiwygHandler {
                         );
                     });
                     editor.on('change', (evt: Event) => {
+                        console.log('changed', evt, editor, args)
                         WysiwygHandler.saveDoc(editor, args);
                     });
                     editor.on('init', (evt: Event) => {
@@ -260,12 +267,20 @@ export class WysiwygHandler {
         );
     }
 
-    private static addPlugins(getInfo, callback) {
-        tinymce.PluginManager.add('dam', function (editor) {
-            FilterContent.setup(editor);
-            Commands.register(editor, getInfo, callback);
-            Buttons.register(editor);
-        });
+    private static addPlugins(getInfo, callback, http: HttpClient) {
+        if (Xedit.getDam() === 'dam') {
+            tinymce.PluginManager.add('dam', function (editor) {
+                FilterContent.setup(editor);
+                Commands.register(editor, getInfo, callback);
+                Buttons.register(editor);
+            });
+        } else {
+            tinymce.PluginManager.add('tree', (editor) => {
+                TreeFilterContent.setup(editor);
+                TreeCommands.register(editor, http);
+                TreeButtons.register(editor);
+            });
+        }     
     }
 
     private static generateToolbar(schema) {
@@ -298,6 +313,7 @@ export class WysiwygHandler {
                 strikethrough: 'strikethrough',
                 color: 'forecolor',
                 background: 'backcolor',
+                math: 'eqneditor'
             },
             others: {
                 ol: 'numlist',
@@ -356,15 +372,23 @@ export class WysiwygHandler {
 
         return result.replace(/(\s\|\s)$/g, '');
     }
+
+    private static getToolBarBtns() {
+        const type = Xedit.getDam();
+        return(
+            {
+                a: `${type}_link`,
+                img: type,
+                video: `${type}_video`,
+                audio: `${type}_audio`,
+            }
+        );
+    }
+
     private static toolbarTags(tags: Array<string> | string) {
         const tagsValue = {};
         const groups = {
-            buttons: {
-                a: 'dam_link',
-                img: 'dam',
-                video: 'dam_video',
-                audio: 'dam_audio',
-            },
+            buttons: this.getToolBarBtns(),
             formats: {},
         };
 
@@ -418,7 +442,7 @@ export class WysiwygHandler {
     private static getAvailablePlugins(schema) {
         /*['link', 'table', 'image', 'paste', 'dam']*/
         const plugins = ''; // 'searchreplace autolink image link media hr anchor advlist lists textcolor imagetools colorpicker';
-        return 'dam searchreplace autolink link media hr anchor advlist lists textcolor colorpicker table';
+        return `${Xedit.getDam()} eqneditor searchreplace autolink link media hr anchor advlist lists textcolor colorpicker table`;
     }
     /**********************************     DATEPICKER  *******************************************/
     /**

@@ -4,7 +4,7 @@ import { Configs } from './configs';
 export class StateConfigs extends Configs {
 
     protected static GROUP = 'statesController';
-    protected static DEFUALT: any = {
+    protected static DEFAULT: any = {
         active: false,
         configs: [
             {
@@ -58,7 +58,7 @@ export class StateConfigs extends Configs {
 
     public addConfig(config: any) {
         if (isNil(this.configs)) {
-            this.configs = StateConfigs.DEFUALT;
+            this.configs = StateConfigs.DEFAULT;
         }
         this.configs.configs.push(config);
         return this.setConfigs(this.configs);
@@ -71,7 +71,7 @@ export class StateConfigs extends Configs {
     private init() {
         this.self.get().then((data) => {
             if (isNil(data)) {
-                data = this.self.DEFUALT;
+                data = this.self.DEFAULT;
             }
             this.configs = data;
         });
@@ -93,7 +93,7 @@ export class StateConfigs extends Configs {
             console.error(error);
         } else {
             if (isNil(value)) {
-                value = StateConfigs.DEFUALT;
+                value = StateConfigs.DEFAULT;
             }
         }
 

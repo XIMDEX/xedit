@@ -1,0 +1,14 @@
+<div class="tree">
+  <tree-root
+    #Tree
+    [nodes]="treeModel"
+    [options]="treeOptions"
+    (toggleExpanded)="onToggle($event)"
+  >
+  <ng-template #treeNodeTemplate let-node let-index="index">
+    <span class="node">
+      <fa-icon [icon]="setIcon(node.data.type)"></fa-icon>
+        {{ node.data.name }}</span>
+  </ng-template>
+  </tree-root>
+</div>

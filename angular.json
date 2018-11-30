@@ -28,7 +28,9 @@
             "styles": [
               "src/sass/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/mathjax/MathJax.js"
+            ]
           },
           "configurations": {
             "production": {

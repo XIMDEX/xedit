@@ -2,7 +2,7 @@
  * Dialog.js
  */
 
-import Dam from '../core/Dam';
+import Tree from '@app/components/editor/views/wysiwyg-view/tiny_plugins/tree/core/Tree';
 import { Api } from '@app/api';
 import { HttpClient } from '@angular/common/http';
 
@@ -51,28 +51,28 @@ const ATTRS_BY_TYPE = {
 };
 
 const insertDam = function (editor, newId, type, extra) {
-    if (!Dam.isValidNodeId(newId)) {
+    if (!Tree.isValidNodeId(newId)) {
         editor.windowManager.alert('El enlace elegido no es válido');
         return true;
     } else {
-        Dam.insert(editor, newId, type, extra);
+        Tree.insert(editor, newId, type, extra);
         return false;
     }
 };
 
-const open = function (editor, type: string, getInfo, callback) {
-    const currentId = Dam.getId(editor, type);
+const open = function (editor, http: HttpClient, type: string) {
+    const currentId = Tree.getId(editor, type);
     const attributes = {};
 
-    for (const attr in ATTRS_BY_TYPE[type]) {
-        attributes[attr] = Dam.getAttribute(editor, attr);
+    for (const attr of Object.keys(ATTRS_BY_TYPE[type])) {
+        attributes[attr] = Tree.getAttribute(editor, attr);
     }
 
     const save = e => {
         const newNodeId = e.data.nodeId;
         const extra = {};
 
-        for (const key in ATTRS_BY_TYPE[type]) {
+        for (const key of Object.keys(ATTRS_BY_TYPE[type])) {
             extra[key] = e.data[key];
         }
 
@@ -81,16 +81,16 @@ const open = function (editor, type: string, getInfo, callback) {
         }
     };
 
-    // function openTree(evt, windowM, pathIds) {
-    //     window['treeModal']
-    //         .openModal('modal-1', type, pathIds)
-    //         .then(selectedId => {
-    //             Api.getInfoNode(http, selectedId, type, setData, null, null);
-    //         })
-    //         .catch(err => console.log(err));
-    // }
+    function openTree(evt, windowM, pathIds) {
+        window['treeModal']
+            .openModal('modal-1', type, pathIds)
+            .then(selectedId => {
+                Api.getInfoNode(http, selectedId, type, setData, null, null);
+            })
+            .catch(err => console.log(err));
+    }
 
-    function setData(result, extra) {
+    function setData({ response: result }, extra) {
         const id = result && result.nodeid ? result.nodeid : '';
         const name = result && result.name ? result.name : '';
         let path = '<i>Elemento no seleccionado...</i>';
@@ -99,11 +99,12 @@ const open = function (editor, type: string, getInfo, callback) {
             path = `<span title="${path}">${path}<span/>`;
         }
 
+        const pathIds = result && result.path ? Object.keys(result.path) : [];
         document.getElementById('dam-nodeId')['value'] = id;
         document.getElementById('dam-name')['innerHTML'] = name;
         document.getElementById('dam-path')['innerHTML'] = path;
     }
-    function showWManager(result, { editor }) {
+    function showWManager({response: result}, { editor }) {
         const name =
             result && result.name
                 ? result.name
@@ -142,7 +143,7 @@ const open = function (editor, type: string, getInfo, callback) {
                 {
                     type: 'button',
                     icon: 'browse',
-                    onclick: e => callback(e, editor.windowManager, type, pathIds, setData),
+                    onclick: e => openTree(e, editor.windowManager, pathIds),
                 },
             ],
         });
@@ -160,7 +161,7 @@ const open = function (editor, type: string, getInfo, callback) {
         });
 
         // Attributes
-        for (const key in ATTRS_BY_TYPE[type]) {
+        for (const key of Object.keys(ATTRS_BY_TYPE[type])) {
             const obj = ATTRS_BY_TYPE[type][key];
             obj['value'] = attributes[key];
             form.body.push(obj);
@@ -168,11 +169,12 @@ const open = function (editor, type: string, getInfo, callback) {
 
         editor.windowManager.open(form);
     }
-    showWManager(null, { editor: editor });
-    if (currentId && !(/^(f|ht)tps?:\/\//i).test(currentId)) {
-        getInfo(currentId, type, setData, showWManager, showWManager, {
+    if (currentId) {
+        Api.getInfoNode(http, currentId, type, showWManager, showWManager, {
             editor: editor,
         });
+    } else {
+        showWManager(null, { editor: editor });
     }
 };
 

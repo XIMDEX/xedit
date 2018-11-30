@@ -5,7 +5,7 @@ export class ClipboardConfigs extends Configs {
 
 
     protected static GROUP = 'clipboardConfigs';
-    protected static DEFUALT: any = {
+    protected static DEFAULT: any = {
         active: false,
         configs: [
             {
@@ -62,7 +62,7 @@ export class ClipboardConfigs extends Configs {
 
     public addConfig(config: any) {
         if (isNil(this.configs)) {
-            this.configs = ClipboardConfigs.DEFUALT;
+            this.configs = ClipboardConfigs.DEFAULT;
         }
         this.configs.configs.push(config);
         return this.setConfigs(this.configs);
@@ -75,7 +75,7 @@ export class ClipboardConfigs extends Configs {
     private init() {
         this.self.get().then((data) => {
             if (isNil(data)) {
-                data = this.self.DEFUALT;
+                data = this.self.DEFAULT;
             }
             this.configs = data;
         });
@@ -100,7 +100,7 @@ export class ClipboardConfigs extends Configs {
             console.error(error);
         } else {
             if (isNil(value)) {
-                value = ClipboardConfigs.DEFUALT;
+                value = ClipboardConfigs.DEFAULT;
             }
         }
 

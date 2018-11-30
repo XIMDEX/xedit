@@ -1,6 +1,7 @@
 @import '~bootstrap/dist/css/bootstrap.min.css';
 @import 'variables';
 @import './../lib/dam/style.scss';
+@import '~angular-tree-component/dist/angular-tree-component.css';
 
 html,
 body,
@@ -108,6 +109,17 @@ div#dam-path {
     text-overflow: ellipsis; 
     max-width: 100%; 
     display: inline-block; 
+}
+
+#modal-1 {
+    .nsm-dialog {
+        height: 60%;
+        width: 50%;
+        top:20%;
+    }
+    .nsm-content {
+        height: 100%;
+    }
 }
 
 @import 'tinymce';

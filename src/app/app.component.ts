@@ -59,7 +59,7 @@ export class AppComponent implements OnInit, OnDestroy {
                     console.log('Not authentication');
                 }
                 if (params.url === undefined || isNil(params.url)) {
-                    console.error('API NO DISPINIBLE');
+                    console.error('API NO DISPONIBLE');
                 } else {
                     this._editorService.setLoading(true);
 

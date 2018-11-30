@@ -71,7 +71,7 @@ const createHtmlVideo = function (text, resource) {
 const insert = function (editor, nodeId, type, attributes) {
 
     const selectedNode = editor.selection.getNode();
-    const tag = selectedNode.tagName.toLowerCase();
+    let tag = selectedNode.tagName.toLowerCase();
     const val = editor.dom.getAttrib(selectedNode, XeditMapper.TAG_LINK);
     const hasResource = hasValidResource(tag, val, type);
     const url = getUrl(editor, nodeId);
@@ -87,7 +87,7 @@ const insert = function (editor, nodeId, type, attributes) {
         // editor.focus();
         // editor.selection.collapse(true);
 
-        let tag = TAG_BY_TYPE[type];
+        tag = TAG_BY_TYPE[type];
         let resource = {
             xe_link: nodeId
         };
