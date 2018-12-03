@@ -1,18 +1,16 @@
 import {
-    Component, OnInit, AfterViewChecked, EventEmitter, OnDestroy, Output, ElementRef, ViewChild, ChangeDetectorRef
+    Component, OnInit, AfterViewChecked, EventEmitter, OnDestroy, Output, ElementRef,
+    ViewChild, ChangeDetectorRef
 } from '@angular/core';
-import { UUID } from 'angular2-uuid';
 import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
-import { isNil, reduce, equals, is, props, has, union, hasIn } from 'ramda';
+import { isNil, equals, is, union, hasIn } from 'ramda';
 
 import { Node } from '@models/node';
 import { XeditMapper } from '@models/schema/xedit-mapper';
-import { File } from '@models/file';
 import { DOM } from '@models/dom';
 import { EditorService } from '@services/editor-service/editor.service';
 import { Converters } from '@utils/converters';
 import { WysiwygHandler } from '@components/editor/views/wysiwyg-view/wysiwyg-handler';
-import $ from 'jquery';
 import { NotificationsService } from 'angular2-notifications';
 import { ClipboardConfigs } from '../../../../models/configs/clipboardConfigs';
 import { Api } from '../../../../api';
@@ -191,6 +189,26 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
     /************************************** Public Methods **************************************/
     onclick(evt) {
         this.changeSelection(evt.target.getAttribute(XeditMapper.TAG_UUID));
+        // this.changeSelection(this.chooseTarget(evt.target));
+    }
+
+    chooseTarget(origin) {
+        const len = origin.children.length;
+        let target = origin.getAttribute(XeditMapper.TAG_UUID);
+        if (len === 1 && origin.hasAttribute('xe_section')) {
+            let node = origin.children[0];
+            if (node.nodeName === 'IMG') {
+                target = node.getAttribute(XeditMapper.TAG_UUID);
+            } else if (node.nodeName === 'P'
+                && node.children.length === 1
+                && node.children[0].nodeName === 'IMG') { 
+                node = node.children[0];
+                target = node.getAttribute(XeditMapper.TAG_UUID);
+            }
+            // node.click();
+        }
+        console.log(target)
+        return target;
     }
 
     changeSelection(elementKey) {

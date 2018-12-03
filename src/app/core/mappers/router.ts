@@ -71,7 +71,7 @@ export default class Router {
 
         // Extra params
         if ((hasIn('params', info))) {
-            for (const property in info['params']) {
+            for (const property of Object.keys(info['params'])) {
                 let val = info['params'][property];
                 match = (/^\{(.*)}$/g).exec(val);
                 if (match != null) {
@@ -96,7 +96,7 @@ export default class Router {
         let endpoint = null;
         const path = name.split('.');
 
-        for (const key in path) {
+        for (const key of Object.keys(path)) {
             endpoint = isNil(endpoint) ? Router.getRouterProperty(Router.ENDPOINTS)[path[key]] : endpoint[path[key]];
         }
         return endpoint;

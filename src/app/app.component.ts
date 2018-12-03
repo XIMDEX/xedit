@@ -59,7 +59,7 @@ export class AppComponent implements OnInit, OnDestroy {
                     console.log('Not authentication');
                 }
                 if (params.url === undefined || isNil(params.url)) {
-                    console.error('API NO DISPINIBLE');
+                    console.error('API NO DISPONIBLE');
                 } else {
                     this._editorService.setLoading(true);
 
@@ -85,6 +85,10 @@ export class AppComponent implements OnInit, OnDestroy {
         this.loadingSuscribe.unsubscribe();
         this.isOpenSuscribe.unsubscribe();
         this.handleSelectSuscribe.unsubscribe();
+    }
+
+    hasDam(): boolean {
+        return Xedit.getDam() === 'dam' ? true : false;
     }
 
     /************************************** Private Methods **************************************/

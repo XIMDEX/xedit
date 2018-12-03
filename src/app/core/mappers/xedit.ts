@@ -29,6 +29,15 @@ export class Xedit {
         return res;
     }
 
+    public static getDam() {
+        const xedit = Xedit.getXedit();
+        let res = null;
+        if (!isNil(xedit)) {
+            res = hasIn('dam', xedit) ? xedit.dam : 'tree';
+        }
+        return res;
+    }
+
     public static getData(property = null) {
         const xedit = Xedit.getXedit();
         let res = null;

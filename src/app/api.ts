@@ -61,7 +61,7 @@ export class Api {
         const headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded'
         });
-        return ApiGlobal.request(http, this.getTreeUrl(), { id: nodeId }, null, headers, successCallback, errorCallback, extra);
+        return ApiGlobal.request(http, this.getTreeUrl(), { id: nodeId, type: type }, null, headers, successCallback, errorCallback, extra);
     }
 
     public static getInfoNode(http: HttpClient, nodeId: string, type: string, successCallback: Function, errorCallback: Function,

@@ -1,0 +1,24 @@
+<div class="tree-wrapper">
+  <div class="media-show">
+    <figure *ngIf="imgSrc !== null">
+      <img [src]="imgSrc" alt="Image preview">
+      <figcaption>{{ imgName }}</figcaption>
+    </figure>
+  </div>
+  <div class="tree">
+    <h4>Select Resource <span *ngIf="resourceCount !== -1">({{ resourceCount }} availables)</span></h4>
+    <tree-root
+      #Tree
+      [nodes]="treeModel"
+      [options]="treeOptions"
+      (toggleExpanded)="onToggle($event)"
+    >
+    <ng-template #treeNodeTemplate let-node let-index="index">
+      <div class="node">
+        <fa-icon class="icon" [ngClass]="node.data.icon" [icon]="setIcon(node.data)"></fa-icon>
+        <span class="node-name">{{ node.data.name }}</span>
+      </div>
+    </ng-template>
+    </tree-root>
+  </div>
+</div>
