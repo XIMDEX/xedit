@@ -102,7 +102,7 @@ app-tree-modal{
     z-index: 100000;
 }
 
-// DAM
+// DAM and Tree
 
 div#dam-path { 
     overflow: hidden;
@@ -113,14 +113,27 @@ div#dam-path {
 
 #modal-1 {
     .nsm-dialog {
-        height: 60%;
-        width: 50%;
+        height: 50rem;
+        width: 60%;
         top:20%;
     }
     .nsm-content {
         height: 100%;
     }
+
+    .nsm-body {
+        border: 1px solid #cccc;
+    }
+    .nsm-dialog-btn-close {
+        margin-right: 2rem;
+        margin-top: 1rem;
+    }
 }
+
+// TREE (TO DO fix)
+// .angular-tree-component {
+//     margin-top: 2rem;
+// }
 
 @import 'tinymce';
 @import '../lib/dam/themes/light.scss';

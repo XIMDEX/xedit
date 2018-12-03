@@ -4,8 +4,9 @@ import { EditorService } from '../../../services/editor-service/editor.service';
 import { Api } from '@app/api';
 import { HttpClient } from '@angular/common/http';
 import { ITreeOptions, TREE_ACTIONS, TreeNode } from 'angular-tree-component';
-import { faImage } from '@fortawesome/free-solid-svg-icons';
-import { faFolder } from '@fortawesome/free-solid-svg-icons';
+import { faFolder, faFileImage } from '@fortawesome/free-solid-svg-icons';
+import { faSitemap, faBoxes, faBox, faServer } from '@fortawesome/free-solid-svg-icons';
+import Router from '@app/core/mappers/router';
 
 @Component({
     selector: 'app-tree',
@@ -20,10 +21,7 @@ export class TreeComponent implements OnInit {
     @Output() selected: EventEmitter<any> = new EventEmitter();
     @Input() type;
     @Input() path;
-    faFolder = faFolder;
-    faImage = faImage;
     
-
     static readonly TYPE_FOLDER: String = 'folder';
     static readonly TYPE_EMPTY: String = 'empty';
     static readonly TYPE_IMAGE: String = 'image';
@@ -33,13 +31,30 @@ export class TreeComponent implements OnInit {
     constructor(public http: HttpClient, public _editorService: EditorService) { }
 
     public treeModel: any;
+    public resourceCount: number = -1;
+    public imgSrc: string = null;
+    public imgName: string = null;
     public treeOptions: ITreeOptions = {
         actionMapping: {
             mouse: {
+                click: (tree, node, $event) => {
+                    const { type, id, icon, name } = node.data;
+                    if (type === TreeComponent.TYPE_FOLDER) {
+                        TREE_ACTIONS.TOGGLE_EXPANDED(tree, node, $event);
+                        this.imgSrc = null;
+                    } 
+                    else if (type === 'item' && icon === TreeComponent.TYPE_IMAGE) {
+                        this.imgSrc = Router.configUrl(Api.getResourceUrl(), { id: id });
+                        this.imgName = name;
+                    } 
+                },
                 dblClick: (tree, node, $event) => {
                     const { type } = node.data;
-                    if (type === TreeComponent.TYPE_FOLDER) TREE_ACTIONS.TOGGLE_EXPANDED(tree, node, $event);
-                    else if (type !== TreeComponent.TYPE_EMPTY) this.selectNode(node);
+                    if (type !== TreeComponent.TYPE_EMPTY && type !== TreeComponent.TYPE_FOLDER) this.selectNode(node);
+                },
+                contextMenu: (tree, node, $event) => {
+                    $event.preventDefault();
+                    console.log(node.data)
                 }
             },
         }
@@ -55,6 +70,7 @@ export class TreeComponent implements OnInit {
             name: 'Root',
             hasChildren: true,
             isRoot: true,
+            icon: 'root',
             type: TreeComponent.TYPE_FOLDER,
             children: []
         }];
@@ -70,11 +86,13 @@ export class TreeComponent implements OnInit {
                 const obj = {
                     id: nodeId,
                     name: nodes[nodeId]['name'],
-                    type: nodes[nodeId]['type']
+                    type: nodes[nodeId]['type'],
+                    icon: nodes[nodeId]['icon'],
                 };
                 if (nodes[nodeId]['type'] === 'folder') {
                     obj['hasChildren'] = true;
                     obj['children'] = [];
+                    obj['resources'] = this.resourceCount
                 }
 
                 children.push(obj);
@@ -87,7 +105,6 @@ export class TreeComponent implements OnInit {
                 type: 'empty',
             });
         }
-        console.log(children)
         return children;
     }
 
@@ -106,9 +123,9 @@ export class TreeComponent implements OnInit {
             if (hasIn('status', result) && result.status === 0) {
                 let nodes = result.response;
                 nodes = hasIn('l1', nodes) ? nodes['l1'] : [];
+                this.resourceCount = hasIn('resources_count', nodes) ? nodes['resources_count'] : -1;
                 nodes = hasIn('nodes', nodes) ? nodes['nodes'] : [];
                 callback(this.processChildren(nodes));
-                //this.processChildren(nodes)
             } else {
                 error();
             }
@@ -125,7 +142,7 @@ export class TreeComponent implements OnInit {
     /**************************************/
     public onToggle({ node, isExpanded }) {
         const { data } = node;
-        const { name, id } = data;
+        const { name, id, resources } = data;
         let { children } = data;
 
         if (isExpanded && children.length === 0) {
@@ -137,26 +154,21 @@ export class TreeComponent implements OnInit {
                 node.data.children = nodes;
                 this.tree.treeModel.update();
             })
-            
-            
+        } else if (children.length > 0) {
+            this.resourceCount = isNil(resources) ? 0 : resources;
         }
     }
 
-    public setIcon(type) {
-        let icon = null;
-        switch (type) {
-            case TreeComponent.TYPE_FOLDER:
-                icon = faFolder;
-                break;
-            
-            case 'item':
-                icon = faImage;
-                break;
-        
-            default:
-                icon = faFolder;
-                break;
-        }
-        return icon;
+    public setIcon({ icon }) {        
+        const icons = {
+            'root': faSitemap,
+            'projects': faBoxes,
+            'nodetype': faBox,
+            'server': faServer,
+            'folder_images': faFolder,
+            'image': faFileImage
+        };
+
+        return hasIn(icon, icons) ? icons[icon] : null;
     }
 }
