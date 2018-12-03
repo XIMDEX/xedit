@@ -87,6 +87,10 @@ export class AppComponent implements OnInit, OnDestroy {
         this.handleSelectSuscribe.unsubscribe();
     }
 
+    hasDam(): boolean {
+        return Xedit.getDam() === 'dam' ? true : false;
+    }
+
     /************************************** Private Methods **************************************/
     private getMapper(url, params, view) {
 

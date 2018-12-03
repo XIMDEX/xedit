@@ -33,9 +33,8 @@ export class Xedit {
         const xedit = Xedit.getXedit();
         let res = null;
         if (!isNil(xedit)) {
-            res = hasIn('dam', xedit) ? xedit.document : 'dam';
+            res = hasIn('dam', xedit) ? xedit.dam : 'tree';
         }
-        res = 'tree';
         return res;
     }
 
