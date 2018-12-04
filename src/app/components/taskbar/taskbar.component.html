@@ -35,7 +35,8 @@
             </ul>
             <ul *ngIf="hasMultiViews()">
                 <li (click)="showComponent(view)" *ngFor="let view of availableViews" [ngClass]="{selected: currentView === view, tabs: true}">
-                    {{ view == 'wysiwyg' ? 'Visual' : 'Texto' }}
+                    <span title="Editar metadatos" *ngIf="view === 'metadata'; else text_content"><fa-icon [icon]="faTags"></fa-icon></span>
+                    <ng-template #text_content>{{ view === 'wysiwyg' ? 'Visual' : 'Texto' }}</ng-template>
                 </li>
             </ul>
         </nav>

@@ -1,0 +1,8 @@
+<form id="metadata-form">
+  <app-dyn-tabform
+  [title]="'My f**ng form'"
+  [schema]="schema"
+  [fetchUrl]="'http://ximdex.lab14/'"
+  (sendForm)="formResult($event)"
+  ></app-dyn-tabform>
+</form>

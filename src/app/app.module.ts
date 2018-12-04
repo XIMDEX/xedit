@@ -9,6 +9,7 @@ import { ClickOutsideModule } from 'ng4-click-outside';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ContextMenuModule } from 'ngx-contextmenu';
+import { DynFormModule } from 'app/elements/forms/dynform/dyn-form.module';
 
 import { AngularDraggableModule } from 'angular2-draggable';
 import { CollapsibleModule } from 'angular2-collapsible';
@@ -46,6 +47,8 @@ import { TreeModalComponent } from './elements/blocks/tree-modal/tree-modal.comp
 import { TreeComponent } from './elements/blocks/tree/tree.component';
 import { NgxSmartModalModule } from 'ngx-smart-modal';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { MetadataViewComponent } from './components/editor/views/metadata-view/metadata-view.component';
+
 
 @NgModule({
     declarations: [
@@ -74,6 +77,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
         MathjaxDirective,
         TreeModalComponent,
         TreeComponent,
+        MetadataViewComponent,
 
     ],
     imports: [
@@ -93,7 +97,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
         DamModule,
         TreeModule.forRoot(),
         NgxSmartModalModule.forRoot(),
-        FontAwesomeModule
+        FontAwesomeModule,
+        DynFormModule
     ],
     providers: [
         EditorService,

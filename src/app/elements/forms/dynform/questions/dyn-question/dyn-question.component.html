@@ -1,0 +1,37 @@
+<div class="dam-form-item dam-edit-item" [formGroup]="form">
+  <label [attr.for]="question.key">{{question.label}}</label>
+
+  <div [ngSwitch]="question.controlType">
+
+    <input *ngSwitchCase="'text'" [formControlName]="question.key"
+            [id]="question.key" [ngModel]="question.val" [type]="question.type">
+
+    <textarea *ngSwitchCase="'text-area'" class="dam-textarea" [formControlName]="question.key"
+      [id]="question.key">{{question.val}}</textarea>
+    
+    <ng-select
+      class="dam-select"
+      [id]="question.key"
+      [(ngModel)]="question.val"
+      *ngSwitchCase="'dropdown'"
+      [formControlName]="question.key"
+      [items]="question.options"
+      bindValue='key'
+      bindLabel='value'
+      [multiple]='question.multi'
+    >
+    </ng-select>
+    <ng-select
+      class="dam-select"
+      [id]="question.key"
+      [ngModel]="question.val"
+      *ngSwitchCase="'depdrop'"
+      [formControlName]="question.key"
+      [items]="question.options"
+    >    
+    </ng-select>
+ 
+  </div> 
+ 
+  <div class="errorMessage" *ngIf="!isValid">{{question.label}} is required</div>
+</div>

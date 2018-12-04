@@ -1,5 +1,4 @@
 import { hasIn, isNil } from 'ramda';
-import Api from '../api';
 
 export class Xedit {
 
