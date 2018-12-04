@@ -45,7 +45,8 @@ export class DynTabformComponent implements OnInit, OnChanges {
    * @memberof DynQuestionComponent
    */
   @Input() fetchUrl: string = null;
-  @Input() title = '';
+  @Input() questionClass = "dam-form-item dam-edit-item";
+  @Input() forceTabs = false;
 
   show = false;
   formMapper: TabsFormMapper = null;
@@ -66,7 +67,6 @@ export class DynTabformComponent implements OnInit, OnChanges {
   ngOnChanges() {
     this.extractQuestions();
     this.tabform.valueChanges.subscribe(data => {
-      console.log(data)
       this.sendForm.emit(data);
     });
   }

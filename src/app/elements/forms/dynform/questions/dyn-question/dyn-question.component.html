@@ -1,4 +1,4 @@
-<div class="dam-form-item dam-edit-item" [formGroup]="form">
+<div [ngClass]="questionClass" [formGroup]="form">
   <label [attr.for]="question.key">{{question.label}}</label>
 
   <div [ngSwitch]="question.controlType">

@@ -14,9 +14,12 @@ import { Component, Input } from '@angular/core';
       width:100%;
       padding-top: 1em;
       display: grid;
-      flex-direction: row;
       flex-wrap: wrap;
-      justify-content:left;
+      justify-content: center;
+      grid-template-columns: repeat(auto-fill, 40rem);
+      height: 100%;
+      grid-template-rows: 10rem;
+      align-items: center;
     }
   `
   ],

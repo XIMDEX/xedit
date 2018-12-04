@@ -1,4 +1,6 @@
+import { EditorService } from 'app/services/editor-service/editor.service';
 import { Component, OnInit } from '@angular/core';
+
 
 @Component({
   selector: 'app-metadata-view',
@@ -73,15 +75,51 @@ export class MetadataViewComponent implements OnInit {
         }
       ]
     }
-      
+  
+  meta: any = {};
 
-  constructor() { }
+  constructor(edService: EditorService) { 
+    this.meta = edService.getUpdatedDocument();
+  }
 
   ngOnInit() {
+    this.metaMap(this.meta);
   }
 
   formResult(event) {
     this.payload = event;
+  }
+
+  metaMap(meta) {
+    console.log(meta)
+    let tabs = meta.metas["1"].groups.map((group) => {
+      let fields = group.metadata.map((metafield) => {
+        return (
+          {
+            object: {
+              realName: metafield.name,
+              key: metafield.name,
+              label: metafield.name,
+              order: metafield.id,
+              val: metafield.value
+            },
+            type: 'text',
+          }
+        )
+      });
+      return (
+        {
+          title: group.name,
+          fields: fields
+        }
+      )
+    });
+    this.schema = {
+      name: 'lomes',
+      title: 'LOMES',
+      api: false,
+      tabs: tabs
+    }
   }
  
 }

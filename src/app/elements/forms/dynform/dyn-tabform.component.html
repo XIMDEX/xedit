@@ -1,6 +1,6 @@
 <div class="tab-cont">
   <form #dynTabForm (ngSubmit)="onSubmit()" [formGroup]="tabform">
-    <dam-tabs *ngIf="tabs.length > 1; else singleForm">
+    <dam-tabs *ngIf="tabs.length > 1 || forceTabs; else singleForm">
       <dam-tab *ngFor="let tab of tabs" [tabTitle]="tab.title" class="tab-container">
           <app-question 
             *ngFor="let question of tab.questions" 
@@ -8,19 +8,23 @@
             [question]="question" 
             [form]="tabform"
             [token]="token"
+            [questionClass]="questionClass"
             [fetchUrl]="fetchUrl">
           </app-question>
       </dam-tab>
     </dam-tabs>
     <ng-template #singleForm>
       <ng-container *ngFor="let tab of tabs">
-        <div *ngFor="let question of questions" class="form-row">
-          <app-question 
-          [question]="question" 
-          [form]="tabform"
-          [token]="token"
-          [fetchUrl]="fetchUrl">
-          </app-question>
+        <div class="single-cont">
+          <div *ngFor="let question of questions" class="form-row">
+            <app-question 
+            [question]="question" 
+            [form]="tabform"
+            [token]="token"
+            [questionClass]="questionClass"
+            [fetchUrl]="fetchUrl">
+            </app-question>
+          </div>
         </div>
       </ng-container>
     </ng-template>
