@@ -47,7 +47,7 @@ const getAttribute = function (editor, attribute) {
 
 const getUrl = function (editor, nodeId) {
     const resourceUrl = editor.getParam('dam_url', editor.documentBaseUrl);
-    let url = typeof (resourceUrl) === 'function' ? resourceUrl(nodeId) :resourceUrl + nodeId;
+    let url = typeof (resourceUrl) === 'function' ? resourceUrl(nodeId) : resourceUrl + nodeId;
     if (((/^(f|ht)tps?:\/\//i).test(nodeId))) {
         url = nodeId;
     }

@@ -26,7 +26,6 @@ export class TreeModalComponent implements OnInit {
     this.type = type;
     this.ngxModal.open(id);
     this.tree.resetTreeModel();
-    //this.tree.treeModel.update();
 
     const promise = new Promise(
       (resolve, reject) => {
@@ -57,7 +56,6 @@ export class TreeModalComponent implements OnInit {
   closeModal(id, selectedId = null) {
     this.selectedId = selectedId;
     this.close = true;
-    
   }
 
   ngOnInit() {

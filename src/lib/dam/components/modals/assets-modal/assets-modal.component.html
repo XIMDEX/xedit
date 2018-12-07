@@ -15,7 +15,7 @@
             <app-dynamic-form #dynForm (sendForm)="setDynData($event)" *ngIf="questions.length > 0 && !resetForms" [questions]="questions" [reset]="resetForms"></app-dynamic-form>
         </div>
         <div class="dam-edit-item-column big">
-            <div class="assets-error" *ngIf="error !== ''">{{error}}</div>
+            <div class="assets-error" *ngIf="error !== ''">{{ error }}</div>
             <div class="options">
                 <button (click)="close()" class="dam-btn-base red"> <fa-icon [icon]="faTimes"></fa-icon> Cancel </button>
                 <button [disabled]="!assetForm.form.valid || blocked" type="submit" class="dam-btn-base"> <fa-icon [icon]="faSave"></fa-icon> Save </button>

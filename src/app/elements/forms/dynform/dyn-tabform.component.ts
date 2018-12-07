@@ -3,6 +3,7 @@ import { QuestionBase } from './questions/question-base';
 import { FormGroup } from '@angular/forms';
 import { QuestionControlService } from './questions/question-control.service';
 import TabsFormMapper from './TabsFormMapper';
+import { isNil } from 'ramda';
 
 @Component({
   selector: 'app-dyn-tabform',
@@ -45,37 +46,38 @@ export class DynTabformComponent implements OnInit, OnChanges {
    * @memberof DynQuestionComponent
    */
   @Input() fetchUrl: string = null;
-  @Input() questionClass = "dam-form-item dam-edit-item";
+  @Input() questionClass = 'dam-form-item dam-edit-item';
   @Input() forceTabs = false;
 
   show = false;
   formMapper: TabsFormMapper = null;
 
-  constructor(private qcs: QuestionControlService) { 
-    
-  }
+  constructor(private qcs: QuestionControlService) {}
 
   ngOnInit() {
-    this.formMapper = new TabsFormMapper(this.schema)
+    this.formMapper = new TabsFormMapper(this.schema);
     this.tabs = this.formMapper.getTabs();
-    this.extractQuestions();
+    this.extractQuestions(this.formMapper.hasSections);
     this.tabform.valueChanges.subscribe(data => {
       this.sendForm.emit(data);
     });
   }
 
-  ngOnChanges() {
-    this.extractQuestions();
-    this.tabform.valueChanges.subscribe(data => {
-      this.sendForm.emit(data);
-    });
-  }
+  ngOnChanges() {}
 
-  extractQuestions() {
+  extractQuestions(hasSections) {
     this.questions = [];
-    this.tabs.map((tab) => {
-      this.questions = this.questions.concat(tab.questions);
-    });
+    if (hasSections) {
+      this.tabs.map((tab) => {
+        tab.sections.map((section) => {
+          this.questions = this.questions.concat(section.questions);
+        });
+      });
+    } else {
+      this.tabs.map((tab) => {
+        this.questions = this.questions.concat(tab.questions);
+      });
+    }
     this.tabform = this.qcs.toFormGroup(this.questions);
   }
 

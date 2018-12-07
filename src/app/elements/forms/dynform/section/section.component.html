@@ -1,0 +1,13 @@
+<div class="dynform-section">
+  <div 
+    [ngClass]="isHidden ? 'dynform-header form-hidden' : 'dynform-header'" 
+    (click)="toggle()"
+  >
+    {{ title }}
+    <span style="float:right;">{{ isHidden ? ' (+)' : ' (-)' }}</span>
+  </div>
+  
+  <div class="dynform-body" *ngIf="!isHidden">
+    <ng-content></ng-content>
+  </div>
+</div>

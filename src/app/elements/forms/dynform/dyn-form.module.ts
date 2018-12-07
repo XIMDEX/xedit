@@ -6,10 +6,11 @@ import { DynQuestionComponent } from './questions/dyn-question/dyn-question.comp
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TabComponent } from './tabs/tab.component';
 import { TabsComponent } from './tabs/tabs.component';
+import { SectionComponent } from './section/section.component';
 
  @NgModule({
   imports: [ BrowserModule, ReactiveFormsModule, NgSelectModule ],
-  declarations: [DynTabformComponent, DynQuestionComponent, TabComponent, TabsComponent],
+  declarations: [DynTabformComponent, DynQuestionComponent, TabComponent, TabsComponent, SectionComponent],
   bootstrap: [],
   exports: [DynTabformComponent, DynQuestionComponent, TabComponent, TabsComponent]
 })

@@ -176,7 +176,6 @@ export class WysiwygHandler {
                         );
                     });
                     editor.on('change', (evt: Event) => {
-                        console.log('changed', evt, editor, args)
                         WysiwygHandler.saveDoc(editor, args);
                     });
                     editor.on('init', (evt: Event) => {
@@ -194,8 +193,8 @@ export class WysiwygHandler {
                         const links = xedit.getElementsByTagName('a');
                         if (!isNil(links)) {
                             for (let i = 0; i < links.length; i++) {
-                                links[i].onclick = (evt) => {
-                                    evt.preventDefault();
+                                links[i].onclick = (event) => {
+                                    event.preventDefault();
                                     return false;
                                 };
                             }
@@ -280,7 +279,7 @@ export class WysiwygHandler {
                 TreeCommands.register(editor, http);
                 TreeButtons.register(editor);
             });
-        }     
+        }
     }
 
     private static generateToolbar(schema) {

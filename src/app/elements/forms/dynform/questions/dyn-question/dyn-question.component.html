@@ -1,13 +1,29 @@
 <div [ngClass]="questionClass" [formGroup]="form">
-  <label [attr.for]="question.key">{{question.label}}</label>
+  <label [attr.for]="question.key">{{ question.label }}</label>
 
   <div [ngSwitch]="question.controlType">
 
-    <input *ngSwitchCase="'text'" [formControlName]="question.key"
-            [id]="question.key" [ngModel]="question.val" [type]="question.type">
+    <input 
+      *ngSwitchCase="'text'" 
+      [formControlName]="question.key"
+      [id]="question.key" 
+      [ngModel]="question.val" 
+      [type]="question.type"
+    >
+    <input 
+      *ngSwitchCase="'date'" 
+      [formControlName]="question.key" 
+      [id]="question.key" 
+      [ngModel]="question.val | date:'yyyy-MM-dd'" 
+      [type]="question.type"
+    >
 
-    <textarea *ngSwitchCase="'text-area'" class="dam-textarea" [formControlName]="question.key"
-      [id]="question.key">{{question.val}}</textarea>
+    <textarea 
+      *ngSwitchCase="'text-area'" 
+      class="dam-textarea" 
+      [formControlName]="question.key"
+      [id]="question.key">{{ question.val }}
+    </textarea>
     
     <ng-select
       class="dam-select"
@@ -18,7 +34,7 @@
       [items]="question.options"
       bindValue='key'
       bindLabel='value'
-      [multiple]='question.multi'
+      [multiple]='question.multi'º
     >
     </ng-select>
     <ng-select
@@ -33,5 +49,5 @@
  
   </div> 
  
-  <div class="errorMessage" *ngIf="!isValid">{{question.label}} is required</div>
+  <div class="errorMessage" *ngIf="!isValid">{{ question.label }} is required</div>
 </div>

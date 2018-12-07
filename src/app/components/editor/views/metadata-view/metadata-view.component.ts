@@ -1,5 +1,7 @@
 import { EditorService } from 'app/services/editor-service/editor.service';
 import { Component, OnInit } from '@angular/core';
+import {  hasIn, isNil } from 'ramda';
+import { File } from '@models/file';
 
 
 @Component({
@@ -9,8 +11,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MetadataViewComponent implements OnInit {
 
+  tabs = [];
   payload: any = {};
-  schema = 
+  private file: File;
+  schema =
     {
     name: 'lomes',
     title: 'LOMES',
@@ -48,7 +52,7 @@ export class MetadataViewComponent implements OnInit {
                   { key: 'option3', value: 'Option 3' }
                 ]
               },
-              type: 'dropdown',          
+              type: 'dropdown',
             }
           ]
         },
@@ -74,52 +78,99 @@ export class MetadataViewComponent implements OnInit {
           ]
         }
       ]
-    }
-  
+    };
   meta: any = {};
 
-  constructor(edService: EditorService) { 
-    this.meta = edService.getUpdatedDocument();
+  constructor(private _edService: EditorService) {
+    this.meta = _edService.getUpdatedDocument();
   }
 
   ngOnInit() {
     this.metaMap(this.meta);
+    this._edService.getFile().subscribe(file => {
+      this.file = file;
+      if (file != null) {
+        file['metadata'] = this.payload;
+      }
+    });
   }
 
   formResult(event) {
-    this.payload = event;
+    this.payload = this.adaptResponse(event);
+    this.file['metadata'] = this.payload;
+    this._edService.setFile(this.file);
   }
 
-  metaMap(meta) {
-    console.log(meta)
-    let tabs = meta.metas["1"].groups.map((group) => {
-      let fields = group.metadata.map((metafield) => {
-        return (
-          {
-            object: {
-              realName: metafield.name,
-              key: metafield.name,
-              label: metafield.name,
-              order: metafield.id,
-              val: metafield.value
-            },
-            type: 'text',
-          }
-        )
-      });
+  adaptResponse(response) {
+    const result = {};
+    Object.keys(response).forEach(function (key) {
+      const ids = key.split('-');
+      const group_id = ids[0];
+      const meta_id = ids[1];
+      if (!hasIn(group_id, result)) {
+        result[group_id] = {};
+      }
+      if (!isNil(response[key])) {
+        result[group_id][meta_id] = response[key];
+      }
+    });
+    return result;
+  }
+
+  mapTab(meta) {
+    const sections = this.mapSections(meta.groups);
+    return(
+      {
+        title: meta.name,
+        sections: sections
+      }
+    );
+  }
+
+  mapTabs(metas) {
+    for (const key of Object.keys(metas)) {
+      this.tabs.push(this.mapTab(metas[key]));
+    }
+  }
+
+  mapSections(groups) {
+    const sections = groups.map((group) => {
+      const fields = this.mapFields(group.metadata, group.id);
       return (
         {
           title: group.name,
           fields: fields
         }
-      )
+      );
     });
-    this.schema = {
-      name: 'lomes',
-      title: 'LOMES',
-      api: false,
-      tabs: tabs
-    }
+    return sections;
   }
- 
+
+  mapFields(metadata, group_id) {
+    const fields = metadata.map((metafield) => {
+      return (
+        {
+          object: {
+            realName: `${group_id}-${metafield.id}`,
+            key: `${group_id}-${metafield.id}`,
+            label: metafield.name,
+            order: metafield.id,
+            val: metafield.value
+          },
+          type: metafield.type,
+        }
+      );
+    });
+    return fields;
+  }
+
+  metaMap(meta) {
+    this.mapTabs(meta.metas);
+    this.schema = {
+      name: 'xedit_meta',
+      title: 'Metadata',
+      api: false,
+      tabs: this.tabs
+    };
+  }
 }

@@ -147,7 +147,6 @@ export class EditorService {
      */
     save(node, content, message) {
         const fileContent = this.fileState.getValue().getState().content;
-
         /** @todo Improve performance clone */
         // let fileContent = clone(this.file.getValue().getState().content)
         let uuidPath = null;
@@ -269,6 +268,10 @@ export class EditorService {
 
         if (hasIn('metas', file)) {
             document['metas'] = file['metas'];
+        }
+
+        if (hasIn('metadata', file)) {
+            document['metadata'] = file['metadata'];
         }
 
         return document;

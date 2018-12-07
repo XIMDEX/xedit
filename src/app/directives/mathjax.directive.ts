@@ -5,7 +5,7 @@ import 'mathjax/unpacked/MathJax';
 @Directive({
   selector: '[MathJax]'
 })
-export class MathjaxDirective implements OnChanges{
+export class MathjaxDirective implements OnChanges {
   @Input() MathJax: string;
   element: any = null;
 

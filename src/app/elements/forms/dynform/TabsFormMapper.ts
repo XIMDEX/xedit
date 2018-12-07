@@ -4,6 +4,7 @@ import { TextboxQuestion } from './questions/question-textbox';
 import { DepDropQuestion } from './questions/question-depdrop';
 import { QuestionBase } from './questions/question-base';
 import { TextAreaQuestion } from './questions/question-textarea';
+import { DateQuestion } from './questions/question-date';
 
 /**
  * This class extracts and maps data about the additional form
@@ -11,6 +12,7 @@ import { TextAreaQuestion } from './questions/question-textarea';
  */
 export default class TabsFormMapper {
 
+    hasSections: Boolean = false;
     /**
      * The extracted forms as a dict
      */
@@ -101,13 +103,31 @@ export default class TabsFormMapper {
      * @param rawTabs The raw schema
      */
     handleTabs(rawTabs, asset = null) {
-        let tabs;
+        let tabs = [];
         let fields: QuestionBase<Object>[] = null;
-        tabs = rawTabs.map( (tab) => {
-            fields = this.handleForm(tab.fields, asset);
-            return {title: tab.title, questions: fields};
-        });
+        this.hasSections = hasIn('sections', rawTabs[0]);
+        if (!this.hasSections) {
+            tabs = rawTabs.map( (tab) => {
+                fields = this.handleForm(tab.fields, asset);
+                return {title: tab.title, questions: fields};
+            });
+        } else {
+            let sections;
+            tabs = rawTabs.map((tab) => {
+                sections = this.handleSections(tab.sections, asset);
+                return { title: tab.title, sections: sections };
+            });
+        }
         return tabs;
+    }
+
+    handleSections(rawSections, asset) {
+        let fields: QuestionBase<Object>[] = null;
+        const sections = rawSections.map((section) => {
+            fields = this.handleForm(section.fields, asset);
+            return { title: section.title, questions: fields };
+        });
+        return sections;
     }
 
     /**
@@ -122,13 +142,16 @@ export default class TabsFormMapper {
                 const key = hasIn('realName', field.object) ? field.object.realName : field.object.key;
                 field.object.val = this.getValue(asset, key);
             }
-            if (field.type === 'dropdown') {
+            field.object.type = hasIn('type', field) ? field.type : 'text';
+            if (field.object.type === 'dropdown') {
                 object = new DropdownQuestion(field.object);
-            } else if (field.type === 'text') {
+            } else if (field.object.type === 'text') {
                 object = new TextboxQuestion(field.object);
-            } else if (field.type === 'depdrop') {
+            } else if (field.object.type === 'date') {
+                object = new DateQuestion(field.object);
+            } else if (field.object.type === 'depdrop') {
                 object = new DepDropQuestion(field.object);
-            } else if (field.type === 'text-area') {
+            } else if (field.object.type === 'text-area') {
                 object = new TextAreaQuestion(field.object);
             }
             return object;

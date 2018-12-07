@@ -104,7 +104,6 @@ const open = function (editor, type: string, getInfo, callback) {
         document.getElementById('dam-path')['innerHTML'] = path;
     }
     function showWManager(result, { editor }) {
-        console.log(editor)
         const name =
             result && result.name
                 ? result.name

@@ -201,13 +201,12 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
                 target = node.getAttribute(XeditMapper.TAG_UUID);
             } else if (node.nodeName === 'P'
                 && node.children.length === 1
-                && node.children[0].nodeName === 'IMG') { 
+                && node.children[0].nodeName === 'IMG') {
                 node = node.children[0];
                 target = node.getAttribute(XeditMapper.TAG_UUID);
             }
             // node.click();
         }
-        console.log(target)
         return target;
     }
 

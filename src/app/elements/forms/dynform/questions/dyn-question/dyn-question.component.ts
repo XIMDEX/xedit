@@ -36,7 +36,7 @@ export class DynQuestionComponent implements OnInit {
    */
   @Input() fetchUrl: string = null;
 
-  @Input() questionClass: string = "dam-form-item dam-edit-item";
+  @Input() questionClass = 'dam-form-item dam-edit-item';
 
   /**@ignore */
   constructor(

@@ -12,14 +12,6 @@ import { Component, Input } from '@angular/core';
     `
     div.pane {
       width:100%;
-      padding-top: 1em;
-      display: grid;
-      flex-wrap: wrap;
-      justify-content: center;
-      grid-template-columns: repeat(auto-fill, 40rem);
-      height: 100%;
-      grid-template-rows: 10rem;
-      align-items: center;
     }
   `
   ],

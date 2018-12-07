@@ -39,15 +39,6 @@ export class PropertiesGlobalViewComponent implements OnInit, OnDestroy {
         this.suscribeFile = this._editorService.getFile().subscribe(file => {
             this.metas = [];
             this.file = file;
-            if (file != null) {
-                const metas = file.getMetas();
-                for (const meta in metas) {
-                    if (!isNil(file.getMeta(meta))) {
-                        const json = {};
-                        this.metas.push(file.getMeta(meta));
-                    }
-                }
-            }
         });
 
         this.suscribeFile = this._editorService
@@ -58,20 +49,6 @@ export class PropertiesGlobalViewComponent implements OnInit, OnDestroy {
                     this.states = file.getSnapshots();
                 }
             });
-    }
-
-    changeMetadata(value, key) {
-        const metas = this.file.getMetas();
-        for (const meta in metas) {
-            if (
-                hasIn('name', metas[meta]) &&
-                metas[meta]['name'] === key &&
-                hasIn('value', metas[meta])
-            ) {
-                metas[meta]['value'] = value;
-            }
-        }
-        this.file.setMetas(metas);
     }
 
     createMetaObject(meta: Array<any>): Object {
@@ -86,24 +63,6 @@ export class PropertiesGlobalViewComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.suscribeFile.unsubscribe();
-    }
-
-    applyHandler(evt, meta) {
-        const element = evt.target;
-        if (meta['type'] === 'date') {
-            const args = {
-                element: element,
-                callback: value => {
-                    this.changeMetadata(value, meta.name);
-                },
-            };
-            WysiwygHandler.executeHandler(meta['type'], args);
-        } else if (meta['type'] === 'image') {
-            this.openTree(evt, 'image', ({ nodeid }) => {
-                element['src'] = `${this.baseUrl}${nodeid}`;
-                this.changeMetadata(nodeid, meta.name);
-            });
-        }
     }
 
     dateNow() {

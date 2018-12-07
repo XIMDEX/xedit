@@ -17,21 +17,21 @@ import Router from '@app/core/mappers/router';
 })
 export class TreeComponent implements OnInit {
 
-    @ViewChild('Tree') tree;
-    @Output() selected: EventEmitter<any> = new EventEmitter();
-    @Input() type;
-    @Input() path;
-    
     static readonly TYPE_FOLDER: String = 'folder';
     static readonly TYPE_EMPTY: String = 'empty';
     static readonly TYPE_IMAGE: String = 'image';
     static readonly TYPE_VIDEO: String = 'video';
     static readonly TYPE_LINK: String = 'link';
 
+    @ViewChild('Tree') tree;
+    @Output() selected: EventEmitter<any> = new EventEmitter();
+    @Input() type;
+    @Input() path;
+
     constructor(public http: HttpClient, public _editorService: EditorService) { }
 
     public treeModel: any;
-    public resourceCount: number = -1;
+    public resourceCount = -1;
     public imgSrc: string = null;
     public imgName: string = null;
     public treeOptions: ITreeOptions = {
@@ -42,23 +42,22 @@ export class TreeComponent implements OnInit {
                     if (type === TreeComponent.TYPE_FOLDER) {
                         TREE_ACTIONS.TOGGLE_EXPANDED(tree, node, $event);
                         this.imgSrc = null;
-                    } 
-                    else if (type === 'item' && icon === TreeComponent.TYPE_IMAGE) {
+                    } else if (type === 'item' && icon === TreeComponent.TYPE_IMAGE) {
                         this.imgSrc = Router.configUrl(Api.getResourceUrl(), { id: id });
                         this.imgName = name;
-                    } 
+                    }
+
                 },
                 dblClick: (tree, node, $event) => {
                     const { type } = node.data;
-                    if (type !== TreeComponent.TYPE_EMPTY && type !== TreeComponent.TYPE_FOLDER) this.selectNode(node);
+                    if (type !== TreeComponent.TYPE_EMPTY && type !== TreeComponent.TYPE_FOLDER) { this.selectNode(node); }
                 },
                 contextMenu: (tree, node, $event) => {
                     $event.preventDefault();
-                    console.log(node.data)
                 }
             },
         }
-    }
+    };
 
     ngOnInit() {
         this.resetTreeModel();
@@ -77,7 +76,6 @@ export class TreeComponent implements OnInit {
         this.tree.treeModel.collapseAll();
         // TODO LOAD PATH TREE
     }
-    
     public processChildren(nodes): Array<any> {
         const children = [];
 
@@ -92,7 +90,7 @@ export class TreeComponent implements OnInit {
                 if (nodes[nodeId]['type'] === 'folder') {
                     obj['hasChildren'] = true;
                     obj['children'] = [];
-                    obj['resources'] = this.resourceCount
+                    obj['resources'] = this.resourceCount;
                 }
 
                 children.push(obj);
@@ -100,7 +98,7 @@ export class TreeComponent implements OnInit {
         }
 
         if (children.length === 0) {
-            children.push({ 
+            children.push({
                 name: 'No hay elementos disponibles...',
                 type: 'empty',
             });
@@ -115,7 +113,7 @@ export class TreeComponent implements OnInit {
 
     private requestChildren(nodeId: string, callback = null) {
         const error = () => {
-            console.error("ERROR DE API")
+            console.error('ERROR DE API');
             this._editorService.setLoading(false);
         };
 
@@ -143,7 +141,7 @@ export class TreeComponent implements OnInit {
     public onToggle({ node, isExpanded }) {
         const { data } = node;
         const { name, id, resources } = data;
-        let { children } = data;
+        const { children } = data;
 
         if (isExpanded && children.length === 0) {
             node.data.children = [{
@@ -153,13 +151,13 @@ export class TreeComponent implements OnInit {
             this.requestChildren(id, nodes => {
                 node.data.children = nodes;
                 this.tree.treeModel.update();
-            })
+            });
         } else if (children.length > 0) {
             this.resourceCount = isNil(resources) ? 0 : resources;
         }
     }
 
-    public setIcon({ icon }) {        
+    public setIcon({ icon }) {
         const icons = {
             'root': faSitemap,
             'projects': faBoxes,
