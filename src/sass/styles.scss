@@ -141,6 +141,7 @@ div#dam-path {
     margin-top: 1rem;
     min-height: 9rem;
     input {
+        padding: 0 1em 0 1em;
         width: 30rem;
     }
     .ng-select {
@@ -151,6 +152,20 @@ div#dam-path {
         color: #5f6362;
     }
 }
+
+.dynform-section {
+    box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.5);
+    .dynform-header {
+        background-color: #00a397;
+        color: white;
+        font-weight: bold;
+    }
+    .dynform-header.form-hidden {
+        background-color: #cccccc;
+        color: black;
+    }   
+}
+
 
 .nav-tabs {
     box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.5);
