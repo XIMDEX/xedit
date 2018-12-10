@@ -104,7 +104,7 @@ const open = function (editor, http: HttpClient, type: string) {
         document.getElementById('dam-name')['innerHTML'] = name;
         document.getElementById('dam-path')['innerHTML'] = path;
     }
-    function showWManager({response: result}, { editor }) {
+    function showWManager({response: result}, { editor: ed }) {
         const name =
             result && result.name
                 ? result.name
@@ -143,7 +143,7 @@ const open = function (editor, http: HttpClient, type: string) {
                 {
                     type: 'button',
                     icon: 'browse',
-                    onclick: e => openTree(e, editor.windowManager, pathIds),
+                    onclick: e => openTree(e, ed.windowManager, pathIds),
                 },
             ],
         });
@@ -167,7 +167,7 @@ const open = function (editor, http: HttpClient, type: string) {
             form.body.push(obj);
         }
 
-        editor.windowManager.open(form);
+        ed.windowManager.open(form);
     }
     if (currentId) {
         Api.getInfoNode(http, currentId, type, showWManager, showWManager, {

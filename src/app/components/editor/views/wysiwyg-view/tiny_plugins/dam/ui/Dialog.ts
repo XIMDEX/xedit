@@ -103,7 +103,7 @@ const open = function (editor, type: string, getInfo, callback) {
         document.getElementById('dam-name')['innerHTML'] = name;
         document.getElementById('dam-path')['innerHTML'] = path;
     }
-    function showWManager(result, { editor }) {
+    function showWManager(result, { editor: ed }) {
         const name =
             result && result.name
                 ? result.name
@@ -142,7 +142,7 @@ const open = function (editor, type: string, getInfo, callback) {
                 {
                     type: 'button',
                     icon: 'browse',
-                    onclick: e => callback(e, editor.windowManager, type, pathIds, setData),
+                    onclick: e => callback(e, ed.windowManager, type, pathIds, setData),
                 },
             ],
         });
@@ -166,7 +166,7 @@ const open = function (editor, type: string, getInfo, callback) {
             form.body.push(obj);
         }
 
-        editor.windowManager.open(form);
+        ed.windowManager.open(form);
     }
     showWManager(null, { editor: editor });
     if (currentId && !(/^(f|ht)tps?:\/\//i).test(currentId)) {
