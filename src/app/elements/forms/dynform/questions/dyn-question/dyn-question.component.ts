@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { QuestionBase } from '../question-base';
 import { isNil, hasIn } from 'ramda';
+import { NgxSmartModalService } from 'ngx-smart-modal';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 /**
@@ -40,7 +41,8 @@ export class DynQuestionComponent implements OnInit {
 
   /**@ignore */
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private ngxModal: NgxSmartModalService
   ) { }
 
   /**@ignore */
@@ -113,5 +115,14 @@ export class DynQuestionComponent implements OnInit {
       });
     }
     return this.http.get(url, { headers: heads, params: params });
+  }
+
+  clicked(e) {
+    window['treeModal']
+      .openModal('modal-1', this.question.controlType)
+      .then(selectedId => {
+        this.question.val = selectedId;
+      })
+      .catch(err => console.log(err));
   }
 }

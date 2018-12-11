@@ -5,6 +5,7 @@ import { DepDropQuestion } from './questions/question-depdrop';
 import { QuestionBase } from './questions/question-base';
 import { TextAreaQuestion } from './questions/question-textarea';
 import { DateQuestion } from './questions/question-date';
+import { ImageQuestion } from './questions/question-image';
 
 /**
  * This class extracts and maps data about the additional form
@@ -153,6 +154,8 @@ export default class TabsFormMapper {
                 object = new DepDropQuestion(field.object);
             } else if (field.object.type === 'text-area') {
                 object = new TextAreaQuestion(field.object);
+            } else if (field.object.type === 'image') {
+                object = new ImageQuestion(field.object)
             }
             return object;
         });

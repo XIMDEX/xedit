@@ -140,6 +140,26 @@ div#dam-path {
 .metadata-question {
     margin-top: 1rem;
     min-height: 9rem;
+
+    .question-img {
+        input {
+            width: 25rem;
+        }
+    }
+
+    button {
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 0px;
+        background-color: #00a397;
+        border: none;
+        color: white;
+        padding: 3px 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        width: 5rem;
+    }
     input {
         padding: 0 1em 0 1em;
         width: 30rem;

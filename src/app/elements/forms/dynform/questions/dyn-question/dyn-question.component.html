@@ -18,6 +18,16 @@
       [type]="question.type"
     >
 
+    <div *ngSwitchCase="'image'" class="question-img">
+      <input
+        [formControlName]="question.key"
+        [id]="question.key"
+        [ngModel]="question.val"
+        [type]="text"  
+      >
+      <button (click)="clicked($event)"><i class="far fa-images"></i></button>
+    </div>
+
     <textarea 
       *ngSwitchCase="'text-area'" 
       class="dam-textarea" 
