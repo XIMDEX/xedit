@@ -21,7 +21,7 @@ import { Component, Input } from '@angular/core';
     </div>
   `
 })
-export class TabComponent {
+export class TabComponent{
   @Input('tabTitle') title: string;
   @Input() active = false;
 }
