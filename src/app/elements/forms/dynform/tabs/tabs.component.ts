@@ -8,7 +8,6 @@ import {
   ContentChildren,
   QueryList,
   AfterContentInit,
-  OnChanges
 } from '@angular/core';
 
 import { TabComponent } from './tab.component';

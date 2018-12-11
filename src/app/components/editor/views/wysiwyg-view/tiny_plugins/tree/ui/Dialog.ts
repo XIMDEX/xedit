@@ -5,6 +5,7 @@
 import Tree from '@app/components/editor/views/wysiwyg-view/tiny_plugins/tree/core/Tree';
 import { Api } from '@app/api';
 import { HttpClient } from '@angular/common/http';
+import validUrl from 'valid-url';
 
 const ATTRS_BY_TYPE = {
     video: {
@@ -104,6 +105,7 @@ const open = function (editor, http: HttpClient, type: string) {
         document.getElementById('dam-name')['innerHTML'] = name;
         document.getElementById('dam-path')['innerHTML'] = path;
     }
+
     function showWManager({response: result}, { editor: ed }) {
         const name =
             result && result.name
@@ -169,12 +171,12 @@ const open = function (editor, http: HttpClient, type: string) {
 
         ed.windowManager.open(form);
     }
-    if (currentId) {
+    if (currentId && !validUrl.isUri(currentId)) {
         Api.getInfoNode(http, currentId, type, showWManager, showWManager, {
             editor: editor,
         });
     } else {
-        showWManager(null, { editor: editor });
+        showWManager({response: null}, { editor: editor });
     }
 };
 
