@@ -6,6 +6,13 @@ import { HTMLParser } from '@utils/htmlparser';
 import { isArray } from 'util';
 import { Api } from '../app/api';
 import Router from '../app/core/mappers/router';
+import {
+    AutoloadModulesService
+} from '../app/services/autoload-modules-service/autoload-modules.service';
+import { ModuleItem } from '../app/core/ModuleItem';
+import { XeditNode } from '../app/interfaces/xedit-node';
+import { Node } from '@app/models/node';
+import { Xedit } from '@app/xedit';
 
 
 export class Converters {
@@ -235,6 +242,80 @@ export class Converters {
             return `<!-- ${json.text} -->`;
         } else if (json.node === 'root') {
             return child;
+        }
+    }
+
+    static json2xedit(nodeName: string, json: XeditNode, modulesService: AutoloadModulesService, showIds: boolean = true, processXedit: boolean = true,
+        resetIds: boolean = false, enableHover: boolean = true) {
+
+        // Empty Elements - HTML 4.01
+        const empty = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param', 'embed'];
+       
+        let child: string = '';
+        if (json.child) {
+            child = Object.keys(json.child).map(function (uuid: string) {
+                return Converters.json2xedit(nodeName, json.child[uuid], modulesService, showIds, processXedit, resetIds, enableHover);
+            }).join('');
+        }
+
+        if (json.node === 'element') {
+            const { attr } = json;
+            let { uuid, tag } = json;
+
+            let attrString: string = '';
+            let section: string = null;
+
+            if (!isNil(attr)) {
+                if (hasIn('xe_section', attr)) {
+                    section = attr['xe_section'];
+                }
+                attrString = Object.keys(attr).filter((val) => {
+                    return Converters.filter(val, attr);
+                }).map((key) => {
+                    let value = attr[key];
+                    if (Array.isArray(value)) {
+                        value = value.join(' ');
+                    }
+                    return Converters.parseAttributes(key, value, processXedit, tag);
+                }).join(' ');
+            }
+
+            uuid = resetIds ? UUID.UUID() : uuid;
+            const uuidStr = showIds ? ` ${XeditMapper.TAG_UUID}="${uuid}"` : '';
+            let moduleTag = null;
+
+            if (!isNil(section)) {
+                const schema = Xedit.getConf('schemas')[nodeName];
+                const module = hasIn(section, schema) ? schema[section].type : null;
+                if  (!isNil(module)) {
+                    moduleTag = modulesService.getModuleTag(module);
+                }
+            }
+
+
+            if (empty.indexOf(tag) > -1) {
+                // empty element
+                return `<${tag} ${uuidStr} ${attrString}/>`;
+            }
+
+
+            let result = `<${tag} ${uuidStr} ${attrString}>${child}</${tag}>`;
+            if (!isNil(moduleTag)) {
+                const data = {
+                    html: result,
+                    uuid: uuid
+                };
+
+                let content = JSON.stringify(data);
+
+                result = `<${moduleTag} ${uuidStr} ${attrString} [content]='${content}' (selectNode)="changeSelection($event)"></${moduleTag}>`;
+            }
+
+            return result;
+        } else if (json.node === 'root') {
+            return child;
+        } else {
+            return json.text
         }
     }
 

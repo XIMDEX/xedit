@@ -1,0 +1,20 @@
+<div class="css">
+  <ng-container *ngFor="let css of cssLinks">
+    <link rel="stylesheet" [href]="addHttp(css) | url">
+  </ng-container>
+</div>
+
+<div>
+    <ng-container *ngFor="let node of content">
+        <div *ngIf="node.editable; else no_editable">
+            <runtime-html-loader
+                [nodeId]="node.node"
+                [html]="node.html"
+                (selectNode)="changeSelection($event)"
+            ></runtime-html-loader>
+        </div>
+        <ng-template #no_editable>
+            <div class="no-editable" [innerHTML]="node.html | safeHtml"></div>
+        </ng-template>
+    </ng-container>
+</div>
