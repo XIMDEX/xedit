@@ -8,6 +8,10 @@
         <app-wysiwyg-view (onEditorKeyup)="keyupHandlerFunction($event)" (selectNode)="setCurrentNode($event)" *ngIf="showComponent('wysiwyg')">
         </app-wysiwyg-view>
         <!-- END WYSIWYG VIEW -->
+        <!-- CKEDITOR VIEW -->
+        <app-ckeditor-view (selectNode)="setCurrentNode($event)" *ngIf="showComponent('ckeditor')">
+        </app-ckeditor-view>
+        <!-- END CKEDITOR VIEW -->
 
         <!-- TEXT VIEW -->
         <app-text-view *ngIf="showComponent('text')"> </app-text-view>
@@ -17,5 +21,5 @@
     <app-breadcrumb (selectNode)="setCurrentNode($event)"></app-breadcrumb>
     <!-- END BREADCRUMBS -->
 </main>
-<app-properties-area ngDraggable *ngIf="showComponent('wysiwyg')" [(configs)]="cConfigs" (updated)="saveClipboardConfigs($event)">
+<app-properties-area ngDraggable *ngIf="showComponent('wysiwyg') || showComponent('ckeditor')" [(configs)]="cConfigs" (updated)="saveClipboardConfigs($event)">
 </app-properties-area>

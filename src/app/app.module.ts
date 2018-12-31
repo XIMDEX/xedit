@@ -20,6 +20,7 @@ import { SafeHtmlPipe } from '@pipes/inner-html/safe-html.pipe';
 import { DebugPipe } from '@pipes/debug/debug.pipe';
 import { KeysPipe } from '@pipes/keys/keys.pipe';
 import { UrlPipe } from '@pipes/url/url.pipe';
+
 import { TaskbarComponent } from '@components/taskbar/taskbar.component';
 import { EditorComponent } from '@components/editor/editor.component';
 import { PropertiesGlobalViewComponent } from '@components/taskbar/properties-global-view/properties-global-view.component';
@@ -48,6 +49,14 @@ import { TreeComponent } from './elements/blocks/tree/tree.component';
 import { NgxSmartModalModule } from 'ngx-smart-modal';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MetadataViewComponent } from './components/editor/views/metadata-view/metadata-view.component';
+import { CkeditorViewComponent } from './components/editor/views/ckeditor-view/ckeditor-view.component';
+
+import { AutoloadModulesService } from './services/autoload-modules-service/autoload-modules.service';
+import { SectionComponent } from './elements/section/section.component';
+
+import { ModuleDirective } from './core/runtime-html-compiler/directives/module.directive';
+import { RuntimeHtmlCompiler } from './core/runtime-html-compiler/runtime-html-compiler';
+
 
 
 @NgModule({
@@ -78,7 +87,9 @@ import { MetadataViewComponent } from './components/editor/views/metadata-view/m
         TreeModalComponent,
         TreeComponent,
         MetadataViewComponent,
-
+        CkeditorViewComponent,
+        ModuleDirective,
+        RuntimeHtmlCompiler
     ],
     imports: [
         /* 3rd party components */
@@ -103,7 +114,8 @@ import { MetadataViewComponent } from './components/editor/views/metadata-view/m
     providers: [
         EditorService,
         StateService,
-        DamService
+        DamService,
+        AutoloadModulesService
     ],
     bootstrap: [
         AppComponent
