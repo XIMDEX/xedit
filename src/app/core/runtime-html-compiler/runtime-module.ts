@@ -1,6 +1,6 @@
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { NgModule } from '@angular/core';
-import { CkeditorComponent } from '@app/elements/ckeditor/ckeditor.component';
+import { CkeditorComponent } from '@app/elements/xedit/ckeditor/ckeditor.component';
 
 @NgModule({
     imports: [

@@ -5,14 +5,9 @@ import { ComponentFactory, ComponentRef, ViewChild, ViewContainerRef, Input, OnI
 import { Compiler, Component, NgModule, ModuleWithComponentFactories } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { SectionComponent } from '@app/elements/forms/dynform/section/section.component';
-import { CkeditorComponent } from '@app/elements/ckeditor/ckeditor.component';
-
 @Component({
     selector: 'runtime-html-compiler',
-    template: `
-        <div #container></div>
-    `,
+    template: `<div #container></div>`,
 })
 export class RuntimeHtmlCompiler implements OnInit, OnDestroy {
 
