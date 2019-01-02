@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject ,  Observable ,  Subject } from 'rxjs';
 import { clone, isNil, reduce, is, contains, hasIn } from 'ramda';
-import { Editor } from 'ng2-ace-editor/node_modules/brace';
-import { UUID } from 'angular2-uuid';
-import { Xedit } from '../../xedit';
 
 import { File } from '@models/file';
 import { Node } from '@models/node';
@@ -163,7 +160,7 @@ export class EditorService {
             }
 
             // Modify file with new changes
-            const editContent = reduce(function (acc, value) {
+            const editContent = reduce((acc, value) => {
                 return acc.child[value];
             }, root.content, uuidPath);
             editContent.child = Converters.html2json(content, false);
@@ -310,7 +307,7 @@ export class EditorService {
     static getUuidPath(element, rootTag = XeditMapper.TAG_EDITOR, path = [], onlySections = false) {
         const parent = element.parentNode;
 
-        if (!isNil(element) && (!onlySections || element.hasAttribute(XeditMapper.TAG_SECTION_TYPE))) {
+        if (!isNil(element) && (element.hasAttribute(XeditMapper.TAG_UUID)) && (!onlySections || element.hasAttribute(XeditMapper.TAG_SECTION_TYPE))) {
             path.unshift(element.getAttribute(XeditMapper.TAG_UUID));
         }
 

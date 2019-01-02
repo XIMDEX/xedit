@@ -1,4 +1,4 @@
-import { equals, isNil, contains, props, reduce, hasIn, is } from 'ramda';
+import { equals, isNil, contains, hasIn, is } from 'ramda';
 
 import { XeditMapper } from '@models/schema/xedit-mapper';
 import { Converters } from '@utils/converters';

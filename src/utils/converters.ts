@@ -9,11 +9,8 @@ import Router from '../app/core/mappers/router';
 import {
     AutoloadModulesService
 } from '../app/services/autoload-modules-service/autoload-modules.service';
-import { ModuleItem } from '../app/core/ModuleItem';
 import { XeditNode } from '../app/interfaces/xedit-node';
-import { Node } from '@app/models/node';
 import { Xedit } from '@app/xedit';
-
 
 export class Converters {
 
@@ -295,7 +292,7 @@ export class Converters {
 
             if (empty.indexOf(tag) > -1) {
                 // empty element
-                return `<${tag} ${uuidStr} ${attrString}/>`;
+                return `<${tag} ${uuidStr} ${attrString}>`;
             }
 
 
@@ -308,7 +305,14 @@ export class Converters {
 
                 let content = JSON.stringify(data);
 
-                result = `<${moduleTag} ${uuidStr} ${attrString} [content]='${content}' (selectNode)="changeSelection($event)"></${moduleTag}>`;
+                result = `
+                <${moduleTag}
+                    ${uuidStr}
+                    ${attrString}
+                    [content]='${content}'
+                    (selectNode)="changeSelection($event)"
+                    (onChange)="changeContent($event)"
+                ></${moduleTag}>`;
             }
 
             return result;
@@ -328,8 +332,7 @@ export class Converters {
                 if (!(/^(f|ht)tps?:\/\//i).test(extraData)) {
                     extraData = Router.configUrl(Api.getResourceUrl(), { id: value });
                 }
-
-                extraData = `${linkType}='${extraData}'`;
+                extraData = `${linkType}="${extraData}"`;
             }
         }
         return `${key}="${value}" ${extraData}`;
