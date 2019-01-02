@@ -52,7 +52,6 @@ import { MetadataViewComponent } from './components/editor/views/metadata-view/m
 import { CkeditorViewComponent } from './components/editor/views/ckeditor-view/ckeditor-view.component';
 
 import { AutoloadModulesService } from './services/autoload-modules-service/autoload-modules.service';
-import { ModuleDirective } from './core/runtime-html-compiler/directives/module.directive';
 import { RuntimeHtmlCompiler } from './core/runtime-html-compiler/runtime-html-compiler.component';
 
 @NgModule({
@@ -84,7 +83,6 @@ import { RuntimeHtmlCompiler } from './core/runtime-html-compiler/runtime-html-c
         TreeComponent,
         MetadataViewComponent,
         CkeditorViewComponent,
-        ModuleDirective,
         RuntimeHtmlCompiler
     ],
     imports: [

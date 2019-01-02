@@ -1,6 +1,5 @@
 import { hasIn, isNil } from 'ramda';
 import { Injectable, Type } from '@angular/core';
-import { ModuleItem } from '@app/core/ModuleItem';
 
 @Injectable({
     providedIn: 'root'
@@ -12,11 +11,11 @@ export class AutoloadModulesService {
         this.modules[name] = component;
     }
 
-    getModule(module: string, data: any) {
+    getModule(module: string) {
         let moduleItem = null;
 
         if (hasIn(module, this.modules) && !isNil(this.modules[module])) {
-            moduleItem = new ModuleItem(this.modules[module], data);
+            moduleItem = this.modules[module];
         }
         return moduleItem;
     }
