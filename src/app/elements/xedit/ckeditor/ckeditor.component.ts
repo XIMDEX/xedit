@@ -3,22 +3,20 @@ import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angu
 import * as InlineEditor from '@ckeditor/ckeditor5-build-inline';
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import { BlurEvent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
+import { XeditBaseComponent } from '../xedit.base.component';
 
 @Component({
     selector: 'app-ckeditor',
     templateUrl: './ckeditor.component.html',
     styleUrls: ['./ckeditor.component.scss']
 })
-export class CkeditorComponent implements OnInit, OnDestroy {
-
-    @Input() content: any;
-
-    @Output() selectNode: EventEmitter<string> = new EventEmitter();
-    @Output() onChange: EventEmitter<{}> = new EventEmitter();
+export class CkeditorComponent extends XeditBaseComponent implements OnInit, OnDestroy {
 
     public editor;
 
-    constructor() { }
+    constructor() { 
+        super();
+    }
 
     ngOnInit() {
         this.editor = InlineEditor;
@@ -43,6 +41,10 @@ export class CkeditorComponent implements OnInit, OnDestroy {
     onFocus() {
         const { uuid } = this.content;
         this.selectNode.emit(uuid);
+    }
+
+    onClick(evt: MouseEvent) {
+        evt.stopPropagation();
     }
 
 }

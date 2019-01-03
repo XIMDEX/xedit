@@ -1,3 +1,6 @@
-<p>
-  image works!
-</p>
+<div
+    #image
+    [ngClass]="{'xe_selected': isSelected()}"
+    [innerHtml]="content.html"
+    (click)="onClick($event)"
+></div>

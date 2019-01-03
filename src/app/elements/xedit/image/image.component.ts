@@ -1,20 +1,45 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { XeditBaseComponent } from '../xedit.base.component';
+import { NgxSmartModalService } from 'ngx-smart-modal';
+import { faImage } from '@fortawesome/free-solid-svg-icons';
+import { Component, OnInit } from '@angular/core';
+import { ToolbarI } from '@app/models/interfaces/ToolbarI';
 
 @Component({
-  selector: 'app-image',
-  templateUrl: './image.component.html',
-  styleUrls: ['./image.component.scss']
+    selector: 'app-image',
+    templateUrl: './image.component.html',
+    styleUrls: ['./image.component.scss']
 })
-export class ImageComponent implements OnInit {
+export class ImageComponent extends XeditBaseComponent implements OnInit {
 
-  @Input() content: any;
+    private toolbarOptions: Array<ToolbarI> = [
+        {
+            icon: faImage,
+            callback: this.openImageModal.bind(this)
+        }
+    ];
 
-  @Output() selectNode: EventEmitter<string> = new EventEmitter();
-  @Output() onChange: EventEmitter<{}> = new EventEmitter();
+    constructor(private ngxModal: NgxSmartModalService) {
+        super();
+     }
 
-  constructor() { }
+    ngOnInit() {
+    }
+    
+    openImageModal(evt) {
+        alert('open');
+        this.ngxModal.getModal('imageModal').open();
+    }
 
-  ngOnInit() {
-  }
+    onClick(evt: MouseEvent) {
+        evt.stopPropagation();
+        
+        const { uuid } = this.content;
+        this.selectNode.emit(uuid);
+        this.toolbar.emit(this.toolbarOptions);
+    }
+
+    changeImage(element){
+        console.log(element);
+    }
 
 }

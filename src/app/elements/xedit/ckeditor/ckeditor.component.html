@@ -1,7 +1,8 @@
 <ckeditor
+    evt-stop
     [editor]="editor"
     [data]="content.html"
     (blur)="onBlur($event)"
     (focus)="onFocus($event)"
-    (ready)="onReady($event)"
+    (click)="onClick($event)"
 ></ckeditor>
