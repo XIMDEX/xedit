@@ -9,8 +9,10 @@
             <runtime-html-compiler
                 [xe_uuid]="node.node"
                 [html]="node.html"
+                [data]="node.data"
                 (selectNode)="changeSelection($event)"
                 (onChange)="changeContent($event)"
+                (toolbar)="changeToolbar($event)"
             ></runtime-html-compiler>
         </div>
         <ng-template #no_editable>

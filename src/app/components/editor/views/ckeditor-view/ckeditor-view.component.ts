@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input, enableProdMode, OnDestroy } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { is, isNil, equals } from 'ramda';
 
 import { Converters } from '@utils/converters';
@@ -18,8 +18,8 @@ import { HttpClient } from '@angular/common/http';
 import { ClipboardConfigs } from '@app/models/configs/clipboardConfigs';
 import { HandlerEditor } from '@app/core/handler-editor/handler-editor';
 import { DamService } from '@app/services/dam-service/dam.service';
-
-enableProdMode();
+import { ToolbarI } from '@app/models/interfaces/ToolbarI';
+import { SectionComponent } from '@app/elements/xedit/section/section.component';
 
 @Component({
     selector: 'app-ckeditor-view',
@@ -29,6 +29,7 @@ enableProdMode();
 export class CkeditorViewComponent implements OnInit, OnDestroy {
 
     @Output() selectNode: EventEmitter<string> = new EventEmitter();
+    @Output() toolbar: EventEmitter<Array<ToolbarI>> = new EventEmitter();
 
     public content: Array<Object>;
     public cssLinks: Array<string>;
@@ -43,7 +44,7 @@ export class CkeditorViewComponent implements OnInit, OnDestroy {
         public http: HttpClient) { }
 
     ngOnInit() {
-        // this._moduleService.addModule('container', SectionComponent);
+        this._moduleService.addModule('container', SectionComponent);
         this._moduleService.addModule('image', ImageComponent);
         this._moduleService.addModule('text', CkeditorComponent);
         this.config();
@@ -75,11 +76,15 @@ export class CkeditorViewComponent implements OnInit, OnDestroy {
         });
     }
 
+    changeToolbar(toolbarOptions: Array<ToolbarI>) {
+        this.toolbar.emit(toolbarOptions);
+    }
+
     changeSelection(uuid: string) {
         this.selectNode.emit(uuid);
     }
 
-    changeContent({ element, content }: {}) {
+    changeContent({ element, content }: any) {
         const args = {
             node: this.currentNode,
             service: this._editorService,
@@ -115,18 +120,21 @@ export class CkeditorViewComponent implements OnInit, OnDestroy {
             const result = {
                 node: property,
                 editable: content[property].editable,
-                html: ''
+                html: '',
+                data: null
             };
 
+            let componentData = {};
+
             const contentHtml = !result.editable ? Converters.json2html(data, true, true, false, false) : 
-                Converters.json2xedit(property, data, this._moduleService, true, true, false, false);
+                Converters.json2xedit(property, data, this._moduleService, componentData, true, true, false, false);
 
             if (result.editable) {
-                console.log(contentHtml);
+                result.data = componentData;
             }
-
+            
             result.html = contentHtml;
-
+            
             renderContent.push(result);
 
         });
