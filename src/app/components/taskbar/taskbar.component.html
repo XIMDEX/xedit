@@ -23,7 +23,7 @@
         <nav class="views">
             <ul class="actions">
                 <li class="option-button">
-                    <i [ngClass]="{'fas': true, 'fa-eye': stateActive === false, 'fa-eye-slash': stateActive === true}" (click)="toggleElementState()"></i>
+                    <fa-icon [icon]="faEye" (click)="toggleElementState()"></fa-icon>
                     <aside (click)="openStates($event)">
                         <i class="fas fa-caret-down"></i>
                     </aside>
@@ -35,7 +35,9 @@
             </ul>
             <ul *ngIf="hasMultiViews()">
                 <li (click)="showComponent(view)" *ngFor="let view of availableViews" [ngClass]="{selected: currentView === view, tabs: true}">
-                    <span title="Editar metadatos" *ngIf="view === 'metadata'; else text_content"><fa-icon [icon]="faBars"></fa-icon></span>
+                    <span title="Editar metadatos" *ngIf="view === 'metadata'; else text_content">
+                        <fa-icon [icon]="faBars"></fa-icon>
+                    </span>
                     <ng-template #text_content>{{ view === 'wysiwyg' ? 'Visual' : 'Texto' }}</ng-template>
                 </li>
             </ul>
