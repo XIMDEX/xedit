@@ -16,7 +16,8 @@ body{
     background: $white-lighter;
 }
 
-[xe_selected]{
+[xe_selected], 
+.xe_selected {
     outline: 2px dotted #333 !important;
 }
 
