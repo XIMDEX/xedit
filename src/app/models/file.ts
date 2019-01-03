@@ -46,7 +46,7 @@ export class File extends History {
     private js: Array<string>;
     private metas: Array<Object>;
     private metadata: Object;
-    private name: String;
+    private name: string;
 
     constructor(json = null) {
 
@@ -92,7 +92,7 @@ export class File extends History {
         return this.metadata = meta;
     }
 
-    getName(): String {
+    getName(): string {
         return this.name;
     }
     /***************** PUBLIC METHODS **************************/

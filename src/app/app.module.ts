@@ -54,6 +54,9 @@ import { CkeditorViewComponent } from './components/editor/views/ckeditor-view/c
 import { AutoloadModulesService } from './services/autoload-modules-service/autoload-modules.service';
 import { RuntimeHtmlCompiler } from './core/runtime-html-compiler/runtime-html-compiler.component';
 
+import { PropertiesToolbarComponent } from './components/editor/properties-area/properties-toolbar/properties-toolbar.component';
+import { ImageModalComponent } from './elements/xedit/image/image-modal/image-modal.component';import { EventStopRopagationDirective } from './directives/event-stop-ropagation.directive';
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -83,7 +86,9 @@ import { RuntimeHtmlCompiler } from './core/runtime-html-compiler/runtime-html-c
         TreeComponent,
         MetadataViewComponent,
         CkeditorViewComponent,
-        RuntimeHtmlCompiler
+        RuntimeHtmlCompiler,
+        PropertiesToolbarComponent,
+        ImageModalComponent,
     ],
     imports: [
         /* 3rd party components */
@@ -115,4 +120,5 @@ import { RuntimeHtmlCompiler } from './core/runtime-html-compiler/runtime-html-c
         AppComponent
     ]
 })
-export class AppModule { }
+export class AppModule {
+}

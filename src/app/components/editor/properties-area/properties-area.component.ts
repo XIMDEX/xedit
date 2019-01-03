@@ -4,6 +4,7 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, ChangeDetec
 import { Node } from '@models/node';
 import { EditorService } from '@services/editor-service/editor.service';
 import { CollapsibleHeaderComponent } from 'angular2-collapsible';
+import { Toolbar } from '@app/models/toolbar';
 
 @Component({
     selector: 'app-properties-area',
@@ -18,6 +19,7 @@ export class PropertiesAreaComponent implements OnInit, AfterViewChecked {
     private availablesViews: Array<string> = [
         'local'
     ];
+    private toolbarOptions: Array<Toolbar>;
     public isOpen: boolean;
     public selectedView: string;
     public nodeName: string;
@@ -38,6 +40,12 @@ export class PropertiesAreaComponent implements OnInit, AfterViewChecked {
             if (!isNil(currentNode)) {
                 this.currentNode = currentNode;
                 this.nodeName = currentNode.getName();
+            }
+        });
+
+        this._editorService.getToolbarOptions().subscribe(currentOptions => {
+            if (!isNil(currentOptions)) {
+                this.toolbarOptions = currentOptions;
             }
         });
     }

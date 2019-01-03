@@ -9,7 +9,11 @@
         </app-wysiwyg-view>
         <!-- END WYSIWYG VIEW -->
         <!-- CKEDITOR VIEW -->
-        <app-ckeditor-view (selectNode)="setCurrentNode($event)" *ngIf="showComponent('ckeditor')">
+        <app-ckeditor-view
+            (selectNode)="setCurrentNode($event)"
+            (toolbar)="setCurrentToolbar($event)"
+            *ngIf="showComponent('ckeditor')"
+        >
         </app-ckeditor-view>
         <!-- END CKEDITOR VIEW -->
 
@@ -23,3 +27,4 @@
 </main>
 <app-properties-area ngDraggable *ngIf="showComponent('wysiwyg') || showComponent('ckeditor')" [(configs)]="cConfigs" (updated)="saveClipboardConfigs($event)">
 </app-properties-area>
+<app-image-modal></app-image-modal>

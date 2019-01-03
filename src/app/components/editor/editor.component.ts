@@ -1,12 +1,14 @@
 import { Component, OnInit, ElementRef, AfterViewChecked } from '@angular/core';
 import { equals, merge, isNil } from 'ramda';
 import htmlTagValidator from 'html-tag-validator';
+import { Toolbar } from '../../models/toolbar';
 
 import { XeditMapper } from '@models/schema/xedit-mapper';
 import { ClipboardConfigs } from '@models/configs/clipboardConfigs';
 
 import { EditorService } from '@services/editor-service/editor.service';
 import { StateService } from '@services/state-service/state.service';
+import { ToolbarI } from '@app/models/interfaces/ToolbarI';
 
 @Component({
     selector: 'app-editor',
@@ -44,6 +46,12 @@ export class EditorComponent implements OnInit, AfterViewChecked {
         }
         this._editorService.setCurrentNode(node);
     }
+
+    setCurrentToolbar(toolbar: Array<ToolbarI>) {
+        const options = toolbar.map(({icon, callback}) => new Toolbar(icon, callback));
+        this._editorService.setToolbarOptions(options);
+    }
+
     /**
      *
      * @param view

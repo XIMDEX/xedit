@@ -6,6 +6,7 @@ import { File } from '@models/file';
 import { Node } from '@models/node';
 import { XeditMapper } from '@models/schema/xedit-mapper';
 import { Converters } from '@utils/converters';
+import { Toolbar } from '@app/models/toolbar';
 
 @Injectable()
 export class EditorService {
@@ -17,6 +18,7 @@ export class EditorService {
     private currentNodeModify: Subject<Node>; // Change if node is modify
     private loading: BehaviorSubject<boolean>;
     private elementsState: Subject<boolean>;
+    private toolbarOptions: Subject<Array<Toolbar>>;
 
     // Constructor
     constructor() {
@@ -26,6 +28,7 @@ export class EditorService {
         this.currentNodeModify = new Subject<Node>();
         this.loading = new BehaviorSubject<boolean>(false);
         this.elementsState = new BehaviorSubject<boolean>(false);
+        this.toolbarOptions = new BehaviorSubject<Array<Toolbar>>([]);
     }
 
     // ************************************** Getters and setters **************************************/
@@ -64,13 +67,20 @@ export class EditorService {
         return this.currentNode.asObservable();
     }
 
-
     setCurrentNodeModify(node): void {
         this.currentNodeModify.next(node);
     }
 
     getCurrentNodeModify(): Observable<Node> {
         return this.currentNodeModify.asObservable();
+    }
+
+    setToolbarOptions(options: Array<Toolbar>): void {
+        this.toolbarOptions.next(options);
+    }
+
+    getToolbarOptions(): Observable<Array<Toolbar>> {
+        return this.toolbarOptions.asObservable();
     }
 
     isLoading() {

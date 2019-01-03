@@ -1,0 +1,6 @@
+<!-- <app-image-toolbar *ngIf="nodeName === 'app-image'"></app-image-toolbar> -->
+<div>
+    <div *ngFor="let action of options" (click)="action.callback($event)">
+        <fa-icon [icon]="action.icon"></fa-icon>
+    </div>
+</div>

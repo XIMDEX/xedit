@@ -242,7 +242,7 @@ export class Converters {
         }
     }
 
-    static json2xedit(nodeName: string, json: XeditNode, modulesService: AutoloadModulesService, showIds: boolean = true, processXedit: boolean = true,
+    static json2xedit(nodeName: string, json: XeditNode, modulesService: AutoloadModulesService, compData: Object, showIds: boolean = true, processXedit: boolean = true,
         resetIds: boolean = false, enableHover: boolean = true) {
 
         // Empty Elements - HTML 4.01
@@ -251,7 +251,7 @@ export class Converters {
         let child: string = '';
         if (json.child) {
             child = Object.keys(json.child).map(function (uuid: string) {
-                return Converters.json2xedit(nodeName, json.child[uuid], modulesService, showIds, processXedit, resetIds, enableHover);
+                return Converters.json2xedit(nodeName, json.child[uuid], modulesService, compData, showIds, processXedit, resetIds, enableHover);
             }).join('');
         }
 
@@ -280,10 +280,11 @@ export class Converters {
             uuid = resetIds ? UUID.UUID() : uuid;
             const uuidStr = showIds ? ` ${XeditMapper.TAG_UUID}="${uuid}"` : '';
             let moduleTag = null;
+            let module = null;
 
             if (!isNil(section)) {
                 const schema = Xedit.getConf('schemas')[nodeName];
-                const module = hasIn(section, schema) ? schema[section].type : null;
+                module = hasIn(section, schema) ? schema[section].type : null;
                 if  (!isNil(module)) {
                     moduleTag = modulesService.getModuleTag(module);
                 }
@@ -303,18 +304,27 @@ export class Converters {
                     uuid: uuid
                 };
 
-                let content = JSON.stringify(data);
+                compData[uuid] = data;
 
-                result = `
-                <${moduleTag}
-                    ${uuidStr}
-                    ${attrString}
-                    [content]='${content}'
-                    (selectNode)="changeSelection($event)"
-                    (onChange)="changeContent($event)"
-                ></${moduleTag}>`;
+                const openTag = `
+                        <${moduleTag}
+                            ${uuidStr}
+                            ${attrString}
+                            [content]="data['${uuid}']"
+                            [selected]="selected"
+                            (selectNode)="changeSelection($event)"
+                            (onChange)="changeContent($event)"
+                            (toolbar)="changeToolbar($event)"
+                        >`;
+                const closeTag = `</${moduleTag}>`
+
+                if (module !== 'container') {
+                    result = openTag + closeTag;
+                } else {
+                    delete data.html;
+                    result = openTag + result + closeTag
+                }             
             }
-
             return result;
         } else if (json.node === 'root') {
             return child;

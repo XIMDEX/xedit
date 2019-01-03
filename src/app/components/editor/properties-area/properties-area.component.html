@@ -7,6 +7,9 @@
     </aside>
 </header>
 <div id='toolbar'>
+    <app-properties-toolbar
+        [options]="toolbarOptions"
+    ></app-properties-toolbar>
 </div>
 <div>
     <ng-container *ngFor="let value of configs; let i = index;">
