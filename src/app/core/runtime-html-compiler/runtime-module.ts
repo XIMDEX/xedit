@@ -4,6 +4,7 @@ import { CkeditorComponent } from '@app/elements/xedit/ckeditor/ckeditor.compone
 import { ImageComponent } from '@app/elements/xedit/image/image.component';
 import { CommonModule } from '@angular/common';
 import { SectionComponent } from '@app/elements/xedit/section/section.component';
+import { SafeHtmlPipe } from '@pipes/inner-html/safe-html.pipe';
 
 @NgModule({
     imports: [
@@ -13,12 +14,14 @@ import { SectionComponent } from '@app/elements/xedit/section/section.component'
     declarations: [
         SectionComponent,
         CkeditorComponent,
-        ImageComponent
+        ImageComponent,
+        SafeHtmlPipe,
     ],
     exports: [
         CkeditorComponent,
         ImageComponent,
-        SectionComponent
+        SectionComponent,
+        SafeHtmlPipe,
     ]
 })
   

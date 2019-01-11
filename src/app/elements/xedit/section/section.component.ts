@@ -19,6 +19,7 @@ export class SectionComponent extends XeditBaseComponent implements OnInit {
         evt.stopPropagation();
         const { uuid } = this.content;
         this.selectNode.emit(uuid);
+        this.toolbar.emit(null);
     }
 
 }

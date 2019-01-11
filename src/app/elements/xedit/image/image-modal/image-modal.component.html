@@ -1,11 +1,111 @@
-<ngx-smart-modal #imageModal identifier="imageModal">
-    <div class="header">
+<ngx-smart-modal 
+    class="xe_modal"
+    #imageModal 
+    identifier="imageModal"
+    [closable]="false"
+    (onDataAdded)="setFormData($event)"
+    (onDataRemoved)="cleanFormData($event)"
+>
+    <div class="header xe_modal_content">
         Media Manager
     </div>
-    <div class="body">
-        content
+    <div class="body xe_modal_content">
+        <edit-image
+            *ngIf="hasImagePath()"
+            [style]="{
+                width: '300px',
+                height: '300px'
+            }"
+            [src]="imagePath()"
+            (change)="imageData($event)"
+        ></edit-image>
+        <div
+            class="xe_form_input"
+        >
+            <label
+                class="xe_form_input_label"
+            >
+                Enlace
+            </label>
+            <div
+                class="xe_form_input_value"
+            >
+                <input
+                    type="text"
+                    [(ngModel)]="file"
+                >
+                <button>
+                    <fa-icon [icon]="searchIcon"></fa-icon>
+                </button>
+            </div>
+        </div>
+        <div
+            class="xe_form_input"
+        >
+            <label
+                class="xe_form_input_label"
+            >
+                Nombre
+            </label>
+            <label
+                class="xe_form_input_value"
+            >
+                {{ fileName() }}
+            </label>
+        </div>
+        <div
+            class="xe_form_input"
+        >
+            <label
+                class="xe_form_input_label"
+            >
+                Ruta
+            </label>
+            <label
+                class="xe_form_input_value"
+            >
+                {{ fileRoute() }}
+            </label>
+        </div>
+        <div class="xe_form_input">
+            <label class="xe_form_input_label">
+                Tamaño
+            </label>
+            <input class="xe_form_input_value" type="text">
+            &nbsp;X&nbsp;
+            <input class="xe_form_input_value" type="text">
+        </div>
+        <div
+            class="xe_form_input"
+        >
+            <label
+                class="xe_form_input_label"
+            >
+                Alternativo
+            </label>
+            <input 
+                class="xe_form_input_value"
+                type="text"
+            >
+        </div>
+        <div
+            class="xe_form_input"
+        >
+            <label
+                class="xe_form_input_label"
+            >
+                Descripcion
+            </label>
+            <textarea
+                class="xe_form_input_value"
+            ></textarea>
+        </div>
     </div>
-    <div class="footer">
-        actions
+    <div class="footer xe_modal_content">
+        <button
+            (click)="setImage(imageModal)"
+        >
+            Aceptar
+        </button>
     </div>
 </ngx-smart-modal>
