@@ -194,3 +194,7 @@ div#dam-path {
 
 @import 'tinymce';
 @import '../lib/dam/themes/light.scss';
+
+@import './forms/forms';
+@import './modals/modal';
+@import '../lib/images/scss/style.scss'

@@ -281,9 +281,10 @@ export class Converters {
             const uuidStr = showIds ? ` ${XeditMapper.TAG_UUID}="${uuid}"` : '';
             let moduleTag = null;
             let module = null;
+            let schema = null;
 
             if (!isNil(section)) {
-                const schema = Xedit.getConf('schemas')[nodeName];
+                schema = Xedit.getConf('schemas')[nodeName];
                 module = hasIn(section, schema) ? schema[section].type : null;
                 if  (!isNil(module)) {
                     moduleTag = modulesService.getModuleTag(module);
@@ -299,17 +300,23 @@ export class Converters {
 
             let result = `<${tag} ${uuidStr} ${attrString}>${child}</${tag}>`;
             if (!isNil(moduleTag)) {
+                const settings = {
+                    options: schema[section].options,
+                    actions: schema[section].actions
+                };
+
                 const data = {
                     html: result,
-                    uuid: uuid
+                    uuid: uuid,
+                    settings
                 };
 
                 compData[uuid] = data;
 
                 const openTag = `
                         <${moduleTag}
-                            ${uuidStr}
-                            ${attrString}
+                            ${(module === 'text') ? uuidStr : ''}
+                            ${(module !== 'container') ? attrString : ''}
                             [content]="data['${uuid}']"
                             [selected]="selected"
                             (selectNode)="changeSelection($event)"

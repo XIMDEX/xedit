@@ -16,7 +16,6 @@ import { CollapsibleModule } from 'angular2-collapsible';
 
 import { StateService } from '@services/state-service/state.service';
 import { EditorService } from '@services/editor-service/editor.service';
-import { SafeHtmlPipe } from '@pipes/inner-html/safe-html.pipe';
 import { DebugPipe } from '@pipes/debug/debug.pipe';
 import { KeysPipe } from '@pipes/keys/keys.pipe';
 import { UrlPipe } from '@pipes/url/url.pipe';
@@ -55,7 +54,9 @@ import { AutoloadModulesService } from './services/autoload-modules-service/auto
 import { RuntimeHtmlCompiler } from './core/runtime-html-compiler/runtime-html-compiler.component';
 
 import { PropertiesToolbarComponent } from './components/editor/properties-area/properties-toolbar/properties-toolbar.component';
-import { ImageModalComponent } from './elements/xedit/image/image-modal/image-modal.component';import { EventStopRopagationDirective } from './directives/event-stop-ropagation.directive';
+import { ImageModalComponent } from './elements/xedit/image/image-modal/image-modal.component';
+import { RuntimeModule } from './core/runtime-html-compiler/runtime-module';
+import { ImagesModule } from 'lib/images';
 
 @NgModule({
     declarations: [
@@ -66,7 +67,6 @@ import { ImageModalComponent } from './elements/xedit/image/image-modal/image-mo
         PropertiesGlobalViewComponent,
         WysiwygViewComponent,
         TextViewComponent,
-        SafeHtmlPipe,
         UrlPipe,
         DebugPipe,
         KeysPipe,
@@ -108,7 +108,9 @@ import { ImageModalComponent } from './elements/xedit/image/image-modal/image-mo
         TreeModule.forRoot(),
         NgxSmartModalModule.forRoot(),
         FontAwesomeModule,
-        DynFormModule
+        DynFormModule,
+        RuntimeModule,
+        ImagesModule
     ],
     providers: [
         EditorService,
