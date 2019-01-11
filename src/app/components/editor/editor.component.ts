@@ -48,7 +48,7 @@ export class EditorComponent implements OnInit, AfterViewChecked {
     }
 
     setCurrentToolbar(toolbar: Array<ToolbarI>) {
-        const options = toolbar.map(({icon, callback}) => new Toolbar(icon, callback));
+        const options = isNil(toolbar) ? null : toolbar.map(({icon, callback}) => new Toolbar(icon, callback));
         this._editorService.setToolbarOptions(options);
     }
 

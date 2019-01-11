@@ -46,6 +46,8 @@ export class PropertiesAreaComponent implements OnInit, AfterViewChecked {
         this._editorService.getToolbarOptions().subscribe(currentOptions => {
             if (!isNil(currentOptions)) {
                 this.toolbarOptions = currentOptions;
+            } else {
+                this.toolbarOptions = [];
             }
         });
     }
@@ -56,6 +58,10 @@ export class PropertiesAreaComponent implements OnInit, AfterViewChecked {
             this.start = false;
             this.cdr.detectChanges();
         }
+    }
+
+    public hasToolbarOptions() {
+        return Array.isArray(this.toolbarOptions) && this.toolbarOptions.length > 0;
     }
 
     private changeView(viewName: string) {

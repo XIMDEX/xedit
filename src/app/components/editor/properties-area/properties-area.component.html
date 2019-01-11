@@ -8,6 +8,7 @@
 </header>
 <div id='toolbar'>
     <app-properties-toolbar
+        *ngIf="hasToolbarOptions()"
         [options]="toolbarOptions"
     ></app-properties-toolbar>
 </div>
