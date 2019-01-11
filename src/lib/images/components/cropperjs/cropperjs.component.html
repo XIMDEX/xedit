@@ -1,0 +1,11 @@
+<div
+    class="cropper"
+    [ngStyle]="containerSize"
+>
+    <img
+        #image
+        id='image'
+        [src]="src"
+        (load)="loadCropper($event)"
+    >
+</div>

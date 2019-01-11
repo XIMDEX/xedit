@@ -1,0 +1,12 @@
+<aside
+    [ngStyle]="style"
+>
+    <cropperjs
+        #image
+        [src]="src"
+        [options]="cropperOptions()"
+        [containerSize]="cropperSettings().size"
+        [cropbox]="cropperSettings().cropbox"
+        (change)="imageSettings($event)"
+    ></cropperjs>
+</aside>
