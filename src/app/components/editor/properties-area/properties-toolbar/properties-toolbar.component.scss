@@ -15,6 +15,7 @@
             text-align: center;
             border-radius: 4px;
 
+            &.active,
             &:hover {
                 background-color: $white-warm;
                 cursor: pointer;

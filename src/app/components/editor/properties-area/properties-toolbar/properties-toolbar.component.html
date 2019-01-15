@@ -5,7 +5,7 @@
     <div
         *ngFor="let action of options"
         (click)="action.callback($event)"
-        class="xe_toolbar_button"
+        [ngClass]="{'xe_toolbar_button': true, 'active': action.active }"
     >
         <fa-icon [icon]="action.icon"></fa-icon>
     </div>
