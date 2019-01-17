@@ -141,9 +141,10 @@ export class AppComponent implements OnInit, OnDestroy {
         this._editorService.setLoading(false);
     }
 
-    public closeModal() {
-        this._damService.setIsOpen(false);
-        this.cdRef.detectChanges();
+    public closeModal(evt) {
+        if (!evt) {
+            this._damService.setIsOpen(false);
+        }
     }
     public toggleOpen() {
         this.isOpen = !this.isOpen;

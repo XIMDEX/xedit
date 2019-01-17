@@ -1,7 +1,7 @@
 <div class="tab-cont">
   <form #dynTabForm (ngSubmit)="onSubmit()" [formGroup]="tabform">
     <dam-tabs *ngIf="tabs.length > 1 || forceTabs; else singleForm">
-      <dam-tab *ngFor="let tab of tabs" [tabTitle]="tab.title" class="tab-container">
+      <dam-tab *ngFor="let tab of tabs" [title]="tab.title" class="tab-container">
         <ng-container *ngIf="formMapper.hasSections; else noSection">
           <app-section 
             *ngFor="let section of tab.sections; let i = index" 
