@@ -12,11 +12,9 @@
     <div class="body xe_modal_content">
         <edit-image
             *ngIf="hasImagePath()"
-            [style]="{
-                width: '300px',
-                height: '300px'
-            }"
+            [style]="size"
             [src]="imagePath()"
+            [cropData]="cropData"
             (change)="imageData($event)"
         ></edit-image>
         <div
@@ -34,7 +32,9 @@
                     type="text"
                     [(ngModel)]="file"
                 >
-                <button>
+                <button
+                    (click)="openMediaManager()"
+                >
                     <fa-icon [icon]="searchIcon"></fa-icon>
                 </button>
             </div>
@@ -66,14 +66,6 @@
             >
                 {{ fileRoute() }}
             </label>
-        </div>
-        <div class="xe_form_input">
-            <label class="xe_form_input_label">
-                Tamaño
-            </label>
-            <input class="xe_form_input_value" type="text">
-            &nbsp;X&nbsp;
-            <input class="xe_form_input_value" type="text">
         </div>
         <div
             class="xe_form_input"

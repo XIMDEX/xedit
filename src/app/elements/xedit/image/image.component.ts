@@ -2,32 +2,51 @@ import { XeditBaseComponent } from '../xedit.base.component';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { isNil, hasIn } from 'ramda';
 import { faImage } from '@fortawesome/free-solid-svg-icons';
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
 import { ToolbarI } from '@app/models/interfaces/ToolbarI';
+import { DOM } from '@app/models/dom';
 
 @Component({
     selector: 'app-image',
-    templateUrl: './image.component.html',
+    // templateUrl: './image.component.html',
+    template: '<ng-content></ng-content>',
     styleUrls: ['./image.component.scss']
 })
-export class ImageComponent extends XeditBaseComponent implements OnInit {
+export class ImageComponent extends XeditBaseComponent implements OnInit, AfterViewInit, OnChanges {
 
-    @ViewChild('image') contentHtml: ElementRef;
+    public static hasSlot: boolean = true;
 
+    private contentHtml: HTMLElement;
     private selectedImage;
 
     private toolbarOptions: Array<ToolbarI> = [
         {
             icon: faImage,
-            callback: this.openImageModal.bind(this)
+            callback: this.openImageModal.bind(this),
+            active: true
         }
     ];
 
-    constructor(private ngxModal: NgxSmartModalService) {
+    constructor(private ngxModal: NgxSmartModalService, public host: ElementRef) {
         super();
      }
 
-    ngOnInit() {
+    ngOnInit() {        
+    }
+
+    ngOnChanges({ selected }: SimpleChanges) {
+        if (!isNil(selected) && selected.currentValue !== selected.previousValue) {
+            const element = new DOM(this.contentHtml);
+            if (this.isSelected()) {
+                element.addClass('xe_selected')
+            } else {
+                element.removeClass('xe_selected');
+            }
+        }
+    }
+
+    ngAfterViewInit() {
+        this.contentHtml = this.host.nativeElement.querySelector('[xe_section]') as HTMLElement;
     }
     
     openImageModal() {
@@ -35,21 +54,35 @@ export class ImageComponent extends XeditBaseComponent implements OnInit {
         modal.removeData();
         modal.setData({
             fields: this.getImageAttrs(),
+            settings: {
+                image_size: this.containerSize(),
+                crop_data: this.cropData()
+            },
             save: this.changeImage.bind(this)
         });
         modal.open();
     }
 
+
+    @HostListener('click', ['$event'])
     onClick(evt: MouseEvent) {
         const { target } = evt;
         evt.stopPropagation();
 
-        if (!isNil(target) && hasIn('tagName', target) && target['tagName'].toLowerCase() === 'img') {
-            this.selectedImage = target;
+        if (!isNil(target)) {
+            if (hasIn('tagName', target) && target['tagName'].toLowerCase() === 'img') {
+                this.selectedImage = target;
+            } else {
+                const image = this.contentHtml.querySelector('img');
+                if (!isNil(image)) {
+                    this.selectedImage = image;
+                }
+            }
         }
         
         const { uuid } = this.content;
         this.selectNode.emit(uuid);
+
         this.toolbar.emit(this.toolbarOptions);
     }
 
@@ -60,12 +93,7 @@ export class ImageComponent extends XeditBaseComponent implements OnInit {
             this.selectedImage.setAttribute(attr, data[attr]);
         }
 
-        let element = this.contentHtml.nativeElement.firstChild;
-
-        //TODO CHECK IF HAS ANY Position
-        let styles = element.getAttribute('style');
-        styles = (isNil(styles)? '' : `${styles} ` ) + 'position:relative;'; 
-        element.setAttribute('style', styles);
+        let element = this.contentHtml.firstChild as HTMLElement;
 
         this.onChange.emit({
             uuid,
@@ -74,10 +102,34 @@ export class ImageComponent extends XeditBaseComponent implements OnInit {
         });
     }
 
+    private containerSize() {
+        const container : HTMLElement = this.contentHtml;
+        const size = {
+            width: container.offsetWidth,
+            height: container.offsetHeight
+        }
+
+        return size;
+    }
+
+    private cropData() {
+        const container = this.selectedImage as HTMLElement;
+        let result = {};
+
+        const styles = window.getComputedStyle(container);
+        
+        for(const style of ['width', 'height', 'left', 'top']) {
+            const value = styles[style];
+            result[style] = (typeof value === 'string') ? Number.parseFloat(value) : value;
+        }
+
+        return result;
+    }
+
 
     private getImageAttrs() { 
         const attrs = {
-            file: 'src',
+            file: 'xe_link',
             alt: 'alt',
             description: 'longDesc'
         };
