@@ -10,6 +10,8 @@ export class XeditBaseComponent implements OnInit {
     @Output() onChange: EventEmitter<{}> = new EventEmitter();
     @Output() toolbar: EventEmitter<{}> = new EventEmitter();
 
+    public static hasSlot: boolean = false;
+
     constructor() { }
 
     ngOnInit() {

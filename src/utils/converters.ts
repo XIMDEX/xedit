@@ -288,6 +288,7 @@ export class Converters {
                 module = hasIn(section, schema) ? schema[section].type : null;
                 if  (!isNil(module)) {
                     moduleTag = modulesService.getModuleTag(module);
+                    module = modulesService.getModule(module);
                 }
             }
 
@@ -315,8 +316,8 @@ export class Converters {
 
                 const openTag = `
                         <${moduleTag}
-                            ${(module === 'text') ? uuidStr : ''}
-                            ${(module !== 'container') ? attrString : ''}
+                            ${(!module.hasSlot) ? uuidStr : ''}
+                            ${(!module.hasSlot) ? attrString : ''}
                             [content]="data['${uuid}']"
                             [selected]="selected"
                             (selectNode)="changeSelection($event)"
@@ -325,7 +326,7 @@ export class Converters {
                         >`;
                 const closeTag = `</${moduleTag}>`
 
-                if (module !== 'container') {
+                if (!module.hasSlot) {
                     result = openTag + closeTag;
                 } else {
                     delete data.html;
