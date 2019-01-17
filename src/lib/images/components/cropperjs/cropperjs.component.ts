@@ -16,7 +16,8 @@ export class CropperjsComponent implements OnChanges {
     @Input() src: string;
     @Input() options: {} = {};
     @Input() cropbox: Cropper.CropBoxData;
-    @Input() containerSize: {width: string|Number, height: string|Number};
+    @Input() containerSize: { width: string | number, height: string | number };
+    @Input() canvasData: Cropper.CanvasData = null;
 
     @Output() change = new EventEmitter<CanvasCropperResult | Cropper.CanvasData>();
 
@@ -62,13 +63,19 @@ export class CropperjsComponent implements OnChanges {
                 }
             });
 
+            image.addEventListener('ready', (evt: any) => {
+                if (this.canvasData) {
+                    this.cropperjs.setCanvasData(this.canvasData);
+                }
+            })
+
         } else {
             this.cropperjs.replace(this.src);
         }
 
         if (this.cropbox) {
             this.cropperjs.setCropBoxData(this.cropbox);
-        }
+        }        
 
         this.reload = false;
     }

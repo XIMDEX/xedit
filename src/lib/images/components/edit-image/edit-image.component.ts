@@ -10,8 +10,9 @@ import { CropperjsComponent } from '../cropperjs/cropperjs.component';
 })
 export class EditImageComponent {
 
-    @Input() style: object;
+    @Input() style: object = null;
     @Input() src: string;
+    @Input() cropData: Cropper.CanvasData = null;
 
     @ViewChild('image') image: CropperjsComponent;
 
@@ -39,26 +40,30 @@ export class EditImageComponent {
     constructor() { }
 
     cropperOptions() : any {
+        const cropper = this.cropperSettings();
         return {
             ...this.config,
-            minCropBoxWidth: this.cropperSettings().size.width,
-            minCropBoxHeight: this.cropperSettings().size.height
+            minCropBoxWidth: cropper.size.width,
+            minCropBoxHeight: cropper.size.height
         }
     }
 
     cropperSettings() : CropperSettings {
-        const { width, height } = this.style as any;
         const size = {
             width: '400px',
             height: '400px'
         }
 
-        if (!isNil(width)) {
-            size.width = width;
-        }
+        if (!isNil(this.style)) {
+            const { width, height } = this.style as any;
 
-        if (!isNil(height)) {
-            size.height= height;
+            if (!isNil(width)) {
+                size.width = width + ((typeof width === 'string' && !width.indexOf('px') || typeof width === 'number') ? 'px' : '');
+            }
+
+            if (!isNil(height)) {
+                size.height = height + ((typeof height === 'string' && !height.indexOf('px') || typeof height === 'number') ? 'px' : '');
+            }
         }
 
         const cropbox = {
