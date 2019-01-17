@@ -165,11 +165,15 @@ export class DamComponent  implements OnInit, OnChanges {
     let modal = this.ngxSmartModalService.getModal('dam');
     if (this.isOpen) {
       modal.open();
-      /*this.isOpen = false;
-      this.openEmitter.emit(false);*/
+      /*this.isOpen = false;*/
+      this.openEmitter.emit(true);
     } else {
       modal.close();
     }
+  }
+
+  closeModal() {
+    this.openEmitter.emit(false);
   }
 
 }

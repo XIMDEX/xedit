@@ -4,6 +4,7 @@
         <ng-container *ngIf="popup; else nopup">
             <ngx-smart-modal 
                 #dam identifier="dam"
+                (onClose)="closeModal($event)"
             >
                 <app-table [items]="items" [(query)]="query"></app-table> 
             </ngx-smart-modal>
