@@ -1,5 +1,5 @@
 import { isNil } from 'ramda';
-import { Component, Input, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, Input, ViewChild, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CropperSettings, CanvasCropperResult } from 'lib/images';
 import { CropperjsComponent } from '../cropperjs/cropperjs.component';
 
@@ -8,7 +8,7 @@ import { CropperjsComponent } from '../cropperjs/cropperjs.component';
     templateUrl: './edit-image.component.html',
     styleUrls: ['./edit-image.component.scss']
 })
-export class EditImageComponent {
+export class EditImageComponent implements OnChanges{
 
     @Input() style: object = null;
     @Input() src: string;
@@ -19,6 +19,11 @@ export class EditImageComponent {
     @Output() change = new EventEmitter();
 
     public reload: boolean = false;
+    public cropbox = null;
+    
+    public get container() {
+        return this.cropperSettings().size
+    }
 
     public config: {} = {
         viewMode: 1,
@@ -38,6 +43,12 @@ export class EditImageComponent {
     };
 
     constructor() { }
+
+    ngOnChanges({ src } : SimpleChanges) {
+        if (!isNil(src) && src.previousValue !== src.currentValue) {
+            this.cropbox = this.cropperSettings().cropbox;
+        }
+    }
 
     cropperOptions() : any {
         const cropper = this.cropperSettings();

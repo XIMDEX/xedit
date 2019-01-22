@@ -5,8 +5,8 @@
         #image
         [src]="src"
         [options]="cropperOptions()"
-        [containerSize]="cropperSettings().size"
-        [cropbox]="cropperSettings().cropbox"
+        [containerSize]="container"
+        [cropbox]="cropbox"
         [canvasData]="cropData"
         (change)="imageSettings($event)"
     ></cropperjs>
