@@ -88,6 +88,18 @@ export class CropperjsComponent implements OnChanges {
         return this.image.nativeElement as HTMLImageElement
     }
 
+    cover() {
+        this.cropperjs.setCanvasData(this.canvasData);
+    }
+
+    contain() {
+        const newWidth = ((this.canvasData.height) / (this.canvasData.width)) * ((typeof this.containerSize.width === 'string') ? 
+            Number(this.containerSize.width.replace('px', '')) : this.containerSize.width)
+            
+        const canvas = { ...this.canvasData, width: newWidth };
+        this.cropperjs.setCanvasData(canvas);
+    }
+
     protected cropperOptions() {
         let aspectRatio = NaN;
 
