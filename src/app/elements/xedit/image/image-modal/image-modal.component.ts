@@ -16,7 +16,7 @@ export class ImageModalComponent implements OnInit {
 
     public searchIcon = faSearch;
 
-    public file: string = '';
+    public file = '';
     public src: string = null;
     public name: string = null;
     public size: Dimesion = {
@@ -52,7 +52,7 @@ export class ImageModalComponent implements OnInit {
     fileName() {
         let name = 'Elemento no seleccionado...';
         if (!isNil(this.name)) {
-            name = this.name
+            name = this.name;
         } else if (isNil(this.name) && !isNil(this.file)) {
             name = this.file;
         }
@@ -122,7 +122,7 @@ export class ImageModalComponent implements OnInit {
     openMediaManager() {
         this._damService.setIsOpen(true);
         this._damService.setOnSelect(data => {
-            Plugins.MediaMAnagerSelect(data, this.http, this.setImageData.bind(this))
+            Plugins.MediaMAnagerSelect(data, this.http, this.setImageData.bind(this));
             this._damService.setIsOpen(false);
         });
     }
