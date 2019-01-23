@@ -30,7 +30,7 @@ export class CropperjsComponent implements OnChanges {
         counter1: 0
     }
 
-    constructor() { }
+    constructor() {}
 
     ngOnChanges({ src }: SimpleChanges) {
         if (!isNil(src) && !empty(src.currentValue) && src.currentValue !== src.previousValue) {
@@ -75,7 +75,7 @@ export class CropperjsComponent implements OnChanges {
 
         if (this.cropbox) {
             this.cropperjs.setCropBoxData(this.cropbox);
-        }        
+        }
 
         this.reload = false;
     }
@@ -84,20 +84,34 @@ export class CropperjsComponent implements OnChanges {
         return !isNil(this.src);
     }
 
-    getImage() : HTMLImageElement {
+    getImage(): HTMLImageElement {
         return this.image.nativeElement as HTMLImageElement
     }
 
     cover() {
-        this.cropperjs.setCanvasData(this.canvasData);
+        this.calculateImageWith(true);
     }
 
     contain() {
-        const newWidth = ((this.canvasData.height) / (this.canvasData.width)) * ((typeof this.containerSize.width === 'string') ? 
-            Number(this.containerSize.width.replace('px', '')) : this.containerSize.width)
-            
-        const canvas = { ...this.canvasData, width: newWidth };
+       this.calculateImageWith()
+    }
+
+    private calculateImageWith(isCover:boolean = false){
+
+        const width = this.image.nativeElement.width;
+        const height = this.image.nativeElement.height
+        const ap = (width / this.canvasData.width) / ( height / this.canvasData.height)
+        let newWidth = this.canvasData.width;
+
+        if (isCover ? ap > 1 : ap < 1) {
+            const coe = height / this.canvasData.height;
+            newWidth = width / coe;
+        }
+
+        const canvas = { ...this.canvasData, width: newWidth, left: 0, top: 0 };
         this.cropperjs.setCanvasData(canvas);
+
+        this.change.emit(this.cropperjs.getCanvasData());
     }
 
     protected cropperOptions() {
@@ -113,9 +127,9 @@ export class CropperjsComponent implements OnChanges {
             background: true,
         };
 
-        return { 
+        return {
             ...defaults,
-            ...this.options 
+            ...this.options
         }
     }
 
