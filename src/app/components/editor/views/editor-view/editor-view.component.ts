@@ -20,14 +20,14 @@ import { HandlerEditor } from '@app/core/handler-editor/handler-editor';
 import { DamService } from '@app/services/dam-service/dam.service';
 import { ToolbarI } from '@app/models/interfaces/ToolbarI';
 import { SectionComponent } from '@app/elements/xedit/section/section.component';
+import { TinyMCEComponent } from '@app/elements/xedit/tiny-mce/tiny-mce.component';
 
 @Component({
-    selector: 'app-ckeditor-view',
-    templateUrl: './ckeditor-view.component.html',
-    styleUrls: ['./ckeditor-view.component.scss']
+    selector: 'app-editor-view',
+    templateUrl: './editor-view.component.html',
+    styleUrls: ['./editor-view.component.scss']
 })
-export class CkeditorViewComponent implements OnInit, OnDestroy {
-
+export class EditorViewComponent implements OnInit, OnDestroy {
     @Output() selectNode: EventEmitter<string> = new EventEmitter();
     @Output() toolbar: EventEmitter<Array<ToolbarI>> = new EventEmitter();
 
@@ -40,13 +40,17 @@ export class CkeditorViewComponent implements OnInit, OnDestroy {
 
     private currentNode: Node;
 
-    constructor(private _editorService: EditorService, private _moduleService: AutoloadModulesService, private _damService: DamService, 
-        public http: HttpClient) { }
+    constructor(
+        private _editorService: EditorService,
+        private _moduleService: AutoloadModulesService,
+        private _damService: DamService,
+        public http: HttpClient
+    ) {}
 
     ngOnInit() {
         this._moduleService.addModule('container', SectionComponent);
         this._moduleService.addModule('image', ImageComponent);
-        this._moduleService.addModule('text', CkeditorComponent);
+        this._moduleService.addModule('text', TinyMCEComponent);
         this.config();
     }
 
@@ -64,13 +68,16 @@ export class CkeditorViewComponent implements OnInit, OnDestroy {
         // Suscribe to file changes
         this.subscribeFile = this._editorService.getFile().subscribe(file => {
             this.cssLinks = file.getCss();
-            this.jsLinks = file.getJs();  
+            this.jsLinks = file.getJs();
             this.content = this.parseContentToWysiwygEditor(file.getState().getContent());
         });
 
         this.subscribeCN = this._editorService.getCurrentNode().subscribe(currentNode => {
-            if (!isNil(currentNode) && (isNil(this.currentNode) ||
-                !equals(currentNode.getAttribute(XeditMapper.TAG_UUID), this.currentNode.getUuid()))) {
+            if (
+                !isNil(currentNode) &&
+                (isNil(this.currentNode) ||
+                    !equals(currentNode.getAttribute(XeditMapper.TAG_UUID), this.currentNode.getUuid()))
+            ) {
                 this.currentNode = currentNode;
             }
         });
@@ -95,28 +102,29 @@ export class CkeditorViewComponent implements OnInit, OnDestroy {
             },
             callback: ({ type, setData }) => {
                 this._damService.setIsOpen(true);
-                this._damService.setOnSelect((item) => {
+                this._damService.setOnSelect(item => {
                     if (!isNil(item)) {
                         Api.getInfoNode(this.http, item.hash, type, setData, null, null);
                         this._damService.setIsOpen(false);
                     }
                 });
             }
-        }
+        };
         HandlerEditor.saveDoc(element, content, args);
     }
 
     /**
-    * Transform json content to html with xedit root tag
-    *
-    * @param content
-    */
+     * Transform json content to html with xedit root tag
+     *
+     * @param content
+     */
     private parseContentToWysiwygEditor(content) {
-        let renderContent : Array<Object> = [];
-        
+        let renderContent: Array<Object> = [];
+
         Object.keys(content).forEach(property => {
-            const data = is(String, content[property].content) ?
-                Converters.html2json(content[property].content) : content[property].content;
+            const data = is(String, content[property].content)
+                ? Converters.html2json(content[property].content)
+                : content[property].content;
             const result = {
                 node: property,
                 editable: content[property].editable,
@@ -126,17 +134,17 @@ export class CkeditorViewComponent implements OnInit, OnDestroy {
 
             let componentData = {};
 
-            const contentHtml = !result.editable ? Converters.json2html(data, true, true, false, false) : 
-                Converters.json2xedit(property, data, this._moduleService, componentData, true, true, false, false);
+            const contentHtml = !result.editable
+                ? Converters.json2html(data, true, true, false, false)
+                : Converters.json2xedit(property, data, this._moduleService, componentData, true, true, false, false);
 
             if (result.editable) {
                 result.data = componentData;
             }
-            
-            result.html = contentHtml;
-            
-            renderContent.push(result);
 
+            result.html = contentHtml;
+
+            renderContent.push(result);
         });
         return renderContent;
     }
@@ -153,7 +161,7 @@ export class CkeditorViewComponent implements OnInit, OnDestroy {
     }
 
     private addHttp(resource: string) {
-        if (!(/^(f|ht)tps?:\/\//i).test(resource)) {
+        if (!/^(f|ht)tps?:\/\//i.test(resource)) {
             resource = Router.configUrl(Api.getResourceUrl(), { id: resource });
         }
         return resource;

@@ -6,14 +6,11 @@ import { HTMLParser } from '@utils/htmlparser';
 import { isArray } from 'util';
 import { Api } from '../app/api';
 import Router from '../app/core/mappers/router';
-import {
-    AutoloadModulesService
-} from '../app/services/autoload-modules-service/autoload-modules.service';
+import { AutoloadModulesService } from '../app/services/autoload-modules-service/autoload-modules.service';
 import { XeditNode } from '../app/interfaces/xedit-node';
 import { Xedit } from '@app/xedit';
 
 export class Converters {
-
     private static removeDOCTYPE(html) {
         return html
             .replace(/<\?xml.*\?>\n/, '')
@@ -41,11 +38,11 @@ export class Converters {
         const bufArray = [];
         const results = {
             node: 'root',
-            child: {},
+            child: {}
         };
 
         HTMLParser(html, {
-            start: function (tag, uuid, attrs, unary) {
+            start: function(tag, uuid, attrs, unary) {
                 // node for this element
                 const node = {
                     node: 'element',
@@ -56,8 +53,8 @@ export class Converters {
                 if (attrs.length !== 0) {
                     node.attr = attrs
                         // filter xe_* attributes except if its are required
-                        .filter((attr) => Converters.filter(attr.name, attrs))
-                        .reduce(function (pre, attr) {
+                        .filter(attr => Converters.filter(attr.name, attrs))
+                        .reduce(function(pre, attr) {
                             const name = attr.name;
                             let value = attr.value;
 
@@ -98,7 +95,7 @@ export class Converters {
                     bufArray.unshift(node);
                 }
             },
-            end: function (tag) {
+            end: function(tag) {
                 // merge into parent tag
                 const node = bufArray.shift();
                 if (node.tag !== tag) {
@@ -115,10 +112,10 @@ export class Converters {
                     parent.child[node.uuid] = node;
                 }
             },
-            chars: function (text) {
+            chars: function(text) {
                 const node = {
                     node: 'text',
-                    text: text,
+                    text: text
                 };
                 if (bufArray.length === 0) {
                     results.child['text-0'] = node;
@@ -130,17 +127,17 @@ export class Converters {
                     parent.child['text-' + Object.keys(parent.child).length] = node;
                 }
             },
-            comment: function (text) {
+            comment: function(text) {
                 const node = {
                     node: 'comment',
-                    text: text,
+                    text: text
                 };
                 const parent = bufArray[0];
                 if (parent.child === undefined) {
                     parent.child = [];
                 }
                 parent.child['comment-' + Object.keys(parent.child).length] = node;
-            },
+            }
         });
 
         return hasRootTag ? results : results.child;
@@ -154,9 +151,10 @@ export class Converters {
      * @return true if the attribute is valid, otherwise the attribute should be filter
      */
     private static filter(attr, attrs) {
-        return (contains(attr, XeditMapper.requiredXeditAttributes) ||
-            (isNil(attr.match('xe_')) && Converters.filterAttribute(attr, attrs))) ?
-            true : false;
+        return contains(attr, XeditMapper.requiredXeditAttributes) ||
+            (isNil(attr.match('xe_')) && Converters.filterAttribute(attr, attrs))
+            ? true
+            : false;
     }
 
     /**
@@ -169,13 +167,16 @@ export class Converters {
     private static filterAttribute(attr, attrs) {
         attrs = isArray(attrs) ? attrs : Object.keys(attrs);
         const xeditAttribute = attrs.reduce((acc, value) => {
-            const val = (typeof value === 'string') ? value : value.name;
+            const val = typeof value === 'string' ? value : value.name;
             return contains(val, XeditMapper.requiredXeditAttributes) ? val : acc;
         }, null);
 
-        const settings = !isNil(xeditAttribute) && hasIn(xeditAttribute, XeditMapper.ATTRIBUTES) &&
-            hasIn('filter_attributes', XeditMapper.ATTRIBUTES[xeditAttribute]) ?
-            XeditMapper.ATTRIBUTES[xeditAttribute]['filter_attributes'] : [];
+        const settings =
+            !isNil(xeditAttribute) &&
+            hasIn(xeditAttribute, XeditMapper.ATTRIBUTES) &&
+            hasIn('filter_attributes', XeditMapper.ATTRIBUTES[xeditAttribute])
+                ? XeditMapper.ATTRIBUTES[xeditAttribute]['filter_attributes']
+                : [];
 
         return !contains(attr, settings);
     }
@@ -187,29 +188,48 @@ export class Converters {
      * @param showIds If true added attribute id in tags
      */
     static json2html(json, showIds = true, processXedit = true, resetIds = false, enableHover = true) {
-
         // Empty Elements - HTML 4.01
-        const empty = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param', 'embed'];
+        const empty = [
+            'area',
+            'base',
+            'basefont',
+            'br',
+            'col',
+            'frame',
+            'hr',
+            'img',
+            'input',
+            'isindex',
+            'link',
+            'meta',
+            'param',
+            'embed'
+        ];
 
         let child = '';
         if (json.child) {
-            child = Object.keys(json.child).map(function (uuid: string) {
-                return Converters.json2html(json.child[uuid], showIds, processXedit, resetIds, enableHover);
-            }).join('');
+            child = Object.keys(json.child)
+                .map(function(uuid: string) {
+                    return Converters.json2html(json.child[uuid], showIds, processXedit, resetIds, enableHover);
+                })
+                .join('');
         }
 
         let attr = '';
         if (json.attr) {
             const tag = json.tag;
-            attr = Object.keys(json.attr).filter((val) => {
-                return Converters.filter(val, json.attr);
-            }).map(function (key) {
-                let value = json.attr[key];
-                if (Array.isArray(value)) {
-                    value = value.join(' ');
-                }
-                return Converters.parseAttributes(key, value, processXedit, tag);
-            }).join(' ');
+            attr = Object.keys(json.attr)
+                .filter(val => {
+                    return Converters.filter(val, json.attr);
+                })
+                .map(function(key) {
+                    let value = json.attr[key];
+                    if (Array.isArray(value)) {
+                        value = value.join(' ');
+                    }
+                    return Converters.parseAttributes(key, value, processXedit, tag);
+                })
+                .join(' ');
             if (attr !== '') {
                 attr = ` ${attr}`;
             }
@@ -242,17 +262,50 @@ export class Converters {
         }
     }
 
-    static json2xedit(nodeName: string, json: XeditNode, modulesService: AutoloadModulesService, compData: Object, showIds: boolean = true, processXedit: boolean = true,
-        resetIds: boolean = false, enableHover: boolean = true) {
-
+    static json2xedit(
+        nodeName: string,
+        json: XeditNode,
+        modulesService: AutoloadModulesService,
+        compData: Object,
+        showIds: boolean = true,
+        processXedit: boolean = true,
+        resetIds: boolean = false,
+        enableHover: boolean = true
+    ) {
         // Empty Elements - HTML 4.01
-        const empty = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param', 'embed'];
-       
+        const empty = [
+            'area',
+            'base',
+            'basefont',
+            'br',
+            'col',
+            'frame',
+            'hr',
+            'img',
+            'input',
+            'isindex',
+            'link',
+            'meta',
+            'param',
+            'embed'
+        ];
+
         let child: string = '';
         if (json.child) {
-            child = Object.keys(json.child).map(function (uuid: string) {
-                return Converters.json2xedit(nodeName, json.child[uuid], modulesService, compData, showIds, processXedit, resetIds, enableHover);
-            }).join('');
+            child = Object.keys(json.child)
+                .map(function(uuid: string) {
+                    return Converters.json2xedit(
+                        nodeName,
+                        json.child[uuid],
+                        modulesService,
+                        compData,
+                        showIds,
+                        processXedit,
+                        resetIds,
+                        enableHover
+                    );
+                })
+                .join('');
         }
 
         if (json.node === 'element') {
@@ -266,15 +319,18 @@ export class Converters {
                 if (hasIn('xe_section', attr)) {
                     section = attr['xe_section'];
                 }
-                attrString = Object.keys(attr).filter((val) => {
-                    return Converters.filter(val, attr);
-                }).map((key) => {
-                    let value = attr[key];
-                    if (Array.isArray(value)) {
-                        value = value.join(' ');
-                    }
-                    return Converters.parseAttributes(key, value, processXedit, tag);
-                }).join(' ');
+                attrString = Object.keys(attr)
+                    .filter(val => {
+                        return Converters.filter(val, attr);
+                    })
+                    .map(key => {
+                        let value = attr[key];
+                        if (Array.isArray(value)) {
+                            value = value.join(' ');
+                        }
+                        return Converters.parseAttributes(key, value, processXedit, tag);
+                    })
+                    .join(' ');
             }
 
             uuid = resetIds ? UUID.UUID() : uuid;
@@ -286,18 +342,16 @@ export class Converters {
             if (!isNil(section)) {
                 schema = Xedit.getConf('schemas')[nodeName];
                 module = hasIn(section, schema) ? schema[section].type : null;
-                if  (!isNil(module)) {
+                if (!isNil(module)) {
                     moduleTag = modulesService.getModuleTag(module);
                     module = modulesService.getModule(module);
                 }
             }
 
-
             if (empty.indexOf(tag) > -1) {
                 // empty element
                 return `<${tag} ${uuidStr} ${attrString}>`;
             }
-
 
             let result = `<${tag} ${uuidStr} ${attrString}>${child}</${tag}>`;
             if (!isNil(moduleTag)) {
@@ -316,38 +370,37 @@ export class Converters {
 
                 const openTag = `
                         <${moduleTag}
-                            ${(!module.hasSlot) ? uuidStr : ''}
-                            ${(!module.hasSlot) ? attrString : ''}
+                            ${!module.hasSlot ? attrString : ''}
                             [content]="data['${uuid}']"
                             [selected]="selected"
                             (selectNode)="changeSelection($event)"
                             (onChange)="changeContent($event)"
                             (toolbar)="changeToolbar($event)"
                         >`;
-                const closeTag = `</${moduleTag}>`
+                const closeTag = `</${moduleTag}>`;
 
                 if (!module.hasSlot) {
                     result = openTag + closeTag;
                 } else {
                     delete data.html;
-                    result = openTag + result + closeTag
-                }             
+                    result = openTag + result + closeTag;
+                }
             }
             return result;
         } else if (json.node === 'root') {
             return child;
         } else {
-            return json.text
+            return json.text;
         }
     }
 
     private static parseAttributes(key, value, processXedit, tag = 'a') {
         let extraData = '';
-        const linkType = (hasIn(tag, XeditMapper.LINK_TYPES)) ? XeditMapper.LINK_TYPES[tag] : 'href';
+        const linkType = hasIn(tag, XeditMapper.LINK_TYPES) ? XeditMapper.LINK_TYPES[tag] : 'href';
         if (processXedit && contains(key, XeditMapper.requiredXeditAttributes)) {
             if (equals(key, XeditMapper.TAG_LINK)) {
                 extraData = value;
-                if (!(/^(f|ht)tps?:\/\//i).test(extraData)) {
+                if (!/^(f|ht)tps?:\/\//i.test(extraData)) {
                     extraData = Router.configUrl(Api.getResourceUrl(), { id: value });
                 }
                 extraData = `${linkType}="${extraData}"`;

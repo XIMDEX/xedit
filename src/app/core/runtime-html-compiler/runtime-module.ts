@@ -5,24 +5,12 @@ import { ImageComponent } from '@app/elements/xedit/image/image.component';
 import { CommonModule } from '@angular/common';
 import { SectionComponent } from '@app/elements/xedit/section/section.component';
 import { SafeHtmlPipe } from '@pipes/inner-html/safe-html.pipe';
+import { EditorModule } from '@tinymce/tinymce-angular';
+import { TinyMCEComponent } from '@app/elements/xedit/tiny-mce/tiny-mce.component';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        CKEditorModule
-     ],
-    declarations: [
-        SectionComponent,
-        CkeditorComponent,
-        ImageComponent,
-        SafeHtmlPipe,
-    ],
-    exports: [
-        CkeditorComponent,
-        ImageComponent,
-        SectionComponent,
-        SafeHtmlPipe,
-    ]
+    imports: [CommonModule, CKEditorModule, EditorModule],
+    declarations: [SectionComponent, CkeditorComponent, ImageComponent, SafeHtmlPipe, TinyMCEComponent],
+    exports: [CkeditorComponent, ImageComponent, SectionComponent, SafeHtmlPipe, TinyMCEComponent]
 })
-  
 export class RuntimeModule {}

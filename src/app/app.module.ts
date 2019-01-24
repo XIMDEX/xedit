@@ -48,7 +48,7 @@ import { TreeComponent } from './elements/blocks/tree/tree.component';
 import { NgxSmartModalModule } from 'ngx-smart-modal';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MetadataViewComponent } from './components/editor/views/metadata-view/metadata-view.component';
-import { CkeditorViewComponent } from './components/editor/views/ckeditor-view/ckeditor-view.component';
+import { EditorViewComponent } from './components/editor/views/editor-view/editor-view.component';
 
 import { AutoloadModulesService } from './services/autoload-modules-service/autoload-modules.service';
 import { RuntimeHtmlCompiler } from './core/runtime-html-compiler/runtime-html-compiler.component';
@@ -85,10 +85,10 @@ import { ImagesModule } from 'lib/images';
         TreeModalComponent,
         TreeComponent,
         MetadataViewComponent,
-        CkeditorViewComponent,
+        EditorViewComponent,
         RuntimeHtmlCompiler,
         PropertiesToolbarComponent,
-        ImageModalComponent,
+        ImageModalComponent
     ],
     imports: [
         /* 3rd party components */
@@ -112,15 +112,7 @@ import { ImagesModule } from 'lib/images';
         RuntimeModule,
         ImagesModule
     ],
-    providers: [
-        EditorService,
-        StateService,
-        DamService,
-        AutoloadModulesService
-    ],
-    bootstrap: [
-        AppComponent
-    ]
+    providers: [EditorService, StateService, DamService, AutoloadModulesService],
+    bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule {}
