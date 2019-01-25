@@ -1,11 +1,4 @@
-import {
-    Component,
-    OnInit,
-    AfterViewChecked,
-    ViewChild,
-    ElementRef,
-    ChangeDetectorRef,
-} from '@angular/core';
+import { Component, OnInit, AfterViewChecked, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { isNil } from 'ramda';
 import { HttpClient } from '@angular/common/http';
 
@@ -18,15 +11,9 @@ import { NotificationsService } from 'angular2-notifications';
 import { faBars, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 import { StateConfigs } from '@models/configs/statesConfigs';
-import {
-    trigger,
-    transition,
-    style,
-    animate,
-} from '@angular/animations';
+import { trigger, transition, style, animate } from '@angular/animations';
 import { Api } from '@app/api';
 import { Xedit } from '@app/xedit';
-
 
 @Component({
     selector: 'app-taskbar',
@@ -36,20 +23,14 @@ import { Xedit } from '@app/xedit';
         trigger('toggleAtributes', [
             transition(':enter', [
                 style({ transform: 'translate(-50%, -100%)', opacity: 0 }),
-                animate(
-                    '250ms',
-                    style({ transform: 'translate(-50%, 0)', opacity: 1 })
-                ),
+                animate('250ms', style({ transform: 'translate(-50%, 0)', opacity: 1 }))
             ]),
             transition(':leave', [
                 style({ transform: 'translate(-50%, 0)', opacity: 1 }),
-                animate(
-                    '250ms',
-                    style({ transform: 'translate(-50%, -100%)', opacity: 0 })
-                ),
-            ]),
-        ]),
-    ],
+                animate('250ms', style({ transform: 'translate(-50%, -100%)', opacity: 0 }))
+            ])
+        ])
+    ]
 })
 export class TaskbarComponent implements OnInit, AfterViewChecked {
     @ViewChild('viewMenu') viewMenu: ElementRef;
@@ -59,13 +40,14 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
     private availableViews: Array<string> = [];
     public title: string;
     public displayToggle: boolean;
+    public blockStates: boolea;
 
     // State Configs
     private stateConfigs: StateConfigs;
     public toogleStateConfigs: boolean;
     private configs: Array<Object>;
     public stateActive: boolean;
-    
+
     // ICONS
     public faBars = faBars;
     public faEye = faEyeSlash;
@@ -83,6 +65,7 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
 
         this.toogleStateConfigs = false;
         this.configs = [];
+        this.blockStates = false;
     }
 
     /************************************ LIFE CYCLE *******************************************/
@@ -95,14 +78,8 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
             }
         });
 
-        this._stateService
-            .getCurrentView()
-            .subscribe(currentView => (this.currentView = currentView));
-        this._stateService
-            .getAvailabelViews()
-            .subscribe(
-                availableViews => (this.availableViews = availableViews)
-            );
+        this._stateService.getCurrentView().subscribe(currentView => (this.currentView = currentView));
+        this._stateService.getAvailabelViews().subscribe(availableViews => (this.availableViews = availableViews));
     }
 
     ngAfterViewChecked() {
@@ -116,13 +93,25 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
     /********************************** END LIFE CYCLE *****************************************/
 
     undo() {
-        this._editorService.setLoading(true);
-        this._editorService.lastStateFile();
+        if (!this.blockStates && this.previousAvailable()) {
+            this.blockStates = true;
+            this._editorService.setLoading(true);
+            this._editorService.lastStateFile().then(() => {
+                this._editorService.setLoading(false);
+                this.blockStates = false;
+            });
+        }
     }
 
     redo() {
-        this._editorService.setLoading(true);
-        this._editorService.nextStateFile();
+        if (!this.blockStates && this.nextAvailable()) {
+            this.blockStates = true;
+            this._editorService.setLoading(true);
+            this._editorService.nextStateFile().then(() => {
+                this._editorService.setLoading(false);
+                this.blockStates = false;
+            });
+        }
     }
 
     showComponent(component) {
@@ -173,12 +162,7 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
             }
         };
 
-        Api.saveDocument(
-            this.http,
-            this._editorService.getUpdatedDocument(),
-            success,
-            error
-        );
+        Api.saveDocument(this.http, this._editorService.getUpdatedDocument(), success, error);
     }
 
     load() {
@@ -225,12 +209,11 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
     toggleElementState() {
         this.stateActive = this.stateConfigs.toggleActive();
         this.toggleElementStateIcon();
-        
+
         this._editorService.setElementsState(!this.stateActive);
     }
 
     toggleElementStateIcon() {
         this.faEye = !this.stateActive ? faEye : faEyeSlash;
     }
-
 }
