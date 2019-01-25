@@ -2,7 +2,6 @@ import { hasIn } from 'ramda';
 import { OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 export class XeditBaseComponent implements OnInit {
-
     @Input() content: any;
     @Input() selected: string;
 
@@ -12,13 +11,11 @@ export class XeditBaseComponent implements OnInit {
 
     public static hasSlot: boolean = false;
 
-    constructor() { }
+    constructor() {}
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
     isSelected() {
-        return hasIn('uuid', this.content) && this.selected === this.content.uuid
+        return hasIn('uuid', this.content) && this.selected === this.content.uuid;
     }
-
 }

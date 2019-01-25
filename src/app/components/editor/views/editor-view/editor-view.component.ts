@@ -119,7 +119,7 @@ export class EditorViewComponent implements OnInit, OnDestroy {
      * @param content
      */
     private parseContentToWysiwygEditor(content) {
-        let renderContent: Array<Object> = [];
+        const renderContent: Array<Object> = [];
 
         Object.keys(content).forEach(property => {
             const data = is(String, content[property].content)

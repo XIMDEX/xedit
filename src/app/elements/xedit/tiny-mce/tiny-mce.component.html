@@ -1,1 +1,11 @@
-<editor [init]="configs" [initialValue]="content.html"></editor>
+<editor
+    [init]="configs"
+    [initialValue]="content.html"
+    (onPaste)="pasteContent($event)"
+    (onNodeChange)="selectedNode($event)"
+    (onClick)="onClick($event)"
+    (onFocus)="onFocus($event)"
+    (onBlur)="onBlur($event)"
+    (click)="onClick($event)"
+    (onChange)="onChanges($event)"
+></editor>

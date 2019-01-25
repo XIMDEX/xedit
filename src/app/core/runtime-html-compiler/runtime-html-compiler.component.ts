@@ -1,35 +1,47 @@
 import { isNil } from 'ramda';
 import { RuntimeModule } from './runtime-module';
 
-import { ComponentFactory, ComponentRef, ViewChild, ViewContainerRef, Input, OnInit, OnDestroy, Output, EventEmitter, NO_ERRORS_SCHEMA } from '@angular/core';
+import {
+    ComponentFactory,
+    ComponentRef,
+    ViewChild,
+    ViewContainerRef,
+    Input,
+    OnInit,
+    OnDestroy,
+    Output,
+    EventEmitter,
+    NO_ERRORS_SCHEMA
+} from '@angular/core';
 import { Compiler, Component, NgModule, ModuleWithComponentFactories } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToolbarI } from '@app/models/interfaces/ToolbarI';
 
 @Component({
     selector: 'runtime-html-compiler',
-    template: `<div #container></div>`,
+    template: `
+        <div #container></div>
+    `
 })
 export class RuntimeHtmlCompiler implements OnInit, OnDestroy {
-
     @Output() selectNode: EventEmitter<string> = new EventEmitter();
     @Output() onChange: EventEmitter<{}> = new EventEmitter();
     @Output() toolbar: EventEmitter<{}> = new EventEmitter();
-    
+
     @Input() xe_uuid: string;
     @Input() html: string;
     @Input() data: {};
 
     private compileRetry = 0;
 
-    @ViewChild('container', { read: ViewContainerRef }) container: ViewContainerRef
+    @ViewChild('container', { read: ViewContainerRef }) container: ViewContainerRef;
 
     protected selector: string = 'runtime-html';
     // protected runtimeCompClass: any = RuntimeComponent;
     protected compRef: ComponentRef<{}>;
     protected module: ModuleWithComponentFactories<any>;
 
-    constructor(private compiler: Compiler) { }
+    constructor(private compiler: Compiler) {}
 
     ngOnInit() {
         const factory = this.compile();
@@ -51,8 +63,8 @@ export class RuntimeHtmlCompiler implements OnInit, OnDestroy {
     changeToolbar(toolbar: Array<ToolbarI>) {
         this.toolbar.emit(toolbar);
     }
-    
-    public compile(): ComponentFactory<any>{
+
+    public compile(): ComponentFactory<any> {
         if (isNil(this.html)) {
             this.html = 'undefined';
         }
@@ -67,14 +79,8 @@ export class RuntimeHtmlCompiler implements OnInit, OnDestroy {
         const metadata = {
             selector: this.selector,
             template: this.html,
-            outputs: [
-                'selectNode',
-                'onChange',
-                'toolbar'
-            ],
-            inputs: [
-                'xeUuid'
-            ]
+            outputs: ['selectNode', 'onChange', 'toolbar'],
+            inputs: ['xeUuid']
         };
 
         this.destroy();
@@ -82,14 +88,14 @@ export class RuntimeHtmlCompiler implements OnInit, OnDestroy {
         return this.load(metadata);
     }
 
-    public viewRef(compFactory: ComponentFactory<any>) : RuntimeHtmlCompiler {
+    public viewRef(compFactory: ComponentFactory<any>): RuntimeHtmlCompiler {
         this.compRef = this.container.createComponent(compFactory);
-        
+
         this.compRef.instance['selectNode'].subscribe($event => this.changeSelection($event));
         this.compRef.instance['onChange'].subscribe($event => this.changeContent($event));
         this.compRef.instance['toolbar'].subscribe($event => this.changeToolbar($event));
-        
-        this.setComponentProps({data: this.data});
+
+        this.setComponentProps({ data: this.data });
 
         return this;
     }
@@ -108,41 +114,36 @@ export class RuntimeHtmlCompiler implements OnInit, OnDestroy {
     }
 
     protected load(metadata: object): ComponentFactory<any> {
-        const decoratorComp = Component(metadata)(class RuntimeComponent {
-            public data: Object;
-            public selected: string;
+        const decoratorComp = Component(metadata)(
+            class RuntimeComponent {
+                public data: Object;
+                public selected: string;
 
-            public selectNode: EventEmitter<string> = new EventEmitter();
-            public onChange: EventEmitter<{}> = new EventEmitter();
-            public toolbar: EventEmitter<Array<ToolbarI>> = new EventEmitter();
+                public selectNode: EventEmitter<string> = new EventEmitter();
+                public onChange: EventEmitter<{}> = new EventEmitter();
+                public toolbar: EventEmitter<Array<ToolbarI>> = new EventEmitter();
 
-            changeSelection(uuid: string) {
-                this.selected = uuid;
-                this.selectNode.emit(uuid);
+                changeSelection(uuid: string) {
+                    this.selected = uuid;
+                    this.selectNode.emit(uuid);
+                }
+
+                changeContent(data: {}) {
+                    this.onChange.emit(data);
+                }
+
+                changeToolbar(toolbarOptions: Array<ToolbarI>) {
+                    this.toolbar.emit(toolbarOptions);
+                }
             }
-
-            changeContent(data: {}) {
-                this.onChange.emit(data);
-            }
-
-            changeToolbar(toolbarOptions: Array<ToolbarI>) {
-                this.toolbar.emit(toolbarOptions);
-            }
-        });
+        );
 
         @NgModule({
-            imports: [
-                RuntimeModule,
-                CommonModule
-            ],
-            declarations: [
-                decoratorComp
-            ],
-            schemas: [
-                NO_ERRORS_SCHEMA
-            ]
+            imports: [RuntimeModule, CommonModule],
+            declarations: [decoratorComp],
+            schemas: [NO_ERRORS_SCHEMA]
         })
-        class RuntimeComponentModule { }
+        class RuntimeComponentModule {}
 
         try {
             this.module = this.compiler.compileModuleAndAllComponentsSync(RuntimeComponentModule);
@@ -154,9 +155,9 @@ export class RuntimeHtmlCompiler implements OnInit, OnDestroy {
             this.html = `<div style="padding:50px; color:red;">${message}</div>`;
 
             if (this.compileRetry < 3) {
-                return this.compile();  
+                return this.compile();
             }
-            throw new Error('Failed to compile the template please use the "text view"');        
+            throw new Error('Failed to compile the template please use the "text view"');
         }
     }
 }
