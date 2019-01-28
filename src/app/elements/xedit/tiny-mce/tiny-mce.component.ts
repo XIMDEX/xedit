@@ -4,7 +4,7 @@ import { EditorService } from '@app/services/editor-service/editor.service';
 import { ClipboardConfigs } from '@app/models/configs/clipboardConfigs';
 import { StringHelpers } from '@app/core/helpers/string';
 import { XeditMapper } from '@app/models/schema/xedit-mapper';
-import { isNil, difference } from 'ramda';
+import { isNil, hasIn } from 'ramda';
 
 @Component({
     selector: 'app-tiny-mce',
@@ -43,14 +43,19 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit {
         const tag = this.getCurrentTag(editor.bodyElement, uuid);
 
         if (!isNil(tag) && this.hasChanges(event.level.bookmark, event.lastLevel.beforeBookmark)) {
-            console.log(tag.innerHTML);
             this.editorService.save(tag, tag.innerHTML, 'Change section ""');
         }
     }
 
     private hasChanges(bookmark, beforeBookmark): boolean {
         let hasChange = false;
-        if (!isNil(bookmark['start']) && !isNil(beforeBookmark['start'])) {
+        if (
+            !isNil(bookmark) &&
+            hasIn('start', bookmark) &&
+            !isNil(bookmark['start']) &&
+            hasIn('start', beforeBookmark) &&
+            !isNil(beforeBookmark['start'])
+        ) {
             hasChange = bookmark['start'].length !== beforeBookmark['start'].length;
             if (!hasChange) {
                 for (let i = 0; i < bookmark['start'].length; i++) {
@@ -67,13 +72,15 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit {
     private getCurrentTag(content, uuid: string) {
         let value = null;
         for (let i = 0; i < content.children.length; i++) {
-            let children = content.children[i];
-            if (children.getAttribute(XeditMapper.TAG_UUID) == uuid) {
+            const children = content.children[i];
+            if (children.getAttribute(XeditMapper.TAG_UUID) === uuid) {
                 value = children;
             } else {
                 value = this.getCurrentTag(children, uuid);
             }
-            if (!isNil(value)) break;
+            if (!isNil(value)) {
+                break;
+            }
         }
         return value;
     }

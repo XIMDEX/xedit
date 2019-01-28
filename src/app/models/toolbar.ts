@@ -1,7 +1,6 @@
-import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 export class Toolbar {
-    
     private icon: IconDefinition;
     private callback: Function;
     private active: boolean;
@@ -16,7 +15,7 @@ export class Toolbar {
         this.icon = icon;
     }
 
-    public getIcon() : IconDefinition {
+    public getIcon(): IconDefinition {
         return this.icon;
     }
 

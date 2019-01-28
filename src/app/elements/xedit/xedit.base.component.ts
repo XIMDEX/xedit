@@ -2,14 +2,14 @@ import { hasIn } from 'ramda';
 import { OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 export class XeditBaseComponent implements OnInit {
+    public static hasSlot = false;
+
     @Input() content: any;
     @Input() selected: string;
 
     @Output() selectNode: EventEmitter<string> = new EventEmitter();
-    @Output() onChange: EventEmitter<{}> = new EventEmitter();
+    @Output() change: EventEmitter<{}> = new EventEmitter();
     @Output() toolbar: EventEmitter<{}> = new EventEmitter();
-
-    public static hasSlot: boolean = false;
 
     constructor() {}
 

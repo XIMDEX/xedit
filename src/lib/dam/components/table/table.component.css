@@ -2,7 +2,7 @@
     margin: 0 1em;
 }
 
-.items{
+.items {
     display: -ms-flexbox;
     display: flex;
     flex-direction: row;
@@ -10,10 +10,9 @@
     justify-content: center;
     display: -ms-grid;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    /* grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); */
     grid-column-gap: 15px;
     justify-items: center;
-    
 }
 
 .items:after {
@@ -21,69 +20,68 @@
 }
 
 /*Paginator*/
-.flex-row-container{
+.flex-row-container {
     padding: 0 1em 0 1em;
 }
 
-.pagination-nav{
+.pagination-nav {
     display: block;
 }
-.pagination{
+.pagination {
     display: inline-block;
     padding: 0;
 }
-.pagination li{
+.pagination li {
     display: inline-block;
     cursor: pointer;
-    padding:3px 0 3px 0;
+    padding: 3px 0 3px 0;
     background-color: white;
     border-left: 1px solid #ddd;
     margin-left: -1px;
 }
-.pagination li:hover{
-    background-color: #EDEFF2;
-    border-color: #EDEFF2;
+.pagination li:hover {
+    background-color: #edeff2;
+    border-color: #edeff2;
 }
-ul.pagination li:first-child{
-    border-left:0;
+ul.pagination li:first-child {
+    border-left: 0;
     border-radius: 3px 0 0 3px;
 }
-ul.pagination li:last-child{
+ul.pagination li:last-child {
     border-radius: 0 3px 3px 0;
 }
-.pagination li a{
+.pagination li a {
     font-size: 11px;
     font-weight: 700;
     cursor: pointer;
-    padding:6px 12px;
-    
+    padding: 6px 12px;
 }
-.pagination-found{
-    margin-top:1em;
+.pagination-found {
+    margin-top: 1em;
 }
 
-.pagination-found .label{
-    padding: .5em .6em !important;
-    background-color: #009E92 !important;
+.pagination-found .label {
+    padding: 0.5em 0.6em !important;
+    background-color: #009e92 !important;
     font-size: 80% !important;
-    color:white;
+    color: white;
 }
 
-.pagination-found .label .badge{
+.pagination-found .label .badge {
     min-width: 10px;
     padding: 4px 5px 4px 4px;
-    color: #009E92 !important;
-    background-color: #EDEFF2 !important;
+    color: #009e92 !important;
+    background-color: #edeff2 !important;
     border-radius: 20px;
     font-size: 95%;
 }
 
-.pagination li.active{
-    background-color: #009E92;
-    color:white;
+.pagination li.active {
+    background-color: #009e92;
+    color: white;
 }
 
-.justify-end{
+.justify-end {
     justify-content: flex-end;
 }
 
@@ -103,7 +101,7 @@ ul.pagination li:last-child{
 }
 
 .dialog-delete .options {
-    border-top: 1px solid #C8CACC;
+    border-top: 1px solid #c8cacc;
     margin-top: 1em;
     padding-top: 1em;
     display: flex;
@@ -117,25 +115,22 @@ ul.pagination li:last-child{
 }
 
 /* MOBILE */
-@media all and (max-width: 599px) { 
-    .pagination-nav{
+@media all and (max-width: 599px) {
+    .pagination-nav {
         display: block;
         margin: 0 auto 0 auto;
     }
-    .pagination-found{
+    .pagination-found {
         margin: 0 auto 0 auto;
     }
-    .flex-row-container{
+    .flex-row-container {
         display: flex;
         flex-direction: column;
     }
 }
 /*TABLET*/
-@media all and (min-width: 600px) and (max-width: 1024px){
-    
+@media all and (min-width: 600px) and (max-width: 1024px) {
 }
 /*PC*/
-@media all and (min-width: 1025px){
-    
+@media all and (min-width: 1025px) {
 }
-

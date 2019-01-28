@@ -5,20 +5,18 @@ import { BlurEvent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
 import { XeditBaseComponent } from '../xedit.base.component';
 import { isNil, hasIn, equals, union, uniq } from 'ramda';
 
-
 @Component({
     selector: 'app-ckeditor',
     templateUrl: './ckeditor.component.html',
     styleUrls: ['./ckeditor.component.scss']
 })
 export class CkeditorComponent extends XeditBaseComponent implements OnInit, OnDestroy {
-
     public editor;
     private toolbarMenu;
     private config = {};
-    private availabelPlugins = []
+    private availabelPlugins = [];
 
-    constructor() { 
+    constructor() {
         super();
     }
 
@@ -39,9 +37,9 @@ export class CkeditorComponent extends XeditBaseComponent implements OnInit, OnD
 
         const element = isNil(srcElement) ? sourceElement : srcElement;
 
-        this.onChange.emit({
+        this.change.emit({
             uuid,
-            element, 
+            element,
             content: evt.getData()
         });
         this.selectNode.emit(null);
@@ -77,20 +75,20 @@ export class CkeditorComponent extends XeditBaseComponent implements OnInit, OnD
                 bold: 'bold',
                 italic: 'italic',
                 underline: 'underline',
-                strikethrough: 'strikethrough',
+                strikethrough: 'strikethrough'
                 // color: 'color',
                 // background: 'background',
             },
             others: {
                 ol: 'numberedList',
                 ul: 'bulletedList',
-                table: 'insertTable',
+                table: 'insertTable'
             },
             align: {
                 alignleft: 'alignment:left',
                 aligncenter: 'alignment:center',
                 alignright: 'alignment:right',
-                alignjustify: 'alignment:justify',
+                alignjustify: 'alignment:justify'
             },
             // indent: {
             //     outdent: 'outdent',
@@ -101,29 +99,21 @@ export class CkeditorComponent extends XeditBaseComponent implements OnInit, OnD
             // },
             font: {
                 fontselect: 'fontFamily',
-                fontsize: 'fontSize',
-            },
+                fontsize: 'fontSize'
+            }
         };
 
         if (typeof styles === 'string') {
-            styles = equals(styles, 'all')
-                ? Object.keys(groups)
-                : [];
+            styles = equals(styles, 'all') ? Object.keys(groups) : [];
         }
 
         styles.forEach(style => {
             if (hasIn(style, groups)) {
-                this.addValue(
-                    stylesValue,
-                    style,
-                    Object.values(groups[style])
-                );
+                this.addValue(stylesValue, style, Object.values(groups[style]));
             } else {
                 for (const group in groups) {
                     if (hasIn(style, groups[group])) {
-                        this.addValue(stylesValue, group, [
-                            groups[group][style],
-                        ]);
+                        this.addValue(stylesValue, group, [groups[group][style]]);
                     }
                 }
             }
@@ -143,11 +133,7 @@ export class CkeditorComponent extends XeditBaseComponent implements OnInit, OnD
         return result;
     }
 
-    private addValue(
-        object: Object,
-        property: string,
-        value: Array<string> | string
-    ) {
+    private addValue(object: Object, property: string, value: Array<string> | string) {
         if (hasIn(property, object)) {
             object[property] = union(object[property], value);
         } else {
@@ -157,7 +143,7 @@ export class CkeditorComponent extends XeditBaseComponent implements OnInit, OnD
 
     private addPlugin(plugin: string) {
         for (const plug of this.availabelPlugins) {
-            const name = (typeof plug === 'string') ? plug.toLowerCase() : plug.pluginName.toLowerCase();
+            const name = typeof plug === 'string' ? plug.toLowerCase() : plug.pluginName.toLowerCase();
             if (name === plugin.toLowerCase()) {
                 this.config['extraPlugins'].push(plug);
                 break;
@@ -174,16 +160,8 @@ export class CkeditorComponent extends XeditBaseComponent implements OnInit, OnD
 
     private fontSize() {
         return {
-            options: [
-                '9pt',
-                '11pt',
-                '13pt',
-                '14pt',
-                '17pt',
-                '19pt',
-                '21pt'
-            ]
-        }
+            options: ['9pt', '11pt', '13pt', '14pt', '17pt', '19pt', '21pt']
+        };
     }
 
     private fontFamily() {
@@ -201,5 +179,4 @@ export class CkeditorComponent extends XeditBaseComponent implements OnInit, OnD
 
         return fonts;
     }
-
 }

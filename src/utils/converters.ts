@@ -290,7 +290,7 @@ export class Converters {
             'embed'
         ];
 
-        let child: string = '';
+        let child = '';
         if (json.child) {
             child = Object.keys(json.child)
                 .map(function(uuid: string) {
@@ -309,10 +309,10 @@ export class Converters {
         }
 
         if (json.node === 'element') {
-            const { attr } = json;
-            let { uuid, tag } = json;
+            const { attr, tag } = json;
+            let { uuid } = json;
 
-            let attrString: string = '';
+            let attrString = '';
             let section: string = null;
 
             if (!isNil(attr)) {
@@ -374,7 +374,7 @@ export class Converters {
                             [content]="data['${uuid}']"
                             [selected]="selected"
                             (selectNode)="changeSelection($event)"
-                            (onChange)="changeContent($event)"
+                            (change)="changeContent($event)"
                             (toolbar)="changeToolbar($event)"
                         >`;
                 const closeTag = `</${moduleTag}>`;

@@ -40,7 +40,7 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
     private availableViews: Array<string> = [];
     public title: string;
     public displayToggle: boolean;
-    public blockStates: boolea;
+    public locked: boolean;
 
     // State Configs
     private stateConfigs: StateConfigs;
@@ -65,7 +65,7 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
 
         this.toogleStateConfigs = false;
         this.configs = [];
-        this.blockStates = false;
+        this.locked = false;
     }
 
     /************************************ LIFE CYCLE *******************************************/
@@ -93,23 +93,23 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
     /********************************** END LIFE CYCLE *****************************************/
 
     undo() {
-        if (!this.blockStates && this.previousAvailable()) {
-            this.blockStates = true;
+        if (!this.locked && this.previousAvailable()) {
+            this.locked = true;
             this._editorService.setLoading(true);
             this._editorService.lastStateFile().then(() => {
                 this._editorService.setLoading(false);
-                this.blockStates = false;
+                this.locked = false;
             });
         }
     }
 
     redo() {
-        if (!this.blockStates && this.nextAvailable()) {
-            this.blockStates = true;
+        if (!this.locked && this.nextAvailable()) {
+            this.locked = true;
             this._editorService.setLoading(true);
             this._editorService.nextStateFile().then(() => {
                 this._editorService.setLoading(false);
-                this.blockStates = false;
+                this.locked = false;
             });
         }
     }

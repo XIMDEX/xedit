@@ -12,14 +12,14 @@
 
     .dynform-body {
         width: 100%;
-        display: grid; 
+        display: grid;
         flex-wrap: wrap;
         justify-content: center;
-        grid-template-columns: repeat(auto-fill, 40rem);
+        // grid-template-columns: repeat(auto-fill, 40rem);
         height: 100%;
         grid-template-rows: 10rem;
         align-items: center;
         border: 1px solid #cccccc;
-        border-top:0;
+        border-top: 0;
     }
 }

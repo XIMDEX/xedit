@@ -41,7 +41,6 @@ import { StateControllerComponent } from './components/taskbar/state-controller/
 import { ListboxComponent } from './elements/forms/listbox/listbox.component';
 import { DamModule } from '../lib/dam';
 import { DamService } from './services/dam-service/dam.service';
-import { MathjaxDirective } from './directives/mathjax.directive';
 import { TreeModule } from 'angular-tree-component';
 import { TreeModalComponent } from './elements/blocks/tree-modal/tree-modal.component';
 import { TreeComponent } from './elements/blocks/tree/tree.component';
@@ -51,7 +50,7 @@ import { MetadataViewComponent } from './components/editor/views/metadata-view/m
 import { EditorViewComponent } from './components/editor/views/editor-view/editor-view.component';
 
 import { AutoloadModulesService } from './services/autoload-modules-service/autoload-modules.service';
-import { RuntimeHtmlCompiler } from './core/runtime-html-compiler/runtime-html-compiler.component';
+import { RuntimeHtmlCompilerComponent } from './core/runtime-html-compiler/runtime-html-compiler.component';
 
 import { PropertiesToolbarComponent } from './components/editor/properties-area/properties-toolbar/properties-toolbar.component';
 import { ImageModalComponent } from './elements/xedit/image/image-modal/image-modal.component';
@@ -81,12 +80,11 @@ import { ImagesModule } from 'lib/images';
         CheckboxComponent,
         ListboxComponent,
         StateControllerComponent,
-        MathjaxDirective,
         TreeModalComponent,
         TreeComponent,
         MetadataViewComponent,
         EditorViewComponent,
-        RuntimeHtmlCompiler,
+        RuntimeHtmlCompilerComponent,
         PropertiesToolbarComponent,
         ImageModalComponent
     ],

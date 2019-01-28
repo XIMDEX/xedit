@@ -2,7 +2,16 @@ import { XeditBaseComponent } from '../xedit.base.component';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { isNil, hasIn } from 'ramda';
 import { faImage } from '@fortawesome/free-solid-svg-icons';
-import { Component, OnInit, ViewChild, ElementRef, HostListener, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    ViewChild,
+    ElementRef,
+    HostListener,
+    AfterViewInit,
+    OnChanges,
+    SimpleChanges
+} from '@angular/core';
 import { ToolbarI } from '@app/models/interfaces/ToolbarI';
 import { DOM } from '@app/models/dom';
 
@@ -13,8 +22,7 @@ import { DOM } from '@app/models/dom';
     styleUrls: ['./image.component.scss']
 })
 export class ImageComponent extends XeditBaseComponent implements OnInit, AfterViewInit, OnChanges {
-
-    public static hasSlot: boolean = true;
+    public static hasSlot = true;
 
     private contentHtml: HTMLElement;
     private selectedImage;
@@ -29,16 +37,15 @@ export class ImageComponent extends XeditBaseComponent implements OnInit, AfterV
 
     constructor(private ngxModal: NgxSmartModalService, public host: ElementRef) {
         super();
-     }
-
-    ngOnInit() {        
     }
+
+    ngOnInit() {}
 
     ngOnChanges({ selected }: SimpleChanges) {
         if (!isNil(selected) && selected.currentValue !== selected.previousValue) {
             const element = new DOM(this.contentHtml);
             if (this.isSelected()) {
-                element.addClass('xe_selected')
+                element.addClass('xe_selected');
             } else {
                 element.removeClass('xe_selected');
             }
@@ -48,7 +55,7 @@ export class ImageComponent extends XeditBaseComponent implements OnInit, AfterV
     ngAfterViewInit() {
         this.contentHtml = this.host.nativeElement.querySelector('[xe_section]') as HTMLElement;
     }
-    
+
     openImageModal() {
         const modal = this.ngxModal.getModal('imageModal');
         modal.removeData();
@@ -62,7 +69,6 @@ export class ImageComponent extends XeditBaseComponent implements OnInit, AfterV
         });
         modal.open();
     }
-
 
     @HostListener('click', ['$event'])
     onClick(evt: MouseEvent) {
@@ -79,23 +85,23 @@ export class ImageComponent extends XeditBaseComponent implements OnInit, AfterV
                 }
             }
         }
-        
+
         const { uuid } = this.content;
         this.selectNode.emit(uuid);
 
         this.toolbar.emit(this.toolbarOptions);
     }
 
-    changeImage(data){
+    changeImage(data) {
         const { uuid } = this.content;
 
         for (const attr of Object.keys(data)) {
             this.selectedImage.setAttribute(attr, data[attr]);
         }
 
-        let element = this.contentHtml.firstChild as HTMLElement;
+        const element = this.contentHtml.firstChild as HTMLElement;
 
-        this.onChange.emit({
+        this.change.emit({
             uuid,
             element: element,
             content: element.innerHTML
@@ -103,38 +109,37 @@ export class ImageComponent extends XeditBaseComponent implements OnInit, AfterV
     }
 
     private containerSize() {
-        const container : HTMLElement = this.contentHtml;
+        const container: HTMLElement = this.contentHtml;
         const size = {
             width: container.offsetWidth,
             height: container.offsetHeight
-        }
+        };
 
         return size;
     }
 
     private cropData() {
         const container = this.selectedImage as HTMLElement;
-        let result = {};
+        const result = {};
 
         const styles = window.getComputedStyle(container);
-        
-        for(const style of ['width', 'height', 'left', 'top']) {
+
+        for (const style of ['width', 'height', 'left', 'top']) {
             const value = styles[style];
-            result[style] = (typeof value === 'string') ? Number.parseFloat(value) : value;
+            result[style] = typeof value === 'string' ? Number.parseFloat(value) : value;
         }
 
         return result;
     }
 
-
-    private getImageAttrs() { 
+    private getImageAttrs() {
         const attrs = {
             file: 'xe_link',
             alt: 'alt',
             description: 'longDesc'
         };
 
-        let values = {};
+        const values = {};
         for (const attr of Object.keys(attrs)) {
             values[attr] = this.selectedImage.getAttribute(attrs[attr]);
         }

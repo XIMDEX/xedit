@@ -18,14 +18,14 @@ import { CommonModule } from '@angular/common';
 import { ToolbarI } from '@app/models/interfaces/ToolbarI';
 
 @Component({
-    selector: 'runtime-html-compiler',
+    selector: 'app-runtime-html-compiler',
     template: `
         <div #container></div>
     `
 })
-export class RuntimeHtmlCompiler implements OnInit, OnDestroy {
+export class RuntimeHtmlCompilerComponent implements OnInit, OnDestroy {
     @Output() selectNode: EventEmitter<string> = new EventEmitter();
-    @Output() onChange: EventEmitter<{}> = new EventEmitter();
+    @Output() change: EventEmitter<{}> = new EventEmitter();
     @Output() toolbar: EventEmitter<{}> = new EventEmitter();
 
     @Input() xe_uuid: string;
@@ -36,7 +36,7 @@ export class RuntimeHtmlCompiler implements OnInit, OnDestroy {
 
     @ViewChild('container', { read: ViewContainerRef }) container: ViewContainerRef;
 
-    protected selector: string = 'runtime-html';
+    protected selector = 'runtime-html';
     // protected runtimeCompClass: any = RuntimeComponent;
     protected compRef: ComponentRef<{}>;
     protected module: ModuleWithComponentFactories<any>;
@@ -57,7 +57,7 @@ export class RuntimeHtmlCompiler implements OnInit, OnDestroy {
     }
 
     changeContent(data: {}) {
-        this.onChange.emit(data);
+        this.change.emit(data);
     }
 
     changeToolbar(toolbar: Array<ToolbarI>) {
@@ -79,7 +79,7 @@ export class RuntimeHtmlCompiler implements OnInit, OnDestroy {
         const metadata = {
             selector: this.selector,
             template: this.html,
-            outputs: ['selectNode', 'onChange', 'toolbar'],
+            outputs: ['selectNode', 'change', 'toolbar'],
             inputs: ['xeUuid']
         };
 
@@ -88,11 +88,11 @@ export class RuntimeHtmlCompiler implements OnInit, OnDestroy {
         return this.load(metadata);
     }
 
-    public viewRef(compFactory: ComponentFactory<any>): RuntimeHtmlCompiler {
+    public viewRef(compFactory: ComponentFactory<any>): RuntimeHtmlCompilerComponent {
         this.compRef = this.container.createComponent(compFactory);
 
         this.compRef.instance['selectNode'].subscribe($event => this.changeSelection($event));
-        this.compRef.instance['onChange'].subscribe($event => this.changeContent($event));
+        this.compRef.instance['change'].subscribe($event => this.changeContent($event));
         this.compRef.instance['toolbar'].subscribe($event => this.changeToolbar($event));
 
         this.setComponentProps({ data: this.data });
@@ -101,7 +101,7 @@ export class RuntimeHtmlCompiler implements OnInit, OnDestroy {
     }
 
     public setComponentProps(props: object) {
-        for (const prop in props) {
+        for (const prop of Object.keys(props)) {
             this.compRef.instance[prop] = props[prop];
         }
     }
@@ -120,7 +120,7 @@ export class RuntimeHtmlCompiler implements OnInit, OnDestroy {
                 public selected: string;
 
                 public selectNode: EventEmitter<string> = new EventEmitter();
-                public onChange: EventEmitter<{}> = new EventEmitter();
+                public change: EventEmitter<{}> = new EventEmitter();
                 public toolbar: EventEmitter<Array<ToolbarI>> = new EventEmitter();
 
                 changeSelection(uuid: string) {
@@ -129,7 +129,7 @@ export class RuntimeHtmlCompiler implements OnInit, OnDestroy {
                 }
 
                 changeContent(data: {}) {
-                    this.onChange.emit(data);
+                    this.change.emit(data);
                 }
 
                 changeToolbar(toolbarOptions: Array<ToolbarI>) {

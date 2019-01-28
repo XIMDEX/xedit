@@ -1,22 +1,18 @@
 <div class="css">
-    <ng-container *ngFor="let css of cssLinks">
-        <link rel="stylesheet" [href]="addHttp(css) | url">
-    </ng-container>
+    <ng-container *ngFor="let css of cssLinks"> <link rel="stylesheet" [href]="addHttp(css) | url" /> </ng-container>
 </div>
 <div>
     <ng-container *ngFor="let node of content">
         <div *ngIf="node.editable; else no_editable">
-            <runtime-html-compiler
+            <app-runtime-html-compiler
                 [xe_uuid]="node.node"
                 [html]="node.html"
                 [data]="node.data"
                 (selectNode)="changeSelection($event)"
-                (onChange)="changeContent($event)"
+                (change)="changeContent($event)"
                 (toolbar)="changeToolbar($event)"
-            ></runtime-html-compiler>
+            ></app-runtime-html-compiler>
         </div>
-        <ng-template #no_editable>
-            <div class="no-editable" [innerHTML]="node.html | safeHtml"></div>
-        </ng-template>
+        <ng-template #no_editable> <div class="no-editable" [innerHTML]="node.html | safeHtml"></div> </ng-template>
     </ng-container>
 </div>

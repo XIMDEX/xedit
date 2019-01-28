@@ -26,9 +26,14 @@ export class AppComponent implements OnInit, OnDestroy {
     public isOpen = false;
     public handleSelect;
 
-    constructor(private _editorService: EditorService, private _stateService: StateService, public http: HttpClient,
-        private route: ActivatedRoute, private cdRef: ChangeDetectorRef, private _damService: DamService) { }
-
+    constructor(
+        private _editorService: EditorService,
+        private _stateService: StateService,
+        public http: HttpClient,
+        private route: ActivatedRoute,
+        private cdRef: ChangeDetectorRef,
+        private _damService: DamService
+    ) {}
 
     /************************************** Life Cycle **************************************/
     ngOnInit() {
@@ -49,7 +54,10 @@ export class AppComponent implements OnInit, OnDestroy {
             if (!isNil(Xedit.getData()) && Xedit.getData() !== '') {
                 this.setDocument(Xedit.getData());
             } else {
-                this.getDocument(Xedit.getDocument().id, hasIn('view', Xedit.getDocument()) ? Xedit.getDocument().view : null);
+                this.getDocument(
+                    Xedit.getDocument().id,
+                    hasIn('view', Xedit.getDocument()) ? Xedit.getDocument().view : null
+                );
             }
         } else {
             this.route.queryParams.subscribe(_params => {
@@ -73,11 +81,9 @@ export class AppComponent implements OnInit, OnDestroy {
                     delete params['token[field]'];
                     delete params['token[value]'];
                     this.getMapper(url, params, type);
-
                 }
             });
         }
-
     }
 
     ngOnDestroy() {
@@ -92,13 +98,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
     /************************************** Private Methods **************************************/
     private getMapper(url, params, view) {
-
         const error = () => {
             console.log('error');
             this._editorService.setLoading(false);
         };
 
-        const success = (result) => {
+        const success = result => {
             if (hasIn('status', result) && result.status === 0) {
                 window['$xedit'] = result.response;
                 this.getDocument(params.id, view);
@@ -112,13 +117,12 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     private getDocument(id, view) {
-
         const error = () => {
             console.log('error');
             this._editorService.setLoading(false);
         };
 
-        const success = (result) => {
+        const success = result => {
             if (hasIn('status', result) && result.status === 0) {
                 this.setDocument(result.response, view != null ? view : null);
             } else {
@@ -136,7 +140,7 @@ export class AppComponent implements OnInit, OnDestroy {
         }
 
         this._editorService.createFile(nodes);
-        this._stateService.setAvailableViews(['metadata', 'wysiwyg', 'ckeditor','text']);
+        this._stateService.setAvailableViews(['metadata', 'wysiwyg', 'ckeditor', 'text']);
         this._stateService.setCurrentView(view);
         this._editorService.setLoading(false);
     }
@@ -150,5 +154,4 @@ export class AppComponent implements OnInit, OnDestroy {
         this.isOpen = !this.isOpen;
         this.cdRef.detectChanges();
     }
-
 }

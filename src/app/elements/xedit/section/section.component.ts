@@ -9,21 +9,19 @@ import { DOM } from '../../../models/dom';
     styleUrls: ['./section.component.scss']
 })
 export class SectionComponent extends XeditBaseComponent implements OnInit, OnChanges {
-
-    public static hasSlot: boolean = true;
+    public static hasSlot = true;
 
     constructor(public host: ElementRef) {
         super();
     }
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
     ngOnChanges({ selected }: SimpleChanges) {
         if (!isNil(selected) && selected.currentValue !== selected.previousValue) {
             const element = new DOM(this.host.nativeElement.querySelector('[xe_section]'));
             if (this.isSelected()) {
-                element.addClass('xe_selected')
+                element.addClass('xe_selected');
             } else {
                 element.removeClass('xe_selected');
             }
@@ -37,5 +35,4 @@ export class SectionComponent extends XeditBaseComponent implements OnInit, OnCh
         this.selectNode.emit(uuid);
         this.toolbar.emit(null);
     }
-
 }

@@ -1,4 +1,14 @@
-import { Component, Input, ViewChild, ElementRef, OnChanges, SimpleChanges, ViewEncapsulation, EventEmitter, Output } from '@angular/core';
+import {
+    Component,
+    Input,
+    ViewChild,
+    ElementRef,
+    OnChanges,
+    SimpleChanges,
+    ViewEncapsulation,
+    EventEmitter,
+    Output
+} from '@angular/core';
 import Cropper from 'cropperjs';
 import { isNil, empty } from 'ramda';
 import { CanvasCropperResult } from 'lib/images';
@@ -10,13 +20,12 @@ import { CanvasCropperResult } from 'lib/images';
     encapsulation: ViewEncapsulation.None
 })
 export class CropperjsComponent implements OnChanges {
-
     @ViewChild('image') image: ElementRef;
 
     @Input() src: string;
     @Input() options: {} = {};
     @Input() cropbox: Cropper.CropBoxData;
-    @Input() containerSize: { width: string | number, height: string | number };
+    @Input() containerSize: { width: string | number; height: string | number };
     @Input() canvasData: Cropper.CanvasData = null;
 
     @Output() change = new EventEmitter<CanvasCropperResult | Cropper.CanvasData>();
@@ -28,7 +37,7 @@ export class CropperjsComponent implements OnChanges {
         marker: true,
         counter: 0,
         counter1: 0
-    }
+    };
 
     constructor() {}
 
@@ -67,8 +76,7 @@ export class CropperjsComponent implements OnChanges {
                 if (this.canvasData) {
                     this.cropperjs.setCanvasData(this.canvasData);
                 }
-            })
-
+            });
         } else {
             this.cropperjs.replace(this.src);
         }
@@ -85,7 +93,7 @@ export class CropperjsComponent implements OnChanges {
     }
 
     getImage(): HTMLImageElement {
-        return this.image.nativeElement as HTMLImageElement
+        return this.image.nativeElement as HTMLImageElement;
     }
 
     cover() {
@@ -93,18 +101,21 @@ export class CropperjsComponent implements OnChanges {
     }
 
     contain() {
-       this.calculateImageWith()
+        this.calculateImageWith();
     }
 
-    private calculateImageWith(isCover:boolean = false){
-
+    private calculateImageWith(isCover: boolean = false) {
         const width = this.image.nativeElement.width;
-        const height = this.image.nativeElement.height
-        const ap = (width / this.canvasData.width) / ( height / this.canvasData.height)
-        let newWidth = this.canvasData.width;
+        const height = this.image.nativeElement.height;
+        let { width: coWidth, height: coHeight } = this.containerSize;
+        coWidth = typeof coWidth === 'string' ? Number(coWidth.replace('px', '')) : coWidth;
+        coHeight = typeof coHeight === 'string' ? Number(coHeight.replace('px', '')) : coHeight;
+
+        const ap = width / coWidth / (height / coHeight);
+        let newWidth = coWidth;
 
         if (isCover ? ap > 1 : ap < 1) {
-            const coe = height / this.canvasData.height;
+            const coe = height / coHeight;
             newWidth = width / coe;
         }
 
@@ -124,13 +135,13 @@ export class CropperjsComponent implements OnChanges {
             zoomable: false,
             viewMode: 1,
             checkCrossOrigin: true,
-            background: true,
+            background: true
         };
 
         return {
             ...defaults,
             ...this.options
-        }
+        };
     }
 
     protected zoomAct() {

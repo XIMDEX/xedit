@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { clone, isNil, reduce, is, contains, hasIn } from 'ramda';
+import { isNil, reduce, is, contains, hasIn } from 'ramda';
 
 import { File } from '@models/file';
 import { Node } from '@models/node';

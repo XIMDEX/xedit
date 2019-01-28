@@ -33,7 +33,6 @@
 }
 .tabs-title:hover {
     cursor: pointer;
-
 }
 .tab-container {
     display: flex;
@@ -42,12 +41,12 @@
 }
 
 .single-cont {
-    width:100%;
+    width: 100%;
     padding-top: 1em;
     display: grid;
     flex-wrap: wrap;
     justify-content: center;
-    grid-template-columns: repeat(auto-fill, 40rem);
+    /* grid-template-columns: repeat(auto-fill, 40rem); */
     height: 100%;
     grid-template-rows: 10rem;
     align-items: center;

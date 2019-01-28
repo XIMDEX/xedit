@@ -132,7 +132,7 @@ export class EditorViewComponent implements OnInit, OnDestroy {
                 data: null
             };
 
-            let componentData = {};
+            const componentData = {};
 
             const contentHtml = !result.editable
                 ? Converters.json2html(data, true, true, false, false)

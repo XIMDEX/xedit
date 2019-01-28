@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, ElementRef, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
 import { equals, merge, isNil } from 'ramda';
 import htmlTagValidator from 'html-tag-validator';
 import { Toolbar } from '../../models/toolbar';
@@ -13,15 +13,19 @@ import { ToolbarI } from '@app/models/interfaces/ToolbarI';
 @Component({
     selector: 'app-editor',
     templateUrl: './editor.component.html',
-    styleUrls: ['./editor.component.scss'],
+    styleUrls: ['./editor.component.scss']
 })
 export class EditorComponent implements OnInit, AfterViewChecked {
-
     private currentView: string;
     private clipboardConfigs: ClipboardConfigs;
     private cConfigs: Array<Object>;
 
-    constructor(private _stateService: StateService, private _editorService: EditorService, private _elementRef: ElementRef) { }
+    constructor(
+        private _stateService: StateService,
+        private _editorService: EditorService,
+        private _elementRef: ElementRef,
+        private _cdf: ChangeDetectorRef
+    ) {}
 
     ngOnInit() {
         // Suscribe view state
@@ -34,6 +38,7 @@ export class EditorComponent implements OnInit, AfterViewChecked {
 
     ngAfterViewChecked() {
         this.cConfigs = this.clipboardConfigs.getConfigs();
+        this._cdf.detectChanges();
     }
 
     setCurrentNode(uuid: string) {
@@ -48,7 +53,9 @@ export class EditorComponent implements OnInit, AfterViewChecked {
     }
 
     setCurrentToolbar(toolbar: Array<ToolbarI>) {
-        const options = isNil(toolbar) ? null : toolbar.map(({ icon, callback, active}) => new Toolbar(icon, callback, active));
+        const options = isNil(toolbar)
+            ? null
+            : toolbar.map(({ icon, callback, active }) => new Toolbar(icon, callback, active));
         this._editorService.setToolbarOptions(options);
     }
 
@@ -69,16 +76,19 @@ export class EditorComponent implements OnInit, AfterViewChecked {
      *
      */
     static executeIfvalidateHtmlTags(content, callback, errorCallback, options = {}) {
-        options = merge({
-            settings: {
-                format: 'html', // 'plain', 'html', or 'markdown'
-            },
-            attributes: {
-                '_': {
-                    mixed: /.*/
+        options = merge(
+            {
+                settings: {
+                    format: 'html' // 'plain', 'html', or 'markdown'
+                },
+                attributes: {
+                    _: {
+                        mixed: /.*/
+                    }
                 }
-            }
-        }, options);
+            },
+            options
+        );
 
         htmlTagValidator(content, options, (err, ast) => {
             if (err) {
@@ -125,5 +135,4 @@ export class EditorComponent implements OnInit, AfterViewChecked {
     static checkIfContentChange(currentFile, file) {
         return isNil(currentFile) || (!isNil(file) && currentFile.getState().getHash() !== file.getState().getHash());
     }
-
 }

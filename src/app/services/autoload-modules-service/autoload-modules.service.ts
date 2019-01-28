@@ -34,7 +34,7 @@ export class AutoloadModulesService {
         return moduleItem;
     }
 
-    getModules() : object {
+    getModules(): object {
         return this.modules;
     }
 }

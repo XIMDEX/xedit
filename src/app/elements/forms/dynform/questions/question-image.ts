@@ -8,12 +8,8 @@ export class ImageQuestion extends QuestionBase<string> {
     callback: any;
 
     /**@ignore */
-    constructor(
-        options: {} = {},
-        callback?: any, 
-    ) {
+    constructor(options: {} = {}, callback?: any) {
         super(options);
         this.set(options, 'callback', 'modal-1');
     }
-    
 }

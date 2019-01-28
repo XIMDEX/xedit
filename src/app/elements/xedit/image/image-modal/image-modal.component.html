@@ -1,15 +1,13 @@
-<ngx-smart-modal 
+<ngx-smart-modal
     class="xe_modal"
-    #imageModal 
+    #imageModal
     identifier="imageModal"
     [closable]="false"
     (onDataAdded)="setFormData($event)"
     (onDataRemoved)="cleanFormData($event)"
 >
-    <div class="header xe_modal_content">
-        Media Manager
-    </div>
-    <div class="body xe_modal_content">
+    <div class="header xe_modal_content">Media Manager</div>
+    <div class="body xe_modal_content" *ngIf="file">
         <edit-image
             *ngIf="hasImagePath()"
             [style]="size"
@@ -17,88 +15,29 @@
             [cropData]="cropData"
             (change)="imageData($event)"
         ></edit-image>
-        <div
-            class="xe_form_input"
-        >
-            <label
-                class="xe_form_input_label"
-            >
-                Enlace
-            </label>
-            <div
-                class="xe_form_input_value"
-            >
-                <input
-                    type="text"
-                    [(ngModel)]="file"
-                >
-                <button
-                    (click)="openMediaManager()"
-                >
-                    <fa-icon [icon]="searchIcon"></fa-icon>
-                </button>
+        <div class="xe_form_input">
+            <label class="xe_form_input_label"> Enlace </label>
+            <div class="xe_form_input_value">
+                <input type="text" [(ngModel)]="file" />
+                <button (click)="openMediaManager()"><fa-icon [icon]="searchIcon"></fa-icon></button>
             </div>
         </div>
-        <div
-            class="xe_form_input"
-        >
-            <label
-                class="xe_form_input_label"
-            >
-                Nombre
-            </label>
-            <label
-                class="xe_form_input_value"
-            >
-                {{ fileName() }}
-            </label>
+        <div class="xe_form_input">
+            <label class="xe_form_input_label"> Nombre </label>
+            <label class="xe_form_input_value"> {{ fileName() }} </label>
         </div>
-        <div
-            class="xe_form_input"
-        >
-            <label
-                class="xe_form_input_label"
-            >
-                Ruta
-            </label>
-            <label
-                class="xe_form_input_value"
-            >
-                {{ fileRoute() }}
-            </label>
+        <div class="xe_form_input">
+            <label class="xe_form_input_label"> Ruta </label>
+            <label class="xe_form_input_value"> {{ fileRoute() }} </label>
         </div>
-        <div
-            class="xe_form_input"
-        >
-            <label
-                class="xe_form_input_label"
-            >
-                Alternativo
-            </label>
-            <input 
-                class="xe_form_input_value"
-                type="text"
-            >
+        <div class="xe_form_input">
+            <label class="xe_form_input_label"> Alternativo </label> <input class="xe_form_input_value" type="text" />
         </div>
-        <div
-            class="xe_form_input"
-        >
-            <label
-                class="xe_form_input_label"
-            >
-                Descripcion
-            </label>
-            <textarea
-                class="xe_form_input_value"
-            ></textarea>
+        <div class="xe_form_input">
+            <label class="xe_form_input_label"> Descripcion </label> <textarea class="xe_form_input_value"></textarea>
         </div>
     </div>
     <div class="footer xe_modal_content">
-        <button
-            (click)="setImage(imageModal)"
-        >
-            Aceptar
-        </button>
-        <button (click)="closeModal(imageModal)">Cerrar</button>
+        <button (click)="setImage(imageModal)">Aceptar</button> <button (click)="closeModal(imageModal)">Cerrar</button>
     </div>
 </ngx-smart-modal>

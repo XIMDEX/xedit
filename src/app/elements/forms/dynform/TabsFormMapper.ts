@@ -12,7 +12,6 @@ import { ImageQuestion } from './questions/question-image';
  * for uploading or editing resources.
  */
 export default class TabsFormMapper {
-
     hasSections: Boolean = false;
     /**
      * The extracted forms as a dict
@@ -77,7 +76,7 @@ export default class TabsFormMapper {
         const localForm = this.getForms();
         this.title = localForm.title;
         this.tabs = this.handleTabs(localForm.tabs);
-      }
+    }
 
     /**@ignore */
     private getValue(field: Object, key: string, _default: any = ''): any {
@@ -108,13 +107,13 @@ export default class TabsFormMapper {
         let fields: QuestionBase<Object>[] = null;
         this.hasSections = hasIn('sections', rawTabs[0]);
         if (!this.hasSections) {
-            tabs = rawTabs.map( (tab) => {
+            tabs = rawTabs.map(tab => {
                 fields = this.handleForm(tab.fields, asset);
-                return {title: tab.title, questions: fields};
+                return { title: tab.title, questions: fields };
             });
         } else {
             let sections;
-            tabs = rawTabs.map((tab) => {
+            tabs = rawTabs.map(tab => {
                 sections = this.handleSections(tab.sections, asset);
                 return { title: tab.title, sections: sections };
             });
@@ -124,7 +123,7 @@ export default class TabsFormMapper {
 
     handleSections(rawSections, asset) {
         let fields: QuestionBase<Object>[] = null;
-        const sections = rawSections.map((section) => {
+        const sections = rawSections.map(section => {
             fields = this.handleForm(section.fields, asset);
             return { title: section.title, questions: fields };
         });
@@ -139,7 +138,7 @@ export default class TabsFormMapper {
     handleForm(raw, asset = null) {
         const newFields = raw.map(field => {
             let object = null;
-            if ( !isNil( asset ) ) {
+            if (!isNil(asset)) {
                 const key = hasIn('realName', field.object) ? field.object.realName : field.object.key;
                 field.object.val = this.getValue(asset, key);
             }
@@ -155,11 +154,11 @@ export default class TabsFormMapper {
             } else if (field.object.type === 'text-area') {
                 object = new TextAreaQuestion(field.object);
             } else if (field.object.type === 'image') {
-                object = new ImageQuestion(field.object)
+                object = new ImageQuestion(field.object);
             }
             return object;
         });
-        return newFields.sort( (a, b) => a.order - b.order );
+        return newFields.sort((a, b) => a.order - b.order);
     }
 
     /**
@@ -183,7 +182,6 @@ export default class TabsFormMapper {
      * prioritising the window object.
      */
     private init(formSchema) {
-        this.setForms(formSchema)
-            .initForm();
+        this.setForms(formSchema).initForm();
     }
 }

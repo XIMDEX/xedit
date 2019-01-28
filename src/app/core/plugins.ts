@@ -1,11 +1,9 @@
-
 import { isNil } from 'ramda';
-import { Api } from "@app/api";
-import { HttpClient } from "@angular/common/http";
+import { Api } from '@app/api';
+import { HttpClient } from '@angular/common/http';
 import Router from './mappers/router';
 
 export class Plugins {
-
     static MediaManagerUrl(id) {
         return Router.configUrl(Api.getResourceUrl(), { id: id });
     }
