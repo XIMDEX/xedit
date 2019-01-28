@@ -54,8 +54,8 @@ import { RuntimeHtmlCompilerComponent } from './core/runtime-html-compiler/runti
 
 import { PropertiesToolbarComponent } from './components/editor/properties-area/properties-toolbar/properties-toolbar.component';
 import { ImageModalComponent } from './elements/xedit/image/image-modal/image-modal.component';
-import { RuntimeModule } from './core/runtime-html-compiler/runtime-module';
 import { ImagesModule } from 'lib/images';
+import { SafeHtmlPipe } from './pipes/inner-html/safe-html.pipe';
 
 @NgModule({
     declarations: [
@@ -86,7 +86,8 @@ import { ImagesModule } from 'lib/images';
         EditorViewComponent,
         RuntimeHtmlCompilerComponent,
         PropertiesToolbarComponent,
-        ImageModalComponent
+        ImageModalComponent,
+        SafeHtmlPipe
     ],
     imports: [
         /* 3rd party components */
@@ -107,7 +108,6 @@ import { ImagesModule } from 'lib/images';
         NgxSmartModalModule.forRoot(),
         FontAwesomeModule,
         DynFormModule,
-        RuntimeModule,
         ImagesModule
     ],
     providers: [EditorService, StateService, DamService, AutoloadModulesService],

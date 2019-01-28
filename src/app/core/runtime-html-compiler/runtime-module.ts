@@ -10,7 +10,7 @@ import { TinyMCEComponent } from '@app/elements/xedit/tiny-mce/tiny-mce.componen
 
 @NgModule({
     imports: [CommonModule, CKEditorModule, EditorModule],
-    declarations: [SectionComponent, CkeditorComponent, ImageComponent, SafeHtmlPipe, TinyMCEComponent],
-    exports: [CkeditorComponent, ImageComponent, SectionComponent, SafeHtmlPipe, TinyMCEComponent]
+    declarations: [SectionComponent, CkeditorComponent, ImageComponent, TinyMCEComponent],
+    exports: [CkeditorComponent, ImageComponent, SectionComponent, TinyMCEComponent]
 })
 export class RuntimeModule {}
