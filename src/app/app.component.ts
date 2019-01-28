@@ -19,11 +19,9 @@ export class AppComponent implements OnInit, OnDestroy {
     title = 'app';
 
     private loadingSuscribe: Subscription;
-    private isOpenSuscribe: Subscription;
     private handleSelectSuscribe: Subscription;
 
     public loading: boolean;
-    public isOpen = false;
     public handleSelect;
 
     constructor(
@@ -37,10 +35,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
     /************************************** Life Cycle **************************************/
     ngOnInit() {
-        this.isOpenSuscribe = this._damService.isOpen().subscribe(open => {
-            this.isOpen = open;
-        });
-
         this.handleSelectSuscribe = this._damService.getOnSelect().subscribe(onSelect => {
             this.handleSelect = onSelect;
         });
@@ -60,7 +54,7 @@ export class AppComponent implements OnInit, OnDestroy {
                 );
             }
         } else {
-            this.route.queryParams.subscribe(_params => {
+            this.route.queryParams.skip(1).subscribe(_params => {
                 const params = Object.assign({}, _params);
                 if (isNil(params['token[field]']) || isNil(params['token[value]'])) {
                     console.log('Not authentication');
@@ -88,7 +82,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.loadingSuscribe.unsubscribe();
-        this.isOpenSuscribe.unsubscribe();
         this.handleSelectSuscribe.unsubscribe();
     }
 
@@ -143,15 +136,5 @@ export class AppComponent implements OnInit, OnDestroy {
         this._stateService.setAvailableViews(['metadata', 'wysiwyg', 'ckeditor', 'text']);
         this._stateService.setCurrentView(view);
         this._editorService.setLoading(false);
-    }
-
-    public closeModal(evt) {
-        if (!evt) {
-            this._damService.setIsOpen(false);
-        }
-    }
-    public toggleOpen() {
-        this.isOpen = !this.isOpen;
-        this.cdRef.detectChanges();
     }
 }

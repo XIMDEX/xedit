@@ -101,11 +101,13 @@ export class EditorViewComponent implements OnInit, OnDestroy {
                 Api.getInfoNode(this.http, selectedId, type, setData, errorCallback, extra);
             },
             callback: ({ type, setData }) => {
-                this._damService.setIsOpen(true);
+                this._damService.setOpen({
+                    type: type
+                });
                 this._damService.setOnSelect(item => {
                     if (!isNil(item)) {
                         Api.getInfoNode(this.http, item.hash, type, setData, null, null);
-                        this._damService.setIsOpen(false);
+                        this._damService.close();
                     }
                 });
             }

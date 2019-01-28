@@ -1,4 +1,4 @@
-import { isNil, hasIn } from 'ramda';
+import { isNil, hasIn, mergeDeepRight } from 'ramda';
 import { standard } from '../profiles/standard';
 import { light } from '../profiles/light';
 
@@ -7,7 +7,6 @@ import { light } from '../profiles/light';
  * configuration given the active profile.
  */
 export default class ConfigMapper {
-
     /**
      * The general configuration for the application
      */
@@ -19,13 +18,16 @@ export default class ConfigMapper {
     /**
      * The currently selected profile
      */
-    private currentProfile = 'standard';
+    private currentProfile = {
+        configs: null,
+        general: null
+    };
     /**
      * The available profiles
      */
     private profiles: Object = {
-        'standard': standard,
-        'light': light
+        standard: standard,
+        light: light
     };
 
     /**@ignore */
@@ -35,10 +37,7 @@ export default class ConfigMapper {
 
     /**@ignore */
     setCurrentProfile(profile) {
-        let current = 'standard';
-        if (hasIn(profile, this.profiles)) {
-            current = profile;
-        }
+        profile = hasIn(profile, this.profiles) ? profile : 'standard';
         this.currentProfile = this.profiles[profile];
         return this;
     }
@@ -46,7 +45,8 @@ export default class ConfigMapper {
     /**@ignore */
     setConfigs(configs) {
         this.generalConfigs = configs.general;
-        this.componentConfigs = configs.components;
+        this.componentConfigs = mergeDeepRight(this.currentProfile.configs.components, configs.components);
+        //this.componentConfigs = Object.assign({}, this.currentProfile.configs.components, configs.components);
         return this;
     }
 
@@ -61,13 +61,15 @@ export default class ConfigMapper {
      * @returns {Object} The configs object
      */
     getComponentConfigs(component = null) {
+        let configs = null;
+
         if (isNil(component)) {
-            return this.componentConfigs;
+            configs = this.componentConfigs;
         } else if (hasIn(component, this.componentConfigs)) {
-            return this.componentConfigs[component];
-        } else {
-            return null;
+            configs = this.componentConfigs[component];
         }
+
+        return configs;
     }
 
     /**
@@ -85,5 +87,4 @@ export default class ConfigMapper {
 
         this.setConfigs(result.configs);
     }
-
 }

@@ -13,7 +13,6 @@ import isUrl from 'is-valid-http-url';
     encapsulation: ViewEncapsulation.None
 })
 export class ImageModalComponent implements OnInit {
-
     public searchIcon = faSearch;
 
     public file = '';
@@ -27,17 +26,16 @@ export class ImageModalComponent implements OnInit {
     private imageStyle: any;
     public cropData: Cropper.CanvasData = null;
 
-    constructor(private _damService: DamService, private http: HttpClient) { }
+    constructor(private _damService: DamService, private http: HttpClient) {}
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
     imagePath() {
         let path: string = null;
         if (!isNil(this.file)) {
             if (isUrl(this.file)) {
                 path = this.file;
-            }else {
+            } else {
                 path = Plugins.MediaManagerUrl(this.file);
             }
         }
@@ -90,8 +88,7 @@ export class ImageModalComponent implements OnInit {
         }
     }
 
-    cleanFormData() {
-    }
+    cleanFormData() {}
 
     setImage(modal) {
         if (modal.hasData()) {
@@ -101,7 +98,7 @@ export class ImageModalComponent implements OnInit {
                 const data = {
                     src: this.imagePath(),
                     xe_link: this.file,
-                    style: this.imageStyle,
+                    style: this.imageStyle
                 };
                 save(data);
             }
@@ -120,14 +117,16 @@ export class ImageModalComponent implements OnInit {
     }
 
     openMediaManager() {
-        this._damService.setIsOpen(true);
+        this._damService.setOpen({
+            type: 'image'
+        });
         this._damService.setOnSelect(data => {
             Plugins.MediaMAnagerSelect(data, this.http, this.setImageData.bind(this));
-            this._damService.setIsOpen(false);
+            this._damService.close();
         });
     }
 
-    private setImageData({name, nodeid, path}) {
+    private setImageData({ name, nodeid, path }) {
         this.file = nodeid;
         this.name = name;
         this.src = Object.values(path).join('/');
@@ -135,6 +134,6 @@ export class ImageModalComponent implements OnInit {
 }
 
 interface Dimesion {
-    width: Number;
-    height: Number;
+    width: number;
+    height: number;
 }

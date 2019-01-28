@@ -53,6 +53,7 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit {
             !isNil(bookmark) &&
             hasIn('start', bookmark) &&
             !isNil(bookmark['start']) &&
+            !isNil(beforeBookmark) &&
             hasIn('start', beforeBookmark) &&
             !isNil(beforeBookmark['start'])
         ) {

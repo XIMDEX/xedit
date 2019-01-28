@@ -1,7 +1,6 @@
-<ngx-loading [show]="loading" [config]="{  }"></ngx-loading>
+<ngx-loading [show]="loading" [config]="{}"></ngx-loading>
 <simple-notifications [options]="{}"></simple-notifications>
-<app-taskbar [ngClass]="{embebed: true}"></app-taskbar>
-<app-editor [ngClass]="{embebed: false}"></app-editor>
-<app-dam *ngIf="hasDam()" [popup]="true" [isOpen]="isOpen" (openEmitter)="closeModal($event)" 
-    (onSelect)="handleSelect($event)"></app-dam>
+<app-taskbar [ngClass]="{ embebed: true }"></app-taskbar>
+<app-editor [ngClass]="{ embebed: false }"></app-editor>
+<app-dam *ngIf="hasDam()" [popup]="true" (onSelect)="handleSelect($event)"></app-dam>
 <app-tree-modal></app-tree-modal>
