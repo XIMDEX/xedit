@@ -21,6 +21,7 @@ import { DamService } from '@app/services/dam-service/dam.service';
 import { ToolbarI } from '@app/models/interfaces/ToolbarI';
 import { SectionComponent } from '@app/elements/xedit/section/section.component';
 import { TinyMCEComponent } from '@app/elements/xedit/tiny-mce/tiny-mce.component';
+import { NodeService } from '@app/services/node-service/node.service';
 
 @Component({
     selector: 'app-editor-view',
@@ -44,6 +45,7 @@ export class EditorViewComponent implements OnInit, OnDestroy {
         private _editorService: EditorService,
         private _moduleService: AutoloadModulesService,
         private _damService: DamService,
+        private nodeService: NodeService,
         public http: HttpClient
     ) {}
 
@@ -57,7 +59,8 @@ export class EditorViewComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.subscribeFile.unsubscribe();
         this.subscribeCN.unsubscribe();
-        this._editorService.setCurrentNode(null);
+        // this._editorService.setCurrentNode(null);
+        this.nodeService.set(null);
         this._editorService.setCurrentNodeModify(null);
     }
 
@@ -72,7 +75,7 @@ export class EditorViewComponent implements OnInit, OnDestroy {
             this.content = this.parseContentToWysiwygEditor(file.getState().getContent());
         });
 
-        this.subscribeCN = this._editorService.getCurrentNode().subscribe(currentNode => {
+        this.subscribeCN = this.nodeService.get().subscribe(currentNode => {
             if (
                 !isNil(currentNode) &&
                 (isNil(this.currentNode) ||

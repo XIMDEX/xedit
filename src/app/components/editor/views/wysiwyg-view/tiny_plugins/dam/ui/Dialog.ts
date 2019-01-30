@@ -3,8 +3,6 @@
  */
 
 import Dam from '../core/Dam';
-import { Api } from '@app/api';
-import { HttpClient } from '@angular/common/http';
 
 const ATTRS_BY_TYPE = {
     video: {

@@ -1,5 +1,5 @@
 <ngx-smart-modal
-    class="xe_modal"
+    class="xe_modal xe_editor"
     #imageModal
     identifier="imageModal"
     [closable]="false"
@@ -7,7 +7,7 @@
     (onDataRemoved)="cleanFormData($event)"
 >
     <div class="header xe_modal_content">Media Manager</div>
-    <div class="body xe_modal_content" *ngIf="file">
+    <div class="body xe_modal_content">
         <edit-image
             *ngIf="hasImagePath()"
             [style]="size"

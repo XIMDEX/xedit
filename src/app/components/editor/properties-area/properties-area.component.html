@@ -1,26 +1,27 @@
-<header>
+<header class="xe_editor">
     <div>
         <span>{{ nodeName }}</span>
     </div>
     <aside (click)="toggleMenu()">
-        <i [ngClass]="{'fa': true, 'fa-minus-square': isOpen, 'fa-window-maximize': !isOpen}"></i>
+        <i [ngClass]="{ fa: true, 'fa-minus-square': isOpen, 'fa-window-maximize': !isOpen }"></i>
     </aside>
 </header>
-<div id='toolbar'>
-    <app-properties-toolbar
-        *ngIf="hasToolbarOptions()"
-        [options]="toolbarOptions"
-    ></app-properties-toolbar>
+<div id="toolbar" class="xe_editor">
+    <app-properties-toolbar *ngIf="hasToolbarOptions()" [options]="toolbarOptions"></app-properties-toolbar>
 </div>
-<div>
-    <ng-container *ngFor="let value of configs; let i = index;">
-        <app-listbox [placeholder]="value.name" [selected]="value.selected" [options]="value.options" (changeValue)="updateClipboard($event, value)"></app-listbox>
+<div class="xe_editor">
+    <ng-container *ngFor="let value of configs; let i = index">
+        <app-listbox
+            [placeholder]="value.name"
+            [selected]="value.selected"
+            [options]="value.options"
+            (changeValue)="updateClipboard($event, value)"
+        ></app-listbox>
     </ng-container>
 </div>
-<collapsible-list-item>
-    <collapsible-header class="waves-effect" #toggleCollapsible>
-    </collapsible-header>
+<collapsible-list-item class="xe_editor">
+    <collapsible-header class="waves-effect" #toggleCollapsible> </collapsible-header>
     <collapsible-body [expanded]="isOpen">
-        <app-properties-local *ngIf="'local'===selectedView"></app-properties-local>
+        <app-properties-local *ngIf="'local' === selectedView"></app-properties-local>
     </collapsible-body>
 </collapsible-list-item>

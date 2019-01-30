@@ -33,18 +33,16 @@ declare let tinymce: any;
 
 // DATEPICKER
 import 'bootstrap-datepicker';
-import { isNil, equals, hasIn, isEmpty, union, uniq } from 'ramda';
+import { isNil, equals, hasIn, isEmpty } from 'ramda';
 import { XeditMapper } from '@models/schema/xedit-mapper';
-import { Converters } from '@utils/converters';
 import Router from '../../../../core/mappers/router';
 import { Api } from '@app/api';
 import { ClipboardConfigs } from '@app/models/configs/clipboardConfigs';
 import { StringHelpers } from '@app/core/helpers/string';
+import ToolbarGenerator from '@app/core/generators/toolbar-generator';
+import { TinyMCEComponent } from '@app/elements/xedit/tiny-mce/tiny-mce.component';
 
 export class WysiwygHandler {
-    static STYLES_ALL = 'all';
-    static TAGS_ALL = 'all';
-
     static handlers = {
         date: WysiwygHandler.initDatePicker,
         text: WysiwygHandler.initTinymce
@@ -76,7 +74,7 @@ export class WysiwygHandler {
         ) {
             WysiwygHandler.clearTinymce();
             WysiwygHandler.addPlugins(args.getInfo, args.callback, args.http);
-            const toolbar = WysiwygHandler.generateToolbar(args.node.getSchema());
+            const toolbar = ToolbarGenerator.generate(TinyMCEComponent.toolbarOptions, args.node.getSchema());
             const fixed_toolbar_container = !isEmpty(toolbar) ? '#toolbar' : false;
 
             tinymce.init({
@@ -109,28 +107,6 @@ export class WysiwygHandler {
                                 sibling.removeAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED);
                             }
                         }
-                        /*const element = e.element;
-                        const id = element.getAttribute(XeditMapper.TAG_UUID);
-                        function isParentId(parents, elementId) {
-                            let is = false;
-                            if (!isNil(parents)) {
-                                parents.forEach(parent => {
-                                    if (equals(parent.getAttribute(XeditMapper.TAG_UUID), elementId)) {
-                                        is = true;
-                                        parent.removeAttribute('xe_w_selected');
-                                    }
-                                });
-                            }
-                            return is;
-                        }
-                        if (isNil(id) || isParentId(e.parents, id)) {
-                            element.setAttribute(XeditMapper.TAG_UUID, UUID.UUID());
-                        }*/
-
-                        /*if (!isNil(args.node.getTarget()) && !equals(args.node.getTarget().getAttribute(XeditMapper.TAG_UUID),
-                            element.getAttribute(XeditMapper.TAG_UUID))) {
-                            args.service.setCurrentNode(args.service.parseToNode(element));
-                        }*/
                     });
                     editor.on('Paste', e => {
                         e.preventDefault();
@@ -221,140 +197,6 @@ export class WysiwygHandler {
                 TreeCommands.register(editor, http);
                 TreeButtons.register(editor);
             });
-        }
-    }
-
-    private static generateToolbar(schema) {
-        /*'styleselect | link dam | bold italic underline |  aligncenter alignjustify |' +
-            ' bullist numlist outdent indent |fontsizeselect'*/
-        /*'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify
-        | numlist bullist outdent indent  | removeformat'*/
-        let toolbar = '';
-        if (hasIn('options', schema)) {
-            if (hasIn('styles', schema.options)) {
-                toolbar += this.toolbarStyles(schema.options.styles);
-            }
-
-            if (hasIn('tags', schema.options)) {
-                toolbar += this.toolbarTags(schema.options.tags);
-            }
-        }
-
-        toolbar = toolbar.trim();
-        return !isEmpty(toolbar) ? toolbar : false;
-    }
-
-    private static toolbarStyles(styles: Array<string> | string) {
-        const stylesValue = {};
-        const groups = {
-            group1: {
-                bold: 'bold',
-                italic: 'italic',
-                underline: 'underline',
-                strikethrough: 'strikethrough',
-                color: 'forecolor',
-                background: 'backcolor',
-                math: 'eqneditor'
-            },
-            others: {
-                ol: 'numlist',
-                ul: 'bullist',
-                table: 'table'
-            },
-            align: {
-                alignleft: 'alignleft',
-                aligncenter: 'aligncenter',
-                alignright: 'alignright',
-                alignjustify: 'alignjustify'
-            },
-            indent: {
-                outdent: 'outdent',
-                indent: 'indent'
-            },
-            format: {
-                formatselect: 'formatselect'
-            },
-            font: {
-                fontselect: 'fontselect',
-                fontsize: 'fontsizeselect'
-            }
-        };
-
-        if (typeof styles === 'string') {
-            styles = equals(styles, WysiwygHandler.STYLES_ALL) ? Object.keys(groups) : [];
-        }
-
-        styles.forEach(style => {
-            if (hasIn(style, groups)) {
-                WysiwygHandler.addValue(stylesValue, style, Object.values(groups[style]));
-            } else {
-                for (const group in groups) {
-                    if (hasIn(style, groups[group])) {
-                        WysiwygHandler.addValue(stylesValue, group, [groups[group][style]]);
-                    }
-                }
-            }
-        });
-
-        let result = '';
-        for (const styleValue in stylesValue) {
-            if (!isNil(stylesValue[styleValue])) {
-                result += uniq(stylesValue[styleValue]).join(' ') + ' | ';
-            }
-        }
-
-        return result.replace(/(\s\|\s)$/g, '');
-    }
-
-    private static getToolBarBtns() {
-        const type = Xedit.getDam();
-        return {
-            a: `${type}_link`,
-            img: type,
-            video: `${type}_video`,
-            audio: `${type}_audio`
-        };
-    }
-
-    private static toolbarTags(tags: Array<string> | string) {
-        const tagsValue = {};
-        const groups = {
-            buttons: this.getToolBarBtns(),
-            formats: {}
-        };
-
-        if (typeof tags === 'string') {
-            tags = equals(tags, WysiwygHandler.TAGS_ALL) ? Object.keys(groups) : [];
-        } else {
-            tags = Object.keys(tags);
-        }
-
-        tags.forEach(style => {
-            if (hasIn(style, groups)) {
-                WysiwygHandler.addValue(tagsValue, style, Object.values(groups[style]));
-            } else {
-                for (const group in groups) {
-                    if (hasIn(style, groups[group])) {
-                        WysiwygHandler.addValue(tagsValue, group, [groups[group][style]]);
-                    }
-                }
-            }
-        });
-
-        let result = ' ';
-        for (const tagValue in tagsValue) {
-            if (equals(tagValue, 'buttons')) {
-                result += uniq(tagsValue[tagValue]).join(' ');
-            }
-        }
-        return result;
-    }
-
-    private static addValue(object: Object, property: string, value: Array<string> | string) {
-        if (hasIn(property, object)) {
-            object[property] = union(object[property], value);
-        } else {
-            object[property] = value;
         }
     }
 

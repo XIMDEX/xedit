@@ -9,6 +9,8 @@ import { ClipboardConfigs } from '@models/configs/clipboardConfigs';
 import { EditorService } from '@services/editor-service/editor.service';
 import { StateService } from '@services/state-service/state.service';
 import { ToolbarI } from '@app/models/interfaces/ToolbarI';
+import { NodeService } from '@app/services/node-service/node.service';
+import { NodeFactoryService } from '@app/factories/node-factory.service';
 
 @Component({
     selector: 'app-editor',
@@ -23,6 +25,8 @@ export class EditorComponent implements OnInit, AfterViewChecked {
     constructor(
         private _stateService: StateService,
         private _editorService: EditorService,
+        private nodeService: NodeService,
+        private nodeFactoryService: NodeFactoryService,
         private _elementRef: ElementRef,
         private _cdf: ChangeDetectorRef
     ) {}
@@ -46,10 +50,12 @@ export class EditorComponent implements OnInit, AfterViewChecked {
         if (!isNil(uuid)) {
             const element = this._elementRef.nativeElement.querySelector(`[${XeditMapper.TAG_UUID}='${uuid}']`);
             if (!isNil(element)) {
-                node = this._editorService.parseToNode(element);
+                // node = this._editorService.parseToNode(element);
+                node = this.nodeFactoryService.createFromElement(element);
             }
         }
-        this._editorService.setCurrentNode(node);
+        // this._editorService.setCurrentNode(node);
+        this.nodeService.set(node);
     }
 
     setCurrentToolbar(toolbar: Array<ToolbarI>) {

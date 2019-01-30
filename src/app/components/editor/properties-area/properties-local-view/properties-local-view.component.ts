@@ -6,6 +6,7 @@ import { Node } from '@models/node';
 import { XeditMapper } from '@models/schema/xedit-mapper';
 import { EditorService } from '@services/editor-service/editor.service';
 import { EditorComponent } from '@components/editor/editor.component';
+import { NodeService } from '@app/services/node-service/node.service';
 
 @Component({
     selector: 'app-properties-local',
@@ -13,7 +14,6 @@ import { EditorComponent } from '@components/editor/editor.component';
     styleUrls: ['./properties-local-view.component.scss']
 })
 export class PropertiesLocalViewComponent implements OnInit {
-
     public currentNode: Node;
     private availableAttributes: any;
     private currentProperties: Object;
@@ -45,20 +45,16 @@ export class PropertiesLocalViewComponent implements OnInit {
     private defaultProperty: string;
     private propertiesGroups: Array<string>;
 
-    constructor(private _editorService: EditorService) {
+    constructor(private _editorService: EditorService, private nodeService: NodeService) {
         this.defaultProperty = 'attributes';
-        this.propertiesGroups = [
-            'style',
-            'class',
-            this.defaultProperty
-        ];
+        this.propertiesGroups = ['style', 'class', this.defaultProperty];
     }
 
     ngOnInit() {
         this._editorService.getFileState().subscribe(file => {
             this.file = file;
         });
-        this._editorService.getCurrentNode().subscribe(currentNode => {
+        this.nodeService.get().subscribe(currentNode => {
             if (!isNil(currentNode)) {
                 this.currentNode = currentNode;
                 this.availableAttributes = currentNode.getAvailableAttributes();
@@ -92,7 +88,7 @@ export class PropertiesLocalViewComponent implements OnInit {
     }
 
     changeStyle(value) {
-        const result = value.map((data) => {
+        const result = value.map(data => {
             const key = keys(data)[0];
             return `${key}:${data[key]};`;
         });
@@ -113,9 +109,13 @@ export class PropertiesLocalViewComponent implements OnInit {
     changePropertyValue(property, value) {
         // Modify file with new changes
         const elementContent = this.file.getState().getContent();
-        const editContent = reduce(function (acc, _value) {
-            return acc.child[_value];
-        }, elementContent[this.currentNode.getAreaId()].content, this.currentNode.getPath());
+        const editContent = reduce(
+            function(acc, _value) {
+                return acc.child[_value];
+            },
+            elementContent[this.currentNode.getAreaId()].content,
+            this.currentNode.getPath()
+        );
 
         const hasAttr = has('attr');
 
@@ -131,7 +131,7 @@ export class PropertiesLocalViewComponent implements OnInit {
 
         // Update current node
         this.currentNode.setAttribute(property, value);
-        this._editorService.setCurrentNode(this.currentNode);
+        // this._editorService.setCurrentNode(this.currentNode);
         this._editorService.setCurrentNodeModify(this.currentNode);
     }
 }

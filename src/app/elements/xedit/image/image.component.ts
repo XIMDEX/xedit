@@ -2,16 +2,7 @@ import { XeditBaseComponent } from '../xedit.base.component';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { isNil, hasIn } from 'ramda';
 import { faImage } from '@fortawesome/free-solid-svg-icons';
-import {
-    Component,
-    OnInit,
-    ViewChild,
-    ElementRef,
-    HostListener,
-    AfterViewInit,
-    OnChanges,
-    SimpleChanges
-} from '@angular/core';
+import { Component, OnInit, ElementRef, HostListener, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
 import { ToolbarI } from '@app/models/interfaces/ToolbarI';
 import { DOM } from '@app/models/dom';
 

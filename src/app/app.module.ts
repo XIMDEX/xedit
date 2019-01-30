@@ -56,6 +56,8 @@ import { PropertiesToolbarComponent } from './components/editor/properties-area/
 import { ImageModalComponent } from './elements/xedit/image/image-modal/image-modal.component';
 import { ImagesModule } from 'lib/images';
 import { SafeHtmlPipe } from './pipes/inner-html/safe-html.pipe';
+import { NodeService } from './services/node-service/node.service';
+import { NodeFactoryService } from './factories/node-factory.service';
 
 @NgModule({
     declarations: [
@@ -110,7 +112,7 @@ import { SafeHtmlPipe } from './pipes/inner-html/safe-html.pipe';
         DynFormModule,
         ImagesModule
     ],
-    providers: [EditorService, StateService, DamService, AutoloadModulesService],
+    providers: [EditorService, StateService, DamService, AutoloadModulesService, NodeService, NodeFactoryService],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

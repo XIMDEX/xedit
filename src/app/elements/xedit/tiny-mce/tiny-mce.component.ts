@@ -1,30 +1,62 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { XeditBaseComponent } from '../xedit.base.component';
 import { EditorService } from '@app/services/editor-service/editor.service';
 import { ClipboardConfigs } from '@app/models/configs/clipboardConfigs';
 import { StringHelpers } from '@app/core/helpers/string';
 import { XeditMapper } from '@app/models/schema/xedit-mapper';
 import { isNil, hasIn } from 'ramda';
+import ToolbarGenerator from '@app/core/generators/toolbar-generator';
+import { toolbarOptions } from './toolbar-mapper';
+
+import '@components/editor/views/wysiwyg-view/tiny_plugins/dam';
+import { DamService } from '@app/services/dam-service/dam.service';
+import { Subscription } from 'rxjs';
+import { NgxSmartModalService } from 'ngx-smart-modal';
+import { NodeService } from '@app/services/node-service/node.service';
 
 @Component({
     selector: 'app-tiny-mce',
     templateUrl: './tiny-mce.component.html',
     styleUrls: ['./tiny-mce.component.scss']
 })
-export class TinyMCEComponent extends XeditBaseComponent implements OnInit {
-    private currentNode: Node;
-    private clipboardConfigs: ClipboardConfigs;
-    configs: object;
-
+export class TinyMCEComponent extends XeditBaseComponent implements OnInit, OnDestroy {
+    public static toolbarOptions = toolbarOptions;
+    public configs: object;
     private currentElement;
+    private clipboardConfigs: ClipboardConfigs;
 
-    constructor(private editorService: EditorService) {
+    private subscribeCNM: Subscription;
+
+    constructor(
+        private editorService: EditorService,
+        private nodeService: NodeService,
+        private ngxModal: NgxSmartModalService
+    ) {
         super();
         this.clipboardConfigs = new ClipboardConfigs();
-        this.configs = this.getConfigs();
     }
 
-    ngOnInit() {}
+    ngOnInit() {
+        this.configs = this.getConfigs();
+
+        // Suscribe to node change
+        this.subscribeCNM = this.editorService.getCurrentNodeModify().subscribe(currentNode => {
+            if (
+                currentNode.getAttribute(XeditMapper.TAG_UUID) ===
+                this.currentElement.getAttribute(XeditMapper.TAG_UUID)
+            ) {
+                Object.keys(currentNode.getAttributes()).forEach(attribute => {
+                    this.currentElement.setAttribute(attribute, currentNode.getAttribute(attribute));
+                });
+            }
+        });
+    }
+
+    ngOnDestroy() {
+        this.subscribeCNM.unsubscribe();
+        this.nodeService.set(null);
+        // this.editorService.setCurrentNode(null);
+    }
 
     public selectedNode({ event }) {
         // Clear selected attribute
@@ -35,6 +67,7 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit {
         if (!isNil(ele)) {
             this.currentElement = ele;
             ele.setAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED, 'selected');
+            this.selectNode.emit(ele.getAttribute(XeditMapper.TAG_UUID));
         }
     }
 
@@ -98,7 +131,7 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit {
         this.editorService.save(tag, tag.innerHTML, 'Change section ""');
     }
 
-    onBlur() {
+    onBlur({ event }) {
         this.clearSelecteds();
     }
 
@@ -120,13 +153,79 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit {
     }
 
     private getConfigs(): object {
-        return {
+        this.content.settings.options.tags = { img: {} };
+        const toolbar = ToolbarGenerator.generate(TinyMCEComponent.toolbarOptions, this.content.settings);
+        const plugins = TinyMCEComponent.getAvailableEditorPlugins();
+        const configs = {
             fixed_toolbar_container: '#toolbar',
             skin_url: 'assets/skins/x-edit',
-            plugins: 'link table image',
+            plugins: plugins,
+            toolbar: toolbar,
             inline: true,
             menubar: false,
-            valid_elements: '*[*]'
+            valid_elements: '*[*]',
+            custom_ui_selector: '.xe_modal',
+            setup: function(editor) {
+                // Custom Blur Event to stop hiding the toolbar
+                editor.on('blur', function(e) {
+                    // if (document.activeElement.closest('app-properties-area')) {
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                    // }
+                });
+                editor.on('focusout', function(e) {
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                });
+            }
+            // dam_callback: type => {
+            //     const modal = this.ngxModal.getModal('imageModal');
+            //     modal.removeData();
+            //     modal.setData({
+            //         fields: this.getImageAttrs()
+            //         // settings: {
+            //         //     image_size: this.containerSize(),
+            //         //     crop_data: this.cropData()
+            //         // },
+            //         // save: this.changeImage.bind(this)
+            //     });
+            //     modal.open();
+
+            //     // this.damService.setOpen({
+            //     //     type: type
+            //     // });
+            // }
         };
+
+        if (hasIn('colors', this.content.settings)) {
+            const textColorMap = [];
+            const colors = this.content.settings.colors;
+            for (const color of Object.keys(colors)) {
+                textColorMap.push(color);
+                textColorMap.push(colors[colors]);
+            }
+            configs['textcolor_map'] = textColorMap;
+        }
+
+        if (hasIn('fonts', this.content.settings)) {
+            const contentCss = [];
+            const fontFormat = [];
+            for (const font of this.content.settings.fonts) {
+                contentCss.push(font.url);
+                fontFormat.push(`${font.label}=${font.name}`);
+            }
+            configs['content_css'] = contentCss;
+            configs['font_formats'] = fontFormat.join(';');
+        }
+
+        if (hasIn('fontsize', this.content.settings)) {
+            configs['fontsize_formats'] = this.content.settings.fontsize.join(' ');
+        }
+
+        return configs;
+    }
+
+    private static getAvailableEditorPlugins(schema = null) {
+        return `eqneditor searchreplace autolink link media hr anchor advlist lists textcolor colorpicker table`;
     }
 }
