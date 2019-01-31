@@ -1,5 +1,6 @@
-import { hasIn } from 'ramda';
+import { hasIn, isNil } from 'ramda';
 import { OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { XeditMapper } from '@app/models/schema/xedit-mapper';
 import { environment } from 'environments/environment';
 
 export class XeditBaseComponent implements OnInit {
@@ -17,7 +18,12 @@ export class XeditBaseComponent implements OnInit {
     ngOnInit() {}
 
     isSelected() {
-        return hasIn('uuid', this.content) && this.selected === this.content.uuid;
+        let result = hasIn('uuid', this.content) && this.selected === this.content.uuid;
+        if (!result && !this.constructor['hasSlot']) {
+            const element = document.querySelector(`[${XeditMapper.TAG_UUID}="${this.content.uuid}"]`);
+            result = !isNil(element) && !isNil(element.querySelector(`[${XeditMapper.TAG_UUID}="${this.selected}"]`));
+        }
+        return result;
     }
 
     public beforeSelect() {

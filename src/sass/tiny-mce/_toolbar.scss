@@ -1,0 +1,33 @@
+#toolbar {
+    .mce-container,
+    .mce-widget,
+    .mce-reset {
+        background-color: $white-ximdex;
+
+        &:not(.mce-reset) {
+            * {
+                background-color: inherit;
+            }
+        }
+    }
+
+    .mce-btn-group {
+        .mce-first,
+        .mce-last {
+            border-radius: 4px !important;
+        }
+    }
+
+    .mce-btn {
+        border-radius: 4px !important;
+        margin: 0 2px;
+        overflow: hidden;
+
+        &.mce-active,
+        &:hover {
+            border: 0;
+            background-color: $white-warm;
+            cursor: pointer;
+        }
+    }
+}

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, SimpleChanges, OnChanges, AfterViewChecked } from '@angular/core';
 import { XeditBaseComponent } from '../xedit.base.component';
 import { EditorService } from '@app/services/editor-service/editor.service';
 import { ClipboardConfigs } from '@app/models/configs/clipboardConfigs';
@@ -9,9 +9,9 @@ import ToolbarGenerator from '@app/core/generators/toolbar-generator';
 import { toolbarOptions } from './toolbar-mapper';
 
 import '@components/editor/views/wysiwyg-view/tiny_plugins/dam';
-import { DamService } from '@app/services/dam-service/dam.service';
 import { Subscription } from 'rxjs';
 import { NgxSmartModalService } from 'ngx-smart-modal';
+import tinymce from 'tinymce';
 import { NodeService } from '@app/services/node-service/node.service';
 
 @Component({
@@ -19,11 +19,13 @@ import { NodeService } from '@app/services/node-service/node.service';
     templateUrl: './tiny-mce.component.html',
     styleUrls: ['./tiny-mce.component.scss']
 })
-export class TinyMCEComponent extends XeditBaseComponent implements OnInit, OnDestroy {
+export class TinyMCEComponent extends XeditBaseComponent implements OnInit, OnDestroy, OnChanges, AfterViewChecked {
     public static toolbarOptions = toolbarOptions;
     public configs: object;
     private currentElement;
     private clipboardConfigs: ClipboardConfigs;
+    private hideToolbar = true;
+    private editor;
 
     private subscribeCNM: Subscription;
 
@@ -38,7 +40,6 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit, OnDe
 
     ngOnInit() {
         this.configs = this.getConfigs();
-
         // Suscribe to node change
         this.subscribeCNM = this.editorService.getCurrentNodeModify().subscribe(currentNode => {
             if (
@@ -50,6 +51,20 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit, OnDe
                 });
             }
         });
+    }
+
+    ngAfterViewChecked() {
+        this.editor = tinymce.get(this.content.uuid);
+    }
+
+    ngOnChanges({ selected }: SimpleChanges) {
+        if (!isNil(selected) && selected.currentValue !== selected.previousValue && !isNil(this.editor)) {
+            this.hideToolbar = !this.isSelected();
+            if (this.hideToolbar) {
+                this.editor.fire('blur');
+                this.editor.fire('focusout');
+            }
+        }
     }
 
     ngOnDestroy() {
@@ -65,9 +80,14 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit, OnDe
         // Added selected attribute
         const ele = event.element;
         if (!isNil(ele)) {
-            this.currentElement = ele;
             ele.setAttribute(XeditMapper.ATTR_WYSIWYG_SELECTED, 'selected');
-            this.selectNode.emit(ele.getAttribute(XeditMapper.TAG_UUID));
+            let uuid = ele.getAttribute(XeditMapper.TAG_UUID);
+            if (isNil(uuid)) {
+                uuid = ele.closest(`[${XeditMapper.TAG_UUID}]`).getAttribute(XeditMapper.TAG_UUID);
+            } else {
+                this.currentElement = ele;
+            }
+            this.selectNode.emit(uuid);
         }
     }
 
@@ -76,7 +96,7 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit, OnDe
         const tag = this.getCurrentTag(editor.bodyElement, uuid);
 
         if (!isNil(tag) && this.hasChanges(event.level.bookmark, event.lastLevel.beforeBookmark)) {
-            this.editorService.save(tag, tag.innerHTML, 'Change section ""');
+            this.editorService.save(tag, tag.outerHTML, 'Change section ""');
         }
     }
 
@@ -156,6 +176,7 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit, OnDe
         this.content.settings.options.tags = { img: {} };
         const toolbar = ToolbarGenerator.generate(TinyMCEComponent.toolbarOptions, this.content.settings);
         const plugins = TinyMCEComponent.getAvailableEditorPlugins();
+        const that = this;
         const configs = {
             fixed_toolbar_container: '#toolbar',
             skin_url: 'assets/skins/x-edit',
@@ -165,17 +186,19 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit, OnDe
             menubar: false,
             valid_elements: '*[*]',
             custom_ui_selector: '.xe_modal',
-            setup: function(editor) {
+            setup: editor => {
                 // Custom Blur Event to stop hiding the toolbar
                 editor.on('blur', function(e) {
-                    // if (document.activeElement.closest('app-properties-area')) {
-                    e.stopImmediatePropagation();
-                    e.preventDefault();
-                    // }
+                    if (!that.hideToolbar) {
+                        e.stopImmediatePropagation();
+                        e.preventDefault();
+                    }
                 });
                 editor.on('focusout', function(e) {
-                    e.stopImmediatePropagation();
-                    e.preventDefault();
+                    if (!that.hideToolbar) {
+                        e.stopImmediatePropagation();
+                        e.preventDefault();
+                    }
                 });
             }
             // dam_callback: type => {
