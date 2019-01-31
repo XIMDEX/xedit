@@ -16,28 +16,29 @@
             (change)="imageData($event)"
         ></edit-image>
         <div class="xe_form_input">
-            <label class="xe_form_input_label"> Enlace </label>
-            <div class="xe_form_input_value">
+            <label class="xe_label"> Enlace </label>
+            <div class="xe_file">
                 <input type="text" [(ngModel)]="file" />
-                <button (click)="openMediaManager()"><fa-icon [icon]="searchIcon"></fa-icon></button>
+                <button class="xe_btn" (click)="openMediaManager()"><fa-icon [icon]="searchIcon"></fa-icon></button>
             </div>
         </div>
         <div class="xe_form_input">
-            <label class="xe_form_input_label"> Nombre </label>
-            <label class="xe_form_input_value"> {{ fileName() }} </label>
+            <label class="xe_label"> Nombre </label>
+            <label class="xe_input"> {{ fileName() }} </label>
         </div>
         <div class="xe_form_input">
-            <label class="xe_form_input_label"> Ruta </label>
-            <label class="xe_form_input_value"> {{ fileRoute() }} </label>
+            <label class="xe_label"> Ruta </label>
+            <label class="xe_input"> {{ fileRoute() }} </label>
         </div>
         <div class="xe_form_input">
-            <label class="xe_form_input_label"> Alternativo </label> <input class="xe_form_input_value" type="text" />
+            <label class="xe_label"> Alternativo </label> <input class="xe_input" type="text" />
         </div>
         <div class="xe_form_input">
-            <label class="xe_form_input_label"> Descripcion </label> <textarea class="xe_form_input_value"></textarea>
+            <label class="xe_label"> Descripcion </label> <textarea class="xe_input"></textarea>
         </div>
     </div>
     <div class="footer xe_modal_content">
-        <button (click)="setImage(imageModal)">Aceptar</button> <button (click)="closeModal(imageModal)">Cerrar</button>
+        <button class="xe_btn big" (click)="setImage(imageModal)">Aceptar</button>
+        <button class="xe_btn big" (click)="closeModal(imageModal)">Cerrar</button>
     </div>
 </ngx-smart-modal>
