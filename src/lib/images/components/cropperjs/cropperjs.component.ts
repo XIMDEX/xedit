@@ -1,23 +1,21 @@
-import {
-    Component,
-    Input,
-    ViewChild,
-    ElementRef,
-    OnChanges,
-    SimpleChanges,
-    ViewEncapsulation,
-    EventEmitter,
-    Output
-} from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, OnChanges, SimpleChanges, EventEmitter, Output } from '@angular/core';
 import Cropper from 'cropperjs';
 import { isNil, empty } from 'ramda';
 import { CanvasCropperResult } from 'lib/images';
+import { faSearchPlus, faSearchMinus } from '@fortawesome/free-solid-svg-icons';
+import {
+    faAlignCenter,
+    faAlignRight,
+    faAlignLeft,
+    faSync,
+    faCompress,
+    faExpand
+} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
     selector: 'cropperjs',
     templateUrl: './cropperjs.component.html',
-    styleUrls: ['./cropperjs.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ['./cropperjs.component.scss']
 })
 export class CropperjsComponent implements OnChanges {
     @ViewChild('image') image: ElementRef;
@@ -30,6 +28,19 @@ export class CropperjsComponent implements OnChanges {
 
     @Output() change = new EventEmitter<CanvasCropperResult | Cropper.CanvasData>();
 
+    public icon = {
+        contain: faCompress,
+        cover: faExpand,
+        reset: faSync,
+        left: faAlignLeft,
+        center: faAlignCenter,
+        right: faAlignRight,
+        zoomin: faSearchPlus,
+        zoomout: faSearchMinus
+    };
+
+    public canvasZoom = 0;
+
     private cropperjs: Cropper;
     private reload: boolean = false;
 
@@ -38,6 +49,10 @@ export class CropperjsComponent implements OnChanges {
         counter: 0,
         counter1: 0
     };
+
+    private ALIGN_CENTER = 1;
+    private ALIGN_LEFT = 0;
+    private ALIGN_RIGHT = 2;
 
     constructor() {}
 
@@ -96,12 +111,50 @@ export class CropperjsComponent implements OnChanges {
         return this.image.nativeElement as HTMLImageElement;
     }
 
+    reset() {
+        const width = this.image.nativeElement.width;
+        const height = this.image.nativeElement.height;
+
+        const canvas = { ...this.canvasData, width, height, left: 0, top: 0 };
+        this.cropperjs.setCanvasData(canvas);
+
+        this.change.emit(this.cropperjs.getCanvasData());
+    }
+
     cover() {
         this.calculateImageWith(true);
     }
 
     contain() {
         this.calculateImageWith();
+    }
+
+    align(type: number) {
+        const canvas = this.cropperjs.getCanvasData();
+        let { width: coWidth, height: coHeight } = this.containerSize;
+        coWidth = typeof coWidth === 'string' ? Number(coWidth.replace('px', '')) : coWidth;
+        coHeight = typeof coHeight === 'string' ? Number(coHeight.replace('px', '')) : coHeight;
+
+        const { width, height } = canvas;
+        let left = 0;
+        let top = coHeight / 2 - height / 2;
+
+        if (type === this.ALIGN_CENTER) {
+            left = coWidth / 2 - width / 2;
+        } else if (type === this.ALIGN_RIGHT) {
+            left = coWidth - width;
+        }
+
+        this.cropperjs.setCanvasData({ width, height, left, top });
+        this.change.emit(this.cropperjs.getCanvasData());
+    }
+
+    zoomImage(zoomin: boolean = true) {
+        let amount = 0.1;
+        if (!zoomin) {
+            amount *= -1;
+        }
+        this.cropperjs.zoom(amount);
     }
 
     private calculateImageWith(isCover: boolean = false) {

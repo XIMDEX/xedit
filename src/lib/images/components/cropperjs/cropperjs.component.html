@@ -1,19 +1,26 @@
-<div
-    class="cropper"
-    [ngStyle]="containerSize"
->
-    <img
-        #image
-        id='image'
-        [src]="src"
-        (load)="loadCropper($event)"
-    >
+<div class="cropper" [ngStyle]="containerSize">
+    <!-- prevent-collapsed -->
+    <img #image id="image" [src]="src" (load)="loadCropper($event)" />
 </div>
-<div>
-    <button (click)="cover()">
-        cover
+<div class="toolbar">
+    <button class="actions" (click)="zoomImage(true)" title="Zoom in image">
+        <fa-icon [icon]="icon.zoomin"></fa-icon>
     </button>
-    <button (click)="contain()">
-        contain
+    <button class="actions" (click)="zoomImage(false)" title="Zoom out image">
+        <fa-icon [icon]="icon.zoomout"></fa-icon>
+    </button>
+    <span class="separator"></span>
+    <button class="actions" (click)="reset()" title="Reset image"><fa-icon [icon]="icon.reset"></fa-icon></button>
+    <button class="actions" (click)="cover()" title="Cover image"><fa-icon [icon]="icon.cover"></fa-icon></button>
+    <button class="actions" (click)="contain()" title="Contain image"><fa-icon [icon]="icon.contain"></fa-icon></button>
+    <span class="separator"></span>
+    <button class="actions" (click)="align(ALIGN_LEFT)" title="Left image">
+        <fa-icon [icon]="icon.left"></fa-icon>
+    </button>
+    <button class="actions" (click)="align(ALIGN_CENTER)" title="Center image">
+        <fa-icon [icon]="icon.center"></fa-icon>
+    </button>
+    <button class="actions" (click)="align(ALIGN_RIGHT)" title="Right image">
+        <fa-icon [icon]="icon.right"></fa-icon>
     </button>
 </div>
