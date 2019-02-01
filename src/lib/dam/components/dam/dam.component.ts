@@ -156,14 +156,12 @@ export class DamComponent implements OnInit {
         }
         this.isLoading = true;
         this.mainService.list(params).subscribe(
-            response => {
-                if (response.hasOwnProperty('pager')) {
-                    this.query.perPage = response['pager'].per_page;
-                    this.query.lastPage = response['pager'].pages;
-                    this.query.total = response['pager'].total;
-                    this.facets = response['facets'];
-                    this.mapItems(response['docs']);
-                }
+            ({ result }) => {
+                this.query.perPage = result.per_page;
+                this.query.lastPage = result.last_page;
+                this.query.total = result.total;
+                // this.facets = response['facets'];
+                this.mapItems(result.data);
             },
             err => console.error(err),
             () => (this.isLoading = false)
