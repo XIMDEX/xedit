@@ -133,7 +133,7 @@ export class AppComponent implements OnInit, OnDestroy {
         }
 
         this._editorService.createFile(nodes);
-        this._stateService.setAvailableViews(['metadata', 'wysiwyg', 'ckeditor', 'text']);
+        this._stateService.setAvailableViews(['metadata', 'wysiwyg', 'text']);
         this._stateService.setCurrentView(view);
         this._editorService.setLoading(false);
     }

@@ -4,18 +4,18 @@
         <app-metadata-view *ngIf="showComponent('metadata')"> </app-metadata-view>
         <!-- END METADATA VIEW-->
         <!-- WYSIWYG VIEW -->
-        <app-wysiwyg-view
+        <!-- <app-wysiwyg-view
             (onEditorKeyup)="keyupHandlerFunction($event)"
             (selectNode)="setCurrentNode($event)"
             *ngIf="showComponent('wysiwyg')"
         >
-        </app-wysiwyg-view>
+        </app-wysiwyg-view> -->
         <!-- END WYSIWYG VIEW -->
         <!-- CKEDITOR VIEW -->
         <app-editor-view
             (selectNode)="setCurrentNode($event)"
             (toolbar)="setCurrentToolbar($event)"
-            *ngIf="showComponent('ckeditor')"
+            *ngIf="showComponent('wysiwyg')"
         >
         </app-editor-view>
         <!-- END CKEDITOR VIEW -->
