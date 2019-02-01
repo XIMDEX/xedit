@@ -4,7 +4,6 @@ import { HttpHeaders } from '@angular/common/http';
 import qs from 'query-string';
 
 export default class Router {
-
     public static ROUTER = 'router';
 
     public static TOKEN = 'token';
@@ -16,8 +15,7 @@ export default class Router {
     public static EXTRA_PARAMS = 'attrs';
 
     public static getRouter() {
-        return !isNil(window[Xedit.BASE]) && hasIn('router', window[Xedit.BASE]) ?
-            window[Xedit.BASE].router : null;
+        return !isNil(window[Xedit.BASE]) && hasIn('router', window[Xedit.BASE]) ? window[Xedit.BASE].router : null;
     }
 
     public static getRouterProperty(prop: string, def: any = null) {
@@ -27,7 +25,6 @@ export default class Router {
         }
         return def;
     }
-
 
     public static setToken(params: Object, headers: HttpHeaders) {
         const token = Router.getRouterProperty(Router.TOKEN);
@@ -43,19 +40,21 @@ export default class Router {
         return { params, headers };
     }
 
-    public static configUrl(endpoint: string, _params: Object = {}): string {
-
+    public static configUrl(endpoint: string, _params: Object = {}): null | string {
         const params = Object.assign({}, _params);
         let info = {};
-        if (!(/^(f|ht)tps?:\/\//i).test(endpoint)) {
+        if (!/^(f|ht)tps?:\/\//i.test(endpoint)) {
             info = this.get(endpoint);
+            if (isNil(info)) {
+                return null;
+            }
             endpoint = `${Router.getRouterProperty(Router.BASE_URL, '')}/${info['path']}`;
         }
 
         // Added query params
         let match;
         let path = endpoint;
-        while ((match = (/\{([^{}]*)}/g).exec(path)) !== null) {
+        while ((match = /\{([^{}]*)}/g.exec(path)) !== null) {
             let val = null;
             if (hasIn(match[1], params)) {
                 val = params[match[1]];
@@ -70,10 +69,10 @@ export default class Router {
         }
 
         // Extra params
-        if ((hasIn('params', info))) {
+        if (hasIn('params', info)) {
             for (const property of Object.keys(info['params'])) {
                 let val = info['params'][property];
-                match = (/^\{(.*)}$/g).exec(val);
+                match = /^\{(.*)}$/g.exec(val);
                 if (match != null) {
                     const param = Router.getExtraParam(match[1]);
                     if (!isNil(param)) {
@@ -96,8 +95,12 @@ export default class Router {
         let endpoint = null;
         const path = name.split('.');
 
-        for (const key of Object.keys(path)) {
-            endpoint = isNil(endpoint) ? Router.getRouterProperty(Router.ENDPOINTS)[path[key]] : endpoint[path[key]];
+        for (const key of path) {
+            endpoint = isNil(endpoint) ? Router.getRouterProperty(Router.ENDPOINTS) : endpoint;
+            if (isNil(endpoint)) {
+                break;
+            }
+            endpoint = endpoint[key];
         }
         return endpoint;
     }
