@@ -1,18 +1,14 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject ,  Observable ,  Subject } from 'rxjs';
-import { clone, isNil, reduce, is, contains, hasIn } from 'ramda';
-import { Editor } from 'ng2-ace-editor/node_modules/brace';
-import { UUID } from 'angular2-uuid';
-import { Xedit } from '../../xedit';
+import { Injectable } from "@angular/core";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { isNil, reduce, is, contains, hasIn } from "ramda";
 
-import { File } from '@models/file';
-import { Node } from '@models/node';
-import { XeditMapper } from '@models/schema/xedit-mapper';
-import { Converters } from '@utils/converters';
+import { File } from "@models/file";
+import { Node } from "@models/node";
+import { XeditMapper } from "@models/schema/xedit-mapper";
+import { Converters } from "@utils/converters";
 
 @Injectable()
 export class EditorService {
-
     // variables
     private file: BehaviorSubject<File>; // Change if do or redo only
     private fileState: BehaviorSubject<File>; // Current state content (Change if component change)
@@ -67,7 +63,6 @@ export class EditorService {
         return this.currentNode.asObservable();
     }
 
-
     setCurrentNodeModify(node): void {
         this.currentNodeModify.next(node);
     }
@@ -83,7 +78,6 @@ export class EditorService {
     setLoading(loading: boolean) {
         this.loading.next(loading);
     }
-
 
     setElementsState(elementState: boolean): void {
         this.elementsState.next(elementState);
@@ -110,32 +104,40 @@ export class EditorService {
     }
 
     /**
-      * Return to the previous state if it exists, otherwise it does not do anything
+     * Return to the previous state if it exists, otherwise it does not do anything
      */
     lastStateFile(): void {
-        this.file.getValue().lastState().then((value) => {
-            this.setFile(value);
-            this.setLoading(false);
-        });
+        this.file
+            .getValue()
+            .lastState()
+            .then(value => {
+                this.setFile(value);
+                this.setLoading(false);
+            });
     }
 
     /**
      * Go to the next state if it exists, otherwise it does not do anything
      */
     nextStateFile(): void {
-        this.file.getValue().nextState().then((value) => {
-            this.setFile(value);
-            this.setLoading(false);
-        });
+        this.file
+            .getValue()
+            .nextState()
+            .then(value => {
+                this.setFile(value);
+                this.setLoading(false);
+            });
     }
 
     /**
      *
      */
     recoverySnapshot(key: string): void {
-        this.getFileStateValue().recovery(key).then(() => {
-            this.setFile(this.getFileStateValue());
-        });
+        this.getFileStateValue()
+            .recovery(key)
+            .then(() => {
+                this.setFile(this.getFileStateValue());
+            });
     }
 
     /**
@@ -145,7 +147,7 @@ export class EditorService {
      * @param content Html content
      * @param message string message
      */
-    save(node, content, message) {
+    save(node, content, message, attributes = {}) {
         const fileContent = this.fileState.getValue().getState().content;
         /** @todo Improve performance clone */
         // let fileContent = clone(this.file.getValue().getState().content)
@@ -163,9 +165,17 @@ export class EditorService {
             }
 
             // Modify file with new changes
-            const editContent = reduce(function (acc, value) {
-                return acc.child[value];
-            }, root.content, uuidPath);
+            const editContent = reduce(
+                function(acc, value) {
+                    return acc.child[value];
+                },
+                root.content,
+                uuidPath
+            );
+
+            Object.keys(attributes).forEach(key => {
+                editContent.attr[key] = attributes[key];
+            });
             editContent.child = Converters.html2json(content, false);
         }
 
@@ -187,9 +197,13 @@ export class EditorService {
         }
 
         // Modify file with new changes
-        const editContent = reduce(function (acc, value) {
-            return acc.child[value];
-        }, root.content, node.getPath());
+        const editContent = reduce(
+            function(acc, value) {
+                return acc.child[value];
+            },
+            root.content,
+            node.getPath()
+        );
 
         return editContent;
     }
@@ -198,16 +212,22 @@ export class EditorService {
      * Remove node section
      */
     removeNode(node: Node) {
-
-        const file = this.newStateFile(this.fileState.getValue().getState().content, 'Remove node');
+        const file = this.newStateFile(
+            this.fileState.getValue().getState().content,
+            "Remove node"
+        );
         const section = node.getSection();
         const sectionPath = Node.getContextPath(section);
 
         let parentNode = null;
-        const fileNode = reduce((n, value) => {
-            parentNode = n;
-            return n.child[value];
-        }, file.getState().getContent()[node.getAreaId()].content, sectionPath);
+        const fileNode = reduce(
+            (n, value) => {
+                parentNode = n;
+                return n.child[value];
+            },
+            file.getState().getContent()[node.getAreaId()].content,
+            sectionPath
+        );
 
         const nodeKey = section.getAttribute(XeditMapper.TAG_UUID);
         delete parentNode.child[nodeKey];
@@ -222,28 +242,43 @@ export class EditorService {
      * @param child
      */
     addNodeToArea(node: Node, newNode, child: boolean = false) {
-
-        const message = (child ? 'Adding child' : 'Adding sibling') + ' to ' + node.getSection().getAttribute('xe_section');
-        const file = this.newStateFile(this.fileState.getValue().getState().content, message);
+        const message =
+            (child ? "Adding child" : "Adding sibling") +
+            " to " +
+            node.getSection().getAttribute("xe_section");
+        const file = this.newStateFile(
+            this.fileState.getValue().getState().content,
+            message
+        );
         const section = node.getSection();
 
-        const sectionPath = child ? Node.getContextPath(section) : Node.getContextPath(section.parentNode);
+        const sectionPath = child
+            ? Node.getContextPath(section)
+            : Node.getContextPath(section.parentNode);
 
-        const fileNode = reduce(function (n, value) {
-            return n.child[value];
-        }, file.getState().getContent()[node.getAreaId()].content, sectionPath);
+        const fileNode = reduce(
+            function(n, value) {
+                return n.child[value];
+            },
+            file.getState().getContent()[node.getAreaId()].content,
+            sectionPath
+        );
 
         if (!child) {
             const idChild = section.getAttribute(XeditMapper.TAG_UUID);
             const nodeKey = Object.keys(newNode)[0];
-            fileNode.child = reduce(function (object, nodeId) {
-                const nodeValue = fileNode.child[nodeId];
-                object[nodeId] = nodeValue;
-                if (nodeId === idChild) {
-                    object[nodeKey] = newNode[nodeKey];
-                }
-                return object;
-            }, {}, Object.keys(fileNode.child));
+            fileNode.child = reduce(
+                function(object, nodeId) {
+                    const nodeValue = fileNode.child[nodeId];
+                    object[nodeId] = nodeValue;
+                    if (nodeId === idChild) {
+                        object[nodeKey] = newNode[nodeKey];
+                    }
+                    return object;
+                },
+                {},
+                Object.keys(fileNode.child)
+            );
         } else {
             const nodeKey = Object.keys(newNode)[0];
             fileNode.child[nodeKey] = newNode[nodeKey];
@@ -255,23 +290,27 @@ export class EditorService {
     getUpdatedDocument() {
         const file = this.getFileStateValue();
         const state = file.getState();
-        const document = { 'nodes': {} };
+        const document = { nodes: {} };
 
         for (const nodeId in state.content) {
-            if (hasIn('content', state.content[nodeId])) {
-                document['nodes'][nodeId] = {
-                    content: Converters.json2html(state.content[nodeId].content, false, false),
+            if (hasIn("content", state.content[nodeId])) {
+                document["nodes"][nodeId] = {
+                    content: Converters.json2html(
+                        state.content[nodeId].content,
+                        false,
+                        false
+                    ),
                     editable: state.content[nodeId].editable
                 };
             }
         }
 
-        if (hasIn('metas', file)) {
-            document['metas'] = file['metas'];
+        if (hasIn("metas", file)) {
+            document["metas"] = file["metas"];
         }
 
-        if (hasIn('metadata', file)) {
-            document['metadata'] = file['metadata'];
+        if (hasIn("metadata", file)) {
+            document["metadata"] = file["metadata"];
         }
 
         return document;
@@ -279,13 +318,12 @@ export class EditorService {
     /************************************** Static Methods **************************************/
 
     /**
-    * Parse DomNode to EditorNode
-    *
-    * @param element DomNode
-    * @param path Uuid path
-    */
+     * Parse DomNode to EditorNode
+     *
+     * @param element DomNode
+     * @param path Uuid path
+     */
     parseToNode(element) {
-
         const styles = [];
         const attributes = {};
         let node = null;
@@ -293,35 +331,45 @@ export class EditorService {
         const uuid = element.getAttribute(XeditMapper.TAG_UUID);
 
         Object.keys(element.attributes).forEach(key => {
-            attributes[element.attributes[key].name] = element.attributes[key].value;
+            attributes[element.attributes[key].name] =
+                element.attributes[key].value;
         });
 
         try {
             node = new Node(uuid, element, attributes);
         } catch (e) {
-            console.error('This element is not a valid node');
+            console.error("This element is not a valid node");
         }
         return node;
     }
 
     /*
-    * Calculate uuid path to xedit node
-    */
-    static getUuidPath(element, rootTag = XeditMapper.TAG_EDITOR, path = [], onlySections = false) {
+     * Calculate uuid path to xedit node
+     */
+    static getUuidPath(
+        element,
+        rootTag = XeditMapper.TAG_EDITOR,
+        path = [],
+        onlySections = false
+    ) {
         const parent = element.parentNode;
 
-        if (!isNil(element) && (!onlySections || element.hasAttribute(XeditMapper.TAG_SECTION_TYPE))) {
+        if (
+            !isNil(element) &&
+            (!onlySections ||
+                element.hasAttribute(XeditMapper.TAG_SECTION_TYPE))
+        ) {
             path.unshift(element.getAttribute(XeditMapper.TAG_UUID));
         }
 
-        return (element.nodeName.toLowerCase() === rootTag || isNil(parent)) ?
-            path : this.getUuidPath(parent, rootTag, path);
+        return element.nodeName.toLowerCase() === rootTag || isNil(parent)
+            ? path
+            : this.getUuidPath(parent, rootTag, path);
     }
 
     /**
      * Check if node has a child section
      */
-
 
     /**
      * Check if allow add new child
@@ -346,8 +394,9 @@ export class EditorService {
      * @returns boolean
      */
     static isInsertedNodeValid(currentNode: Node, insertedNode: Node) {
-        const section = insertedNode.getTarget().getAttribute(XeditMapper.TAG_SECTION_TYPE);
+        const section = insertedNode
+            .getTarget()
+            .getAttribute(XeditMapper.TAG_SECTION_TYPE);
         return this.isAllowAddChild(currentNode, section);
     }
-
 }
