@@ -1,11 +1,10 @@
 import { hasIn, isNil, contains } from 'ramda';
-import RouterXedit from './core/mappers/router';
 import { Xedit } from './core/mappers/xedit';
 import { Subscription } from 'rxjs';
 import { DamService } from './services/dam-service/dam.service';
-import { Component, ViewChild, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ParamMap, Router, ActivatedRoute, Params } from '@angular/router';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 
 import { EditorService } from '@services/editor-service/editor.service';
 import { StateService } from '@services/state-service/state.service';
@@ -88,7 +87,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     hasDam(): boolean {
-        return Xedit.getDam() === 'dam' ? true : false;
+        return Xedit.getDam() === 'dam';
     }
 
     /************************************** Private Methods **************************************/

@@ -66,6 +66,7 @@ export class WysiwygHandler {
     static clearTinymce() {
         tinymce.remove();
     }
+
     /**
      * Init tinymce editor and added events
      */
@@ -103,11 +104,11 @@ export class WysiwygHandler {
                 ),
                 skin_url: "assets/skins/x-edit",
                 valid_elements: "*[*]",
-                content_css: [
-                    "//fonts.googleapis.com/css?family=Libre+Franklin",
-                    "//fonts.googleapis.com/css?family=Vibur"
-                ],
-                font_formats: "Normal=libre franklin;Infantil=vibur;",
+                // content_css: [
+                //     "//fonts.googleapis.com/css?family=Libre+Franklin",
+                //     "//fonts.googleapis.com/css?family=Vibur"
+                // ],
+                // font_formats: "Normal=libre franklin;Infantil=vibur;",
                 setup: editor => {
                     editor.on("Nodechange", e => {
                         const ele = e.element;
@@ -129,28 +130,6 @@ export class WysiwygHandler {
                                 );
                             }
                         }
-                        /*const element = e.element;
-                        const id = element.getAttribute(XeditMapper.TAG_UUID);
-                        function isParentId(parents, elementId) {
-                            let is = false;
-                            if (!isNil(parents)) {
-                                parents.forEach(parent => {
-                                    if (equals(parent.getAttribute(XeditMapper.TAG_UUID), elementId)) {
-                                        is = true;
-                                        parent.removeAttribute('xe_w_selected');
-                                    }
-                                });
-                            }
-                            return is;
-                        }
-                        if (isNil(id) || isParentId(e.parents, id)) {
-                            element.setAttribute(XeditMapper.TAG_UUID, UUID.UUID());
-                        }*/
-
-                        /*if (!isNil(args.node.getTarget()) && !equals(args.node.getTarget().getAttribute(XeditMapper.TAG_UUID),
-                            element.getAttribute(XeditMapper.TAG_UUID))) {
-                            args.service.setCurrentNode(args.service.parseToNode(element));
-                        }*/
                     });
                     editor.on("Paste", e => {
                         e.preventDefault();
@@ -199,23 +178,6 @@ export class WysiwygHandler {
                         }
                         WysiwygHandler.saveDoc(editor, args);
                         args.service.getFileStateValue().snapshot();
-                        /*const promise = new Promise(
-                            () => {
-                                const loop = window.setInterval(() => {
-                                    try {
-                                        if (tinymce.activeEditor.id !== editor.id || editor.isHidden()) {
-                                            window.clearInterval(loop);
-                                            tinymce.remove(editor);
-                                        } else {
-                                            editor.hide();
-                                        }
-                                    } catch (e) {
-                                        window.clearInterval(loop);
-                                    }
-                                }, 30);
-
-                            }
-                        );*/
                         return false;
                     });
                 }
