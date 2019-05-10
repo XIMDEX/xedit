@@ -76,6 +76,7 @@ const insert = function (editor, nodeId, type, attributes) {
     if (hasResource) {
         selectedNode.setAttribute(XeditMapper.TAG_LINK, nodeId);
         selectedNode.setAttribute(ATTR_BY_TAG[tag], url);
+        selectedNode.setAttribute('data-mce-src', url);
         ATTRS_BY_TAG[tag].forEach(key => {
             selectedNode.setAttribute(key, attributes[key]);
         });

@@ -5464,7 +5464,7 @@ window.process = {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/pablo/Documentos/xedit/src/polyfills.ts */"./src/polyfills.ts");
+module.exports = __webpack_require__(/*! /Users/atovar/develop/js_apps/xedit/src/polyfills.ts */"./src/polyfills.ts");
 
 
 /***/ })

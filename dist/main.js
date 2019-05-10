@@ -264,7 +264,7 @@ var AppComponent = /** @class */ (function () {
         this.handleSelectSuscribe.unsubscribe();
     };
     AppComponent.prototype.hasDam = function () {
-        return _core_mappers_xedit__WEBPACK_IMPORTED_MODULE_1__["Xedit"].getDam() === 'dam' ? true : false;
+        return _core_mappers_xedit__WEBPACK_IMPORTED_MODULE_1__["Xedit"].getDam() === 'dam';
     };
     /************************************** Private Methods **************************************/
     AppComponent.prototype.getMapper = function (url, params, view) {
@@ -1355,95 +1355,6 @@ var MetadataViewComponent = /** @class */ (function () {
         this._edService = _edService;
         this.tabs = [];
         this.payload = {};
-        this.schema = {
-            name: 'lomes',
-            title: 'LOMES',
-            api: false,
-            tabs: [
-                {
-                    title: 'Pestaña 1',
-                    sections: [
-                        {
-                            title: 'section 1',
-                            fields: [
-                                {
-                                    object: {
-                                        realName: 'one',
-                                        key: 'one',
-                                        label: 'First Field'
-                                    },
-                                    type: 'text'
-                                },
-                                {
-                                    object: {
-                                        realName: 'onehalf',
-                                        key: 'onehalf',
-                                        label: 'First and a half Field'
-                                    },
-                                    type: 'text'
-                                },
-                                {
-                                    object: {
-                                        realName: 'two',
-                                        key: 'two',
-                                        label: 'Second Field',
-                                        multi: true,
-                                        searchable: true,
-                                        options: [
-                                            { key: 'option1', value: 'Option 1' },
-                                            { key: 'option2', value: 'Option 2' },
-                                            { key: 'option3', value: 'Option 3' }
-                                        ]
-                                    },
-                                    type: 'dropdown',
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    title: 'Pestaña 1',
-                    sections: [
-                        {
-                            title: 'section 2',
-                            fields: [
-                                {
-                                    object: {
-                                        realName: 'one',
-                                        key: 'one',
-                                        label: 'First Field'
-                                    },
-                                    type: 'text'
-                                },
-                                {
-                                    object: {
-                                        realName: 'onehalf',
-                                        key: 'onehalf',
-                                        label: 'First and a half Field'
-                                    },
-                                    type: 'text'
-                                },
-                                {
-                                    object: {
-                                        realName: 'two',
-                                        key: 'two',
-                                        label: 'Second Field',
-                                        multi: true,
-                                        searchable: true,
-                                        options: [
-                                            { key: 'option1', value: 'Option 1' },
-                                            { key: 'option2', value: 'Option 2' },
-                                            { key: 'option3', value: 'Option 3' }
-                                        ]
-                                    },
-                                    type: 'dropdown',
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        };
         this.meta = {};
         this.meta = _edService.getUpdatedDocument();
     }
@@ -1453,19 +1364,19 @@ var MetadataViewComponent = /** @class */ (function () {
         this._edService.getFile().subscribe(function (file) {
             _this.file = file;
             if (file != null) {
-                file['metadata'] = _this.payload;
+                file["metadata"] = _this.payload;
             }
         });
     };
     MetadataViewComponent.prototype.formResult = function (event) {
         this.payload = this.adaptResponse(event);
-        this.file['metadata'] = this.payload;
+        this.file["metadata"] = this.payload;
         this._edService.setFile(this.file);
     };
     MetadataViewComponent.prototype.adaptResponse = function (response) {
         var result = {};
         Object.keys(response).forEach(function (key) {
-            var ids = key.split('-');
+            var ids = key.split("-");
             var group_id = ids[0];
             var meta_id = ids[1];
             if (!Object(ramda__WEBPACK_IMPORTED_MODULE_2__["hasIn"])(group_id, result)) {
@@ -1479,10 +1390,10 @@ var MetadataViewComponent = /** @class */ (function () {
     };
     MetadataViewComponent.prototype.mapTab = function (meta) {
         var sections = this.mapSections(meta.groups);
-        return ({
+        return {
             title: meta.name,
             sections: sections
-        });
+        };
     };
     MetadataViewComponent.prototype.mapTabs = function (metas) {
         for (var _i = 0, _a = Object.keys(metas); _i < _a.length; _i++) {
@@ -1494,40 +1405,42 @@ var MetadataViewComponent = /** @class */ (function () {
         var _this = this;
         var sections = groups.map(function (group) {
             var fields = _this.mapFields(group.metadata, group.id);
-            return ({
+            return {
                 title: group.name,
                 fields: fields
-            });
+            };
         });
         return sections;
     };
     MetadataViewComponent.prototype.mapFields = function (metadata, group_id) {
         var fields = metadata.map(function (metafield) {
-            return ({
+            return {
                 object: {
                     realName: group_id + "-" + metafield.id,
                     key: group_id + "-" + metafield.id,
                     label: metafield.name,
                     order: metafield.id,
-                    val: metafield.value
+                    val: metafield.value,
+                    required: !!metafield.required,
+                    readonly: !!metafield.readonly
                 },
-                type: metafield.type,
-            });
+                type: metafield.type
+            };
         });
         return fields;
     };
     MetadataViewComponent.prototype.metaMap = function (meta) {
         this.mapTabs(meta.metas);
         this.schema = {
-            name: 'xedit_meta',
-            title: 'Metadata',
+            name: "xedit_meta",
+            title: "Metadata",
             api: false,
             tabs: this.tabs
         };
     };
     MetadataViewComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            selector: 'app-metadata-view',
+            selector: "app-metadata-view",
             template: __webpack_require__(/*! ./metadata-view.component.html */ "./src/app/components/editor/views/metadata-view/metadata-view.component.html"),
             styles: [__webpack_require__(/*! ./metadata-view.component.scss */ "./src/app/components/editor/views/metadata-view/metadata-view.component.scss")]
         }),
@@ -2479,6 +2392,7 @@ var insert = function (editor, nodeId, type, attributes) {
     if (hasResource) {
         selectedNode.setAttribute(_models_schema_xedit_mapper__WEBPACK_IMPORTED_MODULE_1__["XeditMapper"].TAG_LINK, nodeId);
         selectedNode.setAttribute(ATTR_BY_TAG[tag], url);
+        selectedNode.setAttribute('data-mce-src', url);
         ATTRS_BY_TAG[tag].forEach(function (key) {
             selectedNode.setAttribute(key, attributes[key]);
         });
@@ -2893,7 +2807,7 @@ var WysiwygHandler = /** @class */ (function () {
             WysiwygHandler.addPlugins(args.getInfo, args.callback, args.http);
             var toolbar_1 = WysiwygHandler.generateToolbar(args.node.getSchema());
             var fixed_toolbar_container = !Object(ramda__WEBPACK_IMPORTED_MODULE_28__["isEmpty"])(toolbar_1)
-                ? '#toolbar'
+                ? "#toolbar"
                 : false;
             tinymce.init({
                 dam_url: function (id) {
@@ -2908,71 +2822,53 @@ var WysiwygHandler = /** @class */ (function () {
                 menubar: false,
                 toolbar: toolbar_1,
                 plugins: WysiwygHandler.getAvailablePlugins(args.node.getSchema()),
-                skin_url: 'assets/skins/x-edit',
-                valid_elements: '*[*]',
-                content_css: ['//fonts.googleapis.com/css?family=Libre+Franklin', '//fonts.googleapis.com/css?family=Vibur'],
-                font_formats: 'Normal=libre franklin;Infantil=vibur;',
+                skin_url: "assets/skins/x-edit",
+                valid_elements: "*[*]",
+                // content_css: [
+                //     "//fonts.googleapis.com/css?family=Libre+Franklin",
+                //     "//fonts.googleapis.com/css?family=Vibur"
+                // ],
+                // font_formats: "Normal=libre franklin;Infantil=vibur;",
                 setup: function (editor) {
-                    editor.on('Nodechange', function (e) {
+                    editor.on("Nodechange", function (e) {
                         var ele = e.element;
                         var sibling = ele.previousSibling;
                         if (sibling &&
-                            typeof sibling.getAttribute === 'function') {
+                            typeof sibling.getAttribute === "function") {
                             if (sibling.getAttribute(_models_schema_xedit_mapper__WEBPACK_IMPORTED_MODULE_29__["XeditMapper"].TAG_UUID) ===
                                 ele.getAttribute(_models_schema_xedit_mapper__WEBPACK_IMPORTED_MODULE_29__["XeditMapper"].TAG_UUID)) {
                                 ele.setAttribute(_models_schema_xedit_mapper__WEBPACK_IMPORTED_MODULE_29__["XeditMapper"].TAG_UUID, angular2_uuid__WEBPACK_IMPORTED_MODULE_1__["UUID"].UUID());
                                 sibling.removeAttribute(_models_schema_xedit_mapper__WEBPACK_IMPORTED_MODULE_29__["XeditMapper"].ATTR_WYSIWYG_SELECTED);
                             }
                         }
-                        /*const element = e.element;
-                        const id = element.getAttribute(XeditMapper.TAG_UUID);
-                        function isParentId(parents, elementId) {
-                            let is = false;
-                            if (!isNil(parents)) {
-                                parents.forEach(parent => {
-                                    if (equals(parent.getAttribute(XeditMapper.TAG_UUID), elementId)) {
-                                        is = true;
-                                        parent.removeAttribute('xe_w_selected');
-                                    }
-                                });
-                            }
-                            return is;
-                        }
-                        if (isNil(id) || isParentId(e.parents, id)) {
-                            element.setAttribute(XeditMapper.TAG_UUID, UUID.UUID());
-                        }*/
-                        /*if (!isNil(args.node.getTarget()) && !equals(args.node.getTarget().getAttribute(XeditMapper.TAG_UUID),
-                            element.getAttribute(XeditMapper.TAG_UUID))) {
-                            args.service.setCurrentNode(args.service.parseToNode(element));
-                        }*/
                     });
-                    editor.on('Paste', function (e) {
+                    editor.on("Paste", function (e) {
                         e.preventDefault();
-                        var copyHtml = args.clipboardConfigs.getConfigs('copy');
+                        var copyHtml = args.clipboardConfigs.getConfigs("copy");
                         var data = WysiwygHandler.copy(e, copyHtml.enable);
                         data = WysiwygHandler.resetIdsFromString(data);
-                        document.execCommand('insertHTML', false, data);
+                        document.execCommand("insertHTML", false, data);
                         var contentTag = editor.bodyElement;
                         var content = editor.getContent();
-                        args.service.save(contentTag, content, 'Change section ' +
+                        args.service.save(contentTag, content, "Change section " +
                             args.node
                                 .getSection()
-                                .getAttribute('xe_section'));
+                                .getAttribute("xe_section"));
                     });
-                    editor.on('change', function (evt) {
+                    editor.on("change", function (evt) {
                         WysiwygHandler.saveDoc(editor, args);
                     });
-                    editor.on('init', function (evt) {
-                        tinymce.execCommand('mceFocus', false, editor.id);
+                    editor.on("init", function (evt) {
+                        tinymce.execCommand("mceFocus", false, editor.id);
                         args.service.setCurrentNode(args.node);
                     });
-                    editor.on('hide', function (e) {
+                    editor.on("hide", function (e) {
                         tinymce.remove(editor);
                     });
-                    editor.on('blur', function (evt) {
+                    editor.on("blur", function (evt) {
                         // TODO FIX atovar
                         var xedit = evt.target.bodyElement;
-                        var links = xedit.getElementsByTagName('a');
+                        var links = xedit.getElementsByTagName("a");
                         if (!Object(ramda__WEBPACK_IMPORTED_MODULE_28__["isNil"])(links)) {
                             for (var i = 0; i < links.length; i++) {
                                 links[i].onclick = function (event) {
@@ -2983,36 +2879,17 @@ var WysiwygHandler = /** @class */ (function () {
                         }
                         WysiwygHandler.saveDoc(editor, args);
                         args.service.getFileStateValue().snapshot();
-                        /*const promise = new Promise(
-                            () => {
-                                const loop = window.setInterval(() => {
-                                    try {
-                                        if (tinymce.activeEditor.id !== editor.id || editor.isHidden()) {
-                                            window.clearInterval(loop);
-                                            tinymce.remove(editor);
-                                        } else {
-                                            editor.hide();
-                                        }
-                                    } catch (e) {
-                                        window.clearInterval(loop);
-                                    }
-                                }, 30);
-
-                            }
-                        );*/
                         return false;
                     });
-                },
+                }
             });
         }
     };
     WysiwygHandler.saveDoc = function (editor, args) {
         var contentTag = editor.bodyElement;
         var content = editor.getContent();
-        args.service.save(contentTag, content, 'Change section ' +
-            args.node
-                .getSection()
-                .getAttribute('xe_section'));
+        args.service.save(contentTag, content, "Change section " +
+            args.node.getSection().getAttribute("xe_section"));
     };
     WysiwygHandler.resetIdsFromString = function (text) {
         function replaceIndex(string, at, repl) {
@@ -3033,19 +2910,19 @@ var WysiwygHandler = /** @class */ (function () {
         return _utils_converters__WEBPACK_IMPORTED_MODULE_30__["Converters"].json2html(_utils_converters__WEBPACK_IMPORTED_MODULE_30__["Converters"].html2json(text));
     };
     WysiwygHandler.isSameEditor = function (editor, id) {
-        return (editor.targetElm.hasAttribute('xe_uuid') &&
-            Object(ramda__WEBPACK_IMPORTED_MODULE_28__["equals"])(editor.targetElm.getAttribute('xe_uuid'), id));
+        return (editor.targetElm.hasAttribute("xe_uuid") &&
+            Object(ramda__WEBPACK_IMPORTED_MODULE_28__["equals"])(editor.targetElm.getAttribute("xe_uuid"), id));
     };
     WysiwygHandler.addPlugins = function (getInfo, callback, http) {
-        if (app_core_mappers_xedit__WEBPACK_IMPORTED_MODULE_3__["Xedit"].getDam() === 'dam') {
-            tinymce.PluginManager.add('dam', function (editor) {
+        if (app_core_mappers_xedit__WEBPACK_IMPORTED_MODULE_3__["Xedit"].getDam() === "dam") {
+            tinymce.PluginManager.add("dam", function (editor) {
                 _tiny_plugins_dam_core_FilterContent__WEBPACK_IMPORTED_MODULE_21__["default"].setup(editor);
                 _tiny_plugins_dam_api_Commands__WEBPACK_IMPORTED_MODULE_20__["default"].register(editor, getInfo, callback);
                 _tiny_plugins_dam_ui_Buttons__WEBPACK_IMPORTED_MODULE_22__["default"].register(editor);
             });
         }
         else {
-            tinymce.PluginManager.add('tree', function (editor) {
+            tinymce.PluginManager.add("tree", function (editor) {
                 _tiny_plugins_tree_core_FilterContent__WEBPACK_IMPORTED_MODULE_24__["default"].setup(editor);
                 _tiny_plugins_tree_api_Commands__WEBPACK_IMPORTED_MODULE_23__["default"].register(editor, http);
                 _tiny_plugins_tree_ui_Buttons__WEBPACK_IMPORTED_MODULE_25__["default"].register(editor);
@@ -3057,12 +2934,12 @@ var WysiwygHandler = /** @class */ (function () {
             ' bullist numlist outdent indent |fontsizeselect'*/
         /*'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify
         | numlist bullist outdent indent  | removeformat'*/
-        var toolbar = '';
-        if (Object(ramda__WEBPACK_IMPORTED_MODULE_28__["hasIn"])('options', schema)) {
-            if (Object(ramda__WEBPACK_IMPORTED_MODULE_28__["hasIn"])('styles', schema.options)) {
+        var toolbar = "";
+        if (Object(ramda__WEBPACK_IMPORTED_MODULE_28__["hasIn"])("options", schema)) {
+            if (Object(ramda__WEBPACK_IMPORTED_MODULE_28__["hasIn"])("styles", schema.options)) {
                 toolbar += this.toolbarStyles(schema.options.styles);
             }
-            if (Object(ramda__WEBPACK_IMPORTED_MODULE_28__["hasIn"])('tags', schema.options)) {
+            if (Object(ramda__WEBPACK_IMPORTED_MODULE_28__["hasIn"])("tags", schema.options)) {
                 toolbar += this.toolbarTags(schema.options.tags);
             }
         }
@@ -3073,38 +2950,38 @@ var WysiwygHandler = /** @class */ (function () {
         var stylesValue = {};
         var groups = {
             group1: {
-                bold: 'bold',
-                italic: 'italic',
-                underline: 'underline',
-                strikethrough: 'strikethrough',
-                color: 'forecolor',
-                background: 'backcolor',
-                math: 'eqneditor'
+                bold: "bold",
+                italic: "italic",
+                underline: "underline",
+                strikethrough: "strikethrough",
+                color: "forecolor",
+                background: "backcolor",
+                math: "eqneditor"
             },
             others: {
-                ol: 'numlist',
-                ul: 'bullist',
-                table: 'table',
+                ol: "numlist",
+                ul: "bullist",
+                table: "table"
             },
             align: {
-                alignleft: 'alignleft',
-                aligncenter: 'aligncenter',
-                alignright: 'alignright',
-                alignjustify: 'alignjustify',
+                alignleft: "alignleft",
+                aligncenter: "aligncenter",
+                alignright: "alignright",
+                alignjustify: "alignjustify"
             },
             indent: {
-                outdent: 'outdent',
-                indent: 'indent',
+                outdent: "outdent",
+                indent: "indent"
             },
             format: {
-                formatselect: 'formatselect',
+                formatselect: "formatselect"
             },
             font: {
-                fontselect: 'fontselect',
-                fontsize: 'fontsizeselect',
-            },
+                fontselect: "fontselect",
+                fontsize: "fontsizeselect"
+            }
         };
-        if (typeof styles === 'string') {
+        if (typeof styles === "string") {
             styles = Object(ramda__WEBPACK_IMPORTED_MODULE_28__["equals"])(styles, WysiwygHandler.STYLES_ALL)
                 ? Object.keys(groups)
                 : [];
@@ -3117,36 +2994,36 @@ var WysiwygHandler = /** @class */ (function () {
                 for (var group in groups) {
                     if (Object(ramda__WEBPACK_IMPORTED_MODULE_28__["hasIn"])(style, groups[group])) {
                         WysiwygHandler.addValue(stylesValue, group, [
-                            groups[group][style],
+                            groups[group][style]
                         ]);
                     }
                 }
             }
         });
-        var result = '';
+        var result = "";
         for (var styleValue in stylesValue) {
             if (!Object(ramda__WEBPACK_IMPORTED_MODULE_28__["isNil"])(stylesValue[styleValue])) {
-                result += Object(ramda__WEBPACK_IMPORTED_MODULE_28__["uniq"])(stylesValue[styleValue]).join(' ') + ' | ';
+                result += Object(ramda__WEBPACK_IMPORTED_MODULE_28__["uniq"])(stylesValue[styleValue]).join(" ") + " | ";
             }
         }
-        return result.replace(/(\s\|\s)$/g, '');
+        return result.replace(/(\s\|\s)$/g, "");
     };
     WysiwygHandler.getToolBarBtns = function () {
         var type = app_core_mappers_xedit__WEBPACK_IMPORTED_MODULE_3__["Xedit"].getDam();
-        return ({
+        return {
             a: type + "_link",
             img: type,
             video: type + "_video",
-            audio: type + "_audio",
-        });
+            audio: type + "_audio"
+        };
     };
     WysiwygHandler.toolbarTags = function (tags) {
         var tagsValue = {};
         var groups = {
             buttons: this.getToolBarBtns(),
-            formats: {},
+            formats: {}
         };
-        if (typeof tags === 'string') {
+        if (typeof tags === "string") {
             tags = Object(ramda__WEBPACK_IMPORTED_MODULE_28__["equals"])(tags, WysiwygHandler.TAGS_ALL)
                 ? Object.keys(groups)
                 : [];
@@ -3162,16 +3039,16 @@ var WysiwygHandler = /** @class */ (function () {
                 for (var group in groups) {
                     if (Object(ramda__WEBPACK_IMPORTED_MODULE_28__["hasIn"])(style, groups[group])) {
                         WysiwygHandler.addValue(tagsValue, group, [
-                            groups[group][style],
+                            groups[group][style]
                         ]);
                     }
                 }
             }
         });
-        var result = ' ';
+        var result = " ";
         for (var tagValue in tagsValue) {
-            if (Object(ramda__WEBPACK_IMPORTED_MODULE_28__["equals"])(tagValue, 'buttons')) {
-                result += Object(ramda__WEBPACK_IMPORTED_MODULE_28__["uniq"])(tagsValue[tagValue]).join(' ');
+            if (Object(ramda__WEBPACK_IMPORTED_MODULE_28__["equals"])(tagValue, "buttons")) {
+                result += Object(ramda__WEBPACK_IMPORTED_MODULE_28__["uniq"])(tagsValue[tagValue]).join(" ");
             }
         }
         return result;
@@ -3186,7 +3063,7 @@ var WysiwygHandler = /** @class */ (function () {
     };
     WysiwygHandler.getAvailablePlugins = function (schema) {
         /*['link', 'table', 'image', 'paste', 'dam']*/
-        var plugins = ''; // 'searchreplace autolink image link media hr anchor advlist lists textcolor imagetools colorpicker';
+        var plugins = ""; // 'searchreplace autolink image link media hr anchor advlist lists textcolor imagetools colorpicker';
         return app_core_mappers_xedit__WEBPACK_IMPORTED_MODULE_3__["Xedit"].getDam() + " eqneditor searchreplace autolink link media hr anchor advlist lists textcolor colorpicker table";
     };
     /**********************************     DATEPICKER  *******************************************/
@@ -3195,40 +3072,44 @@ var WysiwygHandler = /** @class */ (function () {
      */
     WysiwygHandler.initDatePicker = function (args) {
         jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
-            'use strict';
-            var hasNode = Object(ramda__WEBPACK_IMPORTED_MODULE_28__["hasIn"])('node', args);
-            var hasElement = Object(ramda__WEBPACK_IMPORTED_MODULE_28__["hasIn"])('element', args);
+            "use strict";
+            var hasNode = Object(ramda__WEBPACK_IMPORTED_MODULE_28__["hasIn"])("node", args);
+            var hasElement = Object(ramda__WEBPACK_IMPORTED_MODULE_28__["hasIn"])("element", args);
             var element = hasNode
                 ? jquery__WEBPACK_IMPORTED_MODULE_0___default()(args.node.getSection())
                 : hasElement
                     ? jquery__WEBPACK_IMPORTED_MODULE_0___default()(args.element)
                     : jquery__WEBPACK_IMPORTED_MODULE_0___default()(args);
             if (element.children().length === 0) {
-                var date = element.html();
+                var date = element.attr("datetime");
                 element.html('<input type="text" value="' + date + '">');
                 var input_1 = element.children();
                 input_1.datepicker({
-                // format: 'dd-mm-yyyy',
+                // dateFormat: "yy-mm-dd"
                 });
-                input_1.datepicker().on('hide', function () {
-                    input_1.datepicker('destroy');
-                    var format = !Object(ramda__WEBPACK_IMPORTED_MODULE_28__["isNil"])(args.node.getSchema().options.format) ? args.node.getSchema().options.format : 'dd-mm-yyyy';
-                    if (element.prop('tagName') === 'TIME') {
-                        element.attr('datetime', input_1.val());
+                input_1.datepicker().on("hide", function () {
+                    input_1.datepicker("destroy");
+                    var format = !Object(ramda__WEBPACK_IMPORTED_MODULE_28__["isNil"])(args.node.getSchema().options.format)
+                        ? args.node.getSchema().options.format
+                        : "dd-mm-yyyy";
+                    var attributes = {};
+                    if (element.prop("tagName") === "TIME") {
+                        element.attr("datetime", input_1.val());
+                        attributes["datetime"] = element.attr("datetime");
                     }
                     element.html(dateformat__WEBPACK_IMPORTED_MODULE_26___default()(input_1.val(), format));
                     if (hasNode) {
-                        args.service.save(args.node.getTarget(), element.html(), 'Change section date');
+                        args.service.save(args.node.getSection(), element.html(), "Change section date", attributes);
                         args.service.getFileStateValue().snapshot();
                     }
-                    else if (hasElement && Object(ramda__WEBPACK_IMPORTED_MODULE_28__["hasIn"])('callback', args)) {
+                    else if (hasElement && Object(ramda__WEBPACK_IMPORTED_MODULE_28__["hasIn"])("callback", args)) {
                         args.callback(input_1.val());
                     }
                 });
-                input_1.on('changeDate', function () {
-                    input_1.datepicker('hide');
+                input_1.on("changeDate", function () {
+                    input_1.datepicker("hide");
                 });
-                input_1.datepicker('show');
+                input_1.datepicker("show");
             }
         });
     };
@@ -3236,14 +3117,14 @@ var WysiwygHandler = /** @class */ (function () {
      * This method get data in plain format from clipboard
      */
     WysiwygHandler.copyPlain = function (evt) {
-        return evt.clipboardData.getData('text/plain');
+        return evt.clipboardData.getData("text/plain");
     };
     /*
-    * This method get the data in html format from the clipboard but if it is empty it try to get in plain format
-    */
+     * This method get the data in html format from the clipboard but if it is empty it try to get in plain format
+     */
     WysiwygHandler.copyHtml = function (evt) {
-        var data = evt.clipboardData.getData('text/plain');
-        var html = evt.clipboardData.getData('text/html');
+        var data = evt.clipboardData.getData("text/plain");
+        var html = evt.clipboardData.getData("text/html");
         if (html) {
             data = sanitize_html__WEBPACK_IMPORTED_MODULE_2___default()(html);
         }
@@ -3251,7 +3132,7 @@ var WysiwygHandler = /** @class */ (function () {
     };
     WysiwygHandler.copy = function (evt, asHtml) {
         if (asHtml === void 0) { asHtml = true; }
-        var data = '';
+        var data = "";
         if (asHtml) {
             data = WysiwygHandler.copyHtml(evt);
         }
@@ -3260,27 +3141,59 @@ var WysiwygHandler = /** @class */ (function () {
         }
         return data;
     };
-    WysiwygHandler.STYLES_ALL = 'all';
-    WysiwygHandler.TAGS_ALL = 'all';
+    WysiwygHandler.STYLES_ALL = "all";
+    WysiwygHandler.TAGS_ALL = "all";
     WysiwygHandler.handlers = {
         date: WysiwygHandler.initDatePicker,
-        text: WysiwygHandler.initTinymce,
+        text: WysiwygHandler.initTinymce
     };
     return WysiwygHandler;
 }());
 
 dateformat__WEBPACK_IMPORTED_MODULE_26___default.a.i18n = {
     dayNames: [
-        'Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab',
-        'Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado'
+        "Dom",
+        "Lun",
+        "Mar",
+        "Mie",
+        "Jue",
+        "Vie",
+        "Sab",
+        "Domingo",
+        "Lunes",
+        "Martes",
+        "Miercoles",
+        "Jueves",
+        "Viernes",
+        "Sábado"
     ],
     monthNames: [
-        'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic',
-        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+        "Ene",
+        "Feb",
+        "Mar",
+        "Abr",
+        "May",
+        "Jun",
+        "Jul",
+        "Ago",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dic",
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
     ],
-    timeNames: [
-        'a', 'p', 'am', 'pm', 'A', 'P', 'AM', 'PM'
-    ]
+    timeNames: ["a", "p", "am", "pm", "A", "P", "AM", "PM"]
 };
 
 
@@ -4219,8 +4132,9 @@ var Router = /** @class */ (function () {
     function Router() {
     }
     Router.getRouter = function () {
-        return !Object(ramda__WEBPACK_IMPORTED_MODULE_1__["isNil"])(window[_xedit__WEBPACK_IMPORTED_MODULE_0__["Xedit"].BASE]) && Object(ramda__WEBPACK_IMPORTED_MODULE_1__["hasIn"])('router', window[_xedit__WEBPACK_IMPORTED_MODULE_0__["Xedit"].BASE]) ?
-            window[_xedit__WEBPACK_IMPORTED_MODULE_0__["Xedit"].BASE].router : null;
+        return !Object(ramda__WEBPACK_IMPORTED_MODULE_1__["isNil"])(window[_xedit__WEBPACK_IMPORTED_MODULE_0__["Xedit"].BASE]) && Object(ramda__WEBPACK_IMPORTED_MODULE_1__["hasIn"])("router", window[_xedit__WEBPACK_IMPORTED_MODULE_0__["Xedit"].BASE])
+            ? window[_xedit__WEBPACK_IMPORTED_MODULE_0__["Xedit"].BASE].router
+            : null;
     };
     Router.getRouterProperty = function (prop, def) {
         if (def === void 0) { def = null; }
@@ -4233,14 +4147,14 @@ var Router = /** @class */ (function () {
     Router.setToken = function (params, headers) {
         var token = Router.getRouterProperty(Router.TOKEN);
         if (!Object(ramda__WEBPACK_IMPORTED_MODULE_1__["isNil"])(token)) {
-            if (token.type === 'url') {
+            if (token.type === "url") {
                 params[token.field] = token.value;
             }
-            else if (token.type === 'bearer') {
-                headers = headers.set('Authorization', "Bearer " + token.value);
+            else if (token.type === "bearer") {
+                headers = headers.set("Authorization", "Bearer " + token.value);
             }
-            else if (token.type === 'basic') {
-                headers = headers.set('Authorization', "Basic " + token.value);
+            else if (token.type === "basic") {
+                headers = headers.set("Authorization", "Basic " + token.value);
             }
         }
         return { params: params, headers: headers };
@@ -4249,14 +4163,14 @@ var Router = /** @class */ (function () {
         if (_params === void 0) { _params = {}; }
         var params = Object.assign({}, _params);
         var info = {};
-        if (!(/^(f|ht)tps?:\/\//i).test(endpoint)) {
+        if (!/^(f|ht)tps?:\/\//i.test(endpoint)) {
             info = this.get(endpoint);
-            endpoint = Router.getRouterProperty(Router.BASE_URL, '') + "/" + info['path'];
+            endpoint = Router.getRouterProperty(Router.BASE_URL, "") + "/" + info["path"];
         }
         // Added query params
         var match;
         var path = endpoint;
-        while ((match = (/\{([^{}]*)}/g).exec(path)) !== null) {
+        while ((match = /\{([^{}]*)}/g.exec(path)) !== null) {
             var val = null;
             if (Object(ramda__WEBPACK_IMPORTED_MODULE_1__["hasIn"])(match[1], params)) {
                 val = params[match[1]];
@@ -4268,14 +4182,14 @@ var Router = /** @class */ (function () {
             if (val != null) {
                 endpoint = endpoint.replace(match[0], val);
             }
-            path = path.replace(match[0], '');
+            path = path.replace(match[0], "");
         }
         // Extra params
-        if ((Object(ramda__WEBPACK_IMPORTED_MODULE_1__["hasIn"])('params', info))) {
-            for (var _i = 0, _a = Object.keys(info['params']); _i < _a.length; _i++) {
+        if (Object(ramda__WEBPACK_IMPORTED_MODULE_1__["hasIn"])("params", info)) {
+            for (var _i = 0, _a = Object.keys(info["params"]); _i < _a.length; _i++) {
                 var property = _a[_i];
-                var val = info['params'][property];
-                match = (/^\{(.*)}$/g).exec(val);
+                var val = info["params"][property];
+                match = /^\{(.*)}$/g.exec(val);
                 if (match != null) {
                     var param = Router.getExtraParam(match[1]);
                     if (!Object(ramda__WEBPACK_IMPORTED_MODULE_1__["isNil"])(param)) {
@@ -4288,15 +4202,17 @@ var Router = /** @class */ (function () {
                 // filters.push(`${property}=${val}`);
             }
         }
-        var query = Object.keys(params).length > 0 ? "?" + query_string__WEBPACK_IMPORTED_MODULE_2___default.a.stringify(params) : '';
+        var query = Object.keys(params).length > 0 ? "?" + query_string__WEBPACK_IMPORTED_MODULE_2__["stringify"](params) : "";
         return "" + endpoint + query;
     };
     Router.get = function (name) {
         var endpoint = null;
-        var path = name.split('.');
+        var path = name.split(".");
         for (var _i = 0, _a = Object.keys(path); _i < _a.length; _i++) {
             var key = _a[_i];
-            endpoint = Object(ramda__WEBPACK_IMPORTED_MODULE_1__["isNil"])(endpoint) ? Router.getRouterProperty(Router.ENDPOINTS)[path[key]] : endpoint[path[key]];
+            endpoint = Object(ramda__WEBPACK_IMPORTED_MODULE_1__["isNil"])(endpoint)
+                ? Router.getRouterProperty(Router.ENDPOINTS)[path[key]]
+                : endpoint[path[key]];
         }
         return endpoint;
     };
@@ -4308,11 +4224,11 @@ var Router = /** @class */ (function () {
         }
         return def;
     };
-    Router.ROUTER = 'router';
-    Router.TOKEN = 'token';
-    Router.BASE_URL = 'baseUrl';
-    Router.ENDPOINTS = 'endpoints';
-    Router.EXTRA_PARAMS = 'attrs';
+    Router.ROUTER = "router";
+    Router.TOKEN = "token";
+    Router.BASE_URL = "baseUrl";
+    Router.ENDPOINTS = "endpoints";
+    Router.EXTRA_PARAMS = "attrs";
     return Router;
 }());
 /* harmony default export */ __webpack_exports__["default"] = (Router);
@@ -4732,6 +4648,7 @@ var TreeComponent = /** @class */ (function () {
                 type: TreeComponent_1.TYPE_FOLDER,
                 children: []
             }];
+        this.imgSrc = null;
         this.tree.treeModel.collapseAll();
         // TODO LOAD PATH TREE
     };
@@ -5460,7 +5377,7 @@ var DynTabformComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div [ngClass]=\"questionClass\" [formGroup]=\"form\">\n  <label [attr.for]=\"question.key\">{{ question.label }}</label>\n\n  <div [ngSwitch]=\"question.controlType\">\n\n    <input \n      *ngSwitchCase=\"'text'\" \n      [formControlName]=\"question.key\"\n      [id]=\"question.key\" \n      [ngModel]=\"question.val\" \n      [type]=\"question.type\"\n    >\n    <input \n      *ngSwitchCase=\"'date'\" \n      [formControlName]=\"question.key\" \n      [id]=\"question.key\" \n      [ngModel]=\"question.val | date:'yyyy-MM-dd'\" \n      [type]=\"question.type\"\n    >\n\n    <div *ngSwitchCase=\"'image'\" class=\"question-img\">\n      <input\n        [formControlName]=\"question.key\"\n        [id]=\"question.key\"\n        [ngModel]=\"question.val\"\n        [type]=\"text\"  \n      >\n      <button (click)=\"clicked($event)\"><i class=\"far fa-images\"></i></button>\n    </div>\n\n    <textarea \n      *ngSwitchCase=\"'text-area'\" \n      class=\"dam-textarea\" \n      [formControlName]=\"question.key\"\n      [id]=\"question.key\">{{ question.val }}\n    </textarea>\n    \n    <ng-select\n      class=\"dam-select\"\n      [id]=\"question.key\"\n      [(ngModel)]=\"question.val\"\n      *ngSwitchCase=\"'dropdown'\"\n      [formControlName]=\"question.key\"\n      [items]=\"question.options\"\n      bindValue='key'\n      bindLabel='value'\n      [multiple]='question.multi'º\n    >\n    </ng-select>\n    <ng-select\n      class=\"dam-select\"\n      [id]=\"question.key\"\n      [ngModel]=\"question.val\"\n      *ngSwitchCase=\"'depdrop'\"\n      [formControlName]=\"question.key\"\n      [items]=\"question.options\"\n    >    \n    </ng-select>\n \n  </div> \n \n  <div class=\"errorMessage\" *ngIf=\"!isValid\">{{ question.label }} is required</div>\n</div>"
+module.exports = "<div [ngClass]=\"questionClass\" [formGroup]=\"form\">\n    <label [attr.for]=\"question.key\">\n        {{ question.label }}\n        <span style=\"color:red\" *ngIf=\"question.required\">*</span>\n    </label>\n\n    <div [ngSwitch]=\"question.controlType\">\n        <input\n            *ngSwitchCase=\"'text'\"\n            [formControlName]=\"question.key\"\n            [id]=\"question.key\"\n            [ngModel]=\"question.val\"\n            [type]=\"question.type\"\n            [required]=\"question.required\"\n        />\n        <input\n            *ngSwitchCase=\"'date'\"\n            [formControlName]=\"question.key\"\n            [id]=\"question.key\"\n            [ngModel]=\"question.val | date: 'yyyy-MM-dd'\"\n            [type]=\"question.type\"\n            [required]=\"question.required\"\n        />\n\n        <div *ngSwitchCase=\"'image'\" class=\"question-img\">\n            <input\n                [formControlName]=\"question.key\"\n                [id]=\"question.key\"\n                [ngModel]=\"question.val\"\n                [type]=\"text\"\n                [required]=\"question.required\"\n            />\n            <button (click)=\"clicked($event)\">\n                <i class=\"far fa-images\"></i>\n            </button>\n        </div>\n\n        <textarea\n            *ngSwitchCase=\"'text-area'\"\n            class=\"dam-textarea\"\n            [formControlName]=\"question.key\"\n            [id]=\"question.key\"\n            [required]=\"question.required\"\n            >{{ question.val }}\n        </textarea>\n\n        <ng-select\n            class=\"dam-select\"\n            [id]=\"question.key\"\n            [(ngModel)]=\"question.val\"\n            *ngSwitchCase=\"'dropdown'\"\n            [formControlName]=\"question.key\"\n            [items]=\"question.options\"\n            bindValue=\"key\"\n            bindLabel=\"value\"\n            [multiple]=\"question.multi\"\n            [required]=\"question.required\"\n        >\n        </ng-select>\n        <ng-select\n            class=\"dam-select\"\n            [id]=\"question.key\"\n            [ngModel]=\"question.val\"\n            *ngSwitchCase=\"'depdrop'\"\n            [formControlName]=\"question.key\"\n            [items]=\"question.options\"\n            [required]=\"question.required\"\n        >\n        </ng-select>\n    </div>\n</div>\n"
 
 /***/ }),
 
@@ -5649,14 +5566,14 @@ var QuestionBase = /** @class */ (function () {
     function QuestionBase(options) {
         if (options === void 0) { options = {}; }
         this.value = options.value;
-        this.key = options.key || '';
-        this.label = options.label || '';
+        this.key = options.key || "";
+        this.label = options.label || "";
         this.required = !!options.required;
+        this.readonly = !!options.readonly;
         this.order = options.order === undefined ? 1 : options.order;
-        this.controlType = options.controlType || '';
+        this.controlType = options.controlType || "";
         var val = options.val || null;
-        this.set(options, 'map', {})
-            .setVal(val);
+        this.set(options, "map", {}).setVal(val);
     }
     /**
      * Securely sets the value from the selected object
@@ -5727,8 +5644,15 @@ var QuestionControlService = /** @class */ (function () {
     QuestionControlService.prototype.toFormGroup = function (questions) {
         var group = {};
         questions.forEach(function (question) {
-            group[question.key] = question.required ? new _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormControl"](question.value || '', _angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required)
-                : new _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormControl"](question.value || '');
+            group[question.key] = question.required
+                ? new _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormControl"]({
+                    value: question.value || "",
+                    disabled: !!question.readonly
+                }, _angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required)
+                : new _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormControl"]({
+                    value: question.value || "",
+                    disabled: !!question.readonly
+                });
         });
         return new _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormGroup"](group);
     };
@@ -8179,11 +8103,14 @@ var EditorService = /** @class */ (function () {
         return this.file.getValue().newStateWithMessage(state, message);
     };
     /**
-      * Return to the previous state if it exists, otherwise it does not do anything
+     * Return to the previous state if it exists, otherwise it does not do anything
      */
     EditorService.prototype.lastStateFile = function () {
         var _this = this;
-        this.file.getValue().lastState().then(function (value) {
+        this.file
+            .getValue()
+            .lastState()
+            .then(function (value) {
             _this.setFile(value);
             _this.setLoading(false);
         });
@@ -8193,7 +8120,10 @@ var EditorService = /** @class */ (function () {
      */
     EditorService.prototype.nextStateFile = function () {
         var _this = this;
-        this.file.getValue().nextState().then(function (value) {
+        this.file
+            .getValue()
+            .nextState()
+            .then(function (value) {
             _this.setFile(value);
             _this.setLoading(false);
         });
@@ -8203,7 +8133,9 @@ var EditorService = /** @class */ (function () {
      */
     EditorService.prototype.recoverySnapshot = function (key) {
         var _this = this;
-        this.getFileStateValue().recovery(key).then(function () {
+        this.getFileStateValue()
+            .recovery(key)
+            .then(function () {
             _this.setFile(_this.getFileStateValue());
         });
     };
@@ -8214,7 +8146,8 @@ var EditorService = /** @class */ (function () {
      * @param content Html content
      * @param message string message
      */
-    EditorService.prototype.save = function (node, content, message) {
+    EditorService.prototype.save = function (node, content, message, attributes) {
+        if (attributes === void 0) { attributes = {}; }
         var fileContent = this.fileState.getValue().getState().content;
         /** @todo Improve performance clone */
         // let fileContent = clone(this.file.getValue().getState().content)
@@ -8229,10 +8162,13 @@ var EditorService = /** @class */ (function () {
                 root.content = _utils_converters__WEBPACK_IMPORTED_MODULE_6__["Converters"].html2json(root.content);
             }
             // Modify file with new changes
-            var editContent = Object(ramda__WEBPACK_IMPORTED_MODULE_2__["reduce"])(function (acc, value) {
+            var editContent_1 = Object(ramda__WEBPACK_IMPORTED_MODULE_2__["reduce"])(function (acc, value) {
                 return acc.child[value];
             }, root.content, uuidPath);
-            editContent.child = _utils_converters__WEBPACK_IMPORTED_MODULE_6__["Converters"].html2json(content, false);
+            Object.keys(attributes).forEach(function (key) {
+                editContent_1.attr[key] = attributes[key];
+            });
+            editContent_1.child = _utils_converters__WEBPACK_IMPORTED_MODULE_6__["Converters"].html2json(content, false);
         }
         // Save new state
         var newFile = this.newStateFile(fileContent, message);
@@ -8257,7 +8193,7 @@ var EditorService = /** @class */ (function () {
      * Remove node section
      */
     EditorService.prototype.removeNode = function (node) {
-        var file = this.newStateFile(this.fileState.getValue().getState().content, 'Remove node');
+        var file = this.newStateFile(this.fileState.getValue().getState().content, "Remove node");
         var section = node.getSection();
         var sectionPath = _models_node__WEBPACK_IMPORTED_MODULE_4__["Node"].getContextPath(section);
         var parentNode = null;
@@ -8278,10 +8214,14 @@ var EditorService = /** @class */ (function () {
      */
     EditorService.prototype.addNodeToArea = function (node, newNode, child) {
         if (child === void 0) { child = false; }
-        var message = (child ? 'Adding child' : 'Adding sibling') + ' to ' + node.getSection().getAttribute('xe_section');
+        var message = (child ? "Adding child" : "Adding sibling") +
+            " to " +
+            node.getSection().getAttribute("xe_section");
         var file = this.newStateFile(this.fileState.getValue().getState().content, message);
         var section = node.getSection();
-        var sectionPath = child ? _models_node__WEBPACK_IMPORTED_MODULE_4__["Node"].getContextPath(section) : _models_node__WEBPACK_IMPORTED_MODULE_4__["Node"].getContextPath(section.parentNode);
+        var sectionPath = child
+            ? _models_node__WEBPACK_IMPORTED_MODULE_4__["Node"].getContextPath(section)
+            : _models_node__WEBPACK_IMPORTED_MODULE_4__["Node"].getContextPath(section.parentNode);
         var fileNode = Object(ramda__WEBPACK_IMPORTED_MODULE_2__["reduce"])(function (n, value) {
             return n.child[value];
         }, file.getState().getContent()[node.getAreaId()].content, sectionPath);
@@ -8306,59 +8246,63 @@ var EditorService = /** @class */ (function () {
     EditorService.prototype.getUpdatedDocument = function () {
         var file = this.getFileStateValue();
         var state = file.getState();
-        var document = { 'nodes': {} };
+        var document = { nodes: {} };
         for (var nodeId in state.content) {
-            if (Object(ramda__WEBPACK_IMPORTED_MODULE_2__["hasIn"])('content', state.content[nodeId])) {
-                document['nodes'][nodeId] = {
+            if (Object(ramda__WEBPACK_IMPORTED_MODULE_2__["hasIn"])("content", state.content[nodeId])) {
+                document["nodes"][nodeId] = {
                     content: _utils_converters__WEBPACK_IMPORTED_MODULE_6__["Converters"].json2html(state.content[nodeId].content, false, false),
                     editable: state.content[nodeId].editable
                 };
             }
         }
-        if (Object(ramda__WEBPACK_IMPORTED_MODULE_2__["hasIn"])('metas', file)) {
-            document['metas'] = file['metas'];
+        if (Object(ramda__WEBPACK_IMPORTED_MODULE_2__["hasIn"])("metas", file)) {
+            document["metas"] = file["metas"];
         }
-        if (Object(ramda__WEBPACK_IMPORTED_MODULE_2__["hasIn"])('metadata', file)) {
-            document['metadata'] = file['metadata'];
+        if (Object(ramda__WEBPACK_IMPORTED_MODULE_2__["hasIn"])("metadata", file)) {
+            document["metadata"] = file["metadata"];
         }
         return document;
     };
     /************************************** Static Methods **************************************/
     /**
-    * Parse DomNode to EditorNode
-    *
-    * @param element DomNode
-    * @param path Uuid path
-    */
+     * Parse DomNode to EditorNode
+     *
+     * @param element DomNode
+     * @param path Uuid path
+     */
     EditorService.prototype.parseToNode = function (element) {
         var styles = [];
         var attributes = {};
         var node = null;
         var uuid = element.getAttribute(_models_schema_xedit_mapper__WEBPACK_IMPORTED_MODULE_5__["XeditMapper"].TAG_UUID);
         Object.keys(element.attributes).forEach(function (key) {
-            attributes[element.attributes[key].name] = element.attributes[key].value;
+            attributes[element.attributes[key].name] =
+                element.attributes[key].value;
         });
         try {
             node = new _models_node__WEBPACK_IMPORTED_MODULE_4__["Node"](uuid, element, attributes);
         }
         catch (e) {
-            console.error('This element is not a valid node');
+            console.error("This element is not a valid node");
         }
         return node;
     };
     /*
-    * Calculate uuid path to xedit node
-    */
+     * Calculate uuid path to xedit node
+     */
     EditorService.getUuidPath = function (element, rootTag, path, onlySections) {
         if (rootTag === void 0) { rootTag = _models_schema_xedit_mapper__WEBPACK_IMPORTED_MODULE_5__["XeditMapper"].TAG_EDITOR; }
         if (path === void 0) { path = []; }
         if (onlySections === void 0) { onlySections = false; }
         var parent = element.parentNode;
-        if (!Object(ramda__WEBPACK_IMPORTED_MODULE_2__["isNil"])(element) && (!onlySections || element.hasAttribute(_models_schema_xedit_mapper__WEBPACK_IMPORTED_MODULE_5__["XeditMapper"].TAG_SECTION_TYPE))) {
+        if (!Object(ramda__WEBPACK_IMPORTED_MODULE_2__["isNil"])(element) &&
+            (!onlySections ||
+                element.hasAttribute(_models_schema_xedit_mapper__WEBPACK_IMPORTED_MODULE_5__["XeditMapper"].TAG_SECTION_TYPE))) {
             path.unshift(element.getAttribute(_models_schema_xedit_mapper__WEBPACK_IMPORTED_MODULE_5__["XeditMapper"].TAG_UUID));
         }
-        return (element.nodeName.toLowerCase() === rootTag || Object(ramda__WEBPACK_IMPORTED_MODULE_2__["isNil"])(parent)) ?
-            path : this.getUuidPath(parent, rootTag, path);
+        return element.nodeName.toLowerCase() === rootTag || Object(ramda__WEBPACK_IMPORTED_MODULE_2__["isNil"])(parent)
+            ? path
+            : this.getUuidPath(parent, rootTag, path);
     };
     /**
      * Check if node has a child section
@@ -8383,7 +8327,9 @@ var EditorService = /** @class */ (function () {
      * @returns boolean
      */
     EditorService.isInsertedNodeValid = function (currentNode, insertedNode) {
-        var section = insertedNode.getTarget().getAttribute(_models_schema_xedit_mapper__WEBPACK_IMPORTED_MODULE_5__["XeditMapper"].TAG_SECTION_TYPE);
+        var section = insertedNode
+            .getTarget()
+            .getAttribute(_models_schema_xedit_mapper__WEBPACK_IMPORTED_MODULE_5__["XeditMapper"].TAG_SECTION_TYPE);
         return this.isAllowAddChild(currentNode, section);
     };
     var EditorService_1;
@@ -12346,7 +12292,7 @@ var Converters = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/pablo/Documentos/xedit/src/main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! /Users/atovar/develop/js_apps/xedit/src/main.ts */"./src/main.ts");
 
 
 /***/ }),

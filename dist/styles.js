@@ -539,7 +539,7 @@ if(false) {}
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/pablo/Documentos/xedit/src/sass/styles.scss */"./src/sass/styles.scss");
+module.exports = __webpack_require__(/*! /Users/atovar/develop/js_apps/xedit/src/sass/styles.scss */"./src/sass/styles.scss");
 
 
 /***/ })

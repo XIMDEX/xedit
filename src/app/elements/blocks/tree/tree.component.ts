@@ -28,8 +28,6 @@ export class TreeComponent implements OnInit {
     @Input() type;
     @Input() path;
 
-    constructor(public http: HttpClient, public _editorService: EditorService) { }
-
     public treeModel: any;
     public resourceCount = -1;
     public imgSrc: string = null;
@@ -59,6 +57,8 @@ export class TreeComponent implements OnInit {
         }
     };
 
+    constructor(public http: HttpClient, public _editorService: EditorService) { }
+
     ngOnInit() {
         this.resetTreeModel();
     }
@@ -73,6 +73,7 @@ export class TreeComponent implements OnInit {
             type: TreeComponent.TYPE_FOLDER,
             children: []
         }];
+        this.imgSrc = null;
         this.tree.treeModel.collapseAll();
         // TODO LOAD PATH TREE
     }
