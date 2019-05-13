@@ -12,7 +12,7 @@ export class MetadataViewComponent implements OnInit {
     tabs = [];
     payload: any = {};
     private file: File;
-    private schema: {};
+    public schema: {};
     meta: any = {};
 
     constructor(private _edService: EditorService) {
