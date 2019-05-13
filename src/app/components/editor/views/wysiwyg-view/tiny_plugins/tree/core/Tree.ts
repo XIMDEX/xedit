@@ -1,12 +1,17 @@
-import { isNil, isEmpty, hasIn, head } from 'ramda';
+import { isEmpty, hasIn } from 'ramda';
 import { XeditMapper } from '@models/schema/xedit-mapper';
 /**
  * Dam.js
  */
 
-const TAG_BY_TYPE = { 'image': 'img', 'link': 'a', 'video': 'video' };
-const ATTR_BY_TAG = { 'img': 'src', 'a': 'href', 'video': 'src' };
-const ATTRS_BY_TAG = { 'img': ['alt', 'longdesc'], 'a': ['target', 'title'], 'video': ['longdesc', 'height', 'width'] };
+const TAG_BY_TYPE = { 'image': 'img', 'link': 'a', 'video': 'video', 'iframe': 'iframe' };
+const ATTR_BY_TAG = { 'img': 'src', 'a': 'href', 'video': 'src', 'iframe': 'src' };
+const ATTRS_BY_TAG = {
+    'img': ['alt', 'longdesc'],
+    'a': ['target', 'title'],
+    'video': ['longdesc', 'height', 'width'],
+    'iframe': ['width', 'height']
+};
 const VALID_TAGS = Object.keys(ATTR_BY_TAG);
 
 const isValidNodeId = function (nodeId) {
@@ -28,6 +33,9 @@ const getId = function (editor, type) {
     if (type === 'video') {
         tag = 'video';
         val = editor.dom.getAttrib(selectedNode, 'data-mce-p-xe_link');
+    } else if (type === 'iframe') {
+        tag = 'iframe';
+        val = editor.dom.getAttrib(selectedNode, 'data-mce-p-src');
     }
     /*const hasResource = this.hasValidResource(tag, val, type);
     const isDam = VALID_TAGS.includes(tag) && TAG_BY_TYPE[type] == tag && editor.dom.getAttrib(selectedNode, XeditMapper.TAG_LINK) !== '';
@@ -40,7 +48,11 @@ const getAttribute = function (editor, attribute) {
     const defaultValues = {
         'alt': 'Texto alternativo'
     };
-    const selectedNode = editor.selection.getNode();
+
+    let selectedNode = editor.selection.getNode();
+    if (selectedNode.classList.contains('mce-object-iframe') && selectedNode.tagName.toLowerCase() !== 'iframe') {
+        selectedNode = selectedNode.querySelector('iframe');
+    }
     const attr = editor.dom.getAttrib(selectedNode, attribute);
     return isEmpty(attr) ? (hasIn(attribute, defaultValues) ? defaultValues[attribute] : '') : attr;
 };

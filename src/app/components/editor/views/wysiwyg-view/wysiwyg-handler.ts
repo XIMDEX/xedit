@@ -104,6 +104,7 @@ export class WysiwygHandler {
                 ),
                 skin_url: "assets/skins/x-edit",
                 valid_elements: "*[*]",
+                extended_valid_elements: "iframe[src|frameborder|style|scrolling|class|width|height|name|align]",
                 // content_css: [
                 //     "//fonts.googleapis.com/css?family=Libre+Franklin",
                 //     "//fonts.googleapis.com/css?family=Vibur"
@@ -336,7 +337,8 @@ export class WysiwygHandler {
             a: `${type}_link`,
             img: type,
             video: `${type}_video`,
-            audio: `${type}_audio`
+            audio: `${type}_audio`,
+            iframe: `${type}_iframe`
         };
     }
 

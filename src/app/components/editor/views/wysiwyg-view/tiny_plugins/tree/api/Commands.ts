@@ -12,6 +12,10 @@ const register = function (editor, http) {
     editor.addCommand('mceTreeVideo', function () {
         Dialog.open(editor, http, 'video');
     });
+
+    editor.addCommand('mceTreeIframe', function () {
+        Dialog.open(editor, http, 'iframe');
+    });
 };
 
 export default {
