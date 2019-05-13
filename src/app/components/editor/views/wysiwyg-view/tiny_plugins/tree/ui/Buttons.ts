@@ -26,7 +26,7 @@ const register = function (editor) {
     });
 
     editor.addButton('tree_iframe', {
-        image: '/assets/img/icon_iframe.png',
+        image: './assets/img/icon_iframe.png',
         tooltip: 'Tree iframe',
         cmd: 'mceTreeIframe',
         stateSelector: '[data-mce-object="iframe"]'
