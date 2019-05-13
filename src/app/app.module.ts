@@ -9,6 +9,7 @@ import { ClickOutsideModule } from 'ng4-click-outside';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ContextMenuModule } from 'ngx-contextmenu';
+import { DynFormModule } from 'app/elements/forms/dynform/dyn-form.module';
 
 import { AngularDraggableModule } from 'angular2-draggable';
 import { CollapsibleModule } from 'angular2-collapsible';
@@ -38,12 +39,16 @@ import { SimpleNotificationsModule } from 'angular2-notifications';
 import { CheckboxComponent } from './elements/forms/checkbox/checkbox.component';
 import { StateControllerComponent } from './components/taskbar/state-controller/state-controller.component';
 import { ListboxComponent } from './elements/forms/listbox/listbox.component';
-import { TreeComponent } from './elements/blocks/tree/tree.component';
-import { TreeModule } from 'ng2-tree';
-import { TreeModalComponent } from './elements/blocks/tree-modal/tree-modal.component';
-import { ScModalModule } from 'angular-5-popup';
 import { DamModule } from '../lib/dam';
 import { DamService } from './services/dam-service/dam.service';
+import { MathjaxDirective } from './directives/mathjax.directive';
+import { TreeModule } from 'angular-tree-component';
+import { TreeModalComponent } from './elements/blocks/tree-modal/tree-modal.component';
+import { TreeComponent } from './elements/blocks/tree/tree.component';
+import { NgxSmartModalModule } from 'ngx-smart-modal';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { MetadataViewComponent } from './components/editor/views/metadata-view/metadata-view.component';
+
 
 @NgModule({
     declarations: [
@@ -69,8 +74,11 @@ import { DamService } from './services/dam-service/dam.service';
         CheckboxComponent,
         ListboxComponent,
         StateControllerComponent,
+        MathjaxDirective,
+        TreeModalComponent,
         TreeComponent,
-        TreeModalComponent
+        MetadataViewComponent,
+
     ],
     imports: [
         /* 3rd party components */
@@ -86,9 +94,11 @@ import { DamService } from './services/dam-service/dam.service';
         CollapsibleModule,
         HttpClientModule,
         SimpleNotificationsModule.forRoot(),
-        TreeModule,
-        ScModalModule,
-        DamModule
+        DamModule,
+        TreeModule.forRoot(),
+        NgxSmartModalModule.forRoot(),
+        FontAwesomeModule,
+        DynFormModule
     ],
     providers: [
         EditorService,

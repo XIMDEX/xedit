@@ -1,12 +1,7 @@
-import { UUID } from 'angular2-uuid';
 import { History } from './history';
-import { HTMLParser } from '@utils/htmlparser';
-import { Serializable } from './interfaces/Serializable';
-import { isNil, equals, is, reduce, contains, hasIn, union } from 'ramda';
+import { isNil, is, hasIn, union } from 'ramda';
 
-import { XeditMapper } from '@models/schema/xedit-mapper';
 import { Converters } from '@utils/converters';
-import { Node } from '@models/node';
 import { Xedit } from '../xedit';
 
 export class FileHistory {
@@ -50,6 +45,7 @@ export class File extends History {
     private css: Array<string>;
     private js: Array<string>;
     private metas: Array<Object>;
+    private metadata: Object;
     private name: String;
 
     constructor(json = null) {
@@ -88,20 +84,12 @@ export class File extends History {
         return this.js;
     }
 
-    getMetas(): Array<Object> {
-        return this.metas;
+    getMetadata(): Object {
+        return this.metadata;
     }
 
-    setMetas(metas: Array<Object>) {
-        return this.metas = metas;
-    }
-
-    getMeta(name): Object {
-        return this.metas[name];
-    }
-
-    setMeta(name: string, value: string) {
-        return this.metas[name] = value;
+    setMetadata(meta: Object) {
+        return this.metadata = meta;
     }
 
     getName(): String {

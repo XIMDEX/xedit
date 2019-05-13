@@ -1,6 +1,5 @@
 import { isNil, contains, equals, hasIn } from 'ramda';
 import { UUID } from 'angular2-uuid';
-import { Xedit } from '../app/xedit';
 
 import { XeditMapper } from '@models/schema/xedit-mapper';
 import { HTMLParser } from '@utils/htmlparser';

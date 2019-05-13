@@ -1,0 +1,25 @@
+.dynform-section {
+    margin: 0 1rem 0 1rem;
+
+    .dynform-header {
+        text-align: center;
+        border: 1px solid #cccccc;
+        margin-top: 2rem;
+        padding: 1rem;
+        user-select: none;
+        cursor: pointer;
+    }
+
+    .dynform-body {
+        width: 100%;
+        display: grid; 
+        flex-wrap: wrap;
+        justify-content: center;
+        grid-template-columns: repeat(auto-fill, 40rem);
+        height: 100%;
+        grid-template-rows: 10rem;
+        align-items: center;
+        border: 1px solid #cccccc;
+        border-top:0;
+    }
+}

@@ -1,5 +1,4 @@
 import { hasIn, isNil } from 'ramda';
-import Api from '../api';
 
 export class Xedit {
 
@@ -25,6 +24,15 @@ export class Xedit {
         let res = null;
         if (!isNil(xedit)) {
             res = hasIn('document', xedit) ? xedit.document : null;
+        }
+        return res;
+    }
+
+    public static getDam() {
+        const xedit = Xedit.getXedit();
+        let res = null;
+        if (!isNil(xedit)) {
+            res = hasIn('dam', xedit) ? xedit.dam : 'tree';
         }
         return res;
     }

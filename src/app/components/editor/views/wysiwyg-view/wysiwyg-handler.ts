@@ -1,69 +1,58 @@
-import $ from 'jquery';
-import { UUID } from 'angular2-uuid';
-import sanitizeHtml from 'sanitize-html';
+import $ from "jquery";
+import { UUID } from "angular2-uuid";
+import sanitizeHtml from "sanitize-html";
+import { Xedit } from "app/core/mappers/xedit";
+import { HttpClient } from "@angular/common/http";
 
 // TIYMCE
-import 'tinymce';
-import 'tinymce/themes/modern';
-import 'tinymce/plugins/table';
-import 'tinymce/plugins/image';
-import 'tinymce/plugins/link';
-import 'tinymce/plugins/searchreplace';
-import 'tinymce/plugins/autolink';
-import 'tinymce/plugins/media';
-import 'tinymce/plugins/hr';
-import 'tinymce/plugins/anchor';
-import 'tinymce/plugins/advlist';
-import 'tinymce/plugins/lists';
-import 'tinymce/plugins/textcolor';
-import 'tinymce/plugins/imagetools';
-import 'tinymce/plugins/colorpicker';
+import "tinymce";
+import "tinymce/themes/modern";
+import "tinymce/plugins/table";
+import "tinymce/plugins/image";
+import "tinymce/plugins/link";
+import "tinymce/plugins/searchreplace";
+import "tinymce/plugins/autolink";
+import "tinymce/plugins/media";
+import "tinymce/plugins/hr";
+import "tinymce/plugins/anchor";
+import "tinymce/plugins/advlist";
+import "tinymce/plugins/lists";
+import "tinymce/plugins/textcolor";
+import "tinymce/plugins/imagetools";
+import "tinymce/plugins/colorpicker";
+import "./tiny_plugins/eqneditor";
 
-import Commands from './dam/api/Commands';
-import FilterContent from './dam/core/FilterContent';
-import Buttons from './dam/ui/Buttons';
-import dateFormat from 'dateformat';
+import Commands from "./tiny_plugins/dam/api/Commands";
+import FilterContent from "./tiny_plugins/dam/core/FilterContent";
+import Buttons from "./tiny_plugins/dam/ui/Buttons";
+import TreeCommands from "./tiny_plugins/tree/api/Commands";
+import TreeFilterContent from "./tiny_plugins/tree/core/FilterContent";
+import TreeButtons from "./tiny_plugins/tree/ui/Buttons";
+import dateFormat from "dateformat";
 
 declare let tinymce: any;
 
 // DATEPICKER
-import 'bootstrap-datepicker';
-import {
-    isNil,
-    equals,
-    hasIn,
-    isEmpty,
-    join,
-    union,
-    contains,
-    uniq,
-} from 'ramda';
-import { state } from '@angular/core';
-import { WysiwygViewComponent } from './wysiwyg-view.component';
-import { XeditMapper } from '@models/schema/xedit-mapper';
-import { File } from '@models/file';
-import { EditorService } from '@services/editor-service/editor.service';
-import { Converters } from '@utils/converters';
-import { Xedit } from '@app/xedit';
-import { isArray } from 'util';
-import { ClipboardConfigs } from '../../../../models/configs/clipboardConfigs';
-import Router from '../../../../core/mappers/router';
-import { HttpClient } from '@angular/common/http';
-import { Api } from '@app/api';
+import "bootstrap-datepicker";
+import { isNil, equals, hasIn, isEmpty, union, uniq } from "ramda";
+import { XeditMapper } from "@models/schema/xedit-mapper";
+import { Converters } from "@utils/converters";
+import Router from "../../../../core/mappers/router";
+import { Api } from "@app/api";
 
 export class WysiwygHandler {
-    static STYLES_ALL = 'all';
-    static TAGS_ALL = 'all';
+    static STYLES_ALL = "all";
+    static TAGS_ALL = "all";
 
     static handlers = {
         date: WysiwygHandler.initDatePicker,
-        text: WysiwygHandler.initTinymce,
+        text: WysiwygHandler.initTinymce
     };
 
     static executeHandler(
         type: string,
         args: any,
-        defaultMethod: Function = function () { }
+        defaultMethod: Function = function() {}
     ) {
         const handlers = WysiwygHandler.handlers;
         handlers[type] ? handlers[type](args) : defaultMethod(args);
@@ -77,6 +66,7 @@ export class WysiwygHandler {
     static clearTinymce() {
         tinymce.remove();
     }
+
     /**
      * Init tinymce editor and added events
      */
@@ -89,16 +79,16 @@ export class WysiwygHandler {
             )
         ) {
             WysiwygHandler.clearTinymce();
-            WysiwygHandler.addPlugins(args.getInfo, args.callback);
+            WysiwygHandler.addPlugins(args.getInfo, args.callback, args.http);
             const toolbar = WysiwygHandler.generateToolbar(
                 args.node.getSchema()
             );
             const fixed_toolbar_container = !isEmpty(toolbar)
-                ? '#toolbar'
+                ? "#toolbar"
                 : false;
 
             tinymce.init({
-                dam_url: function (id) {
+                dam_url: function(id) {
                     return Router.configUrl(Api.getResourceUrl(), { id: id });
                 },
                 max_chars: 30000,
@@ -112,17 +102,21 @@ export class WysiwygHandler {
                 plugins: WysiwygHandler.getAvailablePlugins(
                     args.node.getSchema()
                 ),
-                skin_url: 'assets/skins/x-edit',
-                valid_elements: '*[*]',
-                content_css: ['//fonts.googleapis.com/css?family=Libre+Franklin', '//fonts.googleapis.com/css?family=Vibur'],
-                font_formats: 'Normal=libre franklin;Infantil=vibur;',
+                skin_url: "assets/skins/x-edit",
+                valid_elements: "*[*]",
+                extended_valid_elements: "iframe[src|frameborder|style|scrolling|class|width|height|name|align]",
+                // content_css: [
+                //     "//fonts.googleapis.com/css?family=Libre+Franklin",
+                //     "//fonts.googleapis.com/css?family=Vibur"
+                // ],
+                // font_formats: "Normal=libre franklin;Infantil=vibur;",
                 setup: editor => {
-                    editor.on('Nodechange', e => {
+                    editor.on("Nodechange", e => {
                         const ele = e.element;
                         const sibling = ele.previousSibling;
                         if (
                             sibling &&
-                            typeof sibling.getAttribute === 'function'
+                            typeof sibling.getAttribute === "function"
                         ) {
                             if (
                                 sibling.getAttribute(XeditMapper.TAG_UUID) ===
@@ -137,94 +131,57 @@ export class WysiwygHandler {
                                 );
                             }
                         }
-                        /*const element = e.element;
-                        const id = element.getAttribute(XeditMapper.TAG_UUID);
-                        function isParentId(parents, elementId) {
-                            let is = false;
-                            if (!isNil(parents)) {
-                                parents.forEach(parent => {
-                                    if (equals(parent.getAttribute(XeditMapper.TAG_UUID), elementId)) {
-                                        is = true;
-                                        parent.removeAttribute('xe_w_selected');
-                                    }
-                                });
-                            }
-                            return is;
-                        }
-                        if (isNil(id) || isParentId(e.parents, id)) {
-                            element.setAttribute(XeditMapper.TAG_UUID, UUID.UUID());
-                        }*/
-
-                        /*if (!isNil(args.node.getTarget()) && !equals(args.node.getTarget().getAttribute(XeditMapper.TAG_UUID),
-                            element.getAttribute(XeditMapper.TAG_UUID))) {
-                            args.service.setCurrentNode(args.service.parseToNode(element));
-                        }*/
                     });
-                    editor.on('Paste', e => {
+                    editor.on("Paste", e => {
                         e.preventDefault();
 
-                        const copyHtml = args.clipboardConfigs.getConfigs('copy');
+                        const copyHtml = args.clipboardConfigs.getConfigs(
+                            "copy"
+                        );
                         let data = WysiwygHandler.copy(e, copyHtml.enable);
                         data = WysiwygHandler.resetIdsFromString(data);
-                        document.execCommand('insertHTML', false, data);
+                        document.execCommand("insertHTML", false, data);
 
                         const contentTag = editor.bodyElement;
                         const content = editor.getContent();
                         args.service.save(
                             contentTag,
                             content,
-                            'Change section ' +
-                            args.node
-                                .getSection()
-                                .getAttribute('xe_section')
+                            "Change section " +
+                                args.node
+                                    .getSection()
+                                    .getAttribute("xe_section")
                         );
                     });
-                    editor.on('change', (evt: Event) => {
+                    editor.on("change", (evt: Event) => {
                         WysiwygHandler.saveDoc(editor, args);
                     });
-                    editor.on('init', (evt: Event) => {
-                        tinymce.execCommand('mceFocus', false, editor.id);
+                    editor.on("init", (evt: Event) => {
+                        tinymce.execCommand("mceFocus", false, editor.id);
                         args.service.setCurrentNode(args.node);
                     });
 
-                    editor.on('hide', e => {
+                    editor.on("hide", e => {
                         tinymce.remove(editor);
                     });
 
-                    editor.on('blur', (evt) => {
+                    editor.on("blur", evt => {
                         // TODO FIX atovar
                         const xedit = evt.target.bodyElement;
-                        const links = xedit.getElementsByTagName('a');
+                        const links = xedit.getElementsByTagName("a");
                         if (!isNil(links)) {
                             for (let i = 0; i < links.length; i++) {
-                                links[i].onclick = (evt) => {
-                                    evt.preventDefault();
+                                links[i].onclick = event => {
+                                    event.preventDefault();
                                     return false;
                                 };
                             }
                         }
                         WysiwygHandler.saveDoc(editor, args);
                         args.service.getFileStateValue().snapshot();
-                        /*const promise = new Promise(
-                            () => {
-                                const loop = window.setInterval(() => {
-                                    try {
-                                        if (tinymce.activeEditor.id !== editor.id || editor.isHidden()) {
-                                            window.clearInterval(loop);
-                                            tinymce.remove(editor);
-                                        } else {
-                                            editor.hide();
-                                        }
-                                    } catch (e) {
-                                        window.clearInterval(loop);
-                                    }
-                                }, 30);
-
-                            }
-                        );*/
                         return false;
                     });
-                },
+                }
             });
         }
     }
@@ -235,10 +192,8 @@ export class WysiwygHandler {
         args.service.save(
             contentTag,
             content,
-            'Change section ' +
-            args.node
-                .getSection()
-                .getAttribute('xe_section')
+            "Change section " +
+                args.node.getSection().getAttribute("xe_section")
         );
     }
 
@@ -265,17 +220,25 @@ export class WysiwygHandler {
 
     private static isSameEditor(editor, id) {
         return (
-            editor.targetElm.hasAttribute('xe_uuid') &&
-            equals(editor.targetElm.getAttribute('xe_uuid'), id)
+            editor.targetElm.hasAttribute("xe_uuid") &&
+            equals(editor.targetElm.getAttribute("xe_uuid"), id)
         );
     }
 
-    private static addPlugins(getInfo, callback) {
-        tinymce.PluginManager.add('dam', function (editor) {
-            FilterContent.setup(editor);
-            Commands.register(editor, getInfo, callback);
-            Buttons.register(editor);
-        });
+    private static addPlugins(getInfo, callback, http: HttpClient) {
+        if (Xedit.getDam() === "dam") {
+            tinymce.PluginManager.add("dam", function(editor) {
+                FilterContent.setup(editor);
+                Commands.register(editor, getInfo, callback);
+                Buttons.register(editor);
+            });
+        } else {
+            tinymce.PluginManager.add("tree", editor => {
+                TreeFilterContent.setup(editor);
+                TreeCommands.register(editor, http);
+                TreeButtons.register(editor);
+            });
+        }
     }
 
     private static generateToolbar(schema) {
@@ -283,13 +246,13 @@ export class WysiwygHandler {
             ' bullist numlist outdent indent |fontsizeselect'*/
         /*'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify
         | numlist bullist outdent indent  | removeformat'*/
-        let toolbar = '';
-        if (hasIn('options', schema)) {
-            if (hasIn('styles', schema.options)) {
+        let toolbar = "";
+        if (hasIn("options", schema)) {
+            if (hasIn("styles", schema.options)) {
                 toolbar += this.toolbarStyles(schema.options.styles);
             }
 
-            if (hasIn('tags', schema.options)) {
+            if (hasIn("tags", schema.options)) {
                 toolbar += this.toolbarTags(schema.options.tags);
             }
         }
@@ -302,38 +265,39 @@ export class WysiwygHandler {
         const stylesValue = {};
         const groups = {
             group1: {
-                bold: 'bold',
-                italic: 'italic',
-                underline: 'underline',
-                strikethrough: 'strikethrough',
-                color: 'forecolor',
-                background: 'backcolor',
+                bold: "bold",
+                italic: "italic",
+                underline: "underline",
+                strikethrough: "strikethrough",
+                color: "forecolor",
+                background: "backcolor",
+                math: "eqneditor"
             },
             others: {
-                ol: 'numlist',
-                ul: 'bullist',
-                table: 'table',
+                ol: "numlist",
+                ul: "bullist",
+                table: "table"
             },
             align: {
-                alignleft: 'alignleft',
-                aligncenter: 'aligncenter',
-                alignright: 'alignright',
-                alignjustify: 'alignjustify',
+                alignleft: "alignleft",
+                aligncenter: "aligncenter",
+                alignright: "alignright",
+                alignjustify: "alignjustify"
             },
             indent: {
-                outdent: 'outdent',
-                indent: 'indent',
+                outdent: "outdent",
+                indent: "indent"
             },
             format: {
-                formatselect: 'formatselect',
+                formatselect: "formatselect"
             },
             font: {
-                fontselect: 'fontselect',
-                fontsize: 'fontsizeselect',
-            },
+                fontselect: "fontselect",
+                fontsize: "fontsizeselect"
+            }
         };
 
-        if (typeof styles === 'string') {
+        if (typeof styles === "string") {
             styles = equals(styles, WysiwygHandler.STYLES_ALL)
                 ? Object.keys(groups)
                 : [];
@@ -350,35 +314,42 @@ export class WysiwygHandler {
                 for (const group in groups) {
                     if (hasIn(style, groups[group])) {
                         WysiwygHandler.addValue(stylesValue, group, [
-                            groups[group][style],
+                            groups[group][style]
                         ]);
                     }
                 }
             }
         });
 
-        let result = '';
+        let result = "";
         for (const styleValue in stylesValue) {
             if (!isNil(stylesValue[styleValue])) {
-                result += uniq(stylesValue[styleValue]).join(' ') + ' | ';
+                result += uniq(stylesValue[styleValue]).join(" ") + " | ";
             }
         }
 
-        return result.replace(/(\s\|\s)$/g, '');
+        return result.replace(/(\s\|\s)$/g, "");
     }
+
+    private static getToolBarBtns() {
+        const type = Xedit.getDam();
+        return {
+            a: `${type}_link`,
+            img: type,
+            video: `${type}_video`,
+            audio: `${type}_audio`,
+            iframe: `${type}_iframe`
+        };
+    }
+
     private static toolbarTags(tags: Array<string> | string) {
         const tagsValue = {};
         const groups = {
-            buttons: {
-                a: 'dam_link',
-                img: 'dam',
-                video: 'dam_video',
-                audio: 'dam_audio',
-            },
-            formats: {},
+            buttons: this.getToolBarBtns(),
+            formats: {}
         };
 
-        if (typeof tags === 'string') {
+        if (typeof tags === "string") {
             tags = equals(tags, WysiwygHandler.TAGS_ALL)
                 ? Object.keys(groups)
                 : [];
@@ -397,17 +368,17 @@ export class WysiwygHandler {
                 for (const group in groups) {
                     if (hasIn(style, groups[group])) {
                         WysiwygHandler.addValue(tagsValue, group, [
-                            groups[group][style],
+                            groups[group][style]
                         ]);
                     }
                 }
             }
         });
 
-        let result = ' ';
+        let result = " ";
         for (const tagValue in tagsValue) {
-            if (equals(tagValue, 'buttons')) {
-                result += uniq(tagsValue[tagValue]).join(' ');
+            if (equals(tagValue, "buttons")) {
+                result += uniq(tagsValue[tagValue]).join(" ");
             }
         }
         return result;
@@ -427,53 +398,58 @@ export class WysiwygHandler {
 
     private static getAvailablePlugins(schema) {
         /*['link', 'table', 'image', 'paste', 'dam']*/
-        const plugins = ''; // 'searchreplace autolink image link media hr anchor advlist lists textcolor imagetools colorpicker';
-        return 'dam searchreplace autolink link media hr anchor advlist lists textcolor colorpicker table';
+        const plugins = ""; // 'searchreplace autolink image link media hr anchor advlist lists textcolor imagetools colorpicker';
+        return `${Xedit.getDam()} eqneditor searchreplace autolink link media hr anchor advlist lists textcolor colorpicker table`;
     }
     /**********************************     DATEPICKER  *******************************************/
     /**
      * Init datepicker
      */
     static initDatePicker(args) {
-        $(document).ready(function () {
-            'use strict';
-            const hasNode = hasIn('node', args);
-            const hasElement = hasIn('element', args);
+        $(document).ready(function() {
+            "use strict";
+            const hasNode = hasIn("node", args);
+            const hasElement = hasIn("element", args);
             const element = hasNode
                 ? $(args.node.getSection())
                 : hasElement
-                    ? $(args.element)
-                    : $(args);
+                ? $(args.element)
+                : $(args);
             if (element.children().length === 0) {
-                const date = element.html();
+                const date = element.attr("datetime");
                 element.html('<input type="text" value="' + date + '">');
 
                 const input = element.children();
                 input.datepicker({
-                    // format: 'dd-mm-yyyy',
+                    // dateFormat: "yy-mm-dd"
                 });
-                input.datepicker().on('hide', () => {
-                    input.datepicker('destroy');
-                    const format = !isNil(args.node.getSchema().options.format) ? args.node.getSchema().options.format : 'dd-mm-yyyy';
-                    if (element.prop('tagName') === 'TIME') {
-                        element.attr('datetime', input.val());
+                input.datepicker().on("hide", () => {
+                    input.datepicker("destroy");
+                    const format = !isNil(args.node.getSchema().options.format)
+                        ? args.node.getSchema().options.format
+                        : "dd-mm-yyyy";
+                    let attributes = {};
+                    if (element.prop("tagName") === "TIME") {
+                        element.attr("datetime", input.val());
+                        attributes["datetime"] = element.attr("datetime");
                     }
                     element.html(dateFormat(input.val(), format));
                     if (hasNode) {
                         args.service.save(
-                            args.node.getTarget(),
+                            args.node.getSection(),
                             element.html(),
-                            'Change section date'
+                            "Change section date",
+                            attributes
                         );
                         args.service.getFileStateValue().snapshot();
-                    } else if (hasElement && hasIn('callback', args)) {
+                    } else if (hasElement && hasIn("callback", args)) {
                         args.callback(input.val());
                     }
                 });
-                input.on('changeDate', function () {
-                    input.datepicker('hide');
+                input.on("changeDate", function() {
+                    input.datepicker("hide");
                 });
-                input.datepicker('show');
+                input.datepicker("show");
             }
         });
     }
@@ -482,15 +458,15 @@ export class WysiwygHandler {
      * This method get data in plain format from clipboard
      */
     public static copyPlain(evt: ClipboardEvent) {
-        return evt.clipboardData.getData('text/plain');
+        return evt.clipboardData.getData("text/plain");
     }
 
     /*
-    * This method get the data in html format from the clipboard but if it is empty it try to get in plain format
-    */
+     * This method get the data in html format from the clipboard but if it is empty it try to get in plain format
+     */
     public static copyHtml(evt: ClipboardEvent) {
-        let data = evt.clipboardData.getData('text/plain');
-        const html = evt.clipboardData.getData('text/html');
+        let data = evt.clipboardData.getData("text/plain");
+        const html = evt.clipboardData.getData("text/html");
         if (html) {
             data = sanitizeHtml(html);
         }
@@ -498,7 +474,7 @@ export class WysiwygHandler {
     }
 
     public static copy(evt: ClipboardEvent, asHtml = true) {
-        let data = '';
+        let data = "";
         if (asHtml) {
             data = WysiwygHandler.copyHtml(evt);
         } else {
@@ -506,19 +482,50 @@ export class WysiwygHandler {
         }
         return data;
     }
-
 }
 
 dateFormat.i18n = {
     dayNames: [
-        'Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab',
-        'Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado'
+        "Dom",
+        "Lun",
+        "Mar",
+        "Mie",
+        "Jue",
+        "Vie",
+        "Sab",
+        "Domingo",
+        "Lunes",
+        "Martes",
+        "Miercoles",
+        "Jueves",
+        "Viernes",
+        "Sábado"
     ],
     monthNames: [
-        'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic',
-        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+        "Ene",
+        "Feb",
+        "Mar",
+        "Abr",
+        "May",
+        "Jun",
+        "Jul",
+        "Ago",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dic",
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
     ],
-    timeNames: [
-        'a', 'p', 'am', 'pm', 'A', 'P', 'AM', 'PM'
-    ]
+    timeNames: ["a", "p", "am", "pm", "A", "P", "AM", "PM"]
 };

@@ -42,7 +42,7 @@ export class FacetComponent implements OnInit {
   /**@ignore */
   ngOnInit() {
     const values = this.selected[this.facet.key];
-    if(values.length > 0) {
+    if (values.length > 0) {
       this.hidden = false;
     }
   }

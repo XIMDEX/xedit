@@ -17,6 +17,7 @@ import $ from 'jquery';
 import { StateService } from '@services/state-service/state.service';
 import { EditorService } from '@services/editor-service/editor.service';
 import { NotificationsService } from 'angular2-notifications';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { StateConfigs } from '@models/configs/statesConfigs';
 import {
     trigger,
@@ -65,6 +66,7 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
     public toogleStateConfigs: boolean;
     private configs: Array<Object>;
     public stateActive: boolean;
+    public faBars = faBars;
 
     constructor(
         private _editorService: EditorService,
@@ -193,9 +195,9 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
 
         const element = evt.target;
 
-        if ($(element).parents('app-tree-modal').length === 0) {
-            this.displayToggle = false;
-        }
+        // if ($(element).parents('app-tree-modal').length === 0) {
+        //     this.displayToggle = false;
+        // }
     }
 
     toggleStates(event) {
@@ -221,4 +223,5 @@ export class TaskbarComponent implements OnInit, AfterViewChecked {
         this.stateActive = this.stateConfigs.toggleActive();
         this._editorService.setElementsState(!this.stateActive);
     }
+
 }

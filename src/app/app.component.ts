@@ -1,11 +1,10 @@
 import { hasIn, isNil, contains } from 'ramda';
-import RouterXedit from './core/mappers/router';
 import { Xedit } from './core/mappers/xedit';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { DamService } from './services/dam-service/dam.service';
-import { Component, ViewChild, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ParamMap, Router, ActivatedRoute, Params } from '@angular/router';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 
 import { EditorService } from '@services/editor-service/editor.service';
 import { StateService } from '@services/state-service/state.service';
@@ -53,13 +52,13 @@ export class AppComponent implements OnInit, OnDestroy {
                 this.getDocument(Xedit.getDocument().id, hasIn('view', Xedit.getDocument()) ? Xedit.getDocument().view : null);
             }
         } else {
-            this.route.queryParams.skip(1).subscribe(_params => {
+            this.route.queryParams.subscribe(_params => {
                 const params = Object.assign({}, _params);
                 if (isNil(params['token[field]']) || isNil(params['token[value]'])) {
                     console.log('Not authentication');
                 }
                 if (params.url === undefined || isNil(params.url)) {
-                    console.error('API NO DISPINIBLE');
+                    console.error('API NO DISPONIBLE');
                 } else {
                     this._editorService.setLoading(true);
 
@@ -85,6 +84,10 @@ export class AppComponent implements OnInit, OnDestroy {
         this.loadingSuscribe.unsubscribe();
         this.isOpenSuscribe.unsubscribe();
         this.handleSelectSuscribe.unsubscribe();
+    }
+
+    hasDam(): boolean {
+        return Xedit.getDam() === 'dam';
     }
 
     /************************************** Private Methods **************************************/
@@ -133,13 +136,14 @@ export class AppComponent implements OnInit, OnDestroy {
         }
 
         this._editorService.createFile(nodes);
-        this._stateService.setAvailableViews(['wysiwyg', 'text']);
+        this._stateService.setAvailableViews(['metadata', 'wysiwyg', 'text']);
         this._stateService.setCurrentView(view);
         this._editorService.setLoading(false);
     }
 
     public closeModal() {
         this._damService.setIsOpen(false);
+        this.cdRef.detectChanges();
     }
     public toggleOpen() {
         this.isOpen = !this.isOpen;

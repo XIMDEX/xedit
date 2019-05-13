@@ -8,9 +8,9 @@ describe('TreeModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [TreeModalComponent]
+      declarations: [ TreeModalComponent ]
     })
-      .compileComponents();
+    .compileComponents();
   }));
 
   beforeEach(() => {

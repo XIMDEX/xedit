@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>XEdit</title>
+  <base href=".">  <!--Solves an error with ng6-->
+  <script>
+    if (global === undefined) {
+      var global = window;
+    }
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!-- <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [['$','$'], ['\\(','\\)']],
+          processEscapes: true
+          }
+  });
+</script> -->
+
+</head>
+
+<body>
+  <script>
+
+    // window.$xedit = {
+    //   dam: 'tree' || 'xdam'
+    //   document: {
+    //     id: 28
+    //   },
+    //   router: {
+    //     token: {
+    //       type: "bearer",
+    //       value: 'ssdfksj856tfj33vscc4pldaskg'
+    //     },
+    //     baseUrl: "http://universo.lh/api/v1",
+    //     attrs: {
+    //       token: 'ssdfksj856tfj33vscc4pldaskg',
+    //       id: 28
+    //     },
+    //     endpoints: {
+    //       documents: {
+    //         get: {
+    //           'method': 'get',
+    //           'path': 'xedit/{id}'
+    //         },
+    //         save: {
+    //           'method': 'post',
+    //           'path': 'xedit/resources/{id}'
+    //         }
+    //       },
+    //       resources: {
+    //         tree: {
+    //           'method': 'get',
+    //           'path': 'xedit/resources/tree',
+    //           'params': {
+    //             'item': 149
+    //           }
+    //         },
+    //         image: {
+    //           'method': 'get',
+    //           'path': 'resources/{id}/image',
+    //           'params': {
+    //             'api_token': '{token}',
+    //             'size': 'mini'
+    //           }
+    //         },
+    //         get: {
+    //           'method': 'get',
+    //           'path': 'xedit/resources/{id}'
+    //         }
+    //       }
+    //     }
+    //   },
+    //   data: {
+    //     "nodes": {
+    //       "xe_5": { "id": 5, "type": "include", "content": "<header id=\"header\"><div id=\"nombre\"><p>NOMBRE:<\/p><\/div><\/header>", "title": "_header", "schema": { "header": { "type": "container", "options": { "styles": [], "tags": [] }, "view": "<header id=\"header\"><div id=\"nombre\"><p>NOMBRE:<\/p><\/div><\/header>", "sections": [], "lang": { "es": "Cabecera", "en": "Header" }, "name": "header" } }, "attributes": [], "css": [], "js": [], "editable": false },
+    //       "xe_42": { "id": 42, "type": "content", "content": "<main   id=\"body\" ><p   xe_section=\"palabra\"  id=\"palabra\" >PALABRA2<\/p><div   xe_section=\"content\"  id=\"content\" ><p  ><\/p><p   xe_section=\"opening\"  class=\"enunciado\" >Lorem ipsum dolors sit amet, consectetur adipiscing elit. Etiam in ex vulputate turpis placerat aliquam. Nunc ullerwerwamcorper efficitur ligula eu mollis. Curabitur sed suscipit lectus.<\/p><div   class=\"img clearfix\"  xe_section=\"image\" ><p  ><img   xe_link=\"59afb4dcfac989360755ded4\"  alt=\"image\"  longdesc=\"\" \/><\/p><\/div><\/div><\/main>", "title": "student-file", "schema": { "body": { "type": "container", "view": "<main id=\"body\"><p xe_section=\"palabra\" id=\"palabra\">PALABRA<\/p><div xe_section=\"content\" id=\"content\"><p><\/p><\/div><\/main>", "sections": { "palabra": [], "content": [] }, "lang": { "es": "Base", "en": "Base" }, "name": "body" }, "palabra": { "type": "text", "options": { "styles": [], "tags": [] }, "view": "<p xe_section=\"palabra\" id=\"palabra\">PALABRA<\/p>", "sections": [], "lang": { "es": "T\u00edtulo", "en": "Title" }, "name": "palabra" }, "content": { "type": "container", "view": "<div xe_section=\"content\" id=\"content\"><\/div>", "sections": { "opening": [], "column-text": [], "question": [], "text-box": [], "image": [], "image-row": [], "circle-image-center": [], "circle-image-left": [], "circle-image-right": [] }, "actions": { "children": ["opening", "column-text", "question", "text-box", "image", "image-row", "circle-image-center", "circle-image-left", "circle-image-right"] }, "lang": { "es": "contenido", "en": "content" }, "name": "content" }, "opening": { "type": "text", "options": { "styles": "all", "tags": "all" }, "view": "<p xe_section=\"opening\" class=\"enunciado\">\r\n    Lorem ipsum dolors sit amet, consectetur adipiscing elit. Etiam in ex vulputate turpis placerat aliquam. Nunc ullamcorper\r\n    efficitur ligula eu mollis. Curabitur sed suscipit lectus.\r\n<\/p>", "sections": [], "lang": { "es": "Texto", "en": "Text" }, "name": "opening" }, "column-text": { "type": "text", "options": { "styles": "all", "tags": [] }, "view": "<div class=\"column-text\" xe_section=\"column-text\">\n    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum.<\/p>\n<\/div>", "sections": { "circle-image": { "options": { "styles": "align" } } }, "actions": { "children": ["circle-image"] }, "lang": { "es": "Texto en columnas", "en": "Column text" }, "name": "column-text" }, "circle-image": { "type": "text", "options": { "styles": "align" }, "view": "<div class=\"circle-img\" xe_section=\"circle-image-center\">\n    <p><img xe_link=\"http:\/\/via.placeholder.com\/100x100\" \/><\/p>\n<\/div>", "sections": [], "lang": { "es": "Imagen circular derecha", "en": "Circle image" }, "name": "circle-image" }, "question": { "type": "container", "view": "<div class=\"question\" xe_section=\"question\">\n    <p xe_section=\"opening\">Pregunta<\/p>\n<\/div>", "sections": { "opening": [] }, "lang": { "es": "Pregunta", "en": "Question" }, "name": "question" }, "text-box": { "type": "text", "options": { "styles": [], "tags": [] }, "view": "<div xe_section=\"text-box\">\n    <p xe_section=\"opening\">Pregunta<\/p>\n    <div class=\"text-box\"><\/div>\n<\/div>", "sections": { "opening": [] }, "lang": { "es": "Caja de texto", "en": "Text box" }, "name": "text-box" }, "image": { "type": "text", "options": { "styles": ["align"], "tags": { "img": [] } }, "view": "<div class=\"img clearfix\" xe_section=\"image\">\n    <p>\n        <img xe_link=\"http:\/\/via.placeholder.com\/400x400\" alt=\"image\">\n    <\/p>\n<\/div>", "sections": [], "lang": { "es": "Imagen", "en": "Image" }, "name": "image" }, "image-row": { "type": "container", "options": { "styles": [], "tags": [] }, "view": "<div class=\"row\" xe_section=\"image-row\">\n    <div class=\"circle-img front\" xe_section=\"circle-image\">\n        <p>\n            <img xe_link=\"http:\/\/via.placeholder.com\/100x100\" \/>\n        <\/p>\n    <\/div>\n    <div class=\"square-text\" xe_section=\"text-box\"><\/div>\n<\/div>", "sections": { "circle-image": [], "text-box": [] }, "lang": { "es": "Im\u00e1genes cruzadas", "en": "Crossed images" }, "name": "image-row" }, "circle-image-center": { "type": "text", "options": { "styles": [], "tags": { "img": [] } }, "view": "<div class=\"circle-img center\" xe_section=\"circle-image-center\">     <p>         <img xe_link=\"http:\/\/via.placeholder.com\/100x100\"\/>     <\/p> <\/div>", "sections": [], "lang": { "es": "Imagen circular Centro", "en": "Circle image" }, "name": "circle-image-center" }, "circle-image-left": { "type": "text", "options": { "styles": [], "tags": { "img": [] } }, "view": "<div class=\"circle-img left\" xe_section=\"circle-image-center\">\n    <p><img xe_link=\"http:\/\/via.placeholder.com\/100x100\" \/> <\/p>\n<\/div>", "sections": [], "lang": { "es": "Imagen circular Izquierda", "en": "Circle image" }, "name": "circle-image-left" }, "circle-image-right": { "type": "text", "options": { "styles": [], "tags": { "img": [] } }, "view": "<div class=\"circle-img right\" xe_section=\"circle-image-center\">\n    <p><img xe_link=\"http:\/\/via.placeholder.com\/100x100\" \/><\/p>\n<\/div>", "sections": [], "lang": { "es": "Imagen circular derecha", "en": "Circle image" }, "name": "circle-image-right" } }, "attributes": [], "css": ["http:\/\/gestion-test.eluniversodelaspalabras.com\/css\/student-files\/base.css"], "js": [], "editable": true },
+    //       "xe_6": { "id": 6, "type": "include", "content": "<footer id=\"footer\"><img src=\"http:\/\/gestion-test.eluniversodelaspalabras.com\/css\/imgs\/pieLINKS.png\"><p>CATEGORIA: <span>xxx<\/span> | PALABRA: <span>xxxx<\/span><\/p><\/footer>", "title": "_footer", "schema": { "footer": { "type": "container", "options": { "styles": [], "tags": [] }, "view": "<footer id=\"footer\"><img src=\"http:\/\/gestion-test.eluniversodelaspalabras.com\/css\/imgs\/pieLINKS.png\"><p>CATEGORIA: <span>xxx<\/span> | PALABRA: <span>xxxx<\/span><\/p><\/footer>", "sections": [], "lang": { "es": "Pie", "en": "Footer" }, "name": "footer" } }, "attributes": [], "css": [], "js": [], "editable": false }
+    //     }
+    //   }
+    // }
+
+  </script>
+
+  <script>
+    window.$xdam = {
+      token: "ssdfksj856tfj33vscc4pldaskg",
+      base_url: 'http://universo.lab14/api/v1/',
+      profile: 'light',
+      endpoints: {
+        resources: {
+          list: 'resources/dam',
+          get: 'resources',
+          post: 'resources',
+          delete: 'resources'
+        }
+      },
+      models: {
+          item: {
+            id: 'resource_id',
+            title: 'name',
+            hash: 'id',
+            size: '',
+            type: 'type',
+            image: 'preview'
+          },
+          requests: {
+            get: 'hash',
+            delete: 'id',
+            put: 'id'
+          }
+        },
+      forms: {
+        name: "resource-form",
+        endpoint: "resources",
+        api: false,
+        fields: [
+          {
+            type: "dropdown",
+            object: {
+              key: "items",
+              multi: true,
+              searchable: true,
+              fetchable: true,
+              endpoint: 'items?limit=0',
+              label: "Seleccione una palabra",
+              options: [],
+              order: 1,
+              realName: 'items',
+              map: {
+                key: "id",
+                value: "title"
+              }
+            }
+          },
+          {
+            "type": "dropdown",
+            "object": {
+              "key": "category",
+              "label": "Seleccione un tipo",
+              "options": [
+                {
+                  "key": "investigation",
+                  "value": "Investigación"
+                },
+                {
+                  "key": "activation",
+                  "value": "Activación"
+                }
+              ],
+              "order": 2
+            }
+          }
+        ]
+      }
+    }
+  </script>
+
+  <app-root>Loading...</app-root>
+<script type="text/javascript" src="runtime.js"></script><script type="text/javascript" src="polyfills.js"></script><script type="text/javascript" src="styles.js"></script><script type="text/javascript" src="scripts.js"></script><script type="text/javascript" src="vendor.js"></script><script type="text/javascript" src="main.js"></script></body>
+
+</html>

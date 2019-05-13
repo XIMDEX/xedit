@@ -1,0 +1,82 @@
+.tree-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: 48rem;
+}
+
+.tree {
+    padding-left: 0;
+    margin-left: 1rem;
+    height: 44rem;
+    flex: 1 1;
+
+    h4 {
+        font-size: 1.5rem;
+    }
+    .node {
+        $space_size: 1rem;
+
+        border-bottom: 1px dashed #cccccc;
+        min-width: 20rem;
+
+        .node-name {
+            margin-left: $space_size;
+        }
+
+        .icon {
+            padding-left: $space_size;
+        }
+
+        $folder_types: (
+            images: #75cd9d,
+        );
+
+        @each $key, $color in $folder_types {
+            .folder_#{$key} {
+                color: $color;
+            }
+        }
+
+        $node_types: (
+            projects: #43a1a2,
+            nodetype: #c8c039,
+            image: #43a1a2,
+            server: #e45b5b,
+            root: #43a1a2,
+            video: #43a1a2
+        );
+
+        @each $key, $color in $node_types {
+            .#{$key} {
+                color: $color;
+            }
+        }
+    }
+}
+
+.media-show {
+    width: 25%;
+    align-content: center;
+    display: flex;
+    margin: 0 1rem 0 1rem;
+    border-right: 1px solid #cccc;
+    padding: 1rem 1rem 0 0;
+    figure {
+        width: 100%;
+        max-height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        text-align: center;
+        img {
+            width: 100%;
+            max-height: 30rem;
+            object-fit: contain;
+        }
+        figcaption {
+            margin-top: 1rem;
+            color: #777777;
+        }
+    }   
+}

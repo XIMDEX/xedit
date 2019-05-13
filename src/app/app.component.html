@@ -2,5 +2,6 @@
 <simple-notifications [options]="{}"></simple-notifications>
 <app-taskbar [ngClass]="{embebed: true}"></app-taskbar>
 <app-editor [ngClass]="{embebed: false}"></app-editor>
+<app-dam *ngIf="hasDam()" [popup]="true" [isOpen]="isOpen" (openEmitter)="closeModal()" 
+    (onSelect)="handleSelect($event)"></app-dam>
 <app-tree-modal></app-tree-modal>
-<app-dam [popup]="true" [isOpen]="isOpen" (openEmitter)="closeModal()" (selectEvent)="handleSelect($event)"></app-dam>

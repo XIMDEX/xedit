@@ -1,5 +1,9 @@
 <main>
     <section>
+        <!-- METADATA VIEW -->
+        <app-metadata-view *ngIf="showComponent('metadata')">
+        </app-metadata-view>
+        <!-- END METADATA VIEW-->
         <!-- WYSIWYG VIEW -->
         <app-wysiwyg-view (onEditorKeyup)="keyupHandlerFunction($event)" (selectNode)="setCurrentNode($event)" *ngIf="showComponent('wysiwyg')">
         </app-wysiwyg-view>

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ModalService, ModalComponent } from 'angular-5-popup';
-import { isNil, path } from 'ramda';
+import { NgxSmartModalService } from 'ngx-smart-modal';
+import { isNil } from 'ramda';
 import { TreeComponent } from '@elements/blocks/tree/tree.component';
 
 @Component({
@@ -9,7 +9,6 @@ import { TreeComponent } from '@elements/blocks/tree/tree.component';
   styleUrls: ['./tree-modal.component.scss']
 })
 export class TreeModalComponent implements OnInit {
-  @ViewChild('modal') modal: ModalComponent;
   @ViewChild('tree') tree: TreeComponent;
 
   public close = false;
@@ -18,14 +17,14 @@ export class TreeModalComponent implements OnInit {
   public type;
   public path;
 
-  constructor(private ms: ModalService) { }
+  constructor(private ngxModal: NgxSmartModalService) { }
 
   openModal(id, type, p = []) {
     this.close = false;
     this.selectedId = null;
     this.path = p;
     this.type = type;
-    this.modal.openModal(id);
+    this.ngxModal.open(id);
     this.tree.resetTreeModel();
 
     const promise = new Promise(
@@ -35,16 +34,16 @@ export class TreeModalComponent implements OnInit {
             const treeModal = window['treeModal'];
             if (!isNil(treeModal.selectedId)) {
               window.clearInterval(loop);
-              this.modal.closeModal(id);
+              this.ngxModal.close(id);
               resolve(treeModal.selectedId);
             } else if (treeModal.close && isNil(treeModal.selectedId)) {
               window.clearInterval(loop);
-              this.modal.closeModal(id);
+              this.ngxModal.close(id);
               reject('Closed without selection');
             }
           } catch (e) {
             window.clearInterval(loop);
-            this.modal.closeModal(id);
+            this.ngxModal.close(id);
             reject(e);
           }
         }, 300);
