@@ -2269,6 +2269,9 @@ var register = function (editor, http) {
     editor.addCommand('mceTreeVideo', function () {
         _ui_Dialog__WEBPACK_IMPORTED_MODULE_0__["default"].open(editor, http, 'video');
     });
+    editor.addCommand('mceTreeIframe', function () {
+        _ui_Dialog__WEBPACK_IMPORTED_MODULE_0__["default"].open(editor, http, 'iframe');
+    });
 };
 /* harmony default export */ __webpack_exports__["default"] = ({
     register: register,
@@ -2331,9 +2334,14 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * Dam.js
  */
-var TAG_BY_TYPE = { 'image': 'img', 'link': 'a', 'video': 'video' };
-var ATTR_BY_TAG = { 'img': 'src', 'a': 'href', 'video': 'src' };
-var ATTRS_BY_TAG = { 'img': ['alt', 'longdesc'], 'a': ['target', 'title'], 'video': ['longdesc', 'height', 'width'] };
+var TAG_BY_TYPE = { 'image': 'img', 'link': 'a', 'video': 'video', 'iframe': 'iframe' };
+var ATTR_BY_TAG = { 'img': 'src', 'a': 'href', 'video': 'src', 'iframe': 'src' };
+var ATTRS_BY_TAG = {
+    'img': ['alt', 'longdesc'],
+    'a': ['target', 'title'],
+    'video': ['longdesc', 'height', 'width'],
+    'iframe': ['width', 'height']
+};
 var VALID_TAGS = Object.keys(ATTR_BY_TAG);
 var isValidNodeId = function (nodeId) {
     return true;
@@ -2350,6 +2358,10 @@ var getId = function (editor, type) {
         tag = 'video';
         val = editor.dom.getAttrib(selectedNode, 'data-mce-p-xe_link');
     }
+    else if (type === 'iframe') {
+        tag = 'iframe';
+        val = editor.dom.getAttrib(selectedNode, 'data-mce-p-src');
+    }
     /*const hasResource = this.hasValidResource(tag, val, type);
     const isDam = VALID_TAGS.includes(tag) && TAG_BY_TYPE[type] == tag && editor.dom.getAttrib(selectedNode, XeditMapper.TAG_LINK) !== '';
     const hasSource = VALID_TAGS.includes(tag) && editor.dom.getAttrib(selectedNode, ATTR_BY_TAG[tag]) !== '';*/
@@ -2360,6 +2372,9 @@ var getAttribute = function (editor, attribute) {
         'alt': 'Texto alternativo'
     };
     var selectedNode = editor.selection.getNode();
+    if (selectedNode.classList.contains('mce-object-iframe') && selectedNode.tagName.toLowerCase() !== 'iframe') {
+        selectedNode = selectedNode.querySelector('iframe');
+    }
     var attr = editor.dom.getAttrib(selectedNode, attribute);
     return Object(ramda__WEBPACK_IMPORTED_MODULE_0__["isEmpty"])(attr) ? (Object(ramda__WEBPACK_IMPORTED_MODULE_0__["hasIn"])(attribute, defaultValues) ? defaultValues[attribute] : '') : attr;
 };
@@ -2465,6 +2480,12 @@ var register = function (editor) {
         cmd: 'mceTreeVideo',
         stateSelector: 'img[data-mce-object="video"]'
     });
+    editor.addButton('tree_iframe', {
+        image: '/assets/img/icon_iframe.png',
+        tooltip: 'Tree iframe',
+        cmd: 'mceTreeIframe',
+        stateSelector: '[data-mce-object="iframe"]'
+    });
     editor.addMenuItem('tree', {
         icon: 'image',
         text: 'Tree',
@@ -2482,6 +2503,12 @@ var register = function (editor) {
         text: 'DAM video',
         context: 'insert',
         cmd: 'mceTreeVideo'
+    });
+    editor.addMenuItem('tree_iframe', {
+        icon: 'iframe',
+        text: 'Tree iframe',
+        context: 'insert',
+        cmd: 'mceTreeIframe'
     });
 };
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2550,6 +2577,21 @@ var ATTRS_BY_TYPE = {
                 { text: 'Nueva ventana', value: '_blank' },
                 { text: 'Misma ventana', value: '_self' },
             ],
+        },
+    },
+    iframe: {
+        title: { type: 'textbox', name: 'title', size: 40, label: 'Título' },
+        width: {
+            type: 'textbox',
+            name: 'width',
+            size: 20,
+            label: 'Width',
+        },
+        height: {
+            type: 'textbox',
+            name: 'height',
+            size: 20,
+            label: 'Height',
         },
     },
 };
@@ -2824,6 +2866,7 @@ var WysiwygHandler = /** @class */ (function () {
                 plugins: WysiwygHandler.getAvailablePlugins(args.node.getSchema()),
                 skin_url: "assets/skins/x-edit",
                 valid_elements: "*[*]",
+                extended_valid_elements: "iframe[src|frameborder|style|scrolling|class|width|height|name|align]",
                 // content_css: [
                 //     "//fonts.googleapis.com/css?family=Libre+Franklin",
                 //     "//fonts.googleapis.com/css?family=Vibur"
@@ -3014,7 +3057,8 @@ var WysiwygHandler = /** @class */ (function () {
             a: type + "_link",
             img: type,
             video: type + "_video",
-            audio: type + "_audio"
+            audio: type + "_audio",
+            iframe: type + "_iframe"
         };
     };
     WysiwygHandler.toolbarTags = function (tags) {
@@ -12292,7 +12336,7 @@ var Converters = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/atovar/develop/js_apps/xedit/src/main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! /Users/atovar/develop/web/xedit/src/main.ts */"./src/main.ts");
 
 
 /***/ }),
