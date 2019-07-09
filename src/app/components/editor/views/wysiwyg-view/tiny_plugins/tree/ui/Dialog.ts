@@ -49,6 +49,21 @@ const ATTRS_BY_TYPE = {
             ],
         },
     },
+    iframe: {
+        title: { type: 'textbox', name: 'title', size: 40, label: 'Título' },
+        width: {
+            type: 'textbox',
+            name: 'width',
+            size: 20,
+            label: 'Width',
+        },
+        height: {
+            type: 'textbox',
+            name: 'height',
+            size: 20,
+            label: 'Height',
+        },
+    },
 };
 
 const insertDam = function (editor, newId, type, extra) {

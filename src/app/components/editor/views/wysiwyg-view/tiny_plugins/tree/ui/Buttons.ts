@@ -25,6 +25,13 @@ const register = function (editor) {
         stateSelector: 'img[data-mce-object="video"]'
     });
 
+    editor.addButton('tree_iframe', {
+        image: './assets/img/icon_iframe.png',
+        tooltip: 'Tree iframe',
+        cmd: 'mceTreeIframe',
+        stateSelector: '[data-mce-object="iframe"]'
+    });
+
     editor.addMenuItem('tree', {
         icon: 'image',
         text: 'Tree',
@@ -44,6 +51,13 @@ const register = function (editor) {
         text: 'DAM video',
         context: 'insert',
         cmd: 'mceTreeVideo'
+    });
+
+    editor.addMenuItem('tree_iframe', {
+        icon: 'iframe',
+        text: 'Tree iframe',
+        context: 'insert',
+        cmd: 'mceTreeIframe'
     });
 };
 

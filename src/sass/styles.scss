@@ -71,7 +71,7 @@ app-acordion {
 .no-editable {
     position: relative;
     user-select: none;
-    
+
     &:after {
         position: absolute;
         top: 0;
@@ -91,7 +91,7 @@ app-acordion {
 }
 
 .modal.modal-open{
-    display: block; 
+    display: block;
 }
 
 sc-modal.default {
@@ -104,11 +104,11 @@ app-tree-modal{
 
 // DAM and Tree
 
-div#dam-path { 
+div#dam-path {
     overflow: hidden;
-    text-overflow: ellipsis; 
-    max-width: 100%; 
-    display: inline-block; 
+    text-overflow: ellipsis;
+    max-width: 100%;
+    display: inline-block;
 }
 
 #modal-1 {
@@ -183,7 +183,7 @@ div#dam-path {
     .dynform-header.form-hidden {
         background-color: #cccccc;
         color: black;
-    }   
+    }
 }
 
 

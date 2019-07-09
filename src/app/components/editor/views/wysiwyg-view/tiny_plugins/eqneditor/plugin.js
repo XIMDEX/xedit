@@ -1,10 +1,10 @@
-/* 
+/*
  Equation Editor Plugin for TinyMCE v4
  Version 2
 
  This plugin allows equations to be created and edited from within TinyMCE.
  For more information goto: http://www.codecogs.com/latex/integration/tinymce_v4/install.php
- 
+
  Copyright CodeCogs 2013
  Written by Will Bateman.
 */
@@ -14,13 +14,13 @@ tinymce.PluginManager.add("eqneditor",function(editor, url) {
 	// Load necessary javscript for editor from CodeCogs
 	var sl = new tinymce.dom.ScriptLoader();
 	var host='latex.codecogs.com';
-		
+
 	var http=('https:' == document.location.protocol ? 'https://' : 'http://');
-	sl.add('/assets/js/eq_config.js');
-	sl.add('/assets/js/eq_editor-lite-17.js');
+	sl.add('./assets/js/eq_config.js');
+	sl.add('./assets/js/eq_editor-lite-17.js');
 	sl.loadQueue(function(){});
 
-	// Load Additional CSS 
+	// Load Additional CSS
 	var fileref=document.createElement("link");
 	fileref.setAttribute("rel", "stylesheet");
 	fileref.setAttribute("type", "text/css");
@@ -56,19 +56,19 @@ tinymce.PluginManager.add("eqneditor",function(editor, url) {
 						text: 'Ok',
 						subtype: 'primary',
 						minWidth: 50,
-						onclick: function() {	
+						onclick: function() {
 							editor.execCommand('mceInsertContent', false, EqEditor.getTextArea().exportEquation('html'));
 							Example.add_history(EqEditor.getTextArea().getLaTeX());
 							win.close();
 						}
 					},
 					{
-						text: 'Cancel', 
+						text: 'Cancel',
 						onclick: function() {	win.close();}
 					}
 			]
 		});
-		
+
 		EqEditor.embed('CCtoolbar'+CCinstance,'','efull');
  		EqEditor.add(new EqTextArea('CCequation'+CCinstance, 'CClatex'+CCinstance),false);
 
@@ -79,11 +79,11 @@ tinymce.PluginManager.add("eqneditor",function(editor, url) {
 			if(sName!=null) EqEditor.getTextArea().setText(sName[2]);
 		}
 	}
-	
-	
+
+
   editor.addButton('eqneditor', {
 			title: 'Equation',
-	  		image: '/assets/img/eqneditor.png',
+	  		image: './assets/img/eqneditor.png',
 			tooltip: 'Insert Equation',
 			onclick: showDialog,
 			stateSelector: 'img[src*="latex"]'
@@ -91,18 +91,18 @@ tinymce.PluginManager.add("eqneditor",function(editor, url) {
 
 	// Adds a menu item to the tools menu
 	editor.addMenuItem('eqneditor', {
-			image: '/assets/img/eqneditor.png',
+			image: './assets/img/eqneditor.png',
 			text: 'Insert Equation',
 			context: 'insert',
 			prependToContext:true,
 			onclick: showDialog
-	}); 
-	
+	});
+
 	editor.on('DblClick', function(ed, e) {
 		if (ed.target.nodeName.toLowerCase() == "img") {
 			var sName = ed.target.src.match( /(gif|svg)\.latex\?(.*)/ );
 			if(sName!=null) showDialog();
 		}
 	});
-	
+
 });
