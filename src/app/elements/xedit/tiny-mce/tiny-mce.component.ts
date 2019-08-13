@@ -4,7 +4,7 @@ import { EditorService } from '@app/services/editor-service/editor.service';
 import { ClipboardConfigs } from '@app/models/configs/clipboardConfigs';
 import { StringHelpers } from '@app/core/helpers/string';
 import { XeditMapper } from '@app/models/schema/xedit-mapper';
-import { isNil, hasIn } from 'ramda';
+import { isNil, hasIn, isEmpty, is } from 'ramda';
 import ToolbarGenerator from '@app/core/generators/toolbar-generator';
 import { toolbarOptions } from './toolbar-mapper';
 
@@ -220,29 +220,35 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit, OnDe
             // }
         };
 
-        if (hasIn('colors', this.content.settings)) {
-            const textColorMap = [];
-            const colors = this.content.settings.colors;
-            for (const color of Object.keys(colors)) {
-                textColorMap.push(color);
-                textColorMap.push(colors[colors]);
-            }
-            configs['textcolor_map'] = textColorMap;
-        }
+        if (hasIn('options', this.content.settings)) {
+            const { colors = {}, fonts = [], fontsize = [] } = this.content.settings.options;
 
-        if (hasIn('fonts', this.content.settings)) {
-            const contentCss = [];
-            const fontFormat = [];
-            for (const font of this.content.settings.fonts) {
-                contentCss.push(font.url);
-                fontFormat.push(`${font.label}=${font.name}`);
-            }
-            configs['content_css'] = contentCss;
-            configs['font_formats'] = fontFormat.join(';');
-        }
+            // TODO Load from this.content.settings object
+            configs['formats'] = {
+                bold: { inline: 'strong', styles: { 'font-weight': 'bold' } }
+            };
 
-        if (hasIn('fontsize', this.content.settings)) {
-            configs['fontsize_formats'] = this.content.settings.fontsize.join(' ');
+            if (!isEmpty(colors) && is(Object, colors) && !Array.isArray(colors)) {
+                for (const color of Object.keys(colors)) {
+                    configs['color_map'].push(color);
+                    configs['color_map'].push(colors[color]);
+                }
+            }
+
+            if (!isEmpty(fonts) && Array.isArray(fonts)) {
+                const contentCss = [];
+                const fontFormat = [];
+                for (const font of fonts) {
+                    contentCss.push(font.url);
+                    fontFormat.push(`${font.label}=${font.name}`);
+                }
+                configs['content_css'] = contentCss;
+                configs['font_formats'] = fontFormat.join(';');
+            }
+
+            if (!isEmpty(fontsize) && Array.isArray(fontsize)) {
+                configs['fontsize_formats'] = fontsize.join(' ');
+            }
         }
 
         return configs;
