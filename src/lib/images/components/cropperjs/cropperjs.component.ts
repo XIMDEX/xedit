@@ -178,8 +178,8 @@ export class CropperjsComponent implements OnChanges {
         this.change.emit(this.cropperjs.getCanvasData());
     }
 
-    protected cropperOptions() {
-        let aspectRatio = NaN;
+    protected cropperOptions(): Cropper.Options {
+        const aspectRatio = NaN;
 
         const defaults = {
             aspectRatio,
@@ -194,7 +194,7 @@ export class CropperjsComponent implements OnChanges {
         return {
             ...defaults,
             ...this.options
-        };
+        } as Cropper.Options;
     }
 
     protected zoomAct() {

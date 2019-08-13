@@ -1,9 +1,8 @@
 import { Component, AfterViewInit, OnInit, QueryList, OnDestroy, ViewChild } from '@angular/core';
 import pretty from 'pretty';
-import { isNil, is, isEmpty } from 'ramda';
+import { is } from 'ramda';
 import { AceEditorComponent } from 'ng2-ace-editor/src/component';
 
-import { File } from '@models/file';
 import { StateService } from '@services/state-service/state.service';
 import { EditorService } from '@services/editor-service/editor.service';
 import { Converters } from '@utils/converters';
@@ -16,7 +15,6 @@ import 'brace/ext/language_tools';
 import 'brace/ext/searchbox';
 
 declare let ace: any;
-
 
 @Component({
     selector: 'app-text-view',
@@ -65,7 +63,6 @@ export class TextViewComponent implements OnInit, AfterViewInit, OnDestroy {
         this.subscribeFile.unsubscribe();
     }
 
-
     /************* END LIFE CYCLE *************/
     public changeView(openEditor: Object, index: any) {
         this.openEditor = openEditor;
@@ -76,10 +73,8 @@ export class TextViewComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!this.openEditor['editable']) {
             this.styleMode['backgroundColor'] = '#e8e8e8';
         } else {
-            delete (this.styleMode['backgroundColor']);
+            delete this.styleMode['backgroundColor'];
         }
-
-
     }
 
     public getId() {
@@ -104,7 +99,6 @@ export class TextViewComponent implements OnInit, AfterViewInit, OnDestroy {
                 }
             }
         });
-
     }
 
     /**
@@ -120,7 +114,9 @@ export class TextViewComponent implements OnInit, AfterViewInit, OnDestroy {
                 id: property,
                 title: node.title,
                 editable: node.editable,
-                renderContent: is(String, node.content) ? node.content : pretty(Converters.json2html(node.content, false, false)),
+                renderContent: is(String, node.content)
+                    ? node.content
+                    : pretty(Converters.json2html(node.content, false, false)),
                 editor: null
             });
         });
@@ -137,31 +133,21 @@ export class TextViewComponent implements OnInit, AfterViewInit, OnDestroy {
             enableSnippets: true,
             enableLiveAutocompletion: false
         });
-        // session.setOption('minLines', 2);
 
-        /*_editor.commands.addCommand({
-          name: 'showOtherCompletions',
-          bindKey: 'Ctrl-.',
-          exec: function (editor) {
-          }
-        });*/
-
-        /*session.selection.on('changeSelection', function (e) {
-          let selectionRange = _editor.getSelectionRange();
-          let startLine = selectionRange.start.row;
-          let endLine = selectionRange.end.row;
-        });*/
-        _editor.on('focus', (e) => {
+        _editor.on('focus', e => {
             this.reloadAceEditor = false;
         });
-        _editor.on('blur', (e) => {
+
+        _editor.on('blur', e => {
             this.reloadAceEditor = true;
             setTimeout(() => {
                 this._editorService.getFileStateValue().snapshot();
             }, 1000);
         });
-        session.on('change', (e) => {
-            if (_editor.curOp && _editor.curOp.command.name) { // Only if is user trigger event
+
+        session.on('change', e => {
+            if (_editor.curOp && _editor.curOp.command.name) {
+                // Only if is user trigger event
                 this.editorNodes[this.openEditor['index']].renderContent = _editor.getValue();
 
                 if (this.editor.timeoutSaving != null) {
@@ -172,33 +158,7 @@ export class TextViewComponent implements OnInit, AfterViewInit, OnDestroy {
                     this._editorService.save(this.openEditor['id'], _editor.getValue(), 'Edit mode text');
                     this.editor.timeoutSaving = null;
                 }, this.editor._durationBeforeCallback);
-
-                /*let content = _editor.getValue();
-                let options = {
-                  settings: {
-                    format: 'html', // 'plain', 'html', or 'markdown'
-                  },
-                  attributes: {
-                    '_': {
-                      mixed: /.
-                    }
-                  }
-                };
-                EditorComponent.executeIfvalidateHtmlTags(content,
-                  _ => {
-                    let newState = clone(this.file.getState().getContent());
-                    let json = File.html2json(content, false);
-                    newState[_editor.container.id].content.child = json;
-                    this.isHtmlValid = true;
-                    this._editorService.newStateFile(newState);
-                    this._stateService.setAvailableViews(['form', 'wysiwyg']);
-                  },
-                  _ => {
-                    this.isHtmlValid = false;
-                    this._stateService.setAvailableViews(['form']);
-                  })*/
             }
         });
-        // });
     }
 }

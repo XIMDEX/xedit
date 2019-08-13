@@ -1,7 +1,7 @@
 import { Xedit } from './xedit';
 import { isNil, hasIn } from 'ramda';
 import { HttpHeaders } from '@angular/common/http';
-import qs from 'query-string';
+import * as qs from 'query-string';
 
 export default class Router {
     public static ROUTER = 'router';
