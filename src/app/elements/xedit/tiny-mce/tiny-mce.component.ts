@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, SimpleChanges, OnChanges, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, OnDestroy, SimpleChanges, OnChanges, AfterViewChecked, ViewChild } from '@angular/core';
 import { XeditBaseComponent } from '../xedit.base.component';
 import { EditorService } from '@app/services/editor-service/editor.service';
 import { ClipboardConfigs } from '@app/models/configs/clipboardConfigs';
@@ -8,10 +8,12 @@ import { isNil, hasIn, isEmpty, is } from 'ramda';
 import ToolbarGenerator from '@app/core/generators/toolbar-generator';
 import { toolbarOptions } from './toolbar-mapper';
 
-import '@components/editor/views/wysiwyg-view/tiny_plugins/dam';
+// TinyMCE Settings
+import tinymce from 'tinymce';
+
+// import '@components/editor/views/wysiwyg-view/tiny_plugins/dam';
 import { Subscription } from 'rxjs';
 import { NgxSmartModalService } from 'ngx-smart-modal';
-import tinymce from 'tinymce';
 import { NodeService } from '@app/services/node-service/node.service';
 
 @Component({
@@ -21,6 +23,7 @@ import { NodeService } from '@app/services/node-service/node.service';
 })
 export class TinyMCEComponent extends XeditBaseComponent implements OnInit, OnDestroy, OnChanges, AfterViewChecked {
     public static toolbarOptions = toolbarOptions;
+
     public configs: object;
     private currentElement;
     private clipboardConfigs: ClipboardConfigs;
@@ -92,6 +95,9 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit, OnDe
     }
 
     public onChanges({ event, editor }) {
+        if (isNil(this.currentElement)) {
+            return;
+        }
         const uuid = this.currentElement.getAttribute(XeditMapper.TAG_UUID);
         const tag = this.getCurrentTag(editor.bodyElement, uuid);
 
@@ -178,8 +184,10 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit, OnDe
         const plugins = TinyMCEComponent.getAvailableEditorPlugins();
         const that = this;
         const configs = {
+            base_url: '/tinymce/', // Base for assets such as skins, themes and plugins
+            suffix: '.min', // This will make Tiny load minified versions of all its assets
             fixed_toolbar_container: '#toolbar',
-            skin_url: 'assets/skins/x-edit',
+            skin: 'oxide',
             plugins: plugins,
             toolbar: toolbar,
             inline: true,

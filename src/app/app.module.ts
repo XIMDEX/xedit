@@ -24,7 +24,6 @@ import { TaskbarComponent } from '@components/taskbar/taskbar.component';
 import { EditorComponent } from '@components/editor/editor.component';
 import { PropertiesGlobalViewComponent } from '@components/taskbar/properties-global-view/properties-global-view.component';
 import { PropertiesLocalViewComponent } from '@components/editor/properties-area/properties-local-view/properties-local-view.component';
-import { WysiwygViewComponent } from '@components/editor/views/wysiwyg-view/wysiwyg-view.component';
 import { TextViewComponent } from '@components/editor/views/text-view/text-view.component';
 import { ContextMenuComponent } from '@components/context-menu/context-menu.component';
 import { BreadcrumbComponent } from '@components/breadcrumb/breadcrumb.component';
@@ -66,7 +65,6 @@ import { NodeFactoryService } from './factories/node-factory.service';
         EditorComponent,
         PropertiesLocalViewComponent,
         PropertiesGlobalViewComponent,
-        WysiwygViewComponent,
         TextViewComponent,
         UrlPipe,
         DebugPipe,
