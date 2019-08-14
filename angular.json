@@ -19,9 +19,15 @@
                         "stylePreprocessorOptions": {
                             "includePaths": ["src/sass"]
                         },
-                        "assets": ["src/assets", "src/favicon.ico"],
+                        "assets": [
+                            "src/assets",
+                            "src/favicon.ico",
+                            { "glob": "**/*", "input": "node_modules/tinymce/skins", "output": "/tinymce/skins/" },
+                            { "glob": "**/*", "input": "node_modules/tinymce/themes", "output": "/tinymce/themes/" },
+                            { "glob": "**/*", "input": "node_modules/tinymce/plugins", "output": "/tinymce/plugins/" }
+                        ],
                         "styles": ["src/sass/styles.scss"],
-                        "scripts": []
+                        "scripts": ["node_modules/tinymce/tinymce.js"]
                     },
                     "configurations": {
                         "production": {
