@@ -1,3 +1,4 @@
+import { skip } from 'rxjs/operators';
 import { hasIn, isNil, contains } from 'ramda';
 import { Xedit } from './core/mappers/xedit';
 import { Subscription } from 'rxjs';
@@ -54,7 +55,7 @@ export class AppComponent implements OnInit, OnDestroy {
                 );
             }
         } else {
-            this.route.queryParams.skip(1).subscribe(_params => {
+            this.route.queryParams.pipe(skip(1)).subscribe(_params => {
                 const params = Object.assign({}, _params);
                 if (isNil(params['token[field]']) || isNil(params['token[value]'])) {
                     console.log('Not authentication');

@@ -10,7 +10,6 @@ import { Api } from '@app/api';
 import { AutoloadModulesService } from '@app/services/autoload-modules-service/autoload-modules.service';
 import { XeditNode } from '@app/interfaces/xedit-node';
 
-import { CkeditorComponent } from '@app/elements/xedit/ckeditor/ckeditor.component';
 import { ImageComponent } from '@app/elements/xedit/image/image.component';
 
 import { Node } from '@app/models/node';

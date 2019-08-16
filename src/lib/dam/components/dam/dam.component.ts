@@ -1,3 +1,4 @@
+import { skip } from 'rxjs/operators';
 import { Component, OnInit, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { Item } from '../../models/Item';
@@ -92,28 +93,28 @@ export class DamComponent implements OnInit {
         this.query.perPage = this.mainConfig.query.limit.value;
         this.mainService
             .getCurrentPage()
-            .skip(2)
+            .pipe(skip(2))
             .subscribe(data => {
                 this.currentPage = data;
                 this.getItems();
             });
         this.mainService
             .getSearchTerm()
-            .skip(1)
+            .pipe(skip(1))
             .subscribe(data => {
                 this.searchTerm = data;
                 this.getItems();
             });
         this.mainService
             .getActiveItem()
-            .skip(1)
+            .pipe(skip(1))
             .subscribe(data => {
                 this.activeItem = data;
                 this.onSelect.emit(data);
             });
         this.mainService
             .getActiveFacets()
-            .skip(1)
+            .pipe(skip(1))
             .subscribe(data => {
                 this.activeFacets = data;
                 this.getItems();

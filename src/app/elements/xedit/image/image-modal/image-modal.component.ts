@@ -1,3 +1,4 @@
+import { NgxSmartModalService } from 'ngx-smart-modal';
 import { hasIn, isNil } from 'ramda';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -26,7 +27,7 @@ export class ImageModalComponent implements OnInit {
     private imageStyle: any;
     public cropData: Cropper.CanvasData = null;
 
-    constructor(private _damService: DamService, private http: HttpClient) {}
+    constructor(private ngxModal: NgxSmartModalService, private _damService: DamService, private http: HttpClient) {}
 
     ngOnInit() {}
 
@@ -117,13 +118,15 @@ export class ImageModalComponent implements OnInit {
     }
 
     openMediaManager() {
-        this._damService.setOpen({
-            type: 'image'
-        });
-        this._damService.setOnSelect(data => {
-            Plugins.MediaMAnagerSelect(data, this.http, this.setImageData.bind(this));
-            this._damService.close();
-        });
+        const modal = this.ngxModal.getModal('resourceModal');
+        modal.open();
+        // this._damService.setOpen({
+        //     type: 'image'
+        // });
+        // this._damService.setOnSelect(data => {
+        //     Plugins.MediaMAnagerSelect(data, this.http, this.setImageData.bind(this));
+        //     this._damService.close();
+        // });
     }
 
     private setImageData({ name, nodeid, path }) {

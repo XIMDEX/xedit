@@ -15,6 +15,10 @@ import tinymce from 'tinymce';
 import { Subscription } from 'rxjs';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { NodeService } from '@app/services/node-service/node.service';
+import { Xedit } from '@app/core/mappers/xedit';
+import FilterContent from '@app/components/editor/views/wysiwyg-view/tiny_plugins/dam/core/FilterContent';
+import Commands from '@app/components/editor/views/wysiwyg-view/tiny_plugins/dam/api/Commands';
+import Buttons from '@app/components/editor/views/wysiwyg-view/tiny_plugins/dam/ui/Buttons';
 
 @Component({
     selector: 'app-tiny-mce',
@@ -180,6 +184,7 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit, OnDe
 
     private getConfigs(): object {
         this.content.settings.options.tags = { img: {} };
+        // this.loadPlugins();
         const toolbar = ToolbarGenerator.generate(TinyMCEComponent.toolbarOptions, this.content.settings);
         const plugins = TinyMCEComponent.getAvailableEditorPlugins();
         const that = this;
@@ -262,7 +267,17 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit, OnDe
         return configs;
     }
 
+    private loadPlugins(getInfo, callback) {
+        if (Xedit.getDam() === 'dam') {
+            tinymce.PluginManager.add('dam', function(editor) {
+                FilterContent.setup(editor);
+                Commands.register(editor, getInfo, callback);
+                Buttons.register(editor);
+            });
+        }
+    }
+
     private static getAvailableEditorPlugins(schema = null) {
-        return `eqneditor searchreplace autolink link media hr anchor advlist lists textcolor colorpicker table`;
+        return `${Xedit.getDam()} searchreplace autolink link media hr anchor advlist lists table`;
     }
 }

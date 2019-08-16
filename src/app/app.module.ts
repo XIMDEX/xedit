@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { AceEditorModule } from 'ng2-ace-editor';
-import { LoadingModule } from 'ngx-loading';
+import { NgxLoadingModule, ngxLoadingAnimationTypes } from 'ngx-loading';
 import { ClickOutsideModule } from 'ng4-click-outside';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -57,6 +57,7 @@ import { ImagesModule } from 'lib/images';
 import { SafeHtmlPipe } from './pipes/inner-html/safe-html.pipe';
 import { NodeService } from './services/node-service/node.service';
 import { NodeFactoryService } from './factories/node-factory.service';
+import { XdamComponent } from './elements/xdam/xdam.component';
 
 @NgModule({
     declarations: [
@@ -87,7 +88,8 @@ import { NodeFactoryService } from './factories/node-factory.service';
         RuntimeHtmlCompilerComponent,
         PropertiesToolbarComponent,
         ImageModalComponent,
-        SafeHtmlPipe
+        SafeHtmlPipe,
+        XdamComponent
     ],
     imports: [
         /* 3rd party components */
@@ -96,7 +98,13 @@ import { NodeFactoryService } from './factories/node-factory.service';
         FormsModule,
         BrowserAnimationsModule,
         AceEditorModule,
-        LoadingModule,
+        NgxLoadingModule.forRoot({
+            animationType: ngxLoadingAnimationTypes.circleSwish,
+            backdropBackgroundColour: 'rgba(0, 0, 0, 0.5)',
+            primaryColour: '#00a397',
+            secondaryColour: '#00a397',
+            tertiaryColour: '#00a397'
+        }),
         ContextMenuModule.forRoot(),
         ClickOutsideModule,
         AngularDraggableModule,

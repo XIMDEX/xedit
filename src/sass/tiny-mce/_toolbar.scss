@@ -3,6 +3,10 @@
         &.tox-tinymce-inline {
             visibility: visible !important;
         }
+
+        &.tox-tinymce {
+            border: none;
+        }
     }
 
     .tox-editor-container {
@@ -13,8 +17,13 @@
 
         &:not(.mce-reset) {
             * {
+                background: inherit;
                 background-color: inherit;
             }
+        }
+
+        .tox-toolbar__group {
+            border: none;
         }
     }
 
@@ -57,6 +66,22 @@
         &:hover {
             background-color: $white-warm;
             cursor: pointer;
+        }
+    }
+
+    .tox-split-button {
+        .tox-tbtn {
+            &:first-child {
+                margin-right: 0;
+            }
+
+            &:last-child {
+                margin-left: 0;
+            }
+        }
+
+        .tox-split-button__chevron {
+            min-width: unset;
         }
     }
 }
