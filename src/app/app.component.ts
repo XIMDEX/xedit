@@ -1,15 +1,14 @@
-import { skip } from 'rxjs/operators';
-import { hasIn, isNil, contains } from 'ramda';
-import { Xedit } from './core/mappers/xedit';
-import { Subscription } from 'rxjs';
-import { DamService } from './services/dam-service/dam.service';
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { contains, hasIn, isNil } from 'ramda';
 
-import { EditorService } from '@services/editor-service/editor.service';
-import { StateService } from '@services/state-service/state.service';
+import { ActivatedRoute } from '@angular/router';
 import { Api } from '@app/api';
+import { EditorService } from '@services/editor-service/editor.service';
+import { HttpClient } from '@angular/common/http';
+import { StateService } from '@services/state-service/state.service';
+import { Subscription } from 'rxjs';
+import { Xedit } from './core/mappers/xedit';
+import { skip } from 'rxjs/operators';
 
 @Component({
     selector: 'app-root',
@@ -30,16 +29,11 @@ export class AppComponent implements OnInit, OnDestroy {
         private _stateService: StateService,
         public http: HttpClient,
         private route: ActivatedRoute,
-        private cdRef: ChangeDetectorRef,
-        private _damService: DamService
+        private cdRef: ChangeDetectorRef
     ) {}
 
     /************************************** Life Cycle **************************************/
     ngOnInit() {
-        this.handleSelectSuscribe = this._damService.getOnSelect().subscribe(onSelect => {
-            this.handleSelect = onSelect;
-        });
-
         this.loadingSuscribe = this._editorService.isLoading().subscribe(loading => {
             this.loading = loading;
         });
@@ -87,7 +81,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     hasDam(): boolean {
-        return Xedit.getDam() === 'dam' ? true : false;
+        return Xedit.getDam() === 'dam';
     }
 
     /************************************** Private Methods **************************************/

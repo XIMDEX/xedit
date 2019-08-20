@@ -1,26 +1,23 @@
-import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { is, isNil, equals } from 'ramda';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { equals, is, isNil } from 'ramda';
 
+import { Api } from '@app/api';
+import { AutoloadModulesService } from '@app/services/autoload-modules-service/autoload-modules.service';
+import { ClipboardConfigs } from '@app/models/configs/clipboardConfigs';
 import { Converters } from '@utils/converters';
 import { EditorService } from '@app/services/editor-service/editor.service';
-import { XeditMapper } from '@app/models/schema/xedit-mapper';
-import Router from '@app/core/mappers/router';
-import { Api } from '@app/api';
-
-import { AutoloadModulesService } from '@app/services/autoload-modules-service/autoload-modules.service';
-import { XeditNode } from '@app/interfaces/xedit-node';
-
-import { ImageComponent } from '@app/elements/xedit/image/image.component';
-
-import { Node } from '@app/models/node';
-import { HttpClient } from '@angular/common/http';
-import { ClipboardConfigs } from '@app/models/configs/clipboardConfigs';
 import { HandlerEditor } from '@app/core/handler-editor/handler-editor';
-import { DamService } from '@app/services/dam-service/dam.service';
-import { ToolbarI } from '@app/models/interfaces/ToolbarI';
+import { HttpClient } from '@angular/common/http';
+import { ImageComponent } from '@app/elements/xedit/image/image.component';
+import { Node } from '@app/models/node';
+import { NodeService } from '@app/services/node-service/node.service';
+import Router from '@app/core/mappers/router';
 import { SectionComponent } from '@app/elements/xedit/section/section.component';
 import { TinyMCEComponent } from '@app/elements/xedit/tiny-mce/tiny-mce.component';
-import { NodeService } from '@app/services/node-service/node.service';
+// import { DamService } from '@app/services/dam-service/dam.service';
+import { ToolbarI } from '@app/models/interfaces/ToolbarI';
+import { XeditMapper } from '@app/models/schema/xedit-mapper';
+import { XeditNode } from '@app/interfaces/xedit-node';
 
 @Component({
     selector: 'app-editor-view',
@@ -43,7 +40,7 @@ export class EditorViewComponent implements OnInit, OnDestroy {
     constructor(
         private _editorService: EditorService,
         private _moduleService: AutoloadModulesService,
-        private _damService: DamService,
+        // private _damService: DamService,
         private nodeService: NodeService,
         public http: HttpClient
     ) {}
@@ -103,15 +100,15 @@ export class EditorViewComponent implements OnInit, OnDestroy {
                 Api.getInfoNode(this.http, selectedId, type, setData, errorCallback, extra);
             },
             callback: ({ type, setData }) => {
-                this._damService.setOpen({
-                    type: type
-                });
-                this._damService.setOnSelect(item => {
-                    if (!isNil(item)) {
-                        Api.getInfoNode(this.http, item.hash, type, setData, null, null);
-                        this._damService.close();
-                    }
-                });
+                // this._damService.setOpen({
+                //     type: type
+                // });
+                // this._damService.setOnSelect(item => {
+                //     if (!isNil(item)) {
+                //         Api.getInfoNode(this.http, item.hash, type, setData, null, null);
+                //         this._damService.close();
+                //     }
+                // });
             }
         };
         HandlerEditor.saveDoc(element, content, args);

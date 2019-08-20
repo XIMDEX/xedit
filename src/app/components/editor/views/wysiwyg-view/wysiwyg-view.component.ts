@@ -1,31 +1,31 @@
 import {
-    Component,
-    OnInit,
     AfterViewChecked,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
     EventEmitter,
     OnDestroy,
+    OnInit,
     Output,
-    ElementRef,
-    ViewChild,
-    ChangeDetectorRef
+    ViewChild
 } from '@angular/core';
-import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
-import { isNil, equals, is, union, hasIn } from 'ramda';
+import { ContextMenuComponent, ContextMenuService } from 'ngx-contextmenu';
+import { equals, hasIn, is, isNil, union } from 'ramda';
 
-import { Node } from '@models/node';
-import { XeditMapper } from '@models/schema/xedit-mapper';
+import { Api } from '../../../../api';
+import { ClipboardConfigs } from '../../../../models/configs/clipboardConfigs';
+import { Converters } from '@utils/converters';
 import { DOM } from '@models/dom';
 import { EditorService } from '@services/editor-service/editor.service';
-import { Converters } from '@utils/converters';
-import { WysiwygHandler } from '@components/editor/views/wysiwyg-view/wysiwyg-handler';
-import { NotificationsService } from 'angular2-notifications';
-import { ClipboardConfigs } from '../../../../models/configs/clipboardConfigs';
-import { Api } from '../../../../api';
-import Router from '../../../../core/mappers/router';
-import { DamService } from '../../../../services/dam-service/dam.service';
-import { Xedit } from '@app/xedit';
-import { StateConfigs } from '@app/models/configs/statesConfigs';
 import { HttpClient } from '@angular/common/http';
+import { Node } from '@models/node';
+import { NotificationsService } from 'angular2-notifications';
+import Router from '../../../../core/mappers/router';
+import { StateConfigs } from '@app/models/configs/statesConfigs';
+import { WysiwygHandler } from '@components/editor/views/wysiwyg-view/wysiwyg-handler';
+// import { DamService } from '../../../../services/dam-service/dam.service';
+import { Xedit } from '@app/xedit';
+import { XeditMapper } from '@models/schema/xedit-mapper';
 
 @Component({
     selector: 'app-wysiwyg-view',
@@ -58,8 +58,7 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
         private _elementRef: ElementRef,
         private _notification: NotificationsService,
         private cdr: ChangeDetectorRef,
-        public http: HttpClient,
-        private _damService: DamService
+        public http: HttpClient // private _damService: DamService
     ) {}
 
     /************************************** Life Cycle **************************************/
@@ -266,15 +265,15 @@ export class WysiwygViewComponent implements OnInit, OnDestroy, AfterViewChecked
                 Api.getInfoNode(this.http, selectedId, type, setData, errorCallback, extra);
             },
             callback: (evt, windowM, type, pathIds, setData) => {
-                this._damService.setOpen({
-                    type: type
-                });
-                this._damService.setOnSelect(item => {
-                    if (!isNil(item)) {
-                        Api.getInfoNode(this.http, item.hash, type, setData, null, null);
-                        this._damService.close();
-                    }
-                });
+                // this._damService.setOpen({
+                //     type: type
+                // });
+                // this._damService.setOnSelect(item => {
+                //     if (!isNil(item)) {
+                //         Api.getInfoNode(this.http, item.hash, type, setData, null, null);
+                //         this._damService.close();
+                //     }
+                // });
                 // window['treeModal']
                 //     .openModal('modal-1', type, pathIds)
                 //     .then(selectedId => {

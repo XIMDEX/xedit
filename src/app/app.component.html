@@ -2,5 +2,6 @@
 <simple-notifications [options]="{}"></simple-notifications>
 <app-taskbar [ngClass]="{ embebed: true }"></app-taskbar>
 <app-editor [ngClass]="{ embebed: false }"></app-editor>
-<app-dam *ngIf="hasDam()" [popup]="true" (onSelect)="handleSelect($event)"></app-dam>
+<!-- <app-dam *ngIf="hasDam()" [popup]="true" (onSelect)="handleSelect($event)"></app-dam> -->
+<app-xdam></app-xdam>
 <app-tree-modal></app-tree-modal>

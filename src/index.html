@@ -85,75 +85,102 @@
 
         <script>
             window.$xdam = {
-                token: '7f9840a31cd49bcbcd6d99857fde206103699aed073014e659a88d83651d',
+                token: '4eace4cd1fa8c1c5b2f2a9b8e2bc637ce9d1816934a9d9657ce4f5033043',
                 base_url: 'http://universo.lab14/api/v1/',
-                profile: 'light',
                 endpoints: {
                     resources: {
-                        list: 'resources?context_resource=resource&type=image',
-                        get: 'resources',
+                        list: 'resources/dam',
+                        get: 'resources/%(id)s',
                         post: 'resources',
-                        delete: 'resources'
+                        put: 'resources/%(id)s',
+                        delete: 'resources/%(id)s'
                     }
                 },
-                models: {
-                    item: {
-                        id: 'resource_id',
-                        title: 'name',
-                        hash: 'id',
-                        size: '',
-                        type: 'type',
-                        image: 'preview'
-                    },
-                    requests: {
-                        get: 'hash',
-                        delete: 'id',
-                        put: 'id'
+                settings: {
+                    list: {
+                        model: {
+                            id: 'resource_id',
+                            title: 'name',
+                            hash: 'id',
+                            size: null,
+                            type: 'type',
+                            image: 'preview',
+                            context: 'resource_context'
+                        }
                     }
                 },
-                forms: {
-                    name: 'resource-form',
-                    endpoint: 'resources',
-                    api: false,
-                    fields: [
-                        {
-                            type: 'dropdown',
-                            object: {
-                                key: 'items',
-                                multi: true,
-                                searchable: true,
-                                fetchable: true,
-                                endpoint: 'items?limit=0',
-                                label: 'Seleccione una palabra',
-                                options: [],
-                                order: 1,
-                                realName: 'items',
-                                map: {
-                                    key: 'id',
-                                    value: 'title'
+                form: [
+                    {
+                        name: 'main',
+                        fields: [
+                            {
+                                type: 'dropdown',
+                                object: {
+                                    realName: 'items',
+                                    key: 'items',
+                                    label: 'Seleccione una palabra',
+                                    multi: true,
+                                    searchable: true,
+                                    fetchable: true,
+                                    endpoint:
+                                        'http://universo.lab14/api/v1/items?limit=0&api_token=4eace4cd1fa8c1c5b2f2a9b8e2bc637ce9d1816934a9d9657ce4f5033043',
+                                    order: 1,
+                                    options: [],
+                                    map: {
+                                        key: 'id',
+                                        value: 'title'
+                                    }
+                                }
+                            },
+                            {
+                                type: 'dropdown',
+                                object: {
+                                    key: 'category',
+                                    label: 'Seleccione un tipo',
+                                    options: [
+                                        {
+                                            key: 'investigation',
+                                            value: 'Investigación'
+                                        },
+                                        {
+                                            key: 'activation',
+                                            value: 'Activación'
+                                        }
+                                    ],
+                                    order: 2
+                                }
+                            },
+                            {
+                                type: 'dropdown',
+                                object: {
+                                    realName: 'license',
+                                    key: 'license_id',
+                                    label: 'Seleccione una licencia',
+                                    multi: false,
+                                    searchable: true,
+                                    fetchable: true,
+                                    endpoint:
+                                        'http://universo.lab14/api/v1/licenses?limit=0&api_token=4eace4cd1fa8c1c5b2f2a9b8e2bc637ce9d1816934a9d9657ce4f5033043',
+                                    order: 3,
+                                    options: [],
+                                    map: {
+                                        key: 'id',
+                                        value: 'title'
+                                    }
+                                }
+                            },
+                            {
+                                type: 'text-area',
+                                object: {
+                                    realName: 'license_desc',
+                                    key: 'license_desc',
+                                    label: 'Licencia',
+                                    order: 4
                                 }
                             }
-                        },
-                        {
-                            type: 'dropdown',
-                            object: {
-                                key: 'category',
-                                label: 'Seleccione un tipo',
-                                options: [
-                                    {
-                                        key: 'investigation',
-                                        value: 'Investigación'
-                                    },
-                                    {
-                                        key: 'activation',
-                                        value: 'Activación'
-                                    }
-                                ],
-                                order: 2
-                            }
-                        }
-                    ]
-                }
+                        ]
+                    }
+                ]
             };
         </script>
 

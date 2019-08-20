@@ -1,0 +1,4 @@
+<ngx-smart-modal class="xe_modal xe_editor" #resourceModal identifier="resourceModal" [closable]="false">
+    <!-- {{ items | json }} -->
+    <xdam-main [settings]="settings" [items]="items" (onSearch)="sendSearch($event)"></xdam-main>
+</ngx-smart-modal>
