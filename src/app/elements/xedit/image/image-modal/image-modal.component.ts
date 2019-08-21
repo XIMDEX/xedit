@@ -124,6 +124,10 @@ export class ImageModalComponent implements OnInit {
     }
 
     openMediaManager() {
+        this.resourceService.setType('image');
+        this.resourceService.setOnSelect(data => {
+            Plugins.MediaMAnagerSelect(data, this.http, this.setImageData.bind(this));
+        });
         this.resourceService.show();
         // const modal = this.ngxModal.getModal('resourceModal');
         // modal.open();

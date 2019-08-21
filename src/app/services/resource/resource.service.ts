@@ -7,9 +7,13 @@ import { Injectable } from '@angular/core';
 })
 export class ResourceService {
     private isOpen: BehaviorSubject<boolean>;
+    private type: BehaviorSubject<string | null>;
+    private selectAction: BehaviorSubject<Function | null>;
 
     constructor() {
         this.isOpen = new BehaviorSubject<boolean>(false);
+        this.type = new BehaviorSubject<string | null>(null);
+        this.selectAction = new BehaviorSubject<Function>(evt => {});
     }
 
     /**
@@ -41,5 +45,41 @@ export class ResourceService {
      */
     public getStatus(): Observable<boolean> {
         return this.isOpen.asObservable();
+    }
+
+    /**
+     * Set current type to filter resources
+     *
+     * @param type
+     */
+    public setType(type: string | null) {
+        this.type.next(type);
+    }
+
+    /**
+     * Get current type to filter resources
+     *
+     * @return Observable<string|null>
+     */
+    public getType(): Observable<string | null> {
+        return this.type.asObservable();
+    }
+
+    /**
+     * Set current type to filter resources
+     *
+     * @param type
+     */
+    public setOnSelect(selectAction: Function | null) {
+        this.selectAction.next(selectAction);
+    }
+
+    /**
+     * Get current type to filter resources
+     *
+     * @return Observable<string|null>
+     */
+    public getOnSelect(): Observable<Function | null> {
+        return this.selectAction.asObservable();
     }
 }

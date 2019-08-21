@@ -37,7 +37,7 @@
         "@sweetalert2/ngx-sweetalert2": "^5.1.0",
         "@tinymce/tinymce-angular": "^3.3.0",
         "@types/mathjax": "0.0.35",
-        "@ximdex/xdam": "file:../../js_modules/xdam-frontend/dist/xdam/ximdex-xdam-2.0.0-rc1.tgz",
+        "@ximdex/xdam": "https://github.com/XIMDEX/xdam-frontend/releases/download/v2.0.0-rc1/ximdex-xdam-2.0.0-rc.tgz",
         "angular-cropperjs": "^1.0.1",
         "angular-tree-component": "^8.0.0",
         "angular2-collapsible": "0.6.1",

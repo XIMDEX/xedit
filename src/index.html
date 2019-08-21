@@ -106,8 +106,26 @@
                             type: 'type',
                             image: 'preview',
                             context: 'resource_context'
+                        },
+                        items: {
+                            type: '%s',
+                            title: '%s',
+                            placeholder: {
+                                image: 'https://via.placeholder.com/200/7ec9b8/ffffff?text=Image',
+                                audio: 'https://via.placeholder.com/200/ef680e/ffffff?text=Audio',
+                                video: 'https://via.placeholder.com/200/af8282/ffffff?text=Video',
+                                pdf: 'https://via.placeholder.com/200/5273a8/ffffff?text=pdf',
+                                default: 'https://via.placeholder.com/200/5ab1c9/ffffff?text=Other'
+                            },
+                            actions: {
+                                edit: false,
+                                download: false,
+                                delete: false,
+                                select: true
+                            }
                         }
-                    }
+                    },
+                    facets: false
                 },
                 form: [
                     {
