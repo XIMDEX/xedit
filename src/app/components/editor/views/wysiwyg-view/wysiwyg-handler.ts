@@ -1,10 +1,4 @@
-import $ from 'jquery';
-import { UUID } from 'angular2-uuid';
-import { Xedit } from 'app/core/mappers/xedit';
-import { HttpClient } from '@angular/common/http';
-
 // TIYMCE
-import 'tinymce';
 import 'tinymce/themes/modern';
 import 'tinymce/plugins/table';
 import 'tinymce/plugins/image';
@@ -20,27 +14,31 @@ import 'tinymce/plugins/textcolor';
 import 'tinymce/plugins/imagetools';
 import 'tinymce/plugins/colorpicker';
 import './tiny_plugins/eqneditor';
+// DATEPICKER
+import 'bootstrap-datepicker';
 
+import { equals, hasIn, isEmpty, isNil } from 'ramda';
+
+import $ from 'jquery';
+import { Api } from '@app/api';
+import Buttons from './tiny_plugins/dam/ui/Buttons';
+import { ClipboardConfigs } from '@app/models/configs/clipboardConfigs';
 import Commands from './tiny_plugins/dam/api/Commands';
 import FilterContent from './tiny_plugins/dam/core/FilterContent';
-import Buttons from './tiny_plugins/dam/ui/Buttons';
+import { HttpClient } from '@angular/common/http';
+import Router from '../../../../core/mappers/router';
+import { StringHelpers } from '@app/core/helpers/string';
+import { TinyMCEComponent } from '@app/elements/xedit/tiny-mce/tiny-mce.component';
+import ToolbarGenerator from '@app/core/generators/toolbar-generator';
+import TreeButtons from './tiny_plugins/tree/ui/Buttons';
 import TreeCommands from './tiny_plugins/tree/api/Commands';
 import TreeFilterContent from './tiny_plugins/tree/core/FilterContent';
-import TreeButtons from './tiny_plugins/tree/ui/Buttons';
+import { UUID } from 'angular2-uuid';
+import { Xedit } from 'app/core/mappers/xedit';
+import { XeditMapper } from '@models/schema/xedit-mapper';
 import dateFormat from 'dateformat';
 
 declare let tinymce: any;
-
-// DATEPICKER
-import 'bootstrap-datepicker';
-import { isNil, equals, hasIn, isEmpty } from 'ramda';
-import { XeditMapper } from '@models/schema/xedit-mapper';
-import Router from '../../../../core/mappers/router';
-import { Api } from '@app/api';
-import { ClipboardConfigs } from '@app/models/configs/clipboardConfigs';
-import { StringHelpers } from '@app/core/helpers/string';
-import ToolbarGenerator from '@app/core/generators/toolbar-generator';
-import { TinyMCEComponent } from '@app/elements/xedit/tiny-mce/tiny-mce.component';
 
 export class WysiwygHandler {
     static handlers = {

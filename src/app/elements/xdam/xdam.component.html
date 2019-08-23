@@ -5,13 +5,10 @@
     [closable]="false"
     (onAnyCloseEventFinished)="resetModal()"
 >
-    <!-- {{ items | json }} -->
     <xdam-main
-        #xdam
         [settings]="settings"
         [items]="items"
         [action]="action"
-        [reset]="close"
         (onSearch)="sendSearch($event)"
         (onAction)="prepareAction($event)"
     ></xdam-main>

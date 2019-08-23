@@ -1,6 +1,6 @@
 <div class="cropper" [ngStyle]="containerSize">
     <!-- prevent-collapsed -->
-    <img #image id="image" [src]="src" (load)="loadCropper($event)" />
+    <img #image id="image" [src]="src" (load)="loadCropper()" />
 </div>
 <div class="toolbar">
     <button class="actions" (click)="zoomImage(true)" title="Zoom in image">

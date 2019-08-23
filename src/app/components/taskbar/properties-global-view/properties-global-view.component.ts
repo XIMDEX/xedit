@@ -1,22 +1,18 @@
-import {
-    Component,
-    OnInit,
-    OnDestroy,
-} from '@angular/core';
-import { isNil, hasIn } from 'ramda';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { hasIn, isNil } from 'ramda';
 
-import { File } from '@models/file';
-import { EditorService } from '@services/editor-service/editor.service';
-import { WysiwygHandler } from '@app/components/editor/views/wysiwyg-view/wysiwyg-handler';
-import dateformat from 'dateformat';
-import Router from '../../../core/mappers/router';
 import { Api } from '@app/api';
+import { EditorService } from '@services/editor-service/editor.service';
+import { File } from '@models/file';
 import { HttpClient } from '@angular/common/http';
+import Router from '../../../core/mappers/router';
+// import { WysiwygHandler } from '@app/components/editor/views/wysiwyg-view/wysiwyg-handler';
+import dateformat from 'dateformat';
 
 @Component({
     selector: 'app-properties-global',
     templateUrl: './properties-global-view.component.html',
-    styleUrls: ['./properties-global-view.component.scss'],
+    styleUrls: ['./properties-global-view.component.scss']
 })
 export class PropertiesGlobalViewComponent implements OnInit, OnDestroy {
     public metas: Array<Object>;
@@ -25,10 +21,7 @@ export class PropertiesGlobalViewComponent implements OnInit, OnDestroy {
     private file: File;
     private baseUrl: string;
 
-    constructor(
-        private _editorService: EditorService,
-        private http: HttpClient
-    ) { }
+    constructor(private _editorService: EditorService, private http: HttpClient) {}
 
     ngOnInit() {
         this.metas = [];
@@ -41,14 +34,12 @@ export class PropertiesGlobalViewComponent implements OnInit, OnDestroy {
             this.file = file;
         });
 
-        this.suscribeFile = this._editorService
-            .getFileState()
-            .subscribe(file => {
-                this.states = [];
-                if (file != null) {
-                    this.states = file.getSnapshots();
-                }
-            });
+        this.suscribeFile = this._editorService.getFileState().subscribe(file => {
+            this.states = [];
+            if (file != null) {
+                this.states = file.getSnapshots();
+            }
+        });
     }
 
     createMetaObject(meta: Array<any>): Object {
@@ -74,14 +65,7 @@ export class PropertiesGlobalViewComponent implements OnInit, OnDestroy {
         window['treeModal']
             .openModal('modal-1', type)
             .then(selectedId => {
-                Api.getInfoNode(
-                    this.http,
-                    selectedId,
-                    type,
-                    callback,
-                    null,
-                    null
-                );
+                Api.getInfoNode(this.http, selectedId, type, callback, null, null);
             })
             .catch(err => console.log(err));
     }

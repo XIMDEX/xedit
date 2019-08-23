@@ -28,11 +28,7 @@ export class ImageModalComponent implements OnInit {
     private imageStyle: any;
     public cropData: Cropper.CanvasData = null;
 
-    constructor(
-        private ngxModal: NgxSmartModalService,
-        private resourceService: ResourceService,
-        private http: HttpClient
-    ) {}
+    constructor(private resourceService: ResourceService, private http: HttpClient) {}
 
     ngOnInit() {}
 

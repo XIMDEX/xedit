@@ -1,16 +1,15 @@
-import { Component, OnInit, ElementRef, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
-import { equals, merge, isNil } from 'ramda';
-import htmlTagValidator from 'html-tag-validator';
-import { Toolbar } from '../../models/toolbar';
+import { AfterViewChecked, ChangeDetectorRef, Component, ElementRef, OnInit } from '@angular/core';
+import { equals, isNil, merge } from 'ramda';
 
-import { XeditMapper } from '@models/schema/xedit-mapper';
 import { ClipboardConfigs } from '@models/configs/clipboardConfigs';
-
 import { EditorService } from '@services/editor-service/editor.service';
-import { StateService } from '@services/state-service/state.service';
-import { ToolbarI } from '@app/models/interfaces/ToolbarI';
-import { NodeService } from '@app/services/node-service/node.service';
 import { NodeFactoryService } from '@app/factories/node-factory.service';
+import { NodeService } from '@app/services/node-service/node.service';
+import { StateService } from '@services/state-service/state.service';
+import { Toolbar } from '../../models/toolbar';
+import { ToolbarI } from '@app/models/interfaces/ToolbarI';
+import { XeditMapper } from '@models/schema/xedit-mapper';
+import htmlTagValidator from 'html-tag-validator';
 
 @Component({
     selector: 'app-editor',
@@ -20,7 +19,7 @@ import { NodeFactoryService } from '@app/factories/node-factory.service';
 export class EditorComponent implements OnInit, AfterViewChecked {
     private currentView: string;
     private clipboardConfigs: ClipboardConfigs;
-    private cConfigs: Array<Object>;
+    cConfigs: Array<Object>;
 
     constructor(
         private _stateService: StateService,

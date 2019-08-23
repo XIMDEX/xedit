@@ -1,4 +1,4 @@
-import { ActionModel, DamComponent, Pager, PagerModelSchema, SearchModel, XDamData, XDamSettings } from '@ximdex/xdam';
+import { ActionModel, Pager, PagerModelSchema, SearchModel, XDamData, XDamSettings } from '@ximdex/xdam';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { NgxSmartModalComponent, NgxSmartModalService } from 'ngx-smart-modal';
@@ -15,8 +15,6 @@ import { skip } from 'rxjs/operators';
     styleUrls: ['./xdam.component.scss']
 })
 export class XdamComponent implements OnInit, AfterViewInit {
-    @ViewChild('xdam') damComponent: DamComponent;
-
     search: SearchModel;
     items: XDamData;
     settings: XDamSettings;

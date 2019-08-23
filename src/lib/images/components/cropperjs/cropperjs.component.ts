@@ -1,16 +1,17 @@
-import { Component, Input, ViewChild, ElementRef, OnChanges, SimpleChanges, EventEmitter, Output } from '@angular/core';
-import Cropper from 'cropperjs';
-import { isNil, empty } from 'ramda';
-import { CanvasCropperResult } from 'lib/images';
-import { faSearchPlus, faSearchMinus } from '@fortawesome/free-solid-svg-icons';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { empty, isNil } from 'ramda';
 import {
     faAlignCenter,
-    faAlignRight,
     faAlignLeft,
-    faSync,
+    faAlignRight,
     faCompress,
-    faExpand
+    faExpand,
+    faSync
 } from '@fortawesome/free-solid-svg-icons';
+import { faSearchMinus, faSearchPlus } from '@fortawesome/free-solid-svg-icons';
+
+import { CanvasCropperResult } from 'lib/images';
+import Cropper from 'cropperjs';
 
 @Component({
     selector: 'cropperjs',
@@ -50,9 +51,9 @@ export class CropperjsComponent implements OnChanges {
         counter1: 0
     };
 
-    private ALIGN_CENTER = 1;
-    private ALIGN_LEFT = 0;
-    private ALIGN_RIGHT = 2;
+    ALIGN_CENTER = 1;
+    ALIGN_LEFT = 0;
+    ALIGN_RIGHT = 2;
 
     constructor() {}
 
