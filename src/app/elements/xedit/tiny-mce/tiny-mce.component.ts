@@ -187,7 +187,7 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit, OnDe
         const plugins = TinyMCEComponent.getAvailableEditorPlugins();
         const that = this;
         const configs = {
-            base_url: '/tinymce/', // Base for assets such as skins, themes and plugins
+            base_url: './tinymce/', // Base for assets such as skins, themes and plugins
             suffix: '.min', // This will make Tiny load minified versions of all its assets
             fixed_toolbar_container: '#toolbar',
             skin: 'oxide',
@@ -218,9 +218,9 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit, OnDe
             const { colors = {}, fonts = [], fontsize = [] } = this.content.settings.options;
 
             // TODO Load from this.content.settings object
-            configs['formats'] = {
-                bold: { inline: 'strong', styles: { 'font-weight': 'bold' } }
-            };
+            // configs['formats'] = {
+            //     bold: { inline: 'strong', styles: { 'font-weight': 'bold' } }
+            // };
 
             if (!isEmpty(colors) && is(Object, colors) && !Array.isArray(colors)) {
                 for (const color of Object.keys(colors)) {
