@@ -181,7 +181,15 @@ export class EditorService {
                 root.content,
                 uuidPath
             );
-            editContent.child = Converters.html2json(content, false);
+            let newContent = Converters.html2json(content, false);
+            if (
+                hasIn(editContent.uuid, newContent) &&
+                hasIn('uuid', newContent[editContent.uuid]) &&
+                editContent.uuid === newContent[editContent.uuid].uuid
+            ) {
+                newContent = newContent[editContent.uuid].child;
+            }
+            editContent.child = newContent;
         }
 
         // Save new state

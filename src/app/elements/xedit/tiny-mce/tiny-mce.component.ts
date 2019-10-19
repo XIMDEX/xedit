@@ -11,7 +11,6 @@ import { toolbarOptions } from './toolbar-mapper';
 // TinyMCE Settings
 import tinymce from 'tinymce';
 
-// import '@components/editor/views/wysiwyg-view/tiny_plugins/dam';
 import { Subscription } from 'rxjs';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { NodeService } from '@app/services/node-service/node.service';
@@ -77,7 +76,6 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit, OnDe
     ngOnDestroy() {
         this.subscribeCNM.unsubscribe();
         this.nodeService.set(null);
-        // this.editorService.setCurrentNode(null);
     }
 
     public selectedNode({ event }) {
@@ -214,23 +212,6 @@ export class TinyMCEComponent extends XeditBaseComponent implements OnInit, OnDe
                     }
                 });
             }
-            // dam_callback: type => {
-            //     const modal = this.ngxModal.getModal('imageModal');
-            //     modal.removeData();
-            //     modal.setData({
-            //         fields: this.getImageAttrs()
-            //         // settings: {
-            //         //     image_size: this.containerSize(),
-            //         //     crop_data: this.cropData()
-            //         // },
-            //         // save: this.changeImage.bind(this)
-            //     });
-            //     modal.open();
-
-            //     // this.damService.setOpen({
-            //     //     type: type
-            //     // });
-            // }
         };
 
         if (hasIn('options', this.content.settings)) {
