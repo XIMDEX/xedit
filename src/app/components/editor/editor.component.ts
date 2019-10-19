@@ -50,11 +50,9 @@ export class EditorComponent implements OnInit, AfterViewChecked {
         if (!isNil(uuid)) {
             const element = this._elementRef.nativeElement.querySelector(`[${XeditMapper.TAG_UUID}='${uuid}']`);
             if (!isNil(element)) {
-                // node = this._editorService.parseToNode(element);
                 node = this.nodeFactoryService.createFromElement(element);
             }
         }
-        // this._editorService.setCurrentNode(node);
         this.nodeService.set(node);
     }
 

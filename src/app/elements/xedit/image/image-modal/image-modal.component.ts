@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { hasIn, isNil } from 'ramda';
 
-// import { DamService } from '@app/services/dam-service/dam.service';
 import { HttpClient } from '@angular/common/http';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { Plugins } from '@app/core/plugins';
@@ -129,15 +128,6 @@ export class ImageModalComponent implements OnInit {
             Plugins.MediaMAnagerSelect(data, this.http, this.setImageData.bind(this));
         });
         this.resourceService.show();
-        // const modal = this.ngxModal.getModal('resourceModal');
-        // modal.open();
-        // this._damService.setOpen({
-        //     type: 'image'
-        // });
-        // this._damService.setOnSelect(data => {
-        //     Plugins.MediaMAnagerSelect(data, this.http, this.setImageData.bind(this));
-        //     this._damService.close();
-        // });
     }
 
     private setImageData({ name, nodeid, path }) {

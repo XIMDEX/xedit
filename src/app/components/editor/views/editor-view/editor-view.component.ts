@@ -14,7 +14,6 @@ import { NodeService } from '@app/services/node-service/node.service';
 import Router from '@app/core/mappers/router';
 import { SectionComponent } from '@app/elements/xedit/section/section.component';
 import { TinyMCEComponent } from '@app/elements/xedit/tiny-mce/tiny-mce.component';
-// import { DamService } from '@app/services/dam-service/dam.service';
 import { ToolbarI } from '@app/models/interfaces/ToolbarI';
 import { XeditMapper } from '@app/models/schema/xedit-mapper';
 import { XeditNode } from '@app/interfaces/xedit-node';
@@ -40,7 +39,6 @@ export class EditorViewComponent implements OnInit, OnDestroy {
     constructor(
         private _editorService: EditorService,
         private _moduleService: AutoloadModulesService,
-        // private _damService: DamService,
         private nodeService: NodeService,
         public http: HttpClient
     ) {}
@@ -55,7 +53,6 @@ export class EditorViewComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.subscribeFile.unsubscribe();
         this.subscribeCN.unsubscribe();
-        // this._editorService.setCurrentNode(null);
         this.nodeService.set(null);
         this._editorService.setCurrentNodeModify(null);
     }

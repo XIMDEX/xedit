@@ -8,7 +8,6 @@ import { DOM } from '@app/models/dom';
 
 @Component({
     selector: 'app-image',
-    // templateUrl: './image.component.html',
     template: '<ng-content></ng-content>',
     styleUrls: ['./image.component.scss']
 })
