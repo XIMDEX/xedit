@@ -15,7 +15,6 @@ import { ClickOutsideModule } from 'ng4-click-outside';
 import { CollapsibleModule } from 'angular2-collapsible';
 import { ContextMenuComponent } from '@components/context-menu/context-menu.component';
 import { ContextMenuModule } from 'ngx-contextmenu';
-import { DamModule } from '../lib/dam';
 import { DebugPipe } from '@pipes/debug/debug.pipe';
 import { DynFormModule } from 'app/elements/forms/dynform/dyn-form.module';
 import { EditorComponent } from '@components/editor/editor.component';
@@ -50,7 +49,6 @@ import { TaskbarComponent } from '@components/taskbar/taskbar.component';
 import { TextViewComponent } from '@components/editor/views/text-view/text-view.component';
 import { TreeComponent } from './elements/blocks/tree/tree.component';
 import { TreeModalComponent } from './elements/blocks/tree-modal/tree-modal.component';
-// import { DamService } from './services/dam-service/dam.service';
 import { TreeModule } from 'angular-tree-component';
 import { UrlPipe } from '@pipes/url/url.pipe';
 import { XDamModule } from '@ximdex/xdam';
@@ -108,7 +106,6 @@ import { XdamComponent } from './elements/xdam/xdam.component';
         CollapsibleModule,
         HttpClientModule,
         SimpleNotificationsModule.forRoot(),
-        DamModule,
         TreeModule.forRoot(),
         NgxSmartModalModule.forRoot(),
         FontAwesomeModule,

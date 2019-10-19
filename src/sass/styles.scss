@@ -1,6 +1,5 @@
 @import '~bootstrap/dist/css/bootstrap.min.css';
 @import 'variables';
-@import './../lib/dam/style.scss';
 @import '~angular-tree-component/dist/angular-tree-component.css';
 
 html,
@@ -190,8 +189,6 @@ div#dam-path {
 .nav-tabs {
     box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.5);
 }
-
-@import '../lib/dam/themes/light.scss';
 
 @import './forms/forms';
 @import './modals/modal';
