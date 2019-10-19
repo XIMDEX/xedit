@@ -1,9 +1,9 @@
 import { isNil, isEmpty, hasIn } from 'ramda';
 import { Configs } from './configs';
 
+import sanitizeHtml from 'sanitize-html';
+
 export class ClipboardConfigs extends Configs {
-
-
     protected static GROUP = 'clipboardConfigs';
     protected static DEFAULT: any = {
         active: false,
@@ -13,8 +13,8 @@ export class ClipboardConfigs extends Configs {
                 name: 'Format copy',
                 selected: 'copyPlain',
                 options: {
-                    'copyHtml': 'Copy as HTML',
-                    'copyPlain': 'Copy as Plain Text'
+                    copyHtml: 'Copy as HTML',
+                    copyPlain: 'Copy as Plain Text'
                 }
             }
         ]
@@ -73,7 +73,7 @@ export class ClipboardConfigs extends Configs {
     }
 
     private init() {
-        this.self.get().then((data) => {
+        this.self.get().then(data => {
             if (isNil(data)) {
                 data = this.self.DEFAULT;
             }
@@ -107,4 +107,32 @@ export class ClipboardConfigs extends Configs {
         return value;
     }
 
+    /**
+     * This method get data in plain format from clipboard
+     */
+    public static copyPlain(evt: ClipboardEvent) {
+        return evt.clipboardData.getData('text/plain');
+    }
+
+    /*
+     * This method get the data in html format from the clipboard but if it is empty it try to get in plain format
+     */
+    public static copyHtml(evt: ClipboardEvent) {
+        let data = evt.clipboardData.getData('text/plain');
+        const html = evt.clipboardData.getData('text/html');
+        if (html) {
+            data = sanitizeHtml(html);
+        }
+        return data;
+    }
+
+    public static copy(evt: ClipboardEvent, asHtml = true) {
+        let data = '';
+        if (asHtml) {
+            data = ClipboardConfigs.copyHtml(evt);
+        } else {
+            data = ClipboardConfigs.copyPlain(evt);
+        }
+        return data;
+    }
 }

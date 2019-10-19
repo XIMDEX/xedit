@@ -1,0 +1,56 @@
+:host {
+    @import '../../scss/variables/colors';
+
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-height: 80px;
+    align-items: center;
+
+    .cropper {
+        img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+    }
+
+    .toolbar {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin: 5px 5px;
+
+        > .separator {
+            min-height: 27px;
+            height: 27px;
+            max-height: 27px;
+            width: 1px;
+            background-color: $separator_main_color;
+            margin: 0 5px;
+        }
+
+        > .actions {
+            min-height: 27px;
+            height: 27px;
+            max-height: 27px;
+            margin: 0 2px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 2px;
+
+            background-color: $btn_main_color;
+            color: $btn_main_font_color;
+
+            transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+
+            &:hover {
+                background-color: $btn_alt_color;
+                color: $btn_alt_font_color;
+            }
+
+            &:focus {
+                outline: none;
+            }
+        }
+    }
+}

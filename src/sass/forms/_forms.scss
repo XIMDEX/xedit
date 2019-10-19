@@ -1,0 +1,71 @@
+@import '../variables';
+
+.xe_form_input {
+    width: 100%;
+    display: flex;
+    font: $font-default;
+    padding: 8px 5px;
+
+    > .xe_label {
+        max-width: 100px;
+        min-width: 100px;
+    }
+
+    > .xe_input {
+        flex-grow: 2;
+    }
+}
+
+.xe_btn {
+    margin: 0 2px;
+    padding: 5px 10px;
+
+    &.big {
+        padding: 10px 15px;
+    }
+
+    border: none;
+    border-radius: 2px;
+
+    background-color: $btn_main_color;
+    color: $btn_main_font_color;
+
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+
+    &:hover {
+        background-color: $btn_alt_color;
+        color: $btn_alt_font_color;
+    }
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.xe_file {
+    color: $btn_main_font_color;
+    border: 1px solid $btn_main_color;
+    border-radius: 2px;
+    overflow: hidden;
+
+    input {
+        font-weight: normal;
+        margin: 0 2px;
+        padding: 5px 10px;
+        border: none;
+    }
+    .xe_btn {
+        margin: 0;
+        border-radius: 0;
+        padding: 5px 10px;
+    }
+}
+
+.xe_input {
+    font-weight: normal;
+    color: $btn_main_font_color;
+    border: 1px solid $btn_main_color;
+    border-radius: 2px;
+    overflow: hidden;
+    padding: 5px 10px;
+}

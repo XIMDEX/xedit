@@ -1,26 +1,26 @@
 @import '~bootstrap/dist/css/bootstrap.min.css';
 @import 'variables';
-@import './../lib/dam/style.scss';
 @import '~angular-tree-component/dist/angular-tree-component.css';
 
 html,
 body,
-body > app-root{
+body > app-root {
     min-height: 100%;
     height: 100%;
 }
 
-body{
+body {
     padding: 0;
     margin: 0;
     background: $white-lighter;
 }
 
-[xe_selected]{
+[xe_selected],
+.xe_selected {
     outline: 2px dotted #333 !important;
 }
 
-[xe_w_selected]{
+[xe_w_selected] {
     outline: 1px solid green !important;
 }
 
@@ -43,7 +43,7 @@ body{
     overflow: hidden;
 }
 
-a{
+a {
     display: inline-block;
 }
 
@@ -80,17 +80,17 @@ app-acordion {
         left: 0;
         content: '';
         opacity: 0.5;
-        background: repeating-linear-gradient(-45deg,#909090, #909090 10px, #b9b9b9 10px, #b9b9b9 20px);
+        background: repeating-linear-gradient(-45deg, #909090, #909090 10px, #b9b9b9 10px, #b9b9b9 20px);
         border: 1px solid #d3d3d3;
     }
 }
 
 // MODAL
-.sc-modal-close{
+.sc-modal-close {
     z-index: 10000;
 }
 
-.modal.modal-open{
+.modal.modal-open {
     display: block;
 }
 
@@ -98,7 +98,7 @@ sc-modal.default {
     text-align: unset !important;
 }
 
-app-tree-modal{
+app-tree-modal {
     z-index: 100000;
 }
 
@@ -115,7 +115,7 @@ div#dam-path {
     .nsm-dialog {
         height: 50rem;
         width: 60%;
-        top:20%;
+        top: 20%;
     }
     .nsm-content {
         height: 100%;
@@ -186,10 +186,13 @@ div#dam-path {
     }
 }
 
-
 .nav-tabs {
     box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.5);
 }
 
-@import 'tinymce';
-@import '../lib/dam/themes/light.scss';
+@import './forms/forms';
+@import './modals/modal';
+@import '../lib/images/scss/style.scss';
+
+@import './tiny-mce/tinymce';
+@import '../../node_modules/@ximdex/xdam/light';

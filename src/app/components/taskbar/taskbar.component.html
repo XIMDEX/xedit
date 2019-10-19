@@ -6,10 +6,10 @@
                     <i class="fas fa-save"></i>
                 </li>
                 <li class="separator"></li>
-                <li (click)="undo()" [ngClass]="{disabled: !previousAvailable()}">
+                <li (click)="undo()" [ngClass]="{ disabled: !previousAvailable() }">
                     <i class="fas fa-undo"></i>
                 </li>
-                <li (click)="redo()" [ngClass]="{disabled: !nextAvailable()}">
+                <li (click)="redo()" [ngClass]="{ disabled: !nextAvailable() }">
                     <i class="fas fa-redo"></i>
                 </li>
             </ul>
@@ -23,19 +23,33 @@
         <nav class="views">
             <ul class="actions">
                 <li class="option-button">
-                    <i [ngClass]="{'fas': true, 'fa-eye': stateActive === false, 'fa-eye-slash': stateActive === true}" (click)="toggleElementState()"></i>
+                    <fa-icon [icon]="faEye" (click)="toggleElementState()"></fa-icon>
                     <aside (click)="openStates($event)">
                         <i class="fas fa-caret-down"></i>
                     </aside>
-                    <div class="action-panel" *ngIf="toogleStateConfigs" (click)="$event.stopPropagation()" (clickOutside)="closeStates()">
-                        <app-state-controller [(configs)]="configs" (updated)="saveStateConfigs($event)"></app-state-controller>
+                    <div
+                        class="action-panel"
+                        *ngIf="toogleStateConfigs"
+                        (click)="$event.stopPropagation()"
+                        (clickOutside)="closeStates()"
+                    >
+                        <app-state-controller
+                            [(configs)]="configs"
+                            (updated)="saveStateConfigs($event)"
+                        ></app-state-controller>
                     </div>
                 </li>
                 <li class="separator"></li>
             </ul>
             <ul *ngIf="hasMultiViews()">
-                <li (click)="showComponent(view)" *ngFor="let view of availableViews" [ngClass]="{selected: currentView === view, tabs: true}">
-                    <span title="Editar metadatos" *ngIf="view === 'metadata'; else text_content"><fa-icon [icon]="faBars"></fa-icon></span>
+                <li
+                    (click)="showComponent(view)"
+                    *ngFor="let view of availableViews"
+                    [ngClass]="{ selected: currentView === view, tabs: true }"
+                >
+                    <span title="Editar metadatos" *ngIf="view === 'metadata'; else text_content">
+                        <fa-icon [icon]="faBars"></fa-icon>
+                    </span>
                     <ng-template #text_content>{{ view === 'wysiwyg' ? 'Visual' : 'Texto' }}</ng-template>
                 </li>
             </ul>

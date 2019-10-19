@@ -1,0 +1,29 @@
+@import '~sass/variables';
+
+:host {
+    > .xe_toolbar_content {
+        background: $white-ximdex;
+        padding: 5px;
+
+        .xe_toolbar_button {
+            box-sizing: border-box;
+            font-size: $icon-size-default;
+            display: inline-block;
+            padding: 3px;
+            width: 29px;
+            height: 29px;
+            text-align: center;
+            border-radius: 4px;
+
+            &.active,
+            &:hover {
+                background-color: $white-warm;
+                cursor: pointer;
+            }
+
+            fa-icon {
+                font-size: inherit;
+            }
+        }
+    }
+}

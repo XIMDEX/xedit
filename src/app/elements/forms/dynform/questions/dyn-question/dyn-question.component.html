@@ -1,8 +1,5 @@
 <div [ngClass]="questionClass" [formGroup]="form">
-    <label [attr.for]="question.key">
-        {{ question.label }}
-        <span style="color:red" *ngIf="question.required">*</span>
-    </label>
+    <label [attr.for]="question.key">{{ question.label }}</label>
 
     <div [ngSwitch]="question.controlType">
         <input
@@ -11,7 +8,6 @@
             [id]="question.key"
             [ngModel]="question.val"
             [type]="question.type"
-            [required]="question.required"
         />
         <input
             *ngSwitchCase="'date'"
@@ -19,30 +15,17 @@
             [id]="question.key"
             [ngModel]="question.val | date: 'yyyy-MM-dd'"
             [type]="question.type"
-            [required]="question.required"
         />
 
         <div *ngSwitchCase="'image'" class="question-img">
-            <input
-                [formControlName]="question.key"
-                [id]="question.key"
-                [ngModel]="question.val"
-                [type]="text"
-                [required]="question.required"
-            />
-            <button (click)="clicked($event)">
-                <i class="far fa-images"></i>
-            </button>
+            <input [formControlName]="question.key" [id]="question.key" [ngModel]="question.val" [type]="text" />
+            <button (click)="clicked($event)"><i class="far fa-images"></i></button>
         </div>
 
-        <textarea
-            *ngSwitchCase="'text-area'"
-            class="dam-textarea"
-            [formControlName]="question.key"
-            [id]="question.key"
-            [required]="question.required"
+        <textarea *ngSwitchCase="'text-area'" class="dam-textarea" [formControlName]="question.key" [id]="question.key"
             >{{ question.val }}
-        </textarea>
+    </textarea
+        >
 
         <ng-select
             class="dam-select"
@@ -54,7 +37,7 @@
             bindValue="key"
             bindLabel="value"
             [multiple]="question.multi"
-            [required]="question.required"
+            º
         >
         </ng-select>
         <ng-select
@@ -64,8 +47,9 @@
             *ngSwitchCase="'depdrop'"
             [formControlName]="question.key"
             [items]="question.options"
-            [required]="question.required"
         >
         </ng-select>
     </div>
+
+    <div class="errorMessage" *ngIf="!isValid">{{ question.label }} is required</div>
 </div>

@@ -7,11 +7,15 @@
         width: 100% !important;
         height: auto !important;
 
-        > .mce-container-body {
+        &.tox-tinymce-inline {
+            visibility: visible !important;
+        }
+
+        > .tox-editor-container {
             width: 100% !important;
             height: auto !important;
 
-            > .mce-toolbar-grp{
+            > .tox-toolbar {
                 position: relative !important;
             }
         }
@@ -21,7 +25,11 @@
         display: flex !important;
     }
 
-    .mce-container, .mce-container *, .mce-widget, .mce-widget *, .mce-reset{
+    .mce-container,
+    .mce-container *,
+    .mce-widget,
+    .mce-widget *,
+    .mce-reset {
         white-space: pre-wrap;
         background: $white-light;
         color: $black-light;
@@ -30,10 +38,11 @@
         max-width: unset;
     }
 
-    .mce-btn{
+    .tox-tbtn {
         transition: background-color 0.3s ease-in-out;
 
-        &:hover, &:focus {
+        &:hover,
+        &:focus {
             color: $white-light;
             background-color: $white-warm !important;
             border-color: transparent !important;
@@ -41,7 +50,7 @@
             border-right-color: transparent !important;
             border-top-color: transparent !important;
 
-            > button { 
+            &button {
                 border-left-color: transparent !important;
                 border-right-color: transparent !important;
                 border-top-color: transparent !important;
@@ -52,7 +61,7 @@
     .mce-colorbutton {
         border-color: transparent;
 
-        &:hover{
+        &:hover {
             > .mce-open {
                 border-color: transparent;
             }
@@ -75,15 +84,15 @@
         }
     }
 
-    .mce-btn-group{
-        .mce-first, .mce-last {
+    .mce-btn-group {
+        .mce-first,
+        .mce-last {
             border-radius: 0 !important;
         }
     }
 
     .mce-listbox {
         button {
-
         }
     }
 

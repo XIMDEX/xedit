@@ -1,13 +1,24 @@
 <main>
     <section>
         <!-- METADATA VIEW -->
-        <app-metadata-view *ngIf="showComponent('metadata')">
-        </app-metadata-view>
+        <app-metadata-view *ngIf="showComponent('metadata')"> </app-metadata-view>
         <!-- END METADATA VIEW-->
         <!-- WYSIWYG VIEW -->
-        <app-wysiwyg-view (onEditorKeyup)="keyupHandlerFunction($event)" (selectNode)="setCurrentNode($event)" *ngIf="showComponent('wysiwyg')">
-        </app-wysiwyg-view>
+        <!-- <app-wysiwyg-view
+            (onEditorKeyup)="keyupHandlerFunction($event)"
+            (selectNode)="setCurrentNode($event)"
+            *ngIf="showComponent('wysiwyg')"
+        >
+        </app-wysiwyg-view> -->
         <!-- END WYSIWYG VIEW -->
+        <!-- CKEDITOR VIEW -->
+        <app-editor-view
+            (selectNode)="setCurrentNode($event)"
+            (toolbar)="setCurrentToolbar($event)"
+            *ngIf="showComponent('wysiwyg')"
+        >
+        </app-editor-view>
+        <!-- END CKEDITOR VIEW -->
 
         <!-- TEXT VIEW -->
         <app-text-view *ngIf="showComponent('text')"> </app-text-view>
@@ -17,5 +28,11 @@
     <app-breadcrumb (selectNode)="setCurrentNode($event)"></app-breadcrumb>
     <!-- END BREADCRUMBS -->
 </main>
-<app-properties-area ngDraggable *ngIf="showComponent('wysiwyg')" [(configs)]="cConfigs" (updated)="saveClipboardConfigs($event)">
+<app-properties-area
+    ngDraggable
+    *ngIf="cConfigs && (showComponent('wysiwyg') || showComponent('ckeditor'))"
+    [(configs)]="cConfigs"
+    (updated)="saveClipboardConfigs($event)"
+>
 </app-properties-area>
+<app-image-modal></app-image-modal>

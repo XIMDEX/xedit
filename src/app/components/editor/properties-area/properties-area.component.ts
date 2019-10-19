@@ -1,9 +1,20 @@
 import { isNil } from 'ramda';
-import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, ChangeDetectorRef, Input, EventEmitter, Output } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    ViewChild,
+    AfterViewChecked,
+    ChangeDetectorRef,
+    Input,
+    EventEmitter,
+    Output
+} from '@angular/core';
 
 import { Node } from '@models/node';
 import { EditorService } from '@services/editor-service/editor.service';
 import { CollapsibleHeaderComponent } from 'angular2-collapsible';
+import { Toolbar } from '@app/models/toolbar';
+import { NodeService } from '@app/services/node-service/node.service';
 
 @Component({
     selector: 'app-properties-area',
@@ -11,13 +22,11 @@ import { CollapsibleHeaderComponent } from 'angular2-collapsible';
     styleUrls: ['./properties-area.component.scss']
 })
 export class PropertiesAreaComponent implements OnInit, AfterViewChecked {
-
     @ViewChild('toggleCollapsible') collapsible: CollapsibleHeaderComponent;
 
     private currentNode: Node;
-    private availablesViews: Array<string> = [
-        'local'
-    ];
+    private availablesViews: Array<string> = ['local'];
+    private toolbarOptions: Array<Toolbar>;
     public isOpen: boolean;
     public selectedView: string;
     public nodeName: string;
@@ -26,7 +35,11 @@ export class PropertiesAreaComponent implements OnInit, AfterViewChecked {
     @Input() configs: Array<Object>;
     @Output() updated: EventEmitter<any> = new EventEmitter();
 
-    constructor(private _editorService: EditorService, private cdr: ChangeDetectorRef) {
+    constructor(
+        private _editorService: EditorService,
+        private nodeService: NodeService,
+        private cdr: ChangeDetectorRef
+    ) {
         this.nodeName = '';
         this.isOpen = false;
         this.selectedView = 'local';
@@ -34,10 +47,18 @@ export class PropertiesAreaComponent implements OnInit, AfterViewChecked {
     }
 
     ngOnInit() {
-        this._editorService.getCurrentNode().subscribe(currentNode => {
+        this.nodeService.get().subscribe(currentNode => {
             if (!isNil(currentNode)) {
                 this.currentNode = currentNode;
                 this.nodeName = currentNode.getName();
+            }
+        });
+
+        this._editorService.getToolbarOptions().subscribe(currentOptions => {
+            if (!isNil(currentOptions)) {
+                this.toolbarOptions = currentOptions;
+            } else {
+                this.toolbarOptions = [];
             }
         });
     }
@@ -48,6 +69,10 @@ export class PropertiesAreaComponent implements OnInit, AfterViewChecked {
             this.start = false;
             this.cdr.detectChanges();
         }
+    }
+
+    public hasToolbarOptions() {
+        return Array.isArray(this.toolbarOptions) && this.toolbarOptions.length > 0;
     }
 
     private changeView(viewName: string) {
@@ -75,6 +100,4 @@ export class PropertiesAreaComponent implements OnInit, AfterViewChecked {
     updateClipboardConfigs() {
         this.updated.emit(this.configs);
     }
-
-
 }

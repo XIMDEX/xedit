@@ -1,4 +1,4 @@
-import { equals, isNil, contains, props, reduce, hasIn, is } from 'ramda';
+import { equals, isNil, contains, hasIn, is } from 'ramda';
 
 import { XeditMapper } from '@models/schema/xedit-mapper';
 import { Converters } from '@utils/converters';
@@ -22,6 +22,7 @@ export class Node {
     private attributes: Object;
     private uuidSectionsPath: Array<string>;
     private sectionsPath: Array<string>;
+    private module: any;
 
     // Constructor
     constructor(uuid: string, target: any, attributes: Object = {}) {
@@ -54,9 +55,7 @@ export class Node {
         this.attributes = attributes;
 
         this.schemaNode = Xedit.getConf('schemas')[this.areaId];
-        this.schema = this.schemaNode[
-            this.getSection().getAttribute(XeditMapper.TAG_SECTION_TYPE)
-        ];
+        this.schema = this.schemaNode[this.getSection().getAttribute(XeditMapper.TAG_SECTION_TYPE)];
     }
 
     // ************************************** Getters and setters **************************************/
@@ -124,6 +123,36 @@ export class Node {
         }
     }
 
+    getModule() {
+        return this.module;
+    }
+
+    setModule(module: any) {
+        this.module = module;
+    }
+
+    /********************** EVENTS *********************/
+    public beforeSelect() {
+        if (!isNil(this.module) && typeof (this.module.prototype['beforeSelect'] === 'function')) {
+            this.module.prototype.beforeSelect();
+        }
+    }
+    public beforeUnselect() {
+        if (!isNil(this.module) && typeof this.module.prototype['beforeUnselect'] === 'function') {
+            this.module.prototype.beforeUnselect();
+        }
+    }
+    public afterSelect() {
+        if (!isNil(this.module) && typeof (this.module.prototype['afterSelect'] === 'function')) {
+            this.module.prototype.afterSelect();
+        }
+    }
+    public afterUnselect() {
+        if (!isNil(this.module) && typeof (this.module.prototype['afterUnselect'] === 'function')) {
+            this.module.prototype.afterUnselect();
+        }
+    }
+
     /********************** PUBLIC METHODS *********************/
 
     getType() {
@@ -145,9 +174,7 @@ export class Node {
         if (this.getAttribute(XeditMapper.TAG_LINK, null) != null) {
             attrName = XeditMapper.TAG_LINK;
             auxTag = this.name;
-        } else if (
-            this.getAttribute(XeditMapper.TAG_SECTION_TYPE, null) != null
-        ) {
+        } else if (this.getAttribute(XeditMapper.TAG_SECTION_TYPE, null) != null) {
             attrName = this.getAttribute(XeditMapper.TAG_SECTION_TYPE);
         }
 
@@ -187,20 +214,15 @@ export class Node {
                 element.nodeName.toLowerCase() !== rootTag) ||
             rootTagIncluded
         ) {
-            path.unshift(element.getAttribute(attribute));
+            const uuid = element.getAttribute(attribute);
+            if (!isNil(uuid)) {
+                path.unshift(uuid);
+            }
         }
 
         return element.nodeName.toLowerCase() === rootTag || isNil(parent)
             ? path
-            : this.getContextPath(
-                parent,
-                rootTag,
-                hasAttribute,
-                attribute,
-                path,
-                onlyAttribute,
-                rootTagIncluded
-            );
+            : this.getContextPath(parent, rootTag, hasAttribute, attribute, path, onlyAttribute, rootTagIncluded);
     }
 
     /**
@@ -212,11 +234,7 @@ export class Node {
     static getSectionLang(section, lang) {
         let name = null;
         if (!isNil(section)) {
-            if (
-                hasIn('lang', section) &&
-                is(Object, section.lang) &&
-                hasIn(lang, section.lang)
-            ) {
+            if (hasIn('lang', section) && is(Object, section.lang) && hasIn(lang, section.lang)) {
                 name = section.lang[lang];
             } else if (hasIn('name', section)) {
                 name = section.name;

@@ -1,0 +1,27 @@
+@import '~ngx-smart-modal/ngx-smart-modal';
+
+.xe_modal {
+    .nsm-dialog {
+        .nsm-content {
+            max-width: 600px;
+            min-width: 220px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0;
+
+            .xe_modal_content {
+                padding: 10px;
+                font: $font-default;
+            }
+
+            .header {
+                border-bottom: 1px solid $white-dark;
+                font-size: $font-size-big;
+            }
+
+            .footer {
+                border-top: 1px solid $white-dark;
+            }
+        }
+    }
+}

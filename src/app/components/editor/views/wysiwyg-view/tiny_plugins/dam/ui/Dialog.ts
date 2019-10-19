@@ -3,8 +3,6 @@
  */
 
 import Dam from '../core/Dam';
-import { Api } from '@app/api';
-import { HttpClient } from '@angular/common/http';
 
 const ATTRS_BY_TYPE = {
     video: {
@@ -12,19 +10,19 @@ const ATTRS_BY_TYPE = {
             type: 'textbox',
             name: 'longdesc',
             size: 20,
-            label: 'Descripción',
+            label: 'Descripción'
         },
         width: {
             type: 'textbox',
             name: 'width',
             size: 40,
-            label: 'Anchura',
+            label: 'Anchura'
         },
         height: {
             type: 'textbox',
             name: 'height',
             size: 40,
-            label: 'Altura',
+            label: 'Altura'
         }
     },
     image: {
@@ -33,8 +31,8 @@ const ATTRS_BY_TYPE = {
             type: 'textbox',
             name: 'longdesc',
             size: 40,
-            label: 'Descripción',
-        },
+            label: 'Descripción'
+        }
     },
     link: {
         title: { type: 'textbox', name: 'title', size: 40, label: 'Título' },
@@ -42,15 +40,12 @@ const ATTRS_BY_TYPE = {
             type: 'listbox',
             name: 'target',
             label: 'Target',
-            values: [
-                { text: 'Nueva ventana', value: '_blank' },
-                { text: 'Misma ventana', value: '_self' },
-            ],
-        },
-    },
+            values: [{ text: 'Nueva ventana', value: '_blank' }, { text: 'Misma ventana', value: '_self' }]
+        }
+    }
 };
 
-const insertDam = function (editor, newId, type, extra) {
+const insertDam = function(editor, newId, type, extra) {
     if (!Dam.isValidNodeId(newId)) {
         editor.windowManager.alert('El enlace elegido no es válido');
         return true;
@@ -60,7 +55,7 @@ const insertDam = function (editor, newId, type, extra) {
     }
 };
 
-const open = function (editor, type: string, getInfo, callback) {
+const open = function(editor, type: string, getInfo, callback) {
     const currentId = Dam.getId(editor, type);
     const attributes = {};
 
@@ -81,15 +76,6 @@ const open = function (editor, type: string, getInfo, callback) {
         }
     };
 
-    // function openTree(evt, windowM, pathIds) {
-    //     window['treeModal']
-    //         .openModal('modal-1', type, pathIds)
-    //         .then(selectedId => {
-    //             Api.getInfoNode(http, selectedId, type, setData, null, null);
-    //         })
-    //         .catch(err => console.log(err));
-    // }
-
     function setData(result, extra) {
         const id = result && result.nodeid ? result.nodeid : '';
         const name = result && result.name ? result.name : '';
@@ -104,10 +90,7 @@ const open = function (editor, type: string, getInfo, callback) {
         document.getElementById('dam-path')['innerHTML'] = path;
     }
     function showWManager(result, { editor: ed }) {
-        const name =
-            result && result.name
-                ? result.name
-                : '<i>Elemento no seleccionado...</i>';
+        const name = result && result.name ? result.name : '<i>Elemento no seleccionado...</i>';
         let path = '<i>Elemento no seleccionado...</i>';
         if (result && result.path) {
             path = Object.values(result.path).join('/');
@@ -120,7 +103,7 @@ const open = function (editor, type: string, getInfo, callback) {
             body: [],
             onsubmit(e) {
                 save(e);
-            },
+            }
         };
         form.body.push({
             type: 'container',
@@ -137,26 +120,26 @@ const open = function (editor, type: string, getInfo, callback) {
                     name: 'nodeId',
                     label: 'textbox',
                     value: currentId,
-                    required: true,
+                    required: true
                 },
                 {
                     type: 'button',
                     icon: 'browse',
-                    onclick: e => callback(e, ed.windowManager, type, pathIds, setData),
-                },
-            ],
+                    onclick: e => callback(e, ed.windowManager, type, pathIds, setData)
+                }
+            ]
         });
         form.body.push({
             type: 'container',
             label: 'Nombre',
             id: 'dam-name',
-            html: name,
+            html: name
         });
         form.body.push({
             type: 'container',
             label: 'Path',
             id: 'dam-path',
-            html: path,
+            html: path
         });
 
         // Attributes
@@ -169,13 +152,13 @@ const open = function (editor, type: string, getInfo, callback) {
         ed.windowManager.open(form);
     }
     showWManager(null, { editor: editor });
-    if (currentId && !(/^(f|ht)tps?:\/\//i).test(currentId)) {
+    if (currentId && !/^(f|ht)tps?:\/\//i.test(currentId)) {
         getInfo(currentId, type, setData, showWManager, showWManager, {
-            editor: editor,
+            editor: editor
         });
     }
 };
 
 export default {
-    open,
+    open
 };

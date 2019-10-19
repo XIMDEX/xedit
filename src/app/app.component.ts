@@ -1,14 +1,14 @@
-import { hasIn, isNil, contains } from 'ramda';
-import { Xedit } from './core/mappers/xedit';
-import { Subscription } from 'rxjs';
-import { DamService } from './services/dam-service/dam.service';
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { contains, hasIn, isNil } from 'ramda';
 
-import { EditorService } from '@services/editor-service/editor.service';
-import { StateService } from '@services/state-service/state.service';
+import { ActivatedRoute } from '@angular/router';
 import { Api } from '@app/api';
+import { EditorService } from '@services/editor-service/editor.service';
+import { HttpClient } from '@angular/common/http';
+import { StateService } from '@services/state-service/state.service';
+import { Subscription } from 'rxjs';
+import { Xedit } from './core/mappers/xedit';
+import { skip } from 'rxjs/operators';
 
 @Component({
     selector: 'app-root',
@@ -19,27 +19,21 @@ export class AppComponent implements OnInit, OnDestroy {
     title = 'app';
 
     private loadingSuscribe: Subscription;
-    private isOpenSuscribe: Subscription;
     private handleSelectSuscribe: Subscription;
 
     public loading: boolean;
-    public isOpen = false;
     public handleSelect;
 
-    constructor(private _editorService: EditorService, private _stateService: StateService, public http: HttpClient,
-        private route: ActivatedRoute, private cdRef: ChangeDetectorRef, private _damService: DamService) { }
-
+    constructor(
+        private _editorService: EditorService,
+        private _stateService: StateService,
+        public http: HttpClient,
+        private route: ActivatedRoute,
+        private cdRef: ChangeDetectorRef
+    ) {}
 
     /************************************** Life Cycle **************************************/
     ngOnInit() {
-        this.isOpenSuscribe = this._damService.isOpen().subscribe(open => {
-            this.isOpen = open;
-        });
-
-        this.handleSelectSuscribe = this._damService.getOnSelect().subscribe(onSelect => {
-            this.handleSelect = onSelect;
-        });
-
         this.loadingSuscribe = this._editorService.isLoading().subscribe(loading => {
             this.loading = loading;
         });
@@ -49,10 +43,13 @@ export class AppComponent implements OnInit, OnDestroy {
             if (!isNil(Xedit.getData()) && Xedit.getData() !== '') {
                 this.setDocument(Xedit.getData());
             } else {
-                this.getDocument(Xedit.getDocument().id, hasIn('view', Xedit.getDocument()) ? Xedit.getDocument().view : null);
+                this.getDocument(
+                    Xedit.getDocument().id,
+                    hasIn('view', Xedit.getDocument()) ? Xedit.getDocument().view : null
+                );
             }
         } else {
-            this.route.queryParams.subscribe(_params => {
+            this.route.queryParams.pipe(skip(1)).subscribe(_params => {
                 const params = Object.assign({}, _params);
                 if (isNil(params['token[field]']) || isNil(params['token[value]'])) {
                     console.log('Not authentication');
@@ -73,16 +70,13 @@ export class AppComponent implements OnInit, OnDestroy {
                     delete params['token[field]'];
                     delete params['token[value]'];
                     this.getMapper(url, params, type);
-
                 }
             });
         }
-
     }
 
     ngOnDestroy() {
         this.loadingSuscribe.unsubscribe();
-        this.isOpenSuscribe.unsubscribe();
         this.handleSelectSuscribe.unsubscribe();
     }
 
@@ -92,13 +86,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
     /************************************** Private Methods **************************************/
     private getMapper(url, params, view) {
-
         const error = () => {
             console.log('error');
             this._editorService.setLoading(false);
         };
 
-        const success = (result) => {
+        const success = result => {
             if (hasIn('status', result) && result.status === 0) {
                 window['$xedit'] = result.response;
                 this.getDocument(params.id, view);
@@ -112,13 +105,12 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     private getDocument(id, view) {
-
         const error = () => {
             console.log('error');
             this._editorService.setLoading(false);
         };
 
-        const success = (result) => {
+        const success = result => {
             if (hasIn('status', result) && result.status === 0) {
                 this.setDocument(result.response, view != null ? view : null);
             } else {
@@ -140,14 +132,4 @@ export class AppComponent implements OnInit, OnDestroy {
         this._stateService.setCurrentView(view);
         this._editorService.setLoading(false);
     }
-
-    public closeModal() {
-        this._damService.setIsOpen(false);
-        this.cdRef.detectChanges();
-    }
-    public toggleOpen() {
-        this.isOpen = !this.isOpen;
-        this.cdRef.detectChanges();
-    }
-
 }

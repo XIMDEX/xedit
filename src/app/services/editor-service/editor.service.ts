@@ -1,11 +1,12 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
-import { isNil, reduce, is, contains, hasIn } from "ramda";
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { isNil, reduce, is, contains, hasIn } from 'ramda';
 
-import { File } from "@models/file";
-import { Node } from "@models/node";
-import { XeditMapper } from "@models/schema/xedit-mapper";
-import { Converters } from "@utils/converters";
+import { File } from '@models/file';
+import { Node } from '@models/node';
+import { XeditMapper } from '@models/schema/xedit-mapper';
+import { Converters } from '@utils/converters';
+import { Toolbar } from '@app/models/toolbar';
 
 @Injectable()
 export class EditorService {
@@ -16,6 +17,7 @@ export class EditorService {
     private currentNodeModify: Subject<Node>; // Change if node is modify
     private loading: BehaviorSubject<boolean>;
     private elementsState: Subject<boolean>;
+    private toolbarOptions: Subject<Array<Toolbar>>;
 
     // Constructor
     constructor() {
@@ -25,6 +27,7 @@ export class EditorService {
         this.currentNodeModify = new Subject<Node>();
         this.loading = new BehaviorSubject<boolean>(false);
         this.elementsState = new BehaviorSubject<boolean>(false);
+        this.toolbarOptions = new BehaviorSubject<Array<Toolbar>>([]);
     }
 
     // ************************************** Getters and setters **************************************/
@@ -71,6 +74,14 @@ export class EditorService {
         return this.currentNodeModify.asObservable();
     }
 
+    setToolbarOptions(options: Array<Toolbar>): void {
+        this.toolbarOptions.next(options);
+    }
+
+    getToolbarOptions(): Observable<Array<Toolbar>> {
+        return this.toolbarOptions.asObservable();
+    }
+
     isLoading() {
         return this.loading.asObservable();
     }
@@ -106,26 +117,24 @@ export class EditorService {
     /**
      * Return to the previous state if it exists, otherwise it does not do anything
      */
-    lastStateFile(): void {
-        this.file
+    lastStateFile(): Promise<any> {
+        return this.file
             .getValue()
             .lastState()
             .then(value => {
                 this.setFile(value);
-                this.setLoading(false);
             });
     }
 
     /**
      * Go to the next state if it exists, otherwise it does not do anything
      */
-    nextStateFile(): void {
-        this.file
+    nextStateFile(): Promise<any> {
+        return this.file
             .getValue()
             .nextState()
             .then(value => {
                 this.setFile(value);
-                this.setLoading(false);
             });
     }
 
@@ -147,7 +156,7 @@ export class EditorService {
      * @param content Html content
      * @param message string message
      */
-    save(node, content, message, attributes = {}) {
+    save(node, content, message) {
         const fileContent = this.fileState.getValue().getState().content;
         /** @todo Improve performance clone */
         // let fileContent = clone(this.file.getValue().getState().content)
@@ -166,17 +175,21 @@ export class EditorService {
 
             // Modify file with new changes
             const editContent = reduce(
-                function(acc, value) {
+                (acc, value) => {
                     return acc.child[value];
                 },
                 root.content,
                 uuidPath
             );
-
-            Object.keys(attributes).forEach(key => {
-                editContent.attr[key] = attributes[key];
-            });
-            editContent.child = Converters.html2json(content, false);
+            let newContent = Converters.html2json(content, false);
+            if (
+                hasIn(editContent.uuid, newContent) &&
+                hasIn('uuid', newContent[editContent.uuid]) &&
+                editContent.uuid === newContent[editContent.uuid].uuid
+            ) {
+                newContent = newContent[editContent.uuid].child;
+            }
+            editContent.child = newContent;
         }
 
         // Save new state
@@ -212,10 +225,7 @@ export class EditorService {
      * Remove node section
      */
     removeNode(node: Node) {
-        const file = this.newStateFile(
-            this.fileState.getValue().getState().content,
-            "Remove node"
-        );
+        const file = this.newStateFile(this.fileState.getValue().getState().content, 'Remove node');
         const section = node.getSection();
         const sectionPath = Node.getContextPath(section);
 
@@ -243,18 +253,11 @@ export class EditorService {
      */
     addNodeToArea(node: Node, newNode, child: boolean = false) {
         const message =
-            (child ? "Adding child" : "Adding sibling") +
-            " to " +
-            node.getSection().getAttribute("xe_section");
-        const file = this.newStateFile(
-            this.fileState.getValue().getState().content,
-            message
-        );
+            (child ? 'Adding child' : 'Adding sibling') + ' to ' + node.getSection().getAttribute('xe_section');
+        const file = this.newStateFile(this.fileState.getValue().getState().content, message);
         const section = node.getSection();
 
-        const sectionPath = child
-            ? Node.getContextPath(section)
-            : Node.getContextPath(section.parentNode);
+        const sectionPath = child ? Node.getContextPath(section) : Node.getContextPath(section.parentNode);
 
         const fileNode = reduce(
             function(n, value) {
@@ -293,24 +296,20 @@ export class EditorService {
         const document = { nodes: {} };
 
         for (const nodeId in state.content) {
-            if (hasIn("content", state.content[nodeId])) {
-                document["nodes"][nodeId] = {
-                    content: Converters.json2html(
-                        state.content[nodeId].content,
-                        false,
-                        false
-                    ),
+            if (hasIn('content', state.content[nodeId])) {
+                document['nodes'][nodeId] = {
+                    content: Converters.json2html(state.content[nodeId].content, false, false),
                     editable: state.content[nodeId].editable
                 };
             }
         }
 
-        if (hasIn("metas", file)) {
-            document["metas"] = file["metas"];
+        if (hasIn('metas', file)) {
+            document['metas'] = file['metas'];
         }
 
-        if (hasIn("metadata", file)) {
-            document["metadata"] = file["metadata"];
+        if (hasIn('metadata', file)) {
+            document['metadata'] = file['metadata'];
         }
 
         return document;
@@ -331,14 +330,13 @@ export class EditorService {
         const uuid = element.getAttribute(XeditMapper.TAG_UUID);
 
         Object.keys(element.attributes).forEach(key => {
-            attributes[element.attributes[key].name] =
-                element.attributes[key].value;
+            attributes[element.attributes[key].name] = element.attributes[key].value;
         });
 
         try {
             node = new Node(uuid, element, attributes);
         } catch (e) {
-            console.error("This element is not a valid node");
+            console.error('This element is not a valid node');
         }
         return node;
     }
@@ -346,18 +344,13 @@ export class EditorService {
     /*
      * Calculate uuid path to xedit node
      */
-    static getUuidPath(
-        element,
-        rootTag = XeditMapper.TAG_EDITOR,
-        path = [],
-        onlySections = false
-    ) {
+    static getUuidPath(element, rootTag = XeditMapper.TAG_EDITOR, path = [], onlySections = false) {
         const parent = element.parentNode;
 
         if (
             !isNil(element) &&
-            (!onlySections ||
-                element.hasAttribute(XeditMapper.TAG_SECTION_TYPE))
+            element.hasAttribute(XeditMapper.TAG_UUID) &&
+            (!onlySections || element.hasAttribute(XeditMapper.TAG_SECTION_TYPE))
         ) {
             path.unshift(element.getAttribute(XeditMapper.TAG_UUID));
         }
@@ -394,9 +387,7 @@ export class EditorService {
      * @returns boolean
      */
     static isInsertedNodeValid(currentNode: Node, insertedNode: Node) {
-        const section = insertedNode
-            .getTarget()
-            .getAttribute(XeditMapper.TAG_SECTION_TYPE);
+        const section = insertedNode.getTarget().getAttribute(XeditMapper.TAG_SECTION_TYPE);
         return this.isAllowAddChild(currentNode, section);
     }
 }

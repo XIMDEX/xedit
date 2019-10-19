@@ -1,0 +1,13 @@
+<editor
+    [ngClass]="{ xe_selected: isSelected() }"
+    [id]="content.uuid"
+    [init]="configs"
+    [initialValue]="content.html"
+    (onPaste)="pasteContent($event)"
+    (onNodeChange)="selectedNode($event)"
+    (onClick)="onClick($event)"
+    (onFocus)="onFocus($event)"
+    (onBlur)="onBlur($event)"
+    (click)="onClick($event)"
+    (onChange)="onChanges($event)"
+></editor>

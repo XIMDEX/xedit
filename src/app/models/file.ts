@@ -5,7 +5,6 @@ import { Converters } from '@utils/converters';
 import { Xedit } from '../xedit';
 
 export class FileHistory {
-
     static TYPE_JSON = 'json';
     static TYPE_TEXT = 'text';
 
@@ -41,15 +40,13 @@ export class FileHistory {
 }
 
 export class File extends History {
-
     private css: Array<string>;
     private js: Array<string>;
     private metas: Array<Object>;
     private metadata: Object;
-    private name: String;
+    private name: string;
 
     constructor(json = null) {
-
         if (isNil(json)) {
             throw TypeError('Invalid arguments');
         }
@@ -89,10 +86,10 @@ export class File extends History {
     }
 
     setMetadata(meta: Object) {
-        return this.metadata = meta;
+        return (this.metadata = meta);
     }
 
-    getName(): String {
+    getName(): string {
         return this.name;
     }
     /***************** PUBLIC METHODS **************************/
@@ -111,8 +108,8 @@ export class File extends History {
      * @param stateId
      */
     recovery(stateId: string) {
-        return super.recovery(stateId).then((value) => {
-            this.setState(Object.assign(new FileHistory, value));
+        return super.recovery(stateId).then(value => {
+            this.setState(Object.assign(new FileHistory(), value));
             return this;
         });
     }
@@ -120,12 +117,10 @@ export class File extends History {
     /***************** STATIC METHODS **************************/
 
     private static createContent(nodes: JSON) {
-
         Object.keys(nodes).forEach(property => {
             nodes[property].content = Converters.html2json(nodes[property].content);
         });
 
         return new FileHistory(nodes, 'Init state');
     }
-
 }

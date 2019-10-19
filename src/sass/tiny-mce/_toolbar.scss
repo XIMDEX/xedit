@@ -1,0 +1,87 @@
+#toolbar {
+    > div {
+        &.tox-tinymce-inline {
+            visibility: visible !important;
+        }
+
+        &.tox-tinymce {
+            border: none;
+        }
+    }
+
+    .tox-editor-container {
+        width: 100% !important;
+        height: auto !important;
+
+        background-color: $white-ximdex;
+
+        &:not(.mce-reset) {
+            * {
+                background: inherit;
+                background-color: inherit;
+            }
+        }
+
+        .tox-toolbar__group {
+            border: none;
+        }
+    }
+
+    .mce-btn-group {
+        .mce-first,
+        .mce-last {
+            border-radius: 4px !important;
+        }
+    }
+
+    .tox-collection {
+        &.tox-collection--list {
+            .tox-collection__item {
+                padding: 4px 8px;
+                width: max-content;
+                min-width: 100%;
+                box-sizing: border-box;
+            }
+        }
+    }
+
+    .tox-tbtn {
+        padding: 3px;
+        min-width: 29px;
+        height: 29px;
+        box-sizing: border-box;
+        text-align: center;
+        border-radius: 4px !important;
+        margin: 2px;
+        overflow: hidden;
+        transition: background-color 0.3s ease-in-out;
+
+        span {
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+        }
+
+        &.tox-tbtn--enabled,
+        &:hover {
+            background-color: $white-warm;
+            cursor: pointer;
+        }
+    }
+
+    .tox-split-button {
+        .tox-tbtn {
+            &:first-child {
+                margin-right: 0;
+            }
+
+            &:last-child {
+                margin-left: 0;
+            }
+        }
+
+        .tox-split-button__chevron {
+            min-width: unset;
+        }
+    }
+}

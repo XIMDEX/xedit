@@ -4,5 +4,15 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false
+    production: false,
+    debug: true
 };
+
+export function log(type: string, message: string) {
+    if (environment.debug) {
+        if (typeof console[type] === 'function') {
+            type = 'log';
+        }
+        console[type](message);
+    }
+}

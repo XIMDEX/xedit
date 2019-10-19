@@ -1,0 +1,10 @@
+<!-- <app-image-toolbar *ngIf="nodeName === 'app-image'"></app-image-toolbar> -->
+<div class="xe_toolbar_content">
+    <div
+        *ngFor="let action of options"
+        (click)="action.callback($event)"
+        [ngClass]="{ xe_toolbar_button: true, active: action.active }"
+    >
+        <fa-icon [icon]="action.icon"></fa-icon>
+    </div>
+</div>
