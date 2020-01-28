@@ -9,7 +9,7 @@ import ToolbarGenerator from '@app/core/generators/toolbar-generator';
 import { toolbarOptions } from './toolbar-mapper';
 
 // TinyMCE Settings
-import tinymce from 'tinymce';
+declare var tinymce: any;
 
 import { Subscription } from 'rxjs';
 import { NgxSmartModalService } from 'ngx-smart-modal';
