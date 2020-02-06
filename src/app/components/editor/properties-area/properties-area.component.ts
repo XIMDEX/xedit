@@ -10,6 +10,7 @@ import {
     Output
 } from '@angular/core';
 
+import { ActivatedRoute } from '@angular/router';
 import { Node } from '@models/node';
 import { EditorService } from '@services/editor-service/editor.service';
 import { CollapsibleHeaderComponent } from 'angular2-collapsible';
@@ -25,7 +26,7 @@ export class PropertiesAreaComponent implements OnInit, AfterViewChecked {
     @ViewChild('toggleCollapsible') collapsible: CollapsibleHeaderComponent;
 
     private currentNode: Node;
-    private availablesViews: Array<string> = ['local'];
+    private availableViews: Array<string> = ['standard', 'lite'];
     private toolbarOptions: Array<Toolbar>;
     public isOpen: boolean;
     public selectedView: string;
@@ -38,15 +39,19 @@ export class PropertiesAreaComponent implements OnInit, AfterViewChecked {
     constructor(
         private _editorService: EditorService,
         private nodeService: NodeService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private route: ActivatedRoute
     ) {
         this.nodeName = '';
         this.isOpen = false;
-        this.selectedView = 'local';
         this.start = true;
     }
 
     ngOnInit() {
+        this.route.queryParams.subscribe(params => {
+            this.selectedView = this.availableViews.includes(params.view) ? params.view : 'standard';
+        });
+
         this.nodeService.get().subscribe(currentNode => {
             if (!isNil(currentNode)) {
                 this.currentNode = currentNode;

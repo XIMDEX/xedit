@@ -12,6 +12,7 @@
 <div class="xe_editor">
     <ng-container *ngFor="let value of configs; let i = index">
         <app-listbox
+            *ngIf="'lite' !== selectedView"
             [placeholder]="value.name"
             [selected]="value.selected"
             [options]="value.options"
@@ -22,6 +23,6 @@
 <collapsible-list-item class="xe_editor">
     <collapsible-header class="waves-effect" #toggleCollapsible> </collapsible-header>
     <collapsible-body [expanded]="isOpen">
-        <app-properties-local *ngIf="'local' === selectedView"></app-properties-local>
+        <app-properties-local *ngIf="'lite' !== selectedView"></app-properties-local>
     </collapsible-body>
 </collapsible-list-item>
