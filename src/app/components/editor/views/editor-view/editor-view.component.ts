@@ -130,10 +130,11 @@ export class EditorViewComponent implements OnInit, OnDestroy {
                 data: null
             };
 
+            const currentNode = parseInt(property.split('_').pop());
             const componentData = {};
 
             const contentHtml = !result.editable
-                ? Converters.json2html(data, true, true, false, false)
+                ? Converters.json2html(data, true, true, false, false, currentNode)
                 : Converters.json2xedit(property, data, this._moduleService, componentData, true, true, false, false);
 
             if (result.editable) {

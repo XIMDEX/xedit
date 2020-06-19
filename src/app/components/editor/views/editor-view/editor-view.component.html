@@ -1,5 +1,5 @@
 <div class="css">
-    <ng-container *ngFor="let css of cssLinks"> <link rel="stylesheet" [href]="addHttp(css) | url" /> </ng-container>
+    <ng-container *ngFor="let css of cssLinks"> <link rel="stylesheet" [href]="css | url" /> </ng-container>
 </div>
 <div>
     <ng-container *ngFor="let node of content">
