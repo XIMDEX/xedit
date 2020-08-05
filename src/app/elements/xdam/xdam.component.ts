@@ -28,6 +28,8 @@ export class XdamComponent implements OnInit, AfterViewInit {
     private resourceType: string | null = null;
     private onSelectCallback: Function;
 
+    @ViewChild('damComponent') damComponent;
+
     private pagerSchema: PagerModelSchema = {
         total: 'total',
         currentPage: 'current_page',
@@ -92,6 +94,7 @@ export class XdamComponent implements OnInit, AfterViewInit {
             pager: null
         };
         this.close = true;
+        this.damComponent.resetSearch();
     }
 
     public sendSearch(data: SearchModel | null = null): void {
