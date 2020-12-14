@@ -92,7 +92,7 @@ export class EditorViewComponent implements OnInit, OnDestroy {
             node: this.currentNode,
             service: this._editorService,
             clipboardConfigs: new ClipboardConfigs(),
-            htpp: this.http,
+            http: this.http,
             getInfo: (selectedId, type, setData, errorCallback, extra) => {
                 Api.getInfoNode(this.http, selectedId, type, setData, errorCallback, extra);
             },
