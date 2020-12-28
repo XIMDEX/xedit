@@ -187,7 +187,14 @@ export class Converters {
      * @param json Json object with content
      * @param showIds If true added attribute id in tags
      */
-    static json2html(json, showIds = true, processXedit = true, resetIds = false, enableHover = true) {
+    static json2html(
+        json,
+        showIds = true,
+        processXedit = true,
+        resetIds = false,
+        enableHover = true,
+        currentNode?: number
+    ) {
         // Empty Elements - HTML 4.01
         const empty = [
             'area',
@@ -210,7 +217,14 @@ export class Converters {
         if (json.child) {
             child = Object.keys(json.child)
                 .map(function(uuid: string) {
-                    return Converters.json2html(json.child[uuid], showIds, processXedit, resetIds, enableHover);
+                    return Converters.json2html(
+                        json.child[uuid],
+                        showIds,
+                        processXedit,
+                        resetIds,
+                        enableHover,
+                        currentNode
+                    );
                 })
                 .join('');
         }
@@ -227,7 +241,7 @@ export class Converters {
                     if (Array.isArray(value)) {
                         value = value.join(' ');
                     }
-                    return Converters.parseAttributes(key, value, processXedit, tag);
+                    return Converters.parseAttributes(key, value, processXedit, tag, currentNode);
                 })
                 .join(' ');
             if (attr !== '') {
@@ -310,6 +324,7 @@ export class Converters {
 
         if (json.node === 'element') {
             const { attr, tag } = json;
+            const currentNode = parseInt(nodeName.split('_').pop());
             let { uuid } = json;
 
             let attrString = '';
@@ -328,7 +343,7 @@ export class Converters {
                         if (Array.isArray(value)) {
                             value = value.join(' ');
                         }
-                        return Converters.parseAttributes(key, value, processXedit, tag);
+                        return Converters.parseAttributes(key, value, processXedit, tag, currentNode);
                     })
                     .join(' ');
             }
@@ -394,14 +409,47 @@ export class Converters {
         }
     }
 
-    private static parseAttributes(key, value, processXedit, tag = 'a') {
+    /**
+     * Get the full api path pointing to the resource
+     *
+     * @param params Object with id  or path of the resource, and id of current node
+     */
+    private static getPathFromApi(params) {
+        return Router.configUrl(Api.getResourceUrl(), params);
+    }
+
+    /**
+     * Get the full path of a single resource or resource array
+     *
+     * @param resource String or string array of resources
+     * @param currentNode Number node identifier from where to start looking for the resource
+     */
+    public static getPathByResource(resource: any, currentNode: number) {
+        let params = {};
+        if (currentNode) {
+            params['currentNode'] = currentNode;
+        }
+        if (Array.isArray(resource)) {
+            for (let index in resource) {
+                params['id'] = resource[index];
+                // array content is overwritten with the value of its full url
+                resource[index] = Converters.getPathFromApi(params);
+            }
+        } else {
+            params['id'] = resource;
+            resource = Converters.getPathFromApi(params);
+        }
+        return resource;
+    }
+
+    private static parseAttributes(key, value, processXedit, tag = 'a', currentNode) {
         let extraData = '';
         const linkType = hasIn(tag, XeditMapper.LINK_TYPES) ? XeditMapper.LINK_TYPES[tag] : 'href';
         if (processXedit && contains(key, XeditMapper.requiredXeditAttributes)) {
             if (equals(key, XeditMapper.TAG_LINK)) {
                 extraData = value;
                 if (!/^(f|ht)tps?:\/\//i.test(extraData)) {
-                    extraData = Router.configUrl(Api.getResourceUrl(), { id: value });
+                    extraData = Converters.getPathByResource(value, currentNode);
                 }
                 extraData = `${linkType}="${extraData}"`;
             }

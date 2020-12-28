@@ -62,8 +62,13 @@ export class File extends History {
             Object.keys(json.nodes).forEach(nodeKey => {
                 const node = json.nodes[nodeKey];
                 schemas[nodeKey] = node.schema;
-                this.css = union(this.css, hasIn('css', node) ? node.css : []);
-                this.js = union(this.js, hasIn('js', node) ? node.js : []);
+
+                // convert all css.js resources into a full url path
+                const cssPath = hasIn('css', node) ? Converters.getPathByResource(node.css, node.id) : [];
+                const jsPath = hasIn('js', node) ? Converters.getPathByResource(node.js, node.id) : [];
+
+                this.css = union(this.css, cssPath);
+                this.js = union(this.js, jsPath);
             });
         }
 
